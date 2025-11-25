@@ -14,6 +14,13 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `QasBtnDropdown`: adicionado novo slot dinâmico `btn-content-[buttons-props-list-key]`.
+- `QasFilters`:
+  - adicionado feature para ordenação.
+  - adicionado prop `orderByOptions`.
+
 ## [3.20.0-beta.0] - 19-11-2025
 ## BREAKING CHANGES
 - **Possíveis breaking changes**: mudanças referentes ao overlay pode quebrar alguns componentes a nível de rota, ou então a nível de layout.
