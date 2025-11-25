@@ -9,7 +9,7 @@ import { inject, ref, shallowRef, onMounted } from 'vue'
  * @param {import('axios').AxiosRequestConfig} options.axiosConfig - Configuração do axios
  * @param {{
  *  errorMessage?: string | (error: *) => string,
- *  successMessage?: string | () => string,
+ *  successMessage?: string | (error: *) => string,
  *  axiosInstance?: import('axios').AxiosInstance,
  *  immediate?: boolean,
  *  shallow?: boolean,
@@ -37,7 +37,7 @@ export default function useAxios (url, { axiosConfig = {}, config = {} } = {}) {
   const isGetRequest = ref(axiosConfig.method === 'GET')
 
   // composables
-  const { createAbortSignal } = useAbortController({ useAbortOnUnmounted: isGetRequest })
+  const { abortCurrentRequest, createAbortSignal } = useAbortController({ useAbortOnUnmounted: isGetRequest })
 
   // refs
   const isLoading = ref(false)
@@ -119,12 +119,19 @@ export default function useAxios (url, { axiosConfig = {}, config = {} } = {}) {
     }
   }
 
+  function abort () {
+    abortCurrentRequest()
+  }
+
   return {
     data,
     error,
     isSucceeded,
     isLoading,
     isFinished,
+
+    // functions
+    abort,
     execute
   }
 }

@@ -5,24 +5,25 @@ import { onUnmounted } from 'vue'
  *
  * @param {Object} options
  * @param {import('vue').Ref<boolean>} options.useAbortOnUnmounted - Indica se deve abortar requisições ao desmontar o componente (default: true)
- *
- * @property {Function} createAbortSignal - Cria um novo signal e retorna objeto com signal e controller
- * @property {Function} abortCurrentRequest - Aborta a requisição atual
- * @property {Function} isCurrentRequest - Verifica se um controller ainda é o mais recente
  */
 export default function useAbortController ({ useAbortOnUnmounted } = {}) {
   let abortController = new AbortController()
+  let hasActiveRequest = false
 
+  // functions
   /**
    * Cria um novo AbortSignal, cancelando automaticamente a requisição anterior
    * @returns {Object} Objeto contendo o signal e o controller
    */
   function createAbortSignal () {
-    // Aborta a requisição anterior, se existir
-    abortController.abort()
+    // Só aborta se houver uma requisição ativa
+    if (hasActiveRequest) {
+      abortController.abort()
+    }
 
     // Cria um novo controller
     abortController = new AbortController()
+    hasActiveRequest = true
 
     // Retorna uma referência local ao controller para verificações posteriores
     return {
@@ -47,11 +48,14 @@ export default function useAbortController ({ useAbortOnUnmounted } = {}) {
     return controller === abortController
   }
 
-  // Limpa qualquer requisição pendente quando o componente for desmontado
+  // hooks
+  /**
+   * Limpa qualquer requisição pendente quando o componente for desmontado
+   */
   onUnmounted(() => {
     const shouldAbortOnUnmounted = useAbortOnUnmounted?.value ?? true
 
-    if (shouldAbortOnUnmounted) {
+    if (shouldAbortOnUnmounted && hasActiveRequest) {
       abortController.abort()
     }
   })

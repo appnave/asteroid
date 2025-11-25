@@ -586,6 +586,10 @@ module.exports = [
     name: 'Composição',
     children: [
       {
+        name: 'useAxios',
+        path: '/composables/use-axios'
+      },
+      {
         name: 'useContext',
         path: '/composables/use-context'
       },
