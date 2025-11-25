@@ -48,14 +48,12 @@ import QasPagination from '../pagination/QasPagination.vue'
 
 import { viewMixin, contextMixin } from '../../mixins'
 import { useOverlayNavigation } from '../../composables'
+import { useAbortController } from '../../composables/private'
 
 import { decamelize } from 'humps'
-import debug from 'debug'
 import { extend } from 'quasar'
 import { getState, getAction } from '@bildvitta/store-adapter'
 import { computed } from 'vue'
-
-const log = debug('asteroid-ui:qas-list-view')
 
 export default {
   components: {
@@ -137,6 +135,7 @@ export default {
 
   data () {
     const { isBackgroundOverlay } = useOverlayNavigation()
+    const { createAbortSignal, isCurrentRequest } = useAbortController()
 
     return {
       page: 1,
@@ -144,7 +143,11 @@ export default {
       resultsQuantity: 0,
       resultsList: [],
       isFetchListSucceeded: false,
-      isBackgroundOverlay
+      isBackgroundOverlay,
+
+      // Métodos do composable useAbortController
+      createAbortSignal,
+      isCurrentRequest
     }
   },
 
@@ -241,6 +244,9 @@ export default {
     },
 
     async fetchList (externalPayload = {}) {
+      // Cria um novo signal e cancela automaticamente a requisição anterior
+      const { signal, controller } = this.createAbortSignal()
+
       this.mx_isFetching = true
       this.isFetchListSucceeded = false
 
@@ -248,6 +254,7 @@ export default {
         const payload = {
           ...this.mx_context,
           url: this.url,
+          signal,
           ...externalPayload
         }
 
@@ -280,16 +287,16 @@ export default {
         this.isFetchListSucceeded = true
 
         this.$emit('fetch-success', response)
-
-        log(`[${this.entity}]:fetchList:success`, response)
       } catch (error) {
+        // Se foi cancelamento, não processa o erro
+        if (this.$axios.isCancel(error)) return
+
         this.mx_fetchError(error)
         this.$emit('update:errors', error)
         this.$emit('fetch-error', error)
-
-        log(`[${this.entity}]:fetchList:error`, error)
       } finally {
-        this.mx_isFetching = false
+        // Só altera mx_isFetching se esta ainda for a requisição mais recente
+        this.mx_isFetching = !this.isCurrentRequest(controller)
       }
     },
 
@@ -306,7 +313,7 @@ export default {
         })
       }
 
-      const { url: payloadURL, page, filters, limit: payloadLimit, ...payloadParams } = payload
+      const { url: payloadURL, page, filters, signal, limit: payloadLimit, ...payloadParams } = payload
 
       const limit = payloadLimit || this.resultsPerPage
 
@@ -322,7 +329,7 @@ export default {
 
       const url = payloadURL || decamelizedEntity
 
-      return this.$axios.get(url, { params })
+      return this.$axios.get(url, { params, signal })
     },
 
     async refresh (done) {

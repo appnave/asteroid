@@ -13,7 +13,6 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
   quasar.boot.push(...resolve(
     'boot/overlay-navigation.js',
     'boot/api.js',
-    'boot/debug.js',
     'boot/error-pages.js',
     'boot/font-face.js',
     'boot/register.js',
@@ -117,7 +116,6 @@ export default async function (api) {
         '@fawmi/vue-google-maps',
         'fast-deep-equal',
         'humps',
-        'debug',
         'pica',
         'hammerjs',
         'lodash-es',

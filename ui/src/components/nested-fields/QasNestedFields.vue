@@ -71,10 +71,7 @@ import { constructObject } from '../../helpers'
 import { Spacing, SpacingWithNumber } from '../../enums/Spacing'
 
 import { TransitionGroup } from 'vue'
-import debug from 'debug'
 import { extend } from 'quasar'
-
-const log = debug('asteroid-ui:qas-nested-fields')
 
 export default {
   name: 'QasNestedFields',
@@ -438,8 +435,6 @@ export default {
         this.setFocus()
       })
 
-      log('add', payload)
-
       this.updateModelValue()
     },
 
@@ -455,8 +450,6 @@ export default {
       !row[this.identifierItemKey] || this.useRemoveOnDestroy
         ? this.nested.splice(index, 1)
         : this.nested.splice(index, 1, { [this.destroyKey]: true, ...row })
-
-      log('destroy', { index, row })
 
       this.updateModelValue()
     },

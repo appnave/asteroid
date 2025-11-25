@@ -648,10 +648,6 @@ module.exports = [
     name: 'Boot',
     children: [
       {
-        name: 'debug',
-        path: '/boot/debug'
-      },
-      {
         name: 'queryCache',
         path: '/boot/query-cache'
       },

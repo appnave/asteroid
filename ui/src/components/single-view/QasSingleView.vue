@@ -29,14 +29,12 @@ import QasContainer from '../container/QasContainer.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 
 import useView, { baseProps, baseEmits } from '../../composables/private/use-view'
+import { useAbortController } from '../../composables/private'
 import { useOverlayNavigation } from '../../composables'
 
-import debug from 'debug'
 import { decamelize } from 'humps'
 import { markRaw, computed, watch, inject } from 'vue'
 import { useRoute } from 'vue-router'
-
-const log = debug('asteroid-ui:qas-single-view')
 
 defineOptions({ name: 'QasSingleView' })
 
@@ -72,6 +70,7 @@ const qas = inject('qas')
 const route = useRoute()
 
 const { isBackgroundOverlay } = useOverlayNavigation()
+const { createAbortSignal, isCurrentRequest } = useAbortController()
 
 const {
   // state
@@ -124,8 +123,10 @@ fetchHandler({ id: id.value, url: props.url }, fetchSingle)
 async function fetchSingle (externalPayload = {}) {
   viewState.value.fetching = true
 
+  const { signal, controller } = createAbortSignal()
+
   try {
-    const payload = { id: id.value, url: props.url, ...externalPayload }
+    const payload = { id: id.value, url: props.url, ...externalPayload, signal }
 
     const response = await getAction(payload)
 
@@ -150,15 +151,14 @@ async function fetchSingle (externalPayload = {}) {
     })
 
     emit('fetch-success', response)
-
-    log(`[${props.entity}]:fetchSingle:success`, response)
   } catch (error) {
+    if (axios.isCancel(error)) return
+
     errorHandler(error)
     emit('fetch-error', error)
-
-    log(`[${props.entity}]:fetchSingle:error`, error)
   } finally {
-    viewState.value.fetching = false
+    // Define fetching apenas se for a requisição mais recente
+    viewState.value.fetching = !isCurrentRequest(controller)
   }
 }
 
@@ -171,12 +171,12 @@ function getAction (payload) {
     })
   }
 
-  const { id: unusedID, url: unusedURL, ...externalPayload } = payload
+  const { id: unusedID, url: unusedURL, signal, ...externalPayload } = payload
 
   const decamelizedEntity = decamelize(props.entity, { separator: '-' })
 
   const url = props.url || `${decamelizedEntity}/${id.value}`
 
-  return axios.get(url, { ...externalPayload })
+  return axios.get(url, { ...externalPayload, signal })
 }
 </script>

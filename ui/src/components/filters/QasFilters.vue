@@ -40,15 +40,12 @@ import QasSearchInput from '../search-input/QasSearchInput.vue'
 import PvFiltersButton from './private/PvFiltersButton.vue'
 
 import { useOverlayNavigation } from '../../composables'
-
-import debug from 'debug'
+import { useAbortController } from '../../composables/private'
 
 import { camelize, camelizeKeys, decamelize } from 'humps'
 import { humanize, parseValue } from '../../helpers/filters.js'
 import contextMixin from '../../mixins/context.js'
 import { getState, getAction } from '@bildvitta/store-adapter'
-
-const log = debug('asteroid-ui:qas-filters')
 
 export default {
   name: 'QasFilters',
@@ -140,6 +137,7 @@ export default {
 
   data () {
     const { isBackgroundOverlay } = useOverlayNavigation()
+    const { createAbortSignal, isCurrentRequest } = useAbortController()
 
     return {
       currentFilters: {},
@@ -153,7 +151,12 @@ export default {
        * Isso é necessário porque, por padrão, não há opções no campo. As opções selecionadas servem
        * para exibir as "tags" dos filtros ativos na tela.
       */
-      lazyLoadingSelectedOptions: {}
+      lazyLoadingSelectedOptions: {},
+      abortController: new AbortController(),
+
+      // Métodos do composable useAbortController
+      createAbortSignal,
+      isCurrentRequest
     }
   },
 
@@ -357,6 +360,8 @@ export default {
     },
 
     async fetchFilters ({ hasQueryChanged = false } = {}) {
+      const { signal, controller } = this.createAbortSignal()
+
       /**
        * - Verifica se houve mudança na query com base na prop "listenerQueryKeys"
        * - Verifica se a prop "useForceRefetch" foi passada para fazer o fetch mesmo já contendo dados na store.
@@ -376,19 +381,18 @@ export default {
         const response = await getAction.call(this, {
           entity: this.entity,
           key: 'fetchFilters',
-          payload: { url: this.url, params: filters }
+          payload: { url: this.url, params: filters, signal }
         })
 
         this.$emit('fetch-success', response)
-
-        log(`[${this.entity}]:fetchFilters:success`, response)
       } catch (error) {
+        if (this.$axios.isCancel(error)) return
+
         this.hasFetchError = true
         this.$emit('fetch-error', error)
-
-        log(`[${this.entity}]:fetchFilters:error`, error)
       } finally {
-        this.isFetching = false
+        // Define isFetching apenas se for a requisição mais recente
+        this.isFetching = !this.isCurrentRequest(controller)
       }
     },
 

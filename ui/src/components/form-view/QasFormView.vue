@@ -42,16 +42,14 @@ import QasDialog from '../dialog/QasDialog.vue'
 
 import { NotifyError, NotifySuccess } from '../../plugins'
 import { useHistory, useOverlayNavigation } from '../../composables'
+import { useAbortController } from '../../composables/private'
 import { viewMixin } from '../../mixins'
 
 import { decamelize } from 'humps'
-import debug from 'debug'
 import { extend } from 'quasar'
 import { getAction } from '@bildvitta/store-adapter'
 import isEqualWith from 'lodash-es/isEqual'
 import { onBeforeRouteLeave } from 'vue-router'
-
-const log = debug('asteroid-ui:qas-form-view')
 
 export default {
   name: 'QasFormView',
@@ -173,6 +171,7 @@ export default {
 
   data () {
     const { toggleCanLeaveOverlay, isOverlay } = useOverlayNavigation()
+    const { createAbortSignal, isCurrentRequest } = useAbortController()
 
     return {
       toggleCanLeaveOverlay,
@@ -191,7 +190,11 @@ export default {
         ok: { label: 'Continuar editando' },
 
         cancel: { label: 'Sair' }
-      }
+      },
+
+      // Métodos do composable useAbortController
+      createAbortSignal,
+      isCurrentRequest
     }
   },
 
@@ -306,11 +309,15 @@ export default {
     async fetchSingle (externalPayload = {}) {
       this.mx_isFetching = true
 
+      // Cria um novo signal e cancela automaticamente a requisição anterior
+      const { signal, controller } = this.createAbortSignal()
+
       try {
         const payload = {
           form: true,
           id: this.id,
           url: this.fetchURL,
+          signal,
           ...externalPayload
         }
 
@@ -339,15 +346,15 @@ export default {
         }
 
         this.$emit('fetch-success', response, this.modelValue)
-
-        log(`[${this.entity}]:fetchSingle:success`, { response, modelValue })
       } catch (error) {
+        // Se foi cancelamento, não processa o erro
+        if (this.$axios.isCancel(error)) return
+
         this.mx_fetchError(error)
         this.$emit('fetch-error', error)
-
-        log(`[${this.entity}]:fetchSingle:error`, error)
       } finally {
-        this.mx_isFetching = false
+        // Só altera mx_isFetching se esta ainda for a requisição mais recente
+        this.mx_isFetching = !this.isCurrentRequest(controller)
       }
     },
 
@@ -457,8 +464,6 @@ export default {
         if (this.useNotifySuccess) {
           NotifySuccess(response.data.status.text || this.defaultNotifyMessages.success)
         }
-
-        log(`[${this.entity}]:submit:success`, { response, modelValue })
       } catch (error) {
         const errors = error?.response?.data?.errors
         const message = error?.response?.data?.status?.text
@@ -474,8 +479,6 @@ export default {
         NotifyError(message || defaultMessage)
 
         this.$emit('submit-error', error)
-
-        log(`[${this.entity}]:submit:error`, error)
       } finally {
         this.isSubmitting = false
         this.toggleCanLeaveOverlay(true)
@@ -529,12 +532,12 @@ export default {
         })
       }
 
-      const { id: unusedID, url: unusedURL, form: unusedForm, ...externalPayload } = payload
+      const { id: unusedID, url: unusedURL, form: unusedForm, signal, ...externalPayload } = payload
 
       // Formata a url com base em mode, entity, url via props, etc
       const fetchURL = this.getFormattedURL({ payload })
 
-      return this.$axios.get(fetchURL, { ...externalPayload })
+      return this.$axios.get(fetchURL, { ...externalPayload, signal })
     },
 
     handleSubmitAction (payload) {
