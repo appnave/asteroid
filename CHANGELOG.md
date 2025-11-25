@@ -48,6 +48,12 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - removido prop `persistent`, agora é feito sempre de forma automática.
   - removido prop `actionsProps`.
   - removido props `useFullMaxWidth`, `maxWidth`, `minWidth` em favor de utilizar a prop `size`.
+## [3.20.0-beta.1] - 25-11-2025
+### Adicionado
+- `QasBtnDropdown`: adicionado novo slot dinâmico `btn-content-[buttons-props-list-key]`.
+- `QasFilters`:
+  - adicionado feature para ordenação.
+  - adicionado prop `orderByOptions`.
 
 ## [3.20.0-beta.0] - 19-11-2025
 ## BREAKING CHANGES
@@ -4819,3 +4825,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.19.0-beta.17]: https://github.com/bildvitta/asteroid/compare/v3.19.0-beta.16...v3.19.0-beta.17?expand=1
 [3.19.0]: https://github.com/bildvitta/asteroid/compare/v3.18.2...v3.19.0?expand=1
 [3.20.0-beta.0]: https://github.com/bildvitta/asteroid/compare/v3.19.0...v3.20.0-beta.0?expand=1
+[3.20.0-beta.1]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.0...v3.20.0-beta.1?expand=1
