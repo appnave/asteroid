@@ -1,24 +1,24 @@
 type: component
 
 meta:
-  desc: Componente para gerar dinamicamente checkbox agrupados.
+  desc: Componente de select que filtra adicionando query na URL, comumente utilizado para seleção.
 
 props:
-  inline:
-    desc: Controla se o componente vai aparece em linha ou em bloco.
-    default: true
-    type: Boolean
-
   label:
-    desc: Label utilizada em casos de ser checkbox-group.
-    default: ''
+    desc: Label do componente select.
+    default: 'Selecione uma empresa vinculada'
+    type: String
+
+  name:
+    desc: Nome do parâmetro que será adicionado na URL como query.
+    default: 'company'
     type: String
 
   model-value:
     desc: Model do componente, usado para v-model.
-    default: []
-    type: Array
-    examples: [v-model"value"]
+    default: ''
+    type: [String, Array]
+    examples: [v-model="value"]
     model: true
 
   multiple:
@@ -27,7 +27,7 @@ props:
     type: Boolean
 
   options:
-    desc: Opções para gerar os checkbox.
+    desc: Opções para o select.
     default: []
     type: Array
 
@@ -37,5 +37,5 @@ events:
     params:
       value:
         desc: Novo valor do model.
-        default: []
-        type: Array
+        default: ''
+        type: [String, Array]
