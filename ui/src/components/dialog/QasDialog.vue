@@ -21,11 +21,11 @@
             <slot name="actions">
               <qas-actions v-bind="defaultActionsProps">
                 <template v-if="hasOk" #primary>
-                  <qas-btn v-close-popup="!props.useForm" class="full-width" data-cy="dialog-ok-btn" variant="primary" v-bind="defaultOk" />
+                  <qas-btn v-close-popup="!props.useForm" class="full-width" data-cy="dialog-ok-btn" size="lg" variant="primary" v-bind="defaultOk" />
                 </template>
 
                 <template v-if="hasCancel" #secondary>
-                  <qas-btn v-close-popup class="full-width" data-cy="dialog-cancel-btn" v-bind="defaultCancel" variant="secondary" />
+                  <qas-btn v-close-popup class="full-width" data-cy="dialog-cancel-btn" size="lg" v-bind="defaultCancel" variant="secondary" />
                 </template>
               </qas-actions>
             </slot>

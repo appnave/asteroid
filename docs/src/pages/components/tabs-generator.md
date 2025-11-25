@@ -65,6 +65,7 @@ O uso recomendado da propriedade `tabs` é como array.
 ## Uso
 
 <doc-example file="QasTabsGenerator/Basic" title="Básico" />
+<doc-example file="QasTabsGenerator/QuerySlug" title="Alteração automática via prop querySlug" />
 <doc-example file="QasTabsGenerator/ExWithIcon" title="Tabs com ícone" />
 <doc-example file="QasTabsGenerator/ExWithStatus" title="Tabs com status" />
 <doc-example file="QasTabsGenerator/ExWithCounter" title="Tabs com contador na propriedade tabs" />

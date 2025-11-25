@@ -28,6 +28,8 @@ import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasFilters from '../filters/QasFilters.vue'
 import QasHeader from '../header/QasHeader.vue'
 
+import { useOverlayNavigation } from '../../composables'
+
 // Importações do chart.js
 import {
   Chart as ChartJS,
@@ -163,12 +165,15 @@ export default {
   ],
 
   data () {
+    const { isBackgroundOverlay } = useOverlayNavigation()
+
     return {
       cancelBeforeFetch: false,
       data: [],
       filters: {},
       isFetched: false,
-      isFetching: false
+      isFetching: false,
+      isBackgroundOverlay
     }
   },
 
@@ -365,6 +370,8 @@ export default {
     },
 
     $route (to, from) {
+      if (this.isBackgroundOverlay) return
+
       this.onRouteChange(to, from)
     }
   },

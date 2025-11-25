@@ -58,6 +58,9 @@ slots:
   image:
     desc: Slot para acessar o conteúdo da imagem (onde fica o QasGridGenerator).
 
+  image-bottom:
+    desc: Slot para acessar o conteúdo imediatamente abaixo da imagem (sem espaçamento).
+
   image-error-container:
     desc: Slot para acessar o conteúdo do container de erro da imagem (onde fica o ícone e a mensagem de erro).
 

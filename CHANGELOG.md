@@ -21,6 +21,337 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - adicionado feature para ordenação.
   - adicionado prop `orderByOptions`.
 
+## [3.20.0-beta.0] - 19-11-2025
+## BREAKING CHANGES
+- **Possíveis breaking changes**: mudanças referentes ao overlay pode quebrar alguns componentes a nível de rota, ou então a nível de layout.
+- Adicionado validação `isBackgroundOverlay` no watch da rota por conta do overlay navigation.
+  - `QasChartView`.
+  - `QasFilters`.
+  - `QasListView`.
+  - `QasSingleView`.
+- `mixins/view.js`: removido computada `mx_componentClass` em favor de usar o componente `QasContainer`.
+- `composables/use-view.js`. removido computada `componentClass` em favor de usar o componente `QasContainer`.
+- `QasBox`: modificado valores padrões das props `outlined` e `unelevated` para quando estiver dentro de um overlay (vai ficar com borda).
+
+### Adicionado
+- Adicionado alterações e recursos para overlay navigation.
+- Adicionado novo composable `useOverlayNavigation`.
+- `QasCard`:
+  - adicionado prop `useSelection`.
+  - adicionado slot `header`. ([#1408](https://github.com/bildvitta/asteroid/issues/1408))
+  - adicionado model `selected`.
+  - adicionado prop `trueValue`.
+  - adicionado prop `falseValue`.
+- Adicionado novo componente `QasContainer`.
+- `QasAlert`:
+  - adicionado novo status `success`.
+  - modificado controle do QasBox para controle automático de overlay navigation.
+- `QasBtn`: adicionado nova propriedade `tooltip`.
+- `QasDrawer`: adicionado novo slot `header` (usado no overlay).
+- `QasFormView`:
+  - adicionado validação interna para travar o dialog de overlay quando estiver fazendo um submit.
+  - adicionado validação para remover botão de voltar automaticamente quando estiver dentro de um o overlay.
+- `QasPageHeader`: adicionado validação para remover breadcrumbs automaticamente quando estiver dentro de um overlay.
+- `QasTabsGenerator`: adicionado nova propriedade `querySlug` para controle automático de mudança de query na rota.
+
+### Modificado
+- `QasBox`: modificado valores padrões das props `outlined` e `unelevated` para quando estiver dentro de um overlay (vai ficar com borda).
+- `QasBtn`: alterado default da prop `size` interna para `sm` quando o botão estiver dentro de um `QasBtn` e for variante `primary` ou `secondary`.
+- `QasCard`: removido elemento HTML header e espaçamento do header quando não tiver slot header, title ou prop title. ([#1395](https://github.com/bildvitta/asteroid/issues/1395))
+- `QasTooltip`: modificado tipografia para `text-caption`.
+- Adicionado validação `isBackgroundOverlay` no watch da rota por conta do overlay navigation.
+  - `QasChartView`.
+  - `QasFilters`.
+  - `QasListView`.
+  - `QasSingleView`.
+- `ui/src/mixins/context.js` | `ui/src/composables/use-context.js`: modificado uso do `route` do vue-router para usar `route` `useOverlayNavigation`.
+
+### Removido
+- `mixins/view.js`: removido computada `mx_componentClass` em favor de usar o componente `QasContainer`.
+- `composables/use-view.js`. removido computada `componentClass` em favor de usar o componente `QasContainer`.
+
+## [3.19.0] - 19-11-2025
+## BREAKING CHANGES
+- Todos locais que usarem component dinâmico `<component :is="QasBtn" />` do asteroid, precisa ser importado do asteroid `import { QasBtn } from 'asteroid'`, porque o auto import não consegue identificar o componente sozinho.
+- Removido opção "thirdPartyComponents" e "autoRemoveThirdDependencies", agora precisa instalar/desinstalar manualmente as libs necessárias para o `QasMap` e `QasChartView`.
+- Instalar dependências manualmente para os componentes `QasMap` e `QasChartView`.
+- `QasDelete`: propriedade agora aceita receber um componente além de string, caso esteja passando algum component do asteroid com string, usar import diretamente.
+- Remover personalização do `quasar.variables.css`.
+- `dateTime`: Alguns lugares podem apresentar divergências na forma de exibição.
+- `QasNumericInput`:
+  - corrigido props `icon` e `iconRight` que estavam invertidas (iconRight mostrava a esquerda).
+- [`QasFormGenerator`, `QasGridGenerator`]: lógicas de fieldset/subset adicionadas no composable `useGenerator`, validar se nada quebra.
+- `QasGalleryCard`:
+  - removido propriedades `name` e `actionsMenuProps` em favor de usar a nova propriedade `headerProps`.
+  - removido slot `header`, `actions` e `name`.
+  - modificado slot `image-error` para `image-error-message` para o nome fazer mais sentido com o que de fato faz.
+- rever todos locais para passar a propriedade `galleryCardProps` no novo padrão do `QasGalleryCard`:
+  - QasGalleryCard.
+  - QasUploader.
+  - QasGallery.
+- Rever todos locais que usam `QasBtn` dentro de componentes de usam `QasInput` ou `QasTableGenerator` pois elas alteram a prop `size` default via provide `btnPropsDefaults`.
+- Muitas mudanças no `QasUploader`, verificar se nada quebra e remover validações manuais referentes a propriedades `accept` e `maxFileSize`.
+- Rever lugares que utilizam lazy loading nos campos, pois pode gerar breaking changes.
+- `QasDelete`: Removido prop tag, sendo que agora o sempre será um botão. Validar lugares que utilizam pois pode ocorrer quebra no layout.
+
+### Adicionado
+- Adicionado suporte para Vite, mantendo suporte para Webpack.
+- `build/*`: adicionado suporte para lançar versões alpha do asteroid para testes mais rápidos e precisos.
+- Adicionado cores defaults internamente no componente sem necessidade de fazer isto no projeto no arquivo `quasar.variables.scss`
+- `QasNestedFields`: Adicionado nova prop `use-header` para controlar quando irá ter ou não o header em cada linha.
+- `QasSelectListDialog`: Adicionado novo slot `selected-content` para poder personalizar todos os itens adicionados.
+- `QasInput`: adicionado prop `use-copy` para adicionar nativamente botão de ação "copiar" no input, que funciona apenas em conjunto da prop readonly ([1326](https://github.com/bildvitta/asteroid/issues/1326)).
+- `QasTableGenerator`: Adicionado novo recurso de seleção de linhas na tabela através das novas props `useSelection`, `useObjectSelectedModel` e pelo model `v-model:selected`.
+- `QasGridGenerator`: ([#1325](https://github.com/bildvitta/asteroid/issues/1325))
+ - Adicionado opção de separador entre fieldset ou subset.
+ - Adicionado opção de tip nos títulos dos campos através do fieldsProps.
+ - Adicionado opção de alterar a tipografia do valor do campos através do fieldsProps.
+- `QasTip`: Adicionado componente de dica.
+- `QasToolTip`: Adicionado componente de tooltip.
+- `QasActions`: adicionado possibilidade de passar props dos botões sem necessariamente precisar abrir slot. ([#1332](https://github.com/bildvitta/asteroid/issues/1332))
+- `QasInfiniteScroll`: adicionado função `fetchList` no expose. ([#1315](https://github.com/bildvitta/asteroid/issues/1315))
+- `QasUploader`:
+  - adicionado propriedades:
+    - useEmptyResultText
+    - useGalleryCard
+    - useHeader
+    - maxFileSize (ja existia no QUploader mas agora foi definida no componente).
+  - adicionado novo slot `bottom-list`.
+  - adicionado evento `rejected` (ja existia no QUploader mas agora foi definida no componente).
+  - adicionado `files` via parâmetros no método interno `addFiles`.
+  - adicionado validações nativas pom feedback `notify` para props `accept` e `maxFileSize`.
+- `QasBtn`: adicionado propriedade `size`. ([#1345](https://github.com/bildvitta/asteroid/issues/1345))
+- `ui/src/css/mixins/set-button.scss`: adicionado novo parâmetro `size`.
+- `QasGalleryCardProps`:
+  - adicionado propriedade `headerProps`.
+  - adicionado novo slot `image-error-container`.
+- `QasGallery`:
+  - adicionado nova propriedade `showMoreAlign`.
+  - adicionado efeito no hover da img do QasGalleryCard para feedback visual.
+- `QasHeader`: adicionada propriedade `useEllipsis`.
+- `QasStepper`:
+  - Adicionado prop `useVertical` para ter possibilidade de utilizá-lo na vertical.
+  - Adicionado prop `headerNav` (substituído o attrs) para controle de navegação entre as steps.
+- `QasAlert`: Adicionado possibilidade do componente ter vários `QasBtn` ou `RouterLink`.
+- `QasPdfViewer`: Adicionado componente para renderização de documentos PDF diretamente no navegador com estados de loading, erro e suporte a múltiplas páginas.
+- `QasFormView`: Adicionado propriedade `use-store` para dar a possibilidade de utilizar o componente sem a store do vuex/pinia. ([#1083](https://github.com/bildvitta/asteroid/issues/1083))
+- `QasSelectListDialog`:
+  - Adicionado model chamado `select-list-model` com os itens selecionados dentro do dialog.
+  - Adicionado o método `toggleDialog` no define expose.
+- `QasToggle`: Adicionado prop `title` para ter a possibilidade de ter um título acima do toggle. ([#1316](https://github.com/bildvitta/asteroid/issues/1316))
+- `QasListView`: Adicionado refetch automático após deleção de itens quando `use-store` está desabilitado (`false`). ([#1404](https://github.com/bildvitta/asteroid/issues/1404))
+- `QasDelete`: Adicionado prop `buttonProps` para repassar as propriedades para o botão para o `QasBtn`.
+- `container.scss`: Adicionado padding-bottom no container pra quando existir o botão do gleap, pra o botão não sobrepor o conteúdo da página.
+- `QasGalleryCard`: adicionado propriedade `fileType` para definir o tipo de arquivo quando não conseguir exibir imagem.
+- `QasUploader`: adicionado nova propriedade `errors`.
+- `QasGalleryCard`: adicionado novo slot `image-bottom` para uso dentro do `QasUploader`.
+
+### Corrigido
+- `QasNumericInput`:
+  - corrigido estilo do componente quando usado com ícone no slot.
+  - corrigido bug quando apagava 2 vezes os valores do campo, onde a label não decima para a posição padrão de quando fica sem valor e o model mesmo apagado ficava com valor `0`.
+  - corrigido props `icon` e `iconRight` que estavam invertidas (iconRight mostrava a esquerda).
+- `QasBtn`: Declarado prop `readonly` para não precisar manipula-las via `$attrs`, facilitando e corrigindo problemas em alguns cenários (sem mudanças para o uso dos componentes).
+- `QasDateTimeInput`: Declarado props `readonly` e `disable` para não precisar manipula-las via `$attrs`, facilitando e corrigindo problemas em alguns cenários (sem mudanças para o uso dos componentes)
+- `QasInput`: Declarado prop `readonly` para não precisar manipula-las via `$attrs`, facilitando e corrigindo problemas em alguns cenários (sem mudanças para o uso dos componentes).
+- `QasSelect`: Declarado as prop `readonly`, `disable`e `multiple` para não precisar manipula-las via `$attrs`, facilitando e corrigindo problemas em alguns cenários (sem mudanças para o uso dos componentes).
+- `QasChartView`:
+  - Corrigido comportamento no qual quando se era passado `options` personalizadas para o gráfico, aplicavam as mesmas customizações para os demais gráficos do mesmo tipo.
+  - Corrigido nome do slot para exibição do botão de filtrar, sendo o correto `actions`.
+- `QasGridGenerator`: Correção de espaçamento do gutter quando modo `useInline: true`. ([#1325](https://github.com/bildvitta/asteroid/issues/1325))
+- `QasFormGenerator`: gutter entre subsets agora é `md`.
+- `QasActionsMenu`: corrigido alinhamento quando está dentro de outro container, como por exemplo o `QasPageHeader`. ([#1337](https://github.com/bildvitta/asteroid/issues/1337))
+- `QasReportsFilters`: corrigido imports dos componentes internos.
+- `QasUploader`:
+  - corrigido exibição do QasGalleryCard quando um upload falha.
+  - corrigido exibição no QasGalleryCard para arquivos que não carregam no QImg, ex: PDF, DOCX.
+- `QasGallery`: corrigido elemento "ver mais", que estava alocado em um elemento com gutter que gerava inconsistência de tamanho.
+- `QasSelect`: Corrigido forma no qual é setado uma opção padrão quando se tem apenas um item e o campo seja múltiplo, esteva setando como string, sendo que deveria ser como array com uma única opção dentro.
+- `QasFormGenerator`: corrigido erro ao não passar a propriedade `columns` quando há subset. ([#1299](https://github.com/bildvitta/asteroid/issues/1299))
+- `QasSingleView`: corrigido problema do loading travar a tela toda no dialog, foi resolvido adicionando classe "relative-position" no container. ([#1342](https://github.com/bildvitta/asteroid/issues/1342))
+- `QasFormGenerator`: corrigido comportamento quando `fields` está vazio, agora não exibe nenhum campo ao invés de exibir todos os campos disponíveis. ([#1361](https://github.com/bildvitta/asteroid/issues/1361))
+- `QasSelect`: Corrigido cor de foco nas opções durante a navegação com teclado (teclas de seta para cima/baixo).
+- `QasNumericInput`: Corrigido foco do campo, pois quando utilizado via tab, o campo não focava.
+- `QasGridGenerator`: Corrigido container de fields no qual não respeitava o tamanho do container pai.
+- `QasActions`: Corrigido tamanho do botão quando passado via props e utilizado junto com `useEqualWidth`. ([#1400](https://github.com/bildvitta/asteroid/issues/1400))
+- `QasSelectListDialog`:
+  - Corrigido slots do dialog que não funcionavam.
+  - Corrigido alinhamento do botão de adicionar item quando não se tem label no header.
+- `QasNumericInput`:
+  - Corrigido exibição do input, no qual exibia o conteúdo da lib `Autonumeric` ao dar hover, sendo que deve ser exibida apenas quando tem foco ou valor no campo. ([[#1403](https://github.com/bildvitta/asteroid/issues/1403)])
+  - Corrigido inconsistência de valores entre navegação por Tab e clique ao perder foco, garantindo que ambos métodos produzam o mesmo resultado.
+  - Corrigido precisão decimal no model para modo percentual, onde o `places` agora controla corretamente as casas decimais do valor final (places=2 resulta em 4 casas decimais para percentuais, ex: 0.0133).
+- `QasAlert`: Corrigido para remover do HTML o componente quando ele for fechado (prop `useCloseBtn`). ([#1381](https://github.com/bildvitta/asteroid/issues/1381))
+- `QasSelect`: Corrigido uso de badges na opção, no qual quebrava quando utilizado como objeto ao invés de função. ([#1329](https://github.com/bildvitta/asteroid/issues/1329))
+- `QasFormView`: Corrigido comportamento do dialog de descarte de alterações sendo exibido em momentos errados. Para casos específicos, onde o model é manipulado externamente, é necessário atualizar o `cachedResult` para um comparativo é possível ter acesso a fn `updateUnsavedChangesCache` via inject ou via ref.
+- `QasFormView`: Corrigido validação para não exibir o dialog de descarte após a criação.
+- `QasGalleryCard`: Corrigido lógica pra exibir o tipo do arquivo no card(pdf, docx, etc), onde pra determinado padrão de url não era possível obter o tipo anteriormente.
+- `QasGalleryCard`: Corrigido exibição do tipo de arquivo quando não conseguir carregar imagem.
+- `formatPercent | money`: Corrigido formatação do campo percentual quando o valor é 0. ([#1350](https://github.com/bildvitta/asteroid/issues/1350))
+- `QasInfiniteScroll`: Corrigido exibição do texto quando não há resultados, pois estava cortando ao definir tamanho máximo de altura. ([#1347](https://github.com/bildvitta/asteroid/issues/1347))
+
+### Modificado
+- Modificado arquivo `asteroid.config.js`.
+- `QasMap`: modificações para utilizar plugin do import `@fawmi/vue-google-maps` dentro do próprio arquivo .vue, ao invés de utilizar no boot.
+- `app-extension/src/boot/error-pages.js`: modificado import estático de paginas para import dinâmico.
+- Mudanças necessárias para dar suporte ao vite, como:
+  - modificado `modules.exports` por `export default`.
+  - import manual de todos os componentes do asteroid internamente.
+- `QasField`: Modificado imports estático de componentes para import dinâmico com `defineAsyncComponent` e alterado para composition API.
+- import manual de componentes/scripts do Asteroid:
+  - QasAlert
+  - QasAppMenu
+  - PvAppMenuDropdown
+  - QasAppUser
+  - QasBadge
+  - QasBoardGenerator
+  - QasDropdown
+  - QasCardImage
+  - QasCard
+  - QasChartView
+  - QasCheckbox
+  - QasCopy
+  - QasDateTimeInput
+  - QasDelete
+  - QasDialog
+  - QasDrawer
+  - QasExpansionItem
+  - QasFilters
+  - QasFormGenerator
+  - QasFormView
+  - QasGalleryCard
+  - QasGallery
+  - PvGalleryCarouselDialog
+  - PvGalleryDeleteDialog
+  - QasGridGenerator
+  - QasHeader
+  - QasInfiniteScroll
+  - PvLayoutNotificationCard
+  - PvLayoutNotificationsDrawer
+  - QasListItems
+  - QasNestedFields
+  - QasPasswordInput
+  - QasRadio
+  - QasSearchBox
+  - QasSearchInput
+  - QasSelectFilter
+  - QasSelectListDialog
+  - PvSelectListCheckbox
+  - QasSelect
+  - QasSignaturePad
+  - QasSingleView
+  - QasStepperFormView
+  - QasTableGenerator
+  - QasTabsGenerator
+  - QasTextTruncate
+  - QasToggleVisibility
+  - QasTreeGenerator
+  - QasUploader
+  - QasUploader
+  - QasWelcome
+  - QasWhatsappLink
+  - ui/src/composables/use-notifications.js
+  - ui/src/composables/use-query-cache.js
+  - ui/src/pages/ErrorComponent.vue
+  - ui/src/pages/Forbidden.vue
+  - ui/src/pages/NotFound.vue
+  - ui/src/pages/ServerError.vue
+  - ui/src/pages/Unauthorized.vue
+  - app-extension/src/boot/notifications.js
+  - app-extension/src/boot/query-cache.js
+  - app-extension/src/boot/register.js
+  - app-extension/src/defaults/default-asteroid-config.js
+  - app-extension/src/helpers/asteroid-config-handler.js
+  - app-extension/src/helpers/install-third-party-components.js
+  - app-extension/src/helpers/laravel-echo.js
+  - app-extension/src/helpers/notifications-channels.js
+  - ui/src/asteroid.js
+- Modificado import do lodash para import default:
+  - QasFormView
+  - QasGridGenerator
+  - QasPageHeader
+  - QasSelectList
+  - QasSignaturePad
+  - mixins/search-filter.js
+- `QasSelectListDialog`: Modificado header para utilizar o componente `QasHeader`.
+- `QasNumericInput`: Alterado input para aplicar estilo tanto de `readonly` quanto de `disabled`, sendo que antes só aplicava `disabled` mesmo quando enviasse a prop `readonly`.
+- `QasAlert`: Modificado comportamento para não ter box quando estiver dentro de um `QasDialog`. ([#1288](https://github.com/bildvitta/asteroid/issues/1288))
+- `QasTableGenerator`: Alterado cor do título da coluna (th) para o `grey-10`. ([#1287](https://github.com/bildvitta/asteroid/issues/1287))
+- `dateTime | PvLayoutNotificationCard`: Alterado padrão de data para `"dd/MM/yyyy 'às' HH:mm:ss"` para melhorar a legibilidade. ([#1294](https://github.com/bildvitta/asteroid/issues/1294))
+- `QasCard`: Modificado estilo do card para utilizar bordas ao invés de box quando estiver dentro de um `QasDialog`. ([#1289](https://github.com/bildvitta/asteroid/issues/1289))
+- `QasSelect`: removido ícone arrow-down (a direita) quando esta `readonly`. ([#1309](https://github.com/bildvitta/asteroid/issues/1309))
+- `QasSelect`: removido ícone searchable quando readonly ou disable.
+- [`QasSelect`, `QasInput`, .q-field]:
+  - removido cor de borda diferente no hover quando readonly.
+  - setado cor grey-6 para borda do readonly.
+- `QasFormGenerator`: Logica de fieldset/subset movida para composable `useGenerator`.
+- `QasUploader`:
+  - modificado layout da área de drag and drop.
+  - modificado comportamento da propriedade `columns` que antes fazia um merge com o que era passado de fora do componente e o default interno, agora o default só existe caso não seja passado pelo lado de fora.
+- `ui/src/plugins/notify-error/NotifyError.js`: modificado ícone de erro para `sym_r_error`.
+`QasBtn`:
+  - modificado cursor `disabled` para `progress` quando o botão esta com estado `loading`.
+  - modificações para propriedades `color`, `size` e `variant` terem padrões defaults configuráveis via provide `btnPropsDefaults`.
+- Modificado `QTooltip` para `QasTooltip`:
+  - QasCopy.
+  - QasTransfer.
+- `QasFilters`: alterado size do botão dentro do menu para `sm`.
+- `QasInput`: alterado propriedades padrões do QasBtn via provide `btnPropsDefaults`:
+  - size.
+  - variant.
+  - color.
+- `QasTableGenerator`: alterado propriedade padrão `size` do QasBtn via provide `btnPropsDefaults`.
+- `QasGalleryCard`:
+  - modificado header para utilizar componente `QasHeader` através da propriedade `headerProps`.
+  - modificado default da prop `errorIcon` para `sym_r_error`.
+  - modificado default da prop `errorMessage` para `Falha ao carregar imagem.`.
+  - modificado slot `image-error` para `image-error-message` para o nome fazer mais sentido com o que de fato faz.
+  - modificado layout para outlined quando estiver dentro do QasDialog.
+- `QasGallery`: mudanças necessárias para se adaptar as mudanças do `QasGalleryCard`.
+- `QasHeader`: modificado logica para não mostrar elemento do header em casos de conteúdos vazio pela computada `hasHeaderContent`.
+- `QasStepper`: Modificado exibição da cor primária nas linhas de cada step.
+- `QasExpansionItem`: Modificado para o expansion não ter box e sim bordas quando estiver dentro de um dialog. ([#1373](https://github.com/bildvitta/asteroid/issues/1373))
+- `QasSelect`: Modificado a forma na qual se é setado o valor default do campo, validando também os campos que são lazy loading e as opções recebidas. [[#1324](https://github.com/bildvitta/asteroid/issues/1324)]
+- `QasInput`: Modificado máscara de CNPJ para aceitar letras conforme o novo padrão.
+- `QasSelect`: Modificado para utilizar o `clearable` (botão de remover seleção) por padrão quando o campo **não for required**, antes estava apenas quando o campo tinha opção de pesquisar. ([#1394](https://github.com/bildvitta/asteroid/issues/1394))
+- `Delete`: Alterado para o loading do plugin de delete estar apenas no botão do dialog ao invés da tela inteira. ([[#1304](https://github.com/bildvitta/asteroid/issues/1304)])
+- `QasUploader`: modificado uso de `errors` dentro do `QasFormGenerator`, não utilize ele via `formGeneratorProps` mas sim via `errors`.
+- `Delete - Plugin`: Alterado para bloquear o botão de cancelar quando estiver deletando o item. ([#1417](https://github.com/bildvitta/asteroid/issues/1417))
+
+### Removido
+- Removido opção "thirdPartyComponents" e "autoRemoveThirdDependencies", agora precisa instalar/desinstalar manualmente as libs necessárias para o `QasMap` e `QasChartView` no arquivo `asteroid.config.js`.
+- `QasGalleryCard`:
+  - removido propriedades `name` e `actionsMenuProps` em favor de usar a nova propriedade `headerProps`.
+  - removido slot `header`, `actions` e `name`.
+- `QasDelete`: Removido prop tag, sendo que agora o sempre será um botão. 
+
+## [3.19.0-beta.17] - 18-11-2025
+### Corrigido
+- `QasInfiniteScroll`: Corrigido exibição do texto quando não há resultados, pois estava cortando ao definir tamanho máximo de altura. ([#1347](https://github.com/bildvitta/asteroid/issues/1347))
+
+## [3.19.0-beta.16] - 12-11-2025
+### Corrigido
+- `formatPercent | money`: Corrigido formatação do campo percentual quando o valor é 0. ([#1350](https://github.com/bildvitta/asteroid/issues/1350))
+- `QasTip`: Corrigido import do componente `QasTooltip` no qual estava sendo importado.
+
+### Modificado
+- `Delete - Plugin`: Alterado para bloquear o botão de cancelar quando estiver deletando o item. ([#1417](https://github.com/bildvitta/asteroid/issues/1417))
+
+## [3.19.0-beta.15] - 11-11-2025
+## BREAKING CHANGES
+- `QasUploader`: removido propriedade `useValidateEncryptedPdf` e removido validação de PDF protegido por senha, uma vez que a validação retornava true para PDFs com certificado digital e para validar corretamente teria que fazer o uso de lib externa, agora o backend valida e retornamos isto via prop `errors`.
+- `QasUploader`: modificado uso de `errors` dentro do `QasFormGenerator`, não utilize ele via `formGeneratorProps` mas sim via `errors`.
+
+### Adicionado
+- `QasUploader`: adicionado nova propriedade `errors`.
+- `QasGalleryCard`: adicionado novo slot `image-bottom` para uso dentro do `QasUploader`.
+
+### Modificado
+- `QasUploader`: modificado uso de `errors` dentro do `QasFormGenerator`, não utilize ele via `formGeneratorProps` mas sim via `errors`.
+
+### Removido
+- `QasUploader`: removido propriedade `useValidateEncryptedPdf` e removido validação de PDF protegido por senha, uma vez que a validação retornava true para PDFs com certificado digital e para validar corretamente teria que fazer o uso de lib externa, agora o backend valida e retornamos isto via prop `errors`.
+
 ## [3.19.0-beta.14] - 05-11-2025
 ### Adicionado
 - `QasUploader`:
@@ -4431,3 +4762,8 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.19.0-beta.12]: https://github.com/bildvitta/asteroid/compare/v3.19.0-beta.8-alpha.19...v3.19.0-beta.12?expand=1
 [3.19.0-beta.13]: https://github.com/bildvitta/asteroid/compare/v3.19.0-beta.12...v3.19.0-beta.13?expand=1
 [3.19.0-beta.14]: https://github.com/bildvitta/asteroid/compare/v3.19.0-beta.13...v3.19.0-beta.14?expand=1
+[3.19.0-beta.15]: https://github.com/bildvitta/asteroid/compare/v3.19.0-beta.14...v3.19.0-beta.15?expand=1
+[3.19.0-beta.16]: https://github.com/bildvitta/asteroid/compare/v3.19.0-beta.15...v3.19.0-beta.16?expand=1
+[3.19.0-beta.17]: https://github.com/bildvitta/asteroid/compare/v3.19.0-beta.16...v3.19.0-beta.17?expand=1
+[3.19.0]: https://github.com/bildvitta/asteroid/compare/v3.18.2...v3.19.0?expand=1
+[3.20.0-beta.0]: https://github.com/bildvitta/asteroid/compare/v3.19.0...v3.20.0-beta.0?expand=1

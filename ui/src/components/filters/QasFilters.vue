@@ -45,6 +45,8 @@ import QasBadge from '../badge/QasBadge.vue'
 import QasSearchInput from '../search-input/QasSearchInput.vue'
 import PvFiltersActions from './private/PvFiltersActions.vue'
 
+import { useOverlayNavigation } from '../../composables'
+
 import debug from 'debug'
 
 import { camelize, camelizeKeys, decamelize } from 'humps'
@@ -148,12 +150,15 @@ export default {
   ],
 
   data () {
+    const { isBackgroundOverlay } = useOverlayNavigation()
+
     return {
       currentFilters: {},
       hasFetchError: false,
       internalFilters: {},
       internalSearch: '',
       isFetching: false,
+      isBackgroundOverlay,
       /**
        * O objeto funciona como um auxiliar para armazenar opções selecionadas do lazy loading.
        * Isso é necessário porque, por padrão, não há opções no campo. As opções selecionadas servem
@@ -310,6 +315,8 @@ export default {
 
   watch: {
     $route (to, from) {
+      if (this.isBackgroundOverlay) return
+
       if (to.name === from.name) {
         /**
          * Verifica se alguma chave da query que está no "listenerQueryKeys" mudou,
@@ -347,6 +354,7 @@ export default {
     async clearFilters () {
       const { filters } = this.mx_context
       const query = { ...this.$route.query }
+
       const activeFilters = {
         ...filters,
         ...this.internalFilters

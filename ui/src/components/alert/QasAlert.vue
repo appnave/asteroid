@@ -1,6 +1,6 @@
 <template>
   <div v-if="displayAlert" class="inline-block qas-alert">
-    <qas-box v-bind="defaultBoxProps">
+    <component :is="component">
       <div class="flex items-center no-wrap">
         <div class="flex items-center no-wrap text-body1 text-grey-8">
           <q-icon v-bind="iconProps" />
@@ -23,7 +23,7 @@
 
         <qas-btn v-if="useCloseButton" class="q-ml-sm" color="grey-10" icon="sym_r_close" variant="tertiary" @click="close" />
       </div>
-    </qas-box>
+    </component>
   </div>
 </template>
 
@@ -97,11 +97,24 @@ const { displayAlert, close } = useStorageClosed()
 // computeds
 const iconProps = computed(() => {
   const status = Object.keys(Status).find(key => Status[key] === props.status)
-  const isErrorStatus = props.status === Status.Error
+
+  const statusList = {
+    [Status.Info]: {
+      icon: 'sym_r_info'
+    },
+
+    [Status.Error]: {
+      icon: 'sym_r_error'
+    },
+
+    [Status.Success]: {
+      icon: 'sym_r_check_circle'
+    }
+  }
 
   return {
     color: StatusColor[status],
-    name: isErrorStatus ? 'sym_r_error' : 'sym_r_info',
+    name: statusList[props.status].icon,
     size: 'sm'
   }
 })
@@ -110,16 +123,13 @@ const iconProps = computed(() => {
  * Por padrão, quando este componente estiver dentro de um QasBox ou QasDialog, ele não terá
  * shadow, terá padding e não terá margin.
  */
-const defaultBoxProps = computed(() => {
+const component = computed(() => {
   const hasBoxProps = props.useBox !== undefined
 
   // Se não tiver a prop useBox, assume que está dentro de um QasBox ou QasDialog
   const useBox = hasBoxProps ? props.useBox : !isBox && !isDialog
 
-  return {
-    unelevated: !useBox,
-    useSpacing: useBox
-  }
+  return useBox ? QasBox : 'div'
 })
 
 const textComponent = computed(() => {

@@ -1,17 +1,19 @@
 <template>
   <qas-dialog class="qas-drawer" v-bind="attributes" @update:model-value="onUpdateModelValue">
     <template #header>
-      <div class="items-center justify-between row">
-        <span data-cy="drawer-title">
-          <slot name="title">
-            <h3 v-if="props.title" class="text-h3">
-              {{ props.title }}
-            </h3>
-          </slot>
-        </span>
+      <slot name="header">
+        <div class="items-center justify-between row">
+          <span data-cy="drawer-title">
+            <slot name="title">
+              <h3 v-if="props.title" class="text-h3">
+                {{ props.title }}
+              </h3>
+            </slot>
+          </span>
 
-        <qas-btn v-close-popup class="z-max" color="grey-10" data-cy="drawer-close-btn" icon="sym_r_close" variant="tertiary" @click="emit('update:modelValue', false)" />
-      </div>
+          <qas-btn v-close-popup class="z-max" color="grey-10" data-cy="drawer-close-btn" icon="sym_r_close" variant="tertiary" @click="emit('update:modelValue', false)" />
+        </div>
+      </slot>
     </template>
 
     <template #description>
@@ -78,7 +80,7 @@ const attrs = useAttrs()
 const screen = useScreen()
 
 // computed
-const normalizedMaxWidth = computed(() => screen.isSmall ? '100%' : props.maxWidth)
+const normalizedMaxWidth = computed(() => screen.isSmall ? '95%' : props.maxWidth)
 
 const loadingStyle = computed(() => {
   return {

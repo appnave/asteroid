@@ -64,6 +64,12 @@ props:
     default: false
     type: Boolean
 
+  errors:
+    desc: Erros por arquivo, repassados para o QasFormGenerator e usado no QasGalleryCard quando existe erro na URL.
+    default: {}
+    model: true
+    type: [Object, Array]
+
   error-message:
     desc: Mensagem de erro.
     type: String

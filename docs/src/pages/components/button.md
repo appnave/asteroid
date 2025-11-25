@@ -55,6 +55,10 @@ Usar o ícone à esquerda para ações diretas e o ícone à direita para açõe
 :::
 
 :::info
+Os tamanhos padrão do botão "primary" e "secondary" são `sm` e não `lg` quando usados dentro do `QasBox` e não passe a prop size.
+:::
+
+:::info
 #### primary
 Os botões primários são utilizados em ações positivas e/ou primárias, como confirmar, avançar, ir para, acessar. Eles também são usados quando houver somente um botão disponível, como entendi, ok. Esses botões primários são utilizados para indicar ao usuário a ação principal que deve ser realizada, como salvar, adicionar, excluir, ativar, desativar. Eles são utilizados como uma forma de "guiar" o usuário, indicando qual é a ação principal que deve ser tomada. O objetivo é tornar a interface clara e intuitiva para o usuário, facilitando a navegação e a realização das ações desejadas.
 
@@ -98,6 +102,11 @@ A cor "negative" é usada em casos de erros no geral.
 ## Uso
 <doc-example file="QasBtn/ExBtnSizes" title='Básico' />
 <doc-example file="QasBtn/ExBtnUseLabelOnSmallScreen" title="use-label-on-small-screen" />
+
+:::info
+A prop `disabledTooltip` tem prioridade sobre a prop `tooltip`, porém ela só é aplicada quando o botão esta desabilitado, enquanto a prop `tooltip` sempre aparece quando aplicada.
+:::
+<doc-example file="QasBtn/ExBtnTooltip" title="Com tooltip" />
 <doc-example file="QasBtn/ExBtnEllipsis" title="Com ellipsis" />
 <doc-example file="QasBtn/ExWithLoading" title="Com loading" />
 

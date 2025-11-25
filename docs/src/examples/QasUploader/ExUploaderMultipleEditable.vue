@@ -53,11 +53,10 @@ const uploaderProps = {
     }
   },
 
-  formGeneratorProps: {
-    errors: {
-      'documents.0.format': ['Mensagem de erro.'],
-      'documents.3.format': ['Mensagem de erro.']
-    }
+  errors: {
+    'documents.0.format': ['Mensagem de erro.'],
+    'documents.0.url': ['Mensagem de erro.'],
+    'documents.3.format': ['Mensagem de erro.']
   }
 }
 </script>

@@ -6,7 +6,7 @@
           {{ props.title }}
         </q-toolbar-title>
 
-        <q-breadcrumbs v-if="props.useBreadcrumbs" class="text-caption" gutter="xs" separator-color="grey-8">
+        <q-breadcrumbs v-if="hasBreadcrumbs" class="text-caption" gutter="xs" separator-color="grey-8">
           <q-breadcrumbs-el v-if="props.useHomeIcon" class="qas-page-header__breadcrumbs-el text-grey-8" icon="sym_r_home" :to="homeRoute" />
 
           <q-breadcrumbs-el v-for="(item, index) in normalizedBreadcrumbs" :key="index" class="ellipsis inline-block qas-page-header__breadcrumbs-el" :label="item.label" :to="item.route" />
@@ -26,6 +26,8 @@
 
 <script setup>
 import QasHeader from '../header/QasHeader.vue'
+
+import { useOverlayNavigation } from '../../composables'
 
 import castArray from 'lodash-es/castArray'
 import { computed } from 'vue'
@@ -66,12 +68,15 @@ const props = defineProps({
   }
 })
 
+// composables
+const { isOverlay } = useOverlayNavigation()
 const router = useRouter()
 
 // meta tag
 useMeta(() => ({ title: props.title }))
 
 // computed
+const hasBreadcrumbs = computed(() => props.useBreadcrumbs && !isOverlay)
 const transformedBreadcrumbs = computed(() => {
   const list = [...castArray(props.breadcrumbs || props.title)]
 

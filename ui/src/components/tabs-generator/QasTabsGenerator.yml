@@ -13,6 +13,13 @@ props:
     type: Object
     examples: ["{ all: 24 }"]
 
+
+  querySlug:
+    desc: Nome da query string para alterar o model via URL, toda vez que a tab for alterada a query será atualizada e vice-versa.
+    type: String
+    default: ''
+    examples: ["activeTab"]
+
   model-value:
     desc: Model do componente, controla qual é a tab atual selecionada.
     type: [String, Number]

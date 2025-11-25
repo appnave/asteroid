@@ -11,6 +11,16 @@ function __format (value, token, options = {}) {
   return format(value, token, { locale: ptBR, ...options })
 }
 
+function _formatNumericValues (value, options = {}) {
+  const numericValue = Number(value)
+
+  if (value === null || value === undefined || isNaN(numericValue)) {
+    return ''
+  }
+
+  return numericValue.toLocaleString('pt-BR', options)
+}
+
 // Asset
 function asset (value) {
   const bucketURL = process.env.BUCKET_URL || location.origin
@@ -42,8 +52,7 @@ function decimal (value = 0) {
 }
 
 function money (value = 0, options = { style: 'currency', currency: 'BRL' }) {
-  value = Number(value)
-  return isNaN(value) ? '' : value.toLocaleString('pt-BR', options)
+  return _formatNumericValues(value, options)
 }
 
 function percent (value = 0, places = 2) {
@@ -57,8 +66,7 @@ function squareArea (value = 0, suffix = 'm²') {
 }
 
 function formatPercent (value = 0, places = 2) {
-  value = Number(value)
-  return value ? value.toLocaleString('pt-BR', { style: 'percent', minimumFractionDigits: places }) : ''
+  return _formatNumericValues(value, { style: 'percent', minimumFractionDigits: places })
 }
 
 /**

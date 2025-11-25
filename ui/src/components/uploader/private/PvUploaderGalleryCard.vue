@@ -8,6 +8,10 @@
           <qas-form-generator v-else-if="hasFormGenerator" v-bind="defaultFormGeneratorProps" />
         </div>
       </template>
+
+      <template v-if="hasURLError" #image-bottom>
+        <qas-error-message :message="urlError" />
+      </template>
     </qas-gallery-card>
 
     <qas-box v-else v-bind="cardBoxProps">
@@ -23,6 +27,7 @@
 </template>
 
 <script>
+import QasErrorMessage from '../../error-message/QasErrorMessage.vue'
 import QasDialog from '../../dialog/QasDialog.vue'
 import QasFormGenerator from '../../form-generator/QasFormGenerator.vue'
 import QasGalleryCard from '../../gallery-card/QasGalleryCard.vue'
@@ -38,6 +43,7 @@ export default {
   components: {
     QasBox,
     QasDialog,
+    QasErrorMessage,
     QasFormGenerator,
     QasGalleryCard,
     QasGridGenerator,
@@ -61,6 +67,11 @@ export default {
     dialogProps: {
       type: Object,
       default: () => ({})
+    },
+
+    errors: {
+      default: () => ({}),
+      type: Object
     },
 
     fields: {
@@ -134,15 +145,18 @@ export default {
     },
 
     defaultFormGeneratorProps () {
+      // url é reservado para erro de URL, é exibido o erro como um todo e não em um campo.
+      const { url, ...errors } = this.errors
+
       return {
+        errors,
         modelValue: this.currentModelValue,
         disable: this.hasError,
         columns: this.getDefaultColumns(this.formFields),
-
-        'onUpdate:modelValue': this.updateModel,
-
         ...this.defaultGeneratorProps,
-        ...this.formGeneratorProps
+        ...this.formGeneratorProps,
+
+        'onUpdate:modelValue': this.updateModel
       }
     },
 
@@ -295,7 +309,7 @@ export default {
     },
 
     hasError () {
-      return this.file.isFailed
+      return this.file.isFailed || this.hasURLError
     },
 
     hasFormFields () {
@@ -322,7 +336,7 @@ export default {
 
       if (!this.hasFormFields && hasFields) return true
 
-      return this.isGalleryMode && hasFields && !this.hasError
+      return this.isGalleryMode && hasFields && !this.file.isFailed
     },
 
     isGalleryMode () {
@@ -384,6 +398,17 @@ export default {
      */
     hasCustomErrorSlot () {
       return !this.hasError && this.file.isUploaded
+    },
+
+    urlError () {
+      const { url } = this.errors || {}
+      const isArray = Array.isArray(url)
+
+      return isArray ? url.join(' ') : url
+    },
+
+    hasURLError () {
+      return !!this.urlError
     }
   },
 

@@ -1,5 +1,5 @@
 <template>
-  <q-tooltip v-bind="tooltipProps" class="bg-grey-10">
+  <q-tooltip v-bind="tooltipProps" class="bg-grey-10 text-caption">
     {{ props.text }}
   </q-tooltip>
 </template>

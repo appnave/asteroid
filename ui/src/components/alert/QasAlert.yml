@@ -18,7 +18,7 @@ props:
   status:
     desc: Status do alerta.
     type: String
-    examples: ['error', 'info']
+    examples: ['error', 'info', 'success']
 
   storage-key:
     desc: Chave a ser salva no localStorage, necessário caso esteja usando mais de um QasAlert na aplicação e ambos estejam com a prop "use-persist-model-on-close" ativada.
