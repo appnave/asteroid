@@ -42,12 +42,31 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - adicionada propriedade `useCloseButton` para remover botão de fechar (x).
   - adicionada propriedade `useHtmlDescription`.
 - `QasDrawer`: adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`.
+
+### Modificado
+- `QasDialog`:
+  - mudanças gerais do dialog ([#1346](https://github.com/bildvitta/asteroid/issues/1346)).
+  - removido uso de composable em arquivos separados para centralizar tudo no arquivo vue.
+- `QasHeader`: modificado propriedade `badges` para aceitar objeto quando tiver apenas 1 badge.
+- `QasSignatureUploader`: Modificado label e tamanho do dialog.
+- Normalização dos dialogs:
+  - QasSignatureUploader.
+  - QasTreeGenerator.
+  - QasTextTruncate.
+  - QasSelectListDialog.
+  - QasFormView.
+  - QasGallery -> PvGalleryCarouselDialog.
+  - composables/use-delete.js
+  - QasDrawer.
+
+### Removido
 - `QasDialog`:
   - removido prop `card` em favor de suar as props `title` e `description`.
   - removido slot `actions` em favor de fazer os controles somente por `ok`, `cancel` e `tertiary`.
   - removido prop `persistent`, agora é feito sempre de forma automática.
   - removido prop `actionsProps`.
   - removido props `useFullMaxWidth`, `maxWidth`, `minWidth` em favor de utilizar a prop `size`.
+
 ## [3.20.0-beta.1] - 25-11-2025
 ### Adicionado
 - `QasBtnDropdown`: adicionado novo slot dinâmico `btn-content-[buttons-props-list-key]`.
@@ -362,30 +381,6 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ## [3.19.0-beta.17] - 18-11-2025
 ### Corrigido
 - `QasInfiniteScroll`: Corrigido exibição do texto quando não há resultados, pois estava cortando ao definir tamanho máximo de altura. ([#1347](https://github.com/bildvitta/asteroid/issues/1347))
-
-### Modificado
-- `QasDialog`:
-  - mudanças gerais do dialog ([#1346](https://github.com/bildvitta/asteroid/issues/1346)).
-  - removido uso de composable em arquivos separados para centralizar tudo no arquivo vue.
-- `QasHeader`: modificado propriedade `badges` para aceitar objeto quando tiver apenas 1 badge.
-- `QasSignatureUploader`: Modificado label e tamanho do dialog.
-- Normalização dos dialogs:
-  - QasSignatureUploader.
-  - QasTreeGenerator.
-  - QasTextTruncate.
-  - QasSelectListDialog.
-  - QasFormView.
-  - QasGallery -> PvGalleryCarouselDialog.
-  - composables/use-delete.js
-  - QasDrawer.
-
-### Removido
-- `QasDialog`:
-  - removido prop `card` em favor de suar as props `title` e `description`.
-  - removido slot `actions` em favor de fazer os controles somente por `ok`, `cancel` e `tertiary`.
-  - removido prop `persistent`, agora é feito sempre de forma automática.
-  - removido prop `actionsProps`.
-  - removido props `useFullMaxWidth`, `maxWidth`, `minWidth` em favor de utilizar a prop `size`.
 
 ## [3.19.0-beta.16] - 12-11-2025
 ### Corrigido

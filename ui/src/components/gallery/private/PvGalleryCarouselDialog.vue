@@ -47,7 +47,6 @@ const screen = useScreen()
 const carouselImageHeight = 'calc((500/976) * 100vh)'
 
 const dialogProps = {
-  persistent: false,
   cancel: false,
   ok: false,
   size: 'xl',
