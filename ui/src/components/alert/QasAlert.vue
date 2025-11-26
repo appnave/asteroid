@@ -133,42 +133,62 @@ const component = computed(() => {
 })
 
 const textComponent = computed(() => {
-  // Regex para encontrar caracteres que estiverem dentro de [].
-  const regex = /\[.*?\]/g
+  // Regex para encontrar caracteres que estiverem dentro de [] para links/botões
+  const linkRegex = /\[.*?\]/g
+  // Regex para encontrar caracteres que estiverem dentro de ** para bold
+  const boldRegex = /\*\*(.*?)\*\*/g
 
-  const matches = props.text.match(regex) || []
+  const linkMatches = props.text.match(linkRegex) || []
+  const boldMatches = props.text.match(boldRegex) || []
 
-  if (!matches.length) return h('span', props.text)
+  // Se não há matches de links/botões e nem bold, retorna texto simples
+  if (!linkMatches.length && !boldMatches.length) {
+    return h('span', props.text)
+  }
 
   let processedText = props.text
 
   /**
-   * Substitui cada match por um placeholder único na ordem correta
-   * Exemplo: "Clique [aqui] para [ver mais]" vira "Clique $0 para $1"
+   * Substitui cada match de link por um placeholder único na ordem correta
+   * Exemplo: "Clique [aqui] para [ver mais]" vira "Clique $LINK_0 para $LINK_1"
    */
-  matches.forEach((match, index) => {
-    processedText = processedText.replace(match, `$${index}`)
+  linkMatches.forEach((match, index) => {
+    processedText = processedText.replace(match, `$LINK_${index}`)
   })
 
-  // Divide o texto pelos placeholders
-  const parts = processedText.split(/\$\d+/)
+  /**
+   * Substitui cada match de bold por um placeholder único na ordem correta
+   * Exemplo: "Texto **importante** aqui" vira "Texto $BOLD_0 aqui"
+   */
+  boldMatches.forEach((match, index) => {
+    processedText = processedText.replace(match, `$BOLD_${index}`)
+  })
 
-  const placeholders = processedText.match(/\$\d+/g) || []
+  // Separa o texto em partes usando regex mais específica
+  const parts = processedText.split(/(\$(?:LINK|BOLD)_\d+)/)
 
   const result = []
+  parts.forEach(part => {
+    // Se a parte é texto normal, adiciona como string
+    if (!part.startsWith('$')) {
+      if (part) result.push(part)
+      return
+    }
 
-  parts.forEach((part, index) => {
-    if (part) result.push(part)
+    // Se é um placeholder, processa baseado no tipo
+    const placeholderMatch = part.match(/\$(LINK|BOLD)_(\d+)/)
 
-    if (index < placeholders.length) {
-      // Pega o índice do placeholder para encontrar o match correto
-      const placeholderIndex = parseInt(placeholders[index].replace('$', ''))
+    if (!placeholderMatch) return
 
-      // Pega o texto original do match. Ex: '[Clique aqui]'
-      const match = matches[placeholderIndex]
+    const [, type, indexStr] = placeholderMatch
+    const placeholderIndex = parseInt(indexStr)
+
+    if (type === 'LINK') {
+      // Pega o texto original do match de link. Ex: '[Clique aqui]'
+      const linkMatch = linkMatches[placeholderIndex]
 
       // Remove os colchetes do match. Ex: [Clique aqui] para Clique aqui
-      const routerLabel = match.replaceAll(/[[\]]/g, '')
+      const routerLabel = linkMatch.replaceAll(/[[\]]/g, '')
 
       // Determina as props do botão/link baseado no índice
       const isButtonPropsArray = Array.isArray(props.buttonProps)
@@ -209,6 +229,17 @@ const textComponent = computed(() => {
       }
 
       result.push(hasButtonProps ? getQasBtnRender() : getRouterLinkRender())
+    } else if (type === 'BOLD') {
+      // Pega o texto original do match de bold. Ex: '**texto importante**'
+      const boldMatch = boldMatches[placeholderIndex]
+
+      // Remove os asteriscos do match. Ex: **texto importante** para texto importante
+      const boldText = boldMatch.replace(/\*\*(.*?)\*\*/, '$1')
+
+      // Cria elemento bold
+      result.push(
+        h('strong', boldText)
+      )
     }
   })
 
