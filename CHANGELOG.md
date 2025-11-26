@@ -16,7 +16,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Adicionado
-- `QasAlert`: Adicionado possiblidade de dar destaque nos textos (bold) passando eles dentro de `**asteriscos**`.
+- `QasAlert`: Adicionado possiblidade de dar destaque nos textos (bold) passando eles dentro de `**asteriscos**`. [[#1410](https://github.com/bildvitta/asteroid/issues/1410)]
 
 ## [3.20.0-beta.1] - 25-11-2025
 ### Adicionado
