@@ -28,7 +28,7 @@
 
     <qas-dialog v-model="showDialog" v-bind="defaultDialogProps" />
 
-    <q-inner-loading :showing="mx_isFetching">
+    <q-inner-loading :showing="mx_isFetching && useLoading">
       <q-spinner color="grey" size="3em" />
     </q-inner-loading>
   </qas-container>
@@ -146,6 +146,11 @@ export default {
     },
 
     useNotifySuccess: {
+      type: Boolean,
+      default: true
+    },
+
+    useLoading: {
       type: Boolean,
       default: true
     },

@@ -1,7 +1,7 @@
 <template>
   <qas-list-view v-model:fields="fields" v-model:results="results" :entity="entity" :use-filter="false">
     <template #default>
-      <qas-table-generator :fields="fields" :header-props :results="results" row-key="uuid" />
+      <qas-table-generator :columns :fields="fields" :header-props :results="results" row-key="uuid" />
     </template>
   </qas-list-view>
 </template>
@@ -15,6 +15,17 @@ const entity = 'users'
 
 const fields = ref({})
 const results = ref([])
+
+const columns = [
+  'isActive',
+  'document',
+  'companies',
+  'createdAt',
+  'company',
+  'date',
+  'email',
+  'observation'
+]
 
 const headerProps = {
   description: 'Algum texto de exemplo para ficar ao lado do botão de adicionar.',

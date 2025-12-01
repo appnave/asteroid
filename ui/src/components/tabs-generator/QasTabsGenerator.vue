@@ -6,10 +6,18 @@
           <slot :item="tab" :name="`tab-after-${tab.value}`">
             <q-icon v-if="tab.icon" :name="tab.icon" size="sm" />
 
-            <qas-status v-if="tab.status" :color="tab.status" />
+            <div v-if="tab.status">
+              <qas-skeleton v-if="props.loading" type="QasStatus" use-title />
 
-            <div class="q-ml-xs">
-              {{ getFormattedLabel(tab) }}
+              <qas-status v-else :color="tab.status" />
+            </div>
+
+            <div class="q-ml-xs relative-position">
+              <qas-skeleton v-if="props.loading" type="QasBtn" use-overlay width="100%" />
+
+              <span>
+                {{ getFormattedLabel(tab) }}
+              </span>
             </div>
           </slot>
         </component>
@@ -20,6 +28,7 @@
 
 <script setup>
 import QasStatus from '../status/QasStatus.vue'
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 
 import { decimal } from '../../helpers'
 
@@ -33,6 +42,10 @@ const props = defineProps({
   counters: {
     default: () => ({}),
     type: Object
+  },
+
+  loading: {
+    type: Boolean
   },
 
   modelValue: {
@@ -74,7 +87,7 @@ const model = computed({
       ? props.tabs.find(tab => tab?.value === value)
       : formattedTabs.value[value]
 
-    if (currentTab?.disabled) return
+    if (currentTab?.disabled || props.loading) return
 
     emit('update:modelValue', value)
   }

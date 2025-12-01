@@ -1,5 +1,7 @@
 <template>
-  <qas-table-generator :columns :fields :results />
+  <qas-container>
+    <qas-table-generator :columns :fields loading :results />
+  </qas-container>
 </template>
 
 <script setup>

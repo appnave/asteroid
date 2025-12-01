@@ -1,5 +1,9 @@
 <template>
-  <qas-table-generator v-bind="tableGeneratorProps" />
+  <qas-table-generator v-bind="tableGeneratorProps">
+    <template #body-cell-isActive>
+      EAI
+    </template>
+  </qas-table-generator>
 </template>
 
 <script setup>

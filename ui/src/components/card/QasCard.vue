@@ -4,13 +4,17 @@
       <q-card class="column full-height overflow-hidden shadow-0">
         <header v-if="hasHeader" class="full-width items-center justify-between no-wrap q-mb-sm row">
           <slot name="header">
-            <div class="ellipsis flex no-wrap">
+            <div class="ellipsis flex full-width no-wrap">
               <slot v-if="props.useSelection" name="header-left">
-                <qas-checkbox v-model="selected" :false-value="props.falseValue" :true-value="props.trueValue" />
+                <qas-skeleton v-if="props.loading" class="q-mr-sm" type="QasCheckbox" />
+
+                <qas-checkbox v-else v-model="selected" :false-value="props.falseValue" :true-value="props.trueValue" />
               </slot>
 
-              <component :is="titleComponent.is" class="ellipsis text-h5 text-no-decoration" v-bind="titleComponent.props">
-                <slot name="title">
+              <component :is="titleComponent.is" class="ellipsis full-width text-h5 text-no-decoration" v-bind="titleComponent.props">
+                <qas-skeleton v-if="props.loading" type="text" use-title />
+
+                <slot v-else name="title">
                   {{ props.title }}
                 </slot>
 
@@ -18,24 +22,38 @@
               </component>
             </div>
 
-            <qas-actions-menu v-if="hasActions" v-bind="formattedActionsMenuProps" />
+            <div v-if="hasActions">
+              <qas-skeleton v-if="props.loading" class="q-ml-sm" type="QasBtn" />
+
+              <qas-actions-menu v-else v-bind="formattedActionsMenuProps" />
+            </div>
           </slot>
         </header>
 
-        <div class="qas-card__content" :class="contentClasses">
+        <div class="qas-card__content relative-position" :class="contentClasses">
+          <qas-skeleton v-if="props.loading" use-overlay />
+
           <slot name="default" />
         </div>
 
         <div class="q-mt-auto">
           <q-separator v-if="hasFooter" class="q-mb-sm" />
 
-          <slot name="footer">
-            <q-expansion-item v-if="hasExpansion" class="full-width" dense expand-icon-class="text-primary" header-class="q-pa-none text-primary" :label="props.expansionProps.label">
-              <slot name="expansion-content">
-                {{ props.expansionProps.content }}
-              </slot>
-            </q-expansion-item>
-          </slot>
+          <div v-if="hasExpansion" class="div">
+            <div v-if="props.loading" class="flex justify-between">
+              <qas-skeleton type="text" use-title width="150px" />
+
+              <qas-skeleton type="QasBtn" use-title />
+            </div>
+
+            <slot v-else name="footer">
+              <q-expansion-item v-if="hasExpansion" class="full-width" dense expand-icon-class="text-primary" header-class="q-pa-none text-primary" :label="props.expansionProps.label">
+                <slot name="expansion-content">
+                  {{ props.expansionProps.content }}
+                </slot>
+              </q-expansion-item>
+            </slot>
+          </div>
         </div>
       </q-card>
     </qas-box>
@@ -47,6 +65,7 @@ import QasTooltip from '../tooltip/QasTooltip.vue'
 import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasCheckbox from '../checkbox/QasCheckbox.vue'
 import QasBox from '../box/QasBox.vue'
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 
 import { computed, useSlots, inject } from 'vue'
 import { colors } from 'quasar'
@@ -67,6 +86,10 @@ const props = defineProps({
   falseValue: {
     type: [Boolean, String, Number, Array, Object],
     default: false
+  },
+
+  loading: {
+    type: Boolean
   },
 
   route: {

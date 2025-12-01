@@ -1,33 +1,45 @@
 <template>
-  <component :is="parentComponent.is" class="qas-table-generator" :class="tableClasses">
+  <component :is="parentComponent.is" :key="counterKey" class="qas-table-generator" :class="tableClasses">
     <slot name="parent-header">
       <qas-header v-if="hasHeaderProps" v-bind="headerProps" />
     </slot>
 
     <q-table v-show="hasResults" ref="table" v-bind="attributes" v-model:selected="selectedModel" class="bg-white text-grey-8">
-      <template v-for="(_, name) in slots" #[name]="context">
-        <slot :name="name" v-bind="context" />
+      <template v-if="loading" #header-cell="props">
+        <q-th v-if="props.col.name !== 'actions'" :props="props">
+          <q-skeleton v-bind="getThSkeletonProps()" animation="blink" class="bg-blue-grey-4" type="text" />
+        </q-th>
       </template>
 
       <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
       <template #header-selection="props">
-        <div class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
+        <q-skeleton v-if="loading" animation="blink" class="bg-blue-grey-4" size="18px" />
+
+        <div v-else class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
           <qas-checkbox v-model="props.selected" />
         </div>
       </template>
 
       <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
       <template #body-selection="props">
-        <div class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
+        <q-skeleton v-if="loading" animation="blink" class="bg-blue-grey-4" size="18px" />
+
+        <div v-else class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
           <qas-checkbox v-model="props.selected" />
         </div>
       </template>
 
+      <template v-for="(_, name) in slots" #[name]="context">
+        <slot :name="name" v-bind="context" />
+      </template>
+
       <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
         <q-td :class="getTdClasses(context.row)">
-          <component :is="tdChildComponent" class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
+          <q-skeleton v-if="loading" v-bind="getTgSkeletonProps(fieldName, context.row)" animation="blink" />
+
+          <component :is="tdChildComponent" v-else class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
             <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
-              <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="fields[fieldName]?.label" :name="fieldName" :row="context.row" />
+              <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="normalizedFields[fieldName]?.label" :name="fieldName" :row="context.row" />
 
               <template v-else>
                 {{ context.row?.[fieldName] }}
@@ -132,6 +144,10 @@ export default {
       type: Array
     },
 
+    loading: {
+      type: Boolean
+    },
+
     useBox: {
       type: Boolean,
       default: true
@@ -171,11 +187,56 @@ export default {
       scrollOnGrab: {},
       elementToObserve: null,
       resizeObserver: null,
-      scrollGradientX: setScrollGradient({ orientation: 'x' })
+      scrollGradientX: setScrollGradient({ orientation: 'x' }),
+      counterKey: 0
     }
   },
 
   computed: {
+    normalizedFields () {
+      if (this.loading) {
+        const fields = {}
+
+        this.normalizedColumns.forEach(column => {
+          const columnName = column?.name || column
+
+          fields[columnName] = {
+            name: columnName,
+            label: columnName.charAt(0).toUpperCase() + columnName.slice(1),
+            type: 'text'
+          }
+        })
+
+        return fields
+      }
+
+      return this.fields
+    },
+
+    normalizedResults () {
+      if (this.loading) {
+        const generatedResults = []
+
+        for (let i = 0; i < 12; i++) {
+          const result = {}
+
+          this.normalizedColumns.forEach(column => {
+            const columnName = column?.name || column
+
+            result[columnName] = ''
+          })
+
+          result.default = result
+
+          generatedResults.push(result)
+        }
+
+        return generatedResults
+      }
+
+      return this.results
+    },
+
     tdChildComponent () {
       if (this.useExternalLink) return 'a'
 
@@ -187,7 +248,7 @@ export default {
 
       return this.normalizedColumns.length
         ? this.normalizedColumns.map(column => typeof column === 'object' ? column.name : column)
-        : Object.keys(this.fields)
+        : Object.keys(this.normalizedFields)
     },
 
     slots () {
@@ -259,8 +320,8 @@ export default {
 
       // Automatic columns.
       if (!this.normalizedColumns.length) {
-        for (const index in this.fields) {
-          columnByField(this.fields[index])
+        for (const index in this.normalizedFields) {
+          columnByField(this.normalizedFields[index])
         }
 
         return columns
@@ -270,9 +331,9 @@ export default {
       this.normalizedColumns.forEach(column => {
         if (column instanceof Object) {
           // repassa as props e mergeia com as do field
-          columnByField({ ...column, ...this.fields[column.name] })
-        } else if (this.fields[column]) {
-          columnByField(this.fields[column])
+          columnByField({ ...column, ...this.normalizedFields[column.name] })
+        } else if (this.normalizedFields[column]) {
+          columnByField(this.normalizedFields[column])
         }
       })
 
@@ -291,20 +352,23 @@ export default {
     },
 
     hasFields () {
-      return Object.keys(this.fields).length
+      return Object.keys(this.normalizedFields).length
     },
 
     resultsByFields () {
-      if (!Object.keys(this.fields).length) return []
+      if (!Object.keys(this.normalizedFields).length) return []
 
-      const results = extend(true, [], this.results)
+      // Validação necessária para evitar processamento sem necessidade quando estiver em loading.
+      if (this.loading) return this.normalizedResults
+
+      const results = extend(true, [], this.normalizedResults)
 
       const mappedResults = results.map((result, index) => {
         for (const key in result) {
-          const humanizedResult = humanize(this.fields[key], result[key])
+          const humanizedResult = humanize(this.normalizedFields[key], result[key])
           const formattedResult = isEmpty({ value: humanizedResult }) ? this.emptyResultText : humanizedResult
 
-          result.default = this.results[index]
+          result.default = this.normalizedResults[index]
           result[key] = formattedResult
         }
 
@@ -315,7 +379,7 @@ export default {
     },
 
     rowsPerPage () {
-      return this.results.length
+      return this.normalizedResults.length
     },
 
     tableClasses () {
@@ -486,7 +550,7 @@ export default {
     },
 
     getTdChildComponentProps (row) {
-      if (!this.rowRouteFn) return
+      if (!this.rowRouteFn || this.loading) return
 
       return {
         class: [
@@ -504,6 +568,8 @@ export default {
     },
 
     onRowClick () {
+      if (this.loading) return
+
       this.$attrs.onRowClick(...arguments)
     },
 
@@ -523,6 +589,72 @@ export default {
             props: this.actionsMenuProps?.(row, index)
           }
         })
+      }
+    },
+
+    getTgSkeletonProps (column, row) {
+      const actionsProps = {
+        width: '76px',
+        height: '18px',
+        class: 'bg-blue-grey-4'
+      }
+
+      if (column === 'actions') {
+        return actionsProps
+      }
+
+      const normalizedFieldsProps = typeof this.fieldsProps === 'function'
+        ? this.fieldsProps(row)
+        : this.fieldsProps || {}
+
+      const columnFieldProps = normalizedFieldsProps[column]
+
+      if (columnFieldProps) {
+        const { component } = columnFieldProps
+
+        if (component === 'QasBadge') {
+          return {
+            width: '60px',
+            height: '24px'
+          }
+        }
+
+        if (component === 'QasToggleVisibility') {
+          return {
+            ...actionsProps,
+            width: '140px'
+          }
+        }
+
+        if (component === 'QasTextTruncate') {
+          return {
+            ...actionsProps,
+            width: '200px'
+          }
+        }
+
+        return actionsProps
+      }
+
+      const min = 100
+      const max = 200
+
+      const width = Math.floor(Math.random() * (max - min + 1)) + min
+
+      return {
+        type: 'text',
+        width: `${width + 20}px`
+      }
+    },
+
+    getThSkeletonProps () {
+      const min = 60
+      const max = 120
+
+      const width = Math.floor(Math.random() * (max - min + 1)) + min
+
+      return {
+        width: `${width}px`
       }
     }
   }

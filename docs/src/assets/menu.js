@@ -334,6 +334,10 @@ module.exports = [
         path: '/components/stepper-form-view'
       },
       {
+        name: 'SkeletonTableGenerator ',
+        path: '/components/skeleton-table-generator'
+      },
+      {
         name: 'TableGenerator',
         path: '/components/table-generator'
       },

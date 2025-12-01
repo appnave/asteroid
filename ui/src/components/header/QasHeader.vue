@@ -2,33 +2,48 @@
   <div v-if="hasHeaderContent" :class="containerClasses">
     <div v-if="hasLabelSection" class="full-width items-center justify-between no-wrap row" :class="labelSectionClasses">
       <div class="items-center overflow-hidden q-col-gutter-sm row">
-        <slot name="label">
+        <div v-if="loading">
+          <q-skeleton animation="blink" class="bg-blue-grey-4" type="text" width="200px" />
+        </div>
+
+        <slot v-else name="label">
           <qas-label v-if="hasLabel" v-bind="defaultLabelProps" />
         </slot>
 
         <div v-if="hasBadges" class="col-auto items-center q-col-gutter-sm row">
           <div v-for="(badge, badgeIndex) in props.badges" :key="badgeIndex">
-            <qas-badge v-bind="badge" />
+            <q-skeleton v-if="loading" animation="blink" height="24px" width="60px" />
+
+            <qas-badge v-else v-bind="badge" />
           </div>
         </div>
       </div>
 
       <div v-if="hasActionsSection" class="text-right">
-        <slot name="actions">
+        <qas-skeleton v-if="loading" type="QasBtn" />
+
+        <slot v-else name="actions">
           <component :is="actionsComponent.is" v-if="hasActionsComponent" v-bind="actionsComponent.props" />
         </slot>
       </div>
     </div>
 
     <div v-if="hasDescriptionOrOnlyActionsSection" class="items-start no-wrap q-col-gutter-sm row" :class="descriptionSectionClasses">
-      <div v-if="hasDescriptionSection" class="text-body1 text-grey-8">
-        <slot name="description">
+      <div v-if="hasDescriptionSection" class="full-width text-body1 text-grey-8">
+        <div v-if="loading">
+          <!-- <q-skeleton animation="blink" type="text" width="400px" /> -->
+          <qas-skeleton v-if="loading" max-width="400px" type="text" width="100%" />
+        </div>
+
+        <slot v-else name="description">
           {{ props.description }}
         </slot>
       </div>
 
       <div v-if="!hasLabelSection" class="justify-end row text-right">
-        <slot name="actions">
+        <q-skeleton v-if="loading" animation="blink" class="bg-blue-grey-4" height="18px" width="76px" />
+
+        <slot v-else name="actions">
           <component :is="actionsComponent.is" v-if="hasActionsComponent" v-bind="actionsComponent.props" />
         </slot>
       </div>
@@ -42,6 +57,7 @@ import QasBadge from '../badge/QasBadge.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasFilters from '../filters/QasFilters.vue'
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 
 import { Spacing } from '../../enums/Spacing'
 import { gutterValidator } from '../../helpers/private/gutter-validator'
@@ -79,6 +95,11 @@ const props = defineProps({
   labelProps: {
     type: Object,
     default: () => ({})
+  },
+
+  loading: {
+    type: Boolean,
+    default: true
   },
 
   spacing: {
