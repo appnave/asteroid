@@ -11,6 +11,7 @@ Componente para informações.
   - RouterLink (se existir a propriedade `routerLinkProps`).
   - QasBtn (se existir a propriedade `buttonProps`).
 - Quando a propriedade "useRegex" for "true", todo texto da propriedade "text" que estiver dentro de `** **` será adicionado dentro de uma tag strong.
+  - Exemplo: `Exemplo de texto destacando **essa parte**`.
 - slot "default" só existe se "useRegex" for "false".
 :::
 

@@ -133,41 +133,82 @@ const component = computed(() => {
 })
 
 const textComponent = computed(() => {
-  // Regex para encontrar caracteres que estiverem dentro de [] para links/botões
-  const linkRegex = /\[.*?\]/g
-  // Regex para encontrar caracteres que estiverem dentro de ** para bold
-  const boldRegex = /\*\*(.*?)\*\*/g
+  // Configuração dos tokens suportados
+  const tokens = [
+    {
+      type: 'LINK',
+      regex: /\[(.*?)\]/g,
+      extractContent: match => match.replace(/\[(.*?)\]/, '$1'),
+      render: (content, index) => {
+        const isButtonPropsArray = Array.isArray(props.buttonProps)
+        const isRouterPropsArray = Array.isArray(props.routerLinkProps)
 
-  const linkMatches = props.text.match(linkRegex) || []
-  const boldMatches = props.text.match(boldRegex) || []
+        const buttonPropsForIndex = isButtonPropsArray
+          ? props.buttonProps[index]
+          : props.buttonProps
 
-  // Se não há matches de links/botões e nem bold, retorna texto simples
-  if (!linkMatches.length && !boldMatches.length) {
+        const routerLinkPropsForIndex = isRouterPropsArray
+          ? props.routerLinkProps[index]
+          : props.routerLinkProps
+
+        const hasButtonProps = buttonPropsForIndex && !!Object.keys(buttonPropsForIndex).length
+
+        if (hasButtonProps) {
+          return h(QasBtn, {
+            variant: 'tertiary',
+            label: content,
+            ...buttonPropsForIndex
+          })
+        }
+
+        return h(RouterLink, {
+          ...routerLinkPropsForIndex,
+          class: 'text-primary text-subtitle1 qas-alert__link'
+        }, {
+          default: () => content
+        })
+      }
+    },
+    {
+      type: 'BOLD',
+      regex: /\*\*(.*?)\*\*/g,
+      extractContent: match => match.replace(/\*\*(.*?)\*\*/, '$1'),
+      render: content => h('strong', { class: 'text-weight-bold' }, content)
+    }
+  ]
+
+  // Encontra todos os matches de todos os tipos de token
+  const allMatches = []
+
+  tokens.forEach(token => {
+    const matches = props.text.match(token.regex) || []
+
+    matches.forEach(match => {
+      allMatches.push({
+        type: token.type,
+        match,
+        content: token.extractContent(match),
+        render: token.render
+      })
+    })
+  })
+
+  // Se não há matches, retorna texto simples
+  if (!allMatches.length) {
     return h('span', props.text)
   }
 
   let processedText = props.text
 
-  /**
-   * Substitui cada match de link por um placeholder único na ordem correta
-   * Exemplo: "Clique [aqui] para [ver mais]" vira "Clique $LINK_0 para $LINK_1"
-   */
-  linkMatches.forEach((match, index) => {
-    processedText = processedText.replace(match, `$LINK_${index}`)
+  // Substitui cada match por um placeholder único
+  allMatches.forEach((matchData, index) => {
+    processedText = processedText.replace(matchData.match, `$${matchData.type}_${index}`)
   })
 
-  /**
-   * Substitui cada match de bold por um placeholder único na ordem correta
-   * Exemplo: "Texto **importante** aqui" vira "Texto $BOLD_0 aqui"
-   */
-  boldMatches.forEach((match, index) => {
-    processedText = processedText.replace(match, `$BOLD_${index}`)
-  })
-
-  // Separa o texto em partes usando regex mais específica
-  const parts = processedText.split(/(\$(?:LINK|BOLD)_\d+)/)
-
+  // Separa o texto em partes
+  const parts = processedText.split(/(\$\w+_\d+)/)
   const result = []
+
   parts.forEach(part => {
     // Se a parte é texto normal, adiciona como string
     if (!part.startsWith('$')) {
@@ -175,72 +216,25 @@ const textComponent = computed(() => {
       return
     }
 
-    // Se é um placeholder, processa baseado no tipo
-    const placeholderMatch = part.match(/\$(LINK|BOLD)_(\d+)/)
-
+    // Se é um placeholder, encontra o match correspondente
+    const placeholderMatch = part.match(/\$(\w+)_(\d+)/)
     if (!placeholderMatch) return
 
     const [, type, indexStr] = placeholderMatch
-    const placeholderIndex = parseInt(indexStr)
+    const index = parseInt(indexStr)
 
-    if (type === 'LINK') {
-      // Pega o texto original do match de link. Ex: '[Clique aqui]'
-      const linkMatch = linkMatches[placeholderIndex]
+    // Encontra o match data correspondente
+    const matchData = allMatches[index]
+    if (!matchData || matchData.type !== type) return
 
-      // Remove os colchetes do match. Ex: [Clique aqui] para Clique aqui
-      const routerLabel = linkMatch.replaceAll(/[[\]]/g, '')
+    // Conta quantos matches do mesmo tipo vieram antes (para o índice das props)
+    const typeIndex = allMatches
+      .slice(0, index)
+      .filter(m => m.type === type)
+      .length
 
-      // Determina as props do botão/link baseado no índice
-      const isButtonPropsArray = Array.isArray(props.buttonProps)
-      const isRouterPropsArray = Array.isArray(props.routerLinkProps)
-
-      const buttonPropsForIndex = isButtonPropsArray
-        ? props.buttonProps[placeholderIndex]
-        : props.buttonProps
-
-      const routerLinkPropsForIndex = isRouterPropsArray
-        ? props.routerLinkProps[placeholderIndex]
-        : props.routerLinkProps
-
-      const hasButtonProps = buttonPropsForIndex && !!Object.keys(buttonPropsForIndex).length
-
-      const getRouterLinkRender = () => {
-        return h(
-          RouterLink,
-          {
-            ...routerLinkPropsForIndex,
-            class: 'text-primary text-subtitle1 qas-alert__link'
-          },
-          {
-            default: () => routerLabel
-          }
-        )
-      }
-
-      const getQasBtnRender = () => {
-        return h(
-          QasBtn,
-          {
-            variant: 'tertiary',
-            label: routerLabel,
-            ...buttonPropsForIndex
-          }
-        )
-      }
-
-      result.push(hasButtonProps ? getQasBtnRender() : getRouterLinkRender())
-    } else if (type === 'BOLD') {
-      // Pega o texto original do match de bold. Ex: '**texto importante**'
-      const boldMatch = boldMatches[placeholderIndex]
-
-      // Remove os asteriscos do match. Ex: **texto importante** para texto importante
-      const boldText = boldMatch.replace(/\*\*(.*?)\*\*/, '$1')
-
-      // Cria elemento bold
-      result.push(
-        h('strong', boldText)
-      )
-    }
+    // Renderiza o componente
+    result.push(matchData.render(matchData.content, typeIndex))
   })
 
   return h('span', result)
