@@ -14,6 +14,30 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+## BREAKING CHANGES
+- Validar todos locais que usam o `QasTableGenerator` pois tiveram bastante mudanças visuais.
+
+### Adicionado
+- `QasTableGenerator`:
+  - adicionado nova propriedade `useMultiline`.
+  - adicionado `QasTip`usado via prop `columns`.
+  - adicionado label "Ações" na coluna de ação.
+- `QasActionsMenu`: adicionado nova propriedade `useDropdownAlways`.
+- `QasTooltip`: adicionado o componente `QasBreakline`para ser usado na prop `text, agora é possível quebrar textos usando `\n`.
+- `QasToggleVisibility`: adicionado propriedade `visibleTooltip` e `hiddenTooltip`.
+
+### Modificado
+- `QasTooltip`: modificado tamanho máximo para `300px`.
+- `QasBtn`: modificado tamanho do botão para `18px` quando o `size` ser `sm`.
+- `helpers/filters/formatDocument`: adicionado validação para parâmetro vazio.
+- `QasTableGenerator`:
+  - adicionado bordam abaixo do titulo das colunas.
+  - modificado tipografia de `body1` para `body2`.
+  - modificado tamanho padrão do `QasBtn` de `md` para `sm`.
+  - modificado validação do `mappedResults`, quando usado type `object` ele não passa pelo `humanize` e não adicionado na chave `default` visando performance.
+  - coluna de ação agora tem o conteúdo alinhado á esquerda igual aos demais. 
+
 ## [3.20.0-beta.1] - 25-11-2025
 ### Adicionado
 - `QasBtnDropdown`: adicionado novo slot dinâmico `btn-content-[buttons-props-list-key]`.

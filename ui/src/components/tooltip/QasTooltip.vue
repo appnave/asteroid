@@ -1,6 +1,6 @@
 <template>
   <q-tooltip v-bind="tooltipProps" class="bg-grey-10 text-caption">
-    <QasBreakline :text="props.text"></QasBreakline>
+    <qas-breakline :text="props.text" />
   </q-tooltip>
 </template>
 

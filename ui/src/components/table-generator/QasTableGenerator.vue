@@ -26,18 +26,13 @@
       <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
         <q-td :class="getTdClasses(context.row)">
           <component :is="tdChildComponent" class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
-            <!-- <div style="max-width: 240px" >
-              <div class="ellipsis"> -->
+            <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
+              <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="fields[fieldName]?.label" :name="fieldName" :row="context.row" />
 
-                <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
-                  <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="fields[fieldName]?.label" :name="fieldName" :row="context.row" />
-
-                  <template v-else>
-                    {{ context.row?.[fieldName] }}
-                  </template>
-                </slot>
-              <!-- </div>
-            </div> -->
+              <template v-else>
+                {{ context.row?.[fieldName] }}
+              </template>
+            </slot>
           </component>
         </q-td>
       </template>
@@ -58,9 +53,9 @@
 <script>
 import PvTableGeneratorTd from './private/PvTableGeneratorTd.vue'
 import QasBox from '../box/QasBox.vue'
+import QasCheckbox from '../checkbox/QasCheckbox.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasHeader from '../header/QasHeader.vue'
-import QasCheckbox from '../checkbox/QasCheckbox.vue'
 import QasTip from '../tip/QasTip.vue'
 
 import { isEmpty, humanize, setScrollOnGrab, setScrollGradient } from '../../helpers'
@@ -159,6 +154,10 @@ export default {
     useScrollOnGrab: {
       type: Boolean,
       default: true
+    },
+
+    useMultiline: {
+      type: Boolean
     },
 
     useObjectSelectedModel: {
@@ -345,7 +344,8 @@ export default {
       return {
         'qas-table-generator--mobile': this.$qas.screen.isSmall,
         'qas-table-generator--sticky-header': this.useStickyHeader,
-        'qas-table-generator--has-actions': this.hasActionsMenu
+        'qas-table-generator--has-actions': this.hasActionsMenu,
+        'qas-table-generator--multiline': this.useMultiline
       }
     },
 
@@ -561,35 +561,6 @@ export default {
       height: 24px;
     }
 
-    // thead tr:last-child th:last-child,
-    // td:last-child {
-    //   background-color: white;
-    // }
-
-    // th:last-child,
-    // td:last-child {
-    //   box-shadow: -4px 0 6px -2px rgba(0, 0, 0, 0.1);
-    //   min-width: 80px;
-    //   position: sticky;
-    //   right: 0;
-    //   z-index: 1;
-    // }
-
-  // max-width: 600px
-
-  // thead tr:last-child th:last-child
-  //   /* bg color is important for th; just specify one */
-  //   background-color: #00b4ff
-
-  // td:last-child
-  //   background-color: #00b4ff
-
-  // th:last-child,
-  // td:last-child
-  //   position: sticky
-  //   right: 0
-  //   z-index: 1
-
     th {
       @include set-typography($subtitle2);
 
@@ -606,19 +577,10 @@ export default {
         }
       }
 
-      // border: 0 !important;
       padding-bottom: var(--qas-spacing-sm);;
       padding-left: 0;
       padding-top: 0;
       padding-right: var(--qas-spacing-md);
-
-      // &:not(:last-child) {
-      //   padding-right: var(--qas-spacing-md);
-      // }
-
-      // &:last-child {
-      //   padding-right: 0;
-      // }
     }
 
     td,
@@ -638,14 +600,6 @@ export default {
       position: relative;
       z-index: 0;
       padding-right: var(--qas-spacing-md);
-
-      // &:not(:last-child) {
-      //   padding-right: var(--qas-spacing-md);
-      // }
-
-      // &:last-child {
-      //   padding-right: 0;
-      // }
 
       &::before {
         position: absolute;
@@ -702,16 +656,20 @@ export default {
     }
   }
 
+  &--multiline {
+    @media (min-width: $breakpoint-sm) {
+      .q-table td {
+        *:not(.qas-btn, .qas-btn *, .q-badge, .q-badge *){
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+  }
+
   .q-table__container {
     margin-left: calc(var(--qas-spacing-md) * -1);
     margin-right: calc(var(--qas-spacing-md) * -1);
-  }
-
-  &--has-actions {
-    // td:last-child #{$root}__td-item {
-    //   display: flex;
-    //   justify-content: flex-end;
-    // }
   }
 
   &--mobile {
