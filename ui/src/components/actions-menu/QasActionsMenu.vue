@@ -86,6 +86,10 @@ const props = defineProps({
     type: String
   },
 
+  useDropdownAlways: {
+    type: Boolean
+  },
+
   useLabel: {
     default: true,
     type: Boolean
@@ -209,7 +213,7 @@ const formattedList = computed(() => {
    */
   const payload = { dropdownList: {}, buttonsList: {} }
 
-  if ((!hasSplitName.value || screen.isSmall) && !isSingle.value) {
+  if (props.useDropdownAlways || ((!hasSplitName.value || screen.isSmall) && !isSingle.value)) {
     const { buttonsList } = useOptionsActions({ color: DEFAULT_COLOR, props })
 
     payload.buttonsList = buttonsList.value

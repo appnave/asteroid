@@ -26,15 +26,28 @@
       <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
         <q-td :class="getTdClasses(context.row)">
           <component :is="tdChildComponent" class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
-            <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
-              <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="fields[fieldName]?.label" :name="fieldName" :row="context.row" />
+            <!-- <div style="max-width: 240px" >
+              <div class="ellipsis"> -->
 
-              <template v-else>
-                {{ context.row?.[fieldName] }}
-              </template>
-            </slot>
+                <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
+                  <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="fields[fieldName]?.label" :name="fieldName" :row="context.row" />
+
+                  <template v-else>
+                    {{ context.row?.[fieldName] }}
+                  </template>
+                </slot>
+              <!-- </div>
+            </div> -->
           </component>
         </q-td>
+      </template>
+
+      <template v-for="(column, index) in columnsWithTooltip" :key="index" #[`header-cell-${column.name}`]="context">
+        <q-th :props="context">
+          {{ context.col.label }}
+
+          <qas-tip class="q-pl-xs" :text="column.tooltip" />
+        </q-th>
       </template>
     </q-table>
 
@@ -48,6 +61,7 @@ import QasBox from '../box/QasBox.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasHeader from '../header/QasHeader.vue'
 import QasCheckbox from '../checkbox/QasCheckbox.vue'
+import QasTip from '../tip/QasTip.vue'
 
 import { isEmpty, humanize, setScrollOnGrab, setScrollGradient } from '../../helpers'
 
@@ -61,7 +75,8 @@ export default {
     QasBox,
     QasEmptyResultText,
     QasHeader,
-    QasCheckbox
+    QasCheckbox,
+    QasTip
   },
 
   provide () {
@@ -70,7 +85,7 @@ export default {
        * @see QasBtn.vue - Injetando os valores padrões para o QasBtn.
        */
       btnPropsDefaults: {
-        size: 'md'
+        size: 'sm'
       }
     }
   },
@@ -287,7 +302,11 @@ export default {
      * caso tenha a prop "actionsMenuProps" é adicionado automaticamente a coluna "actions" como ultimo item
      */
     normalizedColumns () {
-      return this.hasActionsMenu ? [...this.columns, { name: 'actions' }] : this.columns
+      return this.hasActionsMenu ? [...this.columns, { name: 'actions', label: 'Ações' }] : this.columns
+    },
+
+    columnsWithTooltip () {
+      return this.normalizedColumns.filter(column => column.tooltip)
     },
 
     hasFields () {
@@ -301,6 +320,10 @@ export default {
 
       const mappedResults = results.map((result, index) => {
         for (const key in result) {
+          if (this.fields[key]?.type === 'object') {
+            continue
+          }
+
           const humanizedResult = humanize(this.fields[key], result[key])
           const formattedResult = isEmpty({ value: humanizedResult }) ? this.emptyResultText : humanizedResult
 
@@ -538,8 +561,37 @@ export default {
       height: 24px;
     }
 
+    // thead tr:last-child th:last-child,
+    // td:last-child {
+    //   background-color: white;
+    // }
+
+    // th:last-child,
+    // td:last-child {
+    //   box-shadow: -4px 0 6px -2px rgba(0, 0, 0, 0.1);
+    //   min-width: 80px;
+    //   position: sticky;
+    //   right: 0;
+    //   z-index: 1;
+    // }
+
+  // max-width: 600px
+
+  // thead tr:last-child th:last-child
+  //   /* bg color is important for th; just specify one */
+  //   background-color: #00b4ff
+
+  // td:last-child
+  //   background-color: #00b4ff
+
+  // th:last-child,
+  // td:last-child
+  //   position: sticky
+  //   right: 0
+  //   z-index: 1
+
     th {
-      @include set-typography($subtitle1);
+      @include set-typography($subtitle2);
 
       color: $grey-10;
 
@@ -554,18 +606,19 @@ export default {
         }
       }
 
-      border: 0 !important;
-      padding-bottom: 0;
+      // border: 0 !important;
+      padding-bottom: var(--qas-spacing-sm);;
       padding-left: 0;
       padding-top: 0;
+      padding-right: var(--qas-spacing-md);
 
-      &:not(:last-child) {
-        padding-right: var(--qas-spacing-md);
-      }
+      // &:not(:last-child) {
+      //   padding-right: var(--qas-spacing-md);
+      // }
 
-      &:last-child {
-        padding-right: 0;
-      }
+      // &:last-child {
+      //   padding-right: 0;
+      // }
     }
 
     td,
@@ -576,7 +629,7 @@ export default {
     }
 
     td {
-      @include set-typography($body1);
+      @include set-typography($body2);
 
       height: 40px;
       padding-bottom: var(--qas-spacing-sm);
@@ -584,14 +637,15 @@ export default {
       padding-top: var(--qas-spacing-sm);
       position: relative;
       z-index: 0;
+      padding-right: var(--qas-spacing-md);
 
-      &:not(:last-child) {
-        padding-right: var(--qas-spacing-md);
-      }
+      // &:not(:last-child) {
+      //   padding-right: var(--qas-spacing-md);
+      // }
 
-      &:last-child {
-        padding-right: 0;
-      }
+      // &:last-child {
+      //   padding-right: 0;
+      // }
 
       &::before {
         position: absolute;
@@ -654,10 +708,10 @@ export default {
   }
 
   &--has-actions {
-    td:last-child #{$root}__td-item {
-      display: flex;
-      justify-content: flex-end;
-    }
+    // td:last-child #{$root}__td-item {
+    //   display: flex;
+    //   justify-content: flex-end;
+    // }
   }
 
   &--mobile {

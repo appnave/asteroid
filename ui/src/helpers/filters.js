@@ -88,6 +88,8 @@ function formatCompanyDocument (value) {
 }
 
 function formatDocument (value) {
+  if (!value) return ''
+
   return value.length < 12
     ? formatPersonalDocument(value)
     : formatCompanyDocument(value)
