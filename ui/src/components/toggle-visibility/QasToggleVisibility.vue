@@ -21,12 +21,15 @@
       </div>
 
       <qas-btn class="q-ml-sm qas-toggle-visibility__button" :icon />
+
+      <qas-tooltip :text="tooltipText" />
     </div>
   </div>
 </template>
 
 <script setup>
 import QasBtn from '../btn/QasBtn.vue'
+import QasTooltip from '../tooltip/QasTooltip.vue'
 
 import { useToggleVisibility } from '../../composables/private'
 
@@ -54,6 +57,16 @@ const props = defineProps({
   width: {
     type: String,
     default: '140px'
+  },
+
+  visibleTooltip: {
+    type: String,
+    default: 'Ocultar conteúdo'
+  },
+
+  hiddenTooltip: {
+    type: String,
+    default: 'Visualizar conteúdo'
   }
 })
 
@@ -64,6 +77,7 @@ const {
 
 const icon = computed(() => isVisible.value ? 'sym_r_visibility' : 'sym_r_visibility_off')
 const style = computed(() => ({ width: props.width }))
+const tooltipText = computed(() => isVisible.value ? props.visibleTooltip : props.hiddenTooltip)
 </script>
 
 <style lang="scss">

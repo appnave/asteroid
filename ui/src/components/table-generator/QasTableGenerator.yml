@@ -99,6 +99,11 @@ props:
     default: true
     type: Boolean
 
+  use-multiline:
+    desc: Usado para permitir que o conteúdo da célula quebre linha (não permite scroll na tabela a partir de tablet).
+    default: false
+    type: Boolean
+
   use-object-selected-model:
     desc: Usado para definir o modelo de seleção como um array de objeto ao invés de um array de string.
     default: false

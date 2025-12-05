@@ -36,6 +36,14 @@
           </component>
         </q-td>
       </template>
+
+      <template v-for="(column, index) in columnsWithTooltip" :key="index" #[`header-cell-${column.name}`]="context">
+        <q-th :props="context">
+          {{ context.col.label }}
+
+          <qas-tip class="q-pl-xs" :text="column.tooltip" />
+        </q-th>
+      </template>
     </q-table>
 
     <qas-empty-result-text v-if="!hasResults" />
@@ -45,9 +53,10 @@
 <script>
 import PvTableGeneratorTd from './private/PvTableGeneratorTd.vue'
 import QasBox from '../box/QasBox.vue'
+import QasCheckbox from '../checkbox/QasCheckbox.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasHeader from '../header/QasHeader.vue'
-import QasCheckbox from '../checkbox/QasCheckbox.vue'
+import QasTip from '../tip/QasTip.vue'
 
 import { isEmpty, humanize, setScrollOnGrab, setScrollGradient } from '../../helpers'
 
@@ -61,7 +70,8 @@ export default {
     QasBox,
     QasEmptyResultText,
     QasHeader,
-    QasCheckbox
+    QasCheckbox,
+    QasTip
   },
 
   provide () {
@@ -70,7 +80,7 @@ export default {
        * @see QasBtn.vue - Injetando os valores padrões para o QasBtn.
        */
       btnPropsDefaults: {
-        size: 'md'
+        size: 'sm'
       }
     }
   },
@@ -144,6 +154,10 @@ export default {
     useScrollOnGrab: {
       type: Boolean,
       default: true
+    },
+
+    useMultiline: {
+      type: Boolean
     },
 
     useObjectSelectedModel: {
@@ -287,7 +301,11 @@ export default {
      * caso tenha a prop "actionsMenuProps" é adicionado automaticamente a coluna "actions" como ultimo item
      */
     normalizedColumns () {
-      return this.hasActionsMenu ? [...this.columns, { name: 'actions' }] : this.columns
+      return this.hasActionsMenu ? [...this.columns, { name: 'actions', label: 'Ações' }] : this.columns
+    },
+
+    columnsWithTooltip () {
+      return this.normalizedColumns.filter(column => column.tooltip)
     },
 
     hasFields () {
@@ -301,6 +319,10 @@ export default {
 
       const mappedResults = results.map((result, index) => {
         for (const key in result) {
+          if (this.fields[key]?.type === 'object') {
+            continue
+          }
+
           const humanizedResult = humanize(this.fields[key], result[key])
           const formattedResult = isEmpty({ value: humanizedResult }) ? this.emptyResultText : humanizedResult
 
@@ -322,7 +344,8 @@ export default {
       return {
         'qas-table-generator--mobile': this.$qas.screen.isSmall,
         'qas-table-generator--sticky-header': this.useStickyHeader,
-        'qas-table-generator--has-actions': this.hasActionsMenu
+        'qas-table-generator--has-actions': this.hasActionsMenu,
+        'qas-table-generator--multiline': this.useMultiline
       }
     },
 
@@ -539,7 +562,7 @@ export default {
     }
 
     th {
-      @include set-typography($subtitle1);
+      @include set-typography($subtitle2);
 
       color: $grey-10;
 
@@ -554,18 +577,10 @@ export default {
         }
       }
 
-      border: 0 !important;
-      padding-bottom: 0;
+      padding-bottom: var(--qas-spacing-sm);;
       padding-left: 0;
       padding-top: 0;
-
-      &:not(:last-child) {
-        padding-right: var(--qas-spacing-md);
-      }
-
-      &:last-child {
-        padding-right: 0;
-      }
+      padding-right: var(--qas-spacing-md);
     }
 
     td,
@@ -576,7 +591,7 @@ export default {
     }
 
     td {
-      @include set-typography($body1);
+      @include set-typography($body2);
 
       height: 40px;
       padding-bottom: var(--qas-spacing-sm);
@@ -584,14 +599,7 @@ export default {
       padding-top: var(--qas-spacing-sm);
       position: relative;
       z-index: 0;
-
-      &:not(:last-child) {
-        padding-right: var(--qas-spacing-md);
-      }
-
-      &:last-child {
-        padding-right: 0;
-      }
+      padding-right: var(--qas-spacing-md);
 
       &::before {
         position: absolute;
@@ -648,16 +656,20 @@ export default {
     }
   }
 
+  &--multiline {
+    @media (min-width: $breakpoint-sm) {
+      .q-table td {
+        *:not(.qas-btn, .qas-btn *, .q-badge, .q-badge *){
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+  }
+
   .q-table__container {
     margin-left: calc(var(--qas-spacing-md) * -1);
     margin-right: calc(var(--qas-spacing-md) * -1);
-  }
-
-  &--has-actions {
-    td:last-child #{$root}__td-item {
-      display: flex;
-      justify-content: flex-end;
-    }
   }
 
   &--mobile {

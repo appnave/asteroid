@@ -8,7 +8,7 @@ import { fields, results } from 'src/mocks/users'
 defineOptions({ name: 'Basic' })
 
 const columns = [
-  { sortable: false, name: 'isActive' },
+  { tooltip: 'Tooltip de exemplo', name: 'isActive' },
   'name',
   'createdAt',
   'date'
