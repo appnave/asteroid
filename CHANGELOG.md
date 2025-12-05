@@ -24,15 +24,15 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - adicionado `QasTip`usado via prop `columns`.
   - adicionado label "Ações" na coluna de ação.
 - `QasActionsMenu`: adicionado nova propriedade `useDropdownAlways`.
-- `QasTooltip`: adicionado o componente `QasBreakline`para ser usado na prop `text, agora é possível quebrar textos usando `\n`.
+- `QasTooltip`: adicionado o componente `QasBreakline`para ser usado na prop `text`, agora é possível quebrar textos usando `\n`.
 - `QasToggleVisibility`: adicionado propriedade `visibleTooltip` e `hiddenTooltip`.
 
 ### Modificado
-- `QasTooltip`: modificado tamanho máximo para `300px`.
+- `QasTooltip`: modificado tamanho de largura máxima para `300px`.
 - `QasBtn`: modificado tamanho do botão para `18px` quando o `size` ser `sm`.
 - `helpers/filters/formatDocument`: adicionado validação para parâmetro vazio.
 - `QasTableGenerator`:
-  - adicionado bordam abaixo do titulo das colunas.
+  - adicionado borda abaixo do titulo das colunas.
   - modificado tipografia de `body1` para `body2`.
   - modificado tamanho padrão do `QasBtn` de `md` para `sm`.
   - modificado validação do `mappedResults`, quando usado type `object` ele não passa pelo `humanize` e não adicionado na chave `default` visando performance.

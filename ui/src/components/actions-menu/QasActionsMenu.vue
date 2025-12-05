@@ -213,6 +213,12 @@ const formattedList = computed(() => {
    */
   const payload = { dropdownList: {}, buttonsList: {} }
 
+  /**
+   * Se a prop "useDropdownAlways" for true, significa que sempre usaremos o dropdown,
+   * mesmo que tenha apenas 1 item na lista ou que não tenha splitName.
+   * Também se não tiver splitName e a tela for pequena (mobile/tablet) e não for
+   * single, usaremos o dropdown.
+   */
   if (props.useDropdownAlways || ((!hasSplitName.value || screen.isSmall) && !isSingle.value)) {
     const { buttonsList } = useOptionsActions({ color: DEFAULT_COLOR, props })
 
