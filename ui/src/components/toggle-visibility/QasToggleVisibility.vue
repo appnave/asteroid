@@ -1,4 +1,5 @@
 <template>
+  <!-- "data-no-grab" para prevenir o click drag  -->
   <div class="qas-toggle-visibility" data-no-grab>
     <!-- "data-table-ignore-tr-hover" é para desabilitar o hover do tr no QasTableGenerator -->
     <div :aria-expanded="isVisible" aria-label="Alternar visibilidade do conteúdo" class="cursor-pointer items-center no-wrap qas-toggle-visibility__container row" data-table-ignore-tr-hover role="button" :style @click.prevent.stop="toggleVisibility">

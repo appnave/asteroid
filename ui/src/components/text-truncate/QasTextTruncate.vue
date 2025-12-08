@@ -179,9 +179,9 @@ const textTruncatePropsDefaults = computed(() => {
   }
 })
 
-const typography1 = computed(() => props.typography || textTruncatePropsDefaults.value.typography)
+const defaultTypography = computed(() => props.typography || textTruncatePropsDefaults.value.typography)
 
-const classes = computed(() => [`text-${props.color}`, `text-${typography1.value}`])
+const classes = computed(() => [`text-${props.color}`, `text-${defaultTypography.value}`])
 
 const formattedText = computed(() => props.list.length || props.text ? displayText.value : props.emptyText)
 
