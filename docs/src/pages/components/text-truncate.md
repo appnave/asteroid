@@ -6,6 +6,39 @@ Trunca um texto baseado no tamanho do elemento pai e adiciona um rotulo "ver mai
 
 <doc-api file="text-truncate/QasTextTruncate" name="QasTextTruncate" />
 
+:::info
+#### Injetando propriedades padrões via provide
+Use o provide `textTruncatePropsDefaults` para alterar os valores padrão do QasTextTruncate dentro de um componente pai (ex.: QasTableGenerator). O objeto pode ser parcial — apenas as chaves que quiser sobrescrever — e pode ser reativo (ref/computed) para atualização em tempo de execução.
+
+Comportamento e precedência:
+- Valores que podem ser aplicados: `typography`.
+- Ordem de prioridade: prop passada > valor vindo do `provide` > defaults internos do QasTextTruncate.
+
+1) Provide simples (não reativo)
+```js
+// Componente pai
+provide('textTruncatePropsDefaults', { typography: 'body2' })
+// Todos os QasTextTruncate filhos usarão typography 'body2' a menos que a prop typography seja passada.
+```
+
+1) Provide reativo com computed (recomendado quando precisa atualizar dinamicamente)
+```js
+import { computed, provide } from 'vue'
+
+const textTruncateDefaults = computed(() => {
+  return { typography: algumLogica.value ? 'body1' : 'body2' }
+})
+
+provide('textTruncatePropsDefaults', textTruncateDefaults)
+```
+
+Boas práticas:
+- Utilize em casos específicos, exemplos de uso: QasTableGenerator.
+- Prefira passar um `ref`/`computed` se espera trocar os defaults dinamicamente.
+- Não confunda provide com prop: quando a prop é informada no componente filho, ela sempre sobrescreve o valor passado pelo provide.
+- Documente no pai quando estiver alterando os defaults (ex.: comentário `@see QasTextTruncate.vue`) para facilitar manutenção.
+:::
+
 ## Uso
 
 <doc-example file="QasTextTruncate/Basic" title="Básico" />

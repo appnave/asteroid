@@ -14,6 +14,22 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `QasTextTruncate`:
+  - adicionado recurso para configurar prop `typography` default dinamicamente via provide/inject semelhante ao `QasBtn`.
+  - adicionado `items-center` para alinhamento correto agora que o line-height na tabela foi alterado e estava desalinhado.
+
+### Modificado
+- `QasToggleVisibility`: adicionado data `data-no-grab` para não arrastar conteúdo ao clicar nele, resolvendo problema de miss click.
+- `helpers/set-scroll-on-grab`: adicionado nativamente elemento de `button` para ser ignorado e um novo data `data-no-grab` para resolver problemas de miss click em ações.
+- `QasTableGenerator`:
+  - modificado line-height para tabela ser sempre `100%`ao invés de seguir tipografia das fontes.
+  - modificado tipografia padrão do `QasTextTruncate` via provide `textTruncatePropsDefaults` para `body2`.
+
+### Corrigido
+- `QasBtn`: corrigido tamanho dos ícones para seriem 18px no sm. <!-- N/A -->
+
 ## [3.20.0-beta.2] - 05-12-2025
 ## BREAKING CHANGES
 - Validar todos locais que usam o `QasTableGenerator` pois tiveram bastante mudanças visuais.

@@ -1,6 +1,6 @@
 <template>
   <div ref="parent" :class="classes">
-    <div class="no-wrap row text-no-wrap">
+    <div class="items-center no-wrap row text-no-wrap">
       <!-- "data-table-hover" habilita o hover no texto dentro do QasTableGenerator -->
       <div ref="truncate" class="ellipsis" data-table-hover>
         <slot>
@@ -51,6 +51,8 @@ import {
   onMounted,
   onUnmounted,
   ref,
+  inject,
+  isRef,
   watch
 } from 'vue'
 
@@ -100,7 +102,7 @@ const props = defineProps({
 
   typography: {
     type: String,
-    default: 'body1'
+    default: undefined
   },
 
   list: {
@@ -120,6 +122,9 @@ const props = defineProps({
     type: Boolean
   }
 })
+
+// globals
+const injectedDefaults = inject('textTruncatePropsDefaults', {}) // Inject reativo ou não reativo com fallback vazio
 
 // template refs
 const truncate = ref(null)
@@ -158,7 +163,25 @@ const {
 useMutationObserver({ truncate, callbackFn: truncateText })
 
 // computeds
-const classes = computed(() => [`text-${props.color}`, `text-${props.typography}`])
+/**
+ * Seta os valores padrões, dando prioridade:
+ *  1. Props
+ *  2. Injetado (pode ser reativo ou não reativo)
+ *  3. Caso esteja dentro do QasBox, seta o size para 'sm' se for primary ou secondary.
+ *  4. Hardcoded (tertiary, md, primary)
+ */
+const textTruncatePropsDefaults = computed(() => {
+  const defaultProps = isRef(injectedDefaults) ? injectedDefaults.value : injectedDefaults
+
+  return {
+    typography: 'body1',
+    ...defaultProps
+  }
+})
+
+const typography1 = computed(() => props.typography || textTruncatePropsDefaults.value.typography)
+
+const classes = computed(() => [`text-${props.color}`, `text-${typography1.value}`])
 
 const formattedText = computed(() => props.list.length || props.text ? displayText.value : props.emptyText)
 

@@ -81,6 +81,13 @@ export default {
        */
       btnPropsDefaults: {
         size: 'sm'
+      },
+
+      /**
+       * @see QasTextTruncate.vue - Injetando os valores padrões para o QasTextTruncate.
+       */
+      textTruncatePropsDefaults: {
+        typography: 'body2'
       }
     }
   },
@@ -577,10 +584,11 @@ export default {
         }
       }
 
+      line-height: 100% !important;
       padding-bottom: var(--qas-spacing-sm);;
       padding-left: 0;
-      padding-top: 0;
       padding-right: var(--qas-spacing-md);
+      padding-top: 0;
     }
 
     td,
@@ -600,6 +608,10 @@ export default {
       position: relative;
       z-index: 0;
       padding-right: var(--qas-spacing-md);
+
+      * {
+        line-height: 100% !important;
+      }
 
       &::before {
         position: absolute;
