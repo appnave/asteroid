@@ -57,7 +57,6 @@ export default function (element, options = {}, cancelMouseDownTarget) {
       elementListToCancel.push(`.${cancelMouseDownTarget}`)
     }
 
-    console.log('elementListToCancel', elementListToCancel)
     const canCancelMouseDownTarget = elementListToCancel.some(tag => event.target.closest(tag))
 
     if (canCancelMouseDownTarget) return
