@@ -51,7 +51,11 @@ export default function (element, options = {}, cancelMouseDownTarget) {
      * closest busca ancestral mais próximo de um elemento, ou seja, verifica se no event que recebo, tenho a classe no qual nao se deve aplicar o grab.
     */
 
-    const elementListToCancel = ['button', `.${cancelMouseDownTarget}`, '[data-no-grab]']
+    const elementListToCancel = ['button', '[data-no-grab]']
+
+    if (cancelMouseDownTarget) {
+      elementListToCancel.push(`.${cancelMouseDownTarget}`)
+    }
 
     const canCancelMouseDownTarget = elementListToCancel.some(tag => event.target.closest(tag))
 
