@@ -50,7 +50,6 @@
               <slot :name="`legend-top-${fieldsetItemKey}-${subsetKey}`" />
             </div>
 
-            <!-- TODO: Verificar se os slots do subset estão funcionando, já que não está concatenando nomeDoFieldset-nomeDoSubset -->
             <div :class="classes">
               <div v-for="(field, key) in subsetItem.fields" :key="key" :class="getContainerClasses({ key })">
                 <slot :field="field" :name="`field-${field.name}`">
