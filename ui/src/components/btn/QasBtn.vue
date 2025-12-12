@@ -1,6 +1,6 @@
 <template>
   <!-- "data-table-ignore-tr-hover" é para desabilitar o hover do tr no QasTableGenerator -->
-  <q-btn ref="button" class="qas-btn" data-table-ignore-tr-hover v-bind="attributes">
+  <q-btn ref="button" class="overflow-hidden qas-btn" data-table-ignore-tr-hover v-bind="attributes">
     <template v-for="(_, name) in nonDefaultSlots" #[name]="context">
       <slot :name="name" v-bind="context || {}" />
     </template>
@@ -22,10 +22,13 @@
     <slot />
 
     <qas-tooltip v-if="hasTooltip" :text="tooltipText" />
+
+    <qas-skeleton v-if="props.skeleton" type="round" use-overlay use-title />
   </q-btn>
 </template>
 
 <script setup>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasTooltip from '../tooltip/QasTooltip.vue'
 
 import { useScreen } from '../../composables'
@@ -80,6 +83,10 @@ const props = defineProps({
   },
 
   loading: {
+    type: Boolean
+  },
+
+  skeleton: {
     type: Boolean
   },
 

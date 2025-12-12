@@ -15,14 +15,17 @@
         </slot>
       </div>
 
-      <q-inner-loading :showing="isFetching">
+      <!-- <q-inner-loading :showing="isFetching">
         <q-spinner color="grey" size="3em" />
-      </q-inner-loading>
+      </q-inner-loading> -->
+
+      <qas-skeleton v-if="isFetching" use-overlay />
     </div>
   </component>
 </template>
 
 <script>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasBox from '../box/QasBox.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasFilters from '../filters/QasFilters.vue'
@@ -74,6 +77,7 @@ export default {
     QasBox,
     QasEmptyResultText,
     QasFilters,
+    QasSkeleton,
     QasHeader
   },
 
@@ -339,6 +343,7 @@ export default {
       return {
         alignColumns: 'end',
         description: this.subtitle,
+        loading: this.isFetching,
         labelProps: {
           label: this.title
         }

@@ -1,6 +1,6 @@
 <template>
   <qas-container>
-    <qas-table-generator :columns :fields loading :results />
+    <qas-table-generator :columns :fields loading :results use-multiline />
   </qas-container>
 </template>
 

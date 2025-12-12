@@ -10,16 +10,18 @@
           <slot :fields="getVisibleFields(fieldsetItem)" :name="`legend-section-${fieldsetItemKey}`">
             <div class="q-col-gutter-md row">
               <div class="col">
-                <div class="relative-position" :class="fieldContainerClasses">
-                  <div v-for="(field, key) in getVisibleFields(fieldsetItem)" :key="key" :class="getFieldClass({ index: key, fields: normalizedFields })">
-                    <slot :field="field" :name="`field-${field.name}`">
-                      <qas-field :disable="isFieldDisabled(field)" v-bind="props.fieldsProps[field.name]" :error="props.errors[key]" :field="field" :model-value="props.modelValue[field.name]" @update:model-value="updateModelValue({ key: field.name, value: $event })" />
-                    </slot>
+                <div :class="fieldContainerClasses">
+                  <div v-if="props.loading" class="col-12">
+                    <qas-skeleton v-bind="getFieldsetSkeletonContentProps(fieldsetItem)" />
                   </div>
 
-                  <div class="col-12">
-                    <qas-skeleton v-if="props.loading" class="q-mt-md" v-bind="getFieldsetSkeletonContentProps(fieldsetItem)" />
-                  </div>
+                  <template v-else>
+                    <div v-for="(field, key) in getVisibleFields(fieldsetItem)" :key="key" :class="getFieldClass({ index: key, fields: normalizedFields })">
+                      <slot :field="field" :name="`field-${field.name}`">
+                        <qas-field :disable="isFieldDisabled(field)" v-bind="props.fieldsProps[field.name]" :error="props.errors[key]" :field="field" :model-value="props.modelValue[field.name]" @update:model-value="updateModelValue({ key: field.name, value: $event })" />
+                      </slot>
+                    </div>
+                  </template>
                 </div>
               </div>
 
@@ -38,15 +40,17 @@
 
                 <div class="relative-position">
                   <slot :fields="subsetItem.fields" :name="`legend-section-${fieldsetItemKey}-${subsetKey}`">
-                    <div :class="fieldContainerClasses">
-                      <div v-for="(field, key) in subsetItem.fields" :key="key" :class="getFieldClass({ index: key, fields: fieldsetItem.subset })">
-                        <slot :field="field" :name="`field-${field.name}`">
-                          <qas-field :disable="isFieldDisabled(field)" v-bind="props.fieldsProps[field.name]" :error="props.errors[key]" :field :model-value="props.modelValue[field.name]" @update:model-value="updateModelValue({ key: field.name, value: $event })" />
-                        </slot>
-                      </div>
-                    </div>
-
                     <qas-skeleton v-if="props.loading" class="q-mt-md" v-bind="getFieldsetSkeletonContentProps(fieldsetItem, 'subset')" />
+
+                    <template v-else>
+                      <div :class="fieldContainerClasses">
+                        <div v-for="(field, key) in subsetItem.fields" :key="key" :class="getFieldClass({ index: key, fields: fieldsetItem.subset })">
+                          <slot :field="field" :name="`field-${field.name}`">
+                            <qas-field :disable="isFieldDisabled(field)" v-bind="props.fieldsProps[field.name]" :error="props.errors[key]" :field :model-value="props.modelValue[field.name]" @update:model-value="updateModelValue({ key: field.name, value: $event })" />
+                          </slot>
+                        </div>
+                      </div>
+                    </template>
                   </slot>
                 </div>
 
@@ -294,12 +298,10 @@ function getVisibleFields (fieldsetItem) {
  * @param {Object} fieldsetItem
  */
 function getFieldsetSkeletonContentProps (fieldsetItem, fieldKey = 'fields') {
-  const useOverlay = !!Object.keys(fieldsetItem[fieldKey]).length
+  // const useOverlay = !!Object.keys(fieldsetItem[fieldKey]).length
 
   return {
-    useOverlay,
-    minHeight: useOverlay ? '40px' : undefined,
-    gutter: 'md'
+    minHeight: '80px'
   }
 }
 </script>

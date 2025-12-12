@@ -65,13 +65,31 @@ const attrs = useAttrs()
 // computeds
 const skeletonProps = computed(() => {
   const defaultProps = {
+    QasBadge: {
+      width: props.width || '60px',
+      height: props.height || '24px'
+    },
+
+    QasActionsMenu: {
+      width: props.width || '80px',
+      height: props.height || '24px'
+    },
+
     QasCheckbox: {
       size: '18px'
     },
 
     QasBtn: {
-      width: props.width || '24px',
+      width: props.width || '130px',
       height: '24px'
+    },
+
+    QasToggleVisibility: {
+      width: props.width || '140px'
+    },
+
+    QasTextTruncate: {
+      width: props.width || '200px'
     },
 
     QasStatus: {
@@ -80,7 +98,12 @@ const skeletonProps = computed(() => {
     }
   }
 
-  const actionTypes = ['QasCheckbox', 'QasBtn']
+  const actionTypes = [
+    'QasCheckbox',
+    'QasBtn',
+    'QasToggleVisibility',
+    'QasActionsMenu'
+  ]
 
   const classes = {
     [`qas-skeleton--${props.gutter}`]: !!props.gutter,
@@ -94,8 +117,8 @@ const skeletonProps = computed(() => {
     ...(props.type === 'text' && { type: 'text' }),
     class: [classes, attrs.class],
     width: props.width,
-    ...defaultProps[props.type],
     height: props.height,
+    ...defaultProps[props.type],
     style: {
       ...(props.maxWidth && { maxWidth: props.maxWidth }),
       ...(props.minHeight && { minHeight: props.minHeight })

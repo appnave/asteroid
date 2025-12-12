@@ -15,11 +15,15 @@
             <slot name="carousel-header" />
           </div>
         </slot>
+
+        <qas-skeleton v-if="props.loading" use-overlay />
       </header>
 
       <q-card-section class="col-grow column full-width justify-between">
-        <div class="full-width" :class="gutterClass">
+        <div class="full-width relative-position" :class="gutterClass">
           <slot />
+
+          <qas-skeleton v-if="props.loading" use-overlay />
         </div>
       </q-card-section>
 
@@ -31,6 +35,7 @@
 </template>
 
 <script setup>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasBtn from '../btn/QasBtn.vue'
 
 import { Spacing } from '../../enums/Spacing'
@@ -61,6 +66,10 @@ const props = defineProps({
   },
 
   unelevated: {
+    type: Boolean
+  },
+
+  loading: {
     type: Boolean
   },
 

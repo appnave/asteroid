@@ -249,6 +249,7 @@ export default {
         orderByOptions: this.orderByOptions,
         useOrderBy: this.hasOrderByOptions,
         useFilterButton: this.useFilterButton,
+        isFetchingFilters: this.isFetching,
 
         filtersButtonProps: {
           color: this.filterButtonColor,

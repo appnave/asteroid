@@ -1,98 +1,112 @@
 <template>
-  <qas-table-generator v-bind="tableGeneratorProps">
-    <template #body-cell-isActive>
-      EAI
-    </template>
-  </qas-table-generator>
+  <qas-table-generator v-bind="tableGeneratorProps" />
+
+  <qas-btn class="q-mt-lg" :label="buttonLabel" @click="onClick" />
 </template>
 
 <script setup>
+import { computed, ref } from 'vue'
 import { fields, results } from 'src/mocks/users'
 
 defineOptions({ name: 'WithFieldsProps' })
 
-const tableGeneratorProps = {
-  fields,
-  results,
+// refs
+const isLoading = ref(true)
 
-  columns: [
-    'isActive',
-    'document',
-    'companies',
-    'createdAt',
-    'company',
-    'date',
-    'email',
-    'observation'
-  ],
+// computeds
+const tableGeneratorProps = computed(() => {
+  return {
+    fields,
+    results,
 
-  actionsMenuProps (row) {
-    return {
-      list: {
-        visibility: {
-          label: 'Visibilidade',
-          icon: 'sym_r_person',
-          handler: () => alert(row.uuid)
+    columns: [
+      'isActive',
+      'document',
+      'companies',
+      'createdAt',
+      'company',
+      'date',
+      'email',
+      'observation'
+    ],
+
+    actionsMenuProps (row) {
+      return {
+        list: {
+          visibility: {
+            label: 'Visibilidade',
+            icon: 'sym_r_person',
+            handler: () => alert(row.uuid)
+          },
+          edit: {
+            label: 'Editar',
+            icon: 'sym_r_edit',
+            handler: () => alert(row.uuid)
+          }
+        }
+      }
+    },
+
+    fieldsProps (row) {
+      return {
+        isActive: {
+          component: 'QasStatus',
+          props: {
+            color: row.default.isActive ? 'green' : 'red'
+          }
         },
-        edit: {
-          label: 'Editar',
-          icon: 'sym_r_edit',
-          handler: () => alert(row.uuid)
+
+        createdAt: {
+          component: 'QasBadge'
+        },
+
+        companies: {
+          component: 'QasTextTruncate',
+          props: {
+            list: row.companies,
+            maxVisibleItems: 1
+          }
+        },
+
+        document: {
+          component: 'QasToggleVisibility'
+        },
+
+        name: {
+          component: 'QasTextTruncate',
+          props: {
+            maxWidth: 150
+          }
+        },
+
+        company: {
+          component: 'QasBtn',
+          props: {
+            size: 'lg',
+            onClick: () => alert(row.company)
+          }
+        },
+
+        email: {
+          component: 'QasCopy'
+        },
+
+        observation: {
+          component: 'QasTextTruncate'
         }
       }
-    }
-  },
+    },
 
-  fieldsProps (row) {
-    return {
-      isActive: {
-        component: 'QasStatus',
-        props: {
-          color: row.default.isActive ? 'green' : 'red'
-        }
-      },
+    loading: isLoading.value,
 
-      createdAt: {
-        component: 'QasBadge'
-      },
+    onRowClick: () => alert('Clicando na linha')
+  }
+})
 
-      companies: {
-        component: 'QasTextTruncate',
-        props: {
-          list: row.companies,
-          maxVisibleItems: 1
-        }
-      },
+const buttonLabel = computed(() => isLoading.value ? 'Desativar loading' : 'Ativar loading')
 
-      document: {
-        component: 'QasToggleVisibility'
-      },
-
-      name: {
-        component: 'QasTextTruncate',
-        props: {
-          maxWidth: 150
-        }
-      },
-
-      company: {
-        component: 'QasBtn',
-        props: {
-          size: 'lg',
-          onClick: () => alert(row.company)
-        }
-      },
-
-      email: {
-        component: 'QasCopy'
-      },
-
-      observation: {
-        component: 'QasTextTruncate'
-      }
-    }
-  },
-
-  onRowClick: () => alert('Clicando na linha')
+// functions
+function onClick () {
+  isLoading.value = !isLoading.value
 }
 </script>

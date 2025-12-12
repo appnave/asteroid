@@ -98,8 +98,7 @@ const props = defineProps({
   },
 
   loading: {
-    type: Boolean,
-    default: true
+    type: Boolean
   },
 
   spacing: {
