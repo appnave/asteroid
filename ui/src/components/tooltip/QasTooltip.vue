@@ -1,10 +1,12 @@
 <template>
   <q-tooltip v-bind="tooltipProps" class="bg-grey-10 text-caption">
-    {{ props.text }}
+    <qas-breakline :text="props.text" />
   </q-tooltip>
 </template>
 
 <script setup>
+import QasBreakline from '../breakline/QasBreakline.vue'
+
 defineOptions({ name: 'QasTooltip' })
 
 const props = defineProps({
@@ -18,6 +20,7 @@ const props = defineProps({
 const tooltipProps = {
   anchor: 'center right',
   self: 'center left',
-  offset: [5, 5]
+  offset: [5, 5],
+  maxWidth: '300px'
 }
 </script>

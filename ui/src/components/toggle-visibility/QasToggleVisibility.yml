@@ -25,6 +25,16 @@ props:
     default: '140px'
     type: String
 
+  visible-tooltip:
+    desc: Texto do tooltip exibido quando o conteúdo está visível.
+    default: 'Ocultar conteúdo'
+    type: String
+
+  hidden-tooltip:
+    desc: Texto do tooltip exibido quando o conteúdo está oculto.
+    default: 'Exibir conteúdo'
+    type: String
+
 slots:
   default:
     desc: Slot para inserir conteúdo a ser oculto/exibido.

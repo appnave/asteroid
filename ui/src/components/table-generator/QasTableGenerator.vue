@@ -6,14 +6,22 @@
 
     <q-table v-show="hasResults" ref="table" v-bind="attributes" v-model:selected="selectedModel" class="bg-white text-grey-8">
       <template v-if="loading" #header-cell="props">
-        <q-th v-if="props.col.name !== 'actions'" :props="props">
-          <q-skeleton v-bind="getThSkeletonProps()" animation="blink" class="bg-blue-grey-4" type="text" />
+        <q-th :props="props">
+          <qas-skeleton v-bind="getThSkeletonProps()" />
+        </q-th>
+      </template>
+
+      <template v-for="(column, index) in columnsWithTooltip" :key="index" #[`header-cell-${column.name}`]="context">
+        <q-th :props="context">
+          {{ context.col.label }}
+
+          <qas-tip class="q-pl-xs" :text="column.tooltip" />
         </q-th>
       </template>
 
       <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
       <template #header-selection="props">
-        <q-skeleton v-if="loading" animation="blink" class="bg-blue-grey-4" size="18px" />
+        <qas-skeleton v-if="loading" type="QasCheckbox" />
 
         <div v-else class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
           <qas-checkbox v-model="props.selected" />
@@ -22,7 +30,7 @@
 
       <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
       <template #body-selection="props">
-        <q-skeleton v-if="loading" animation="blink" class="bg-blue-grey-4" size="18px" />
+        <qas-skeleton v-if="loading" type="QasCheckbox" />
 
         <div v-else class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
           <qas-checkbox v-model="props.selected" />
@@ -35,7 +43,7 @@
 
       <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
         <q-td :class="getTdClasses(context.row)">
-          <q-skeleton v-if="loading" v-bind="getTgSkeletonProps(fieldName, context.row)" animation="blink" />
+          <qas-skeleton v-if="loading" v-bind="getTgSkeletonProps(fieldName, context.row)" />
 
           <component :is="tdChildComponent" v-else class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
             <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
@@ -57,9 +65,11 @@
 <script>
 import PvTableGeneratorTd from './private/PvTableGeneratorTd.vue'
 import QasBox from '../box/QasBox.vue'
+import QasCheckbox from '../checkbox/QasCheckbox.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasHeader from '../header/QasHeader.vue'
-import QasCheckbox from '../checkbox/QasCheckbox.vue'
+import QasTip from '../tip/QasTip.vue'
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 
 import { isEmpty, humanize, setScrollOnGrab, setScrollGradient } from '../../helpers'
 
@@ -73,7 +83,9 @@ export default {
     QasBox,
     QasEmptyResultText,
     QasHeader,
-    QasCheckbox
+    QasCheckbox,
+    QasTip,
+    QasSkeleton
   },
 
   provide () {
@@ -82,7 +94,14 @@ export default {
        * @see QasBtn.vue - Injetando os valores padrões para o QasBtn.
        */
       btnPropsDefaults: {
-        size: 'md'
+        size: 'sm'
+      },
+
+      /**
+       * @see QasTextTruncate.vue - Injetando os valores padrões para o QasTextTruncate.
+       */
+      textTruncatePropsDefaults: {
+        typography: 'body2'
       }
     }
   },
@@ -160,6 +179,10 @@ export default {
     useScrollOnGrab: {
       type: Boolean,
       default: true
+    },
+
+    useMultiline: {
+      type: Boolean
     },
 
     useObjectSelectedModel: {
@@ -348,7 +371,14 @@ export default {
      * caso tenha a prop "actionsMenuProps" é adicionado automaticamente a coluna "actions" como ultimo item
      */
     normalizedColumns () {
-      return this.hasActionsMenu ? [...this.columns, { name: 'actions' }] : this.columns
+      return this.hasActionsMenu ? [...this.columns, { name: 'actions', label: 'Ações' }] : this.columns
+    },
+
+    columnsWithTooltip () {
+      // quando estiver em loading, não precisa processar as colunas com tooltip
+      if (this.loading) return []
+
+      return this.normalizedColumns.filter(column => column.tooltip)
     },
 
     hasFields () {
@@ -365,6 +395,10 @@ export default {
 
       const mappedResults = results.map((result, index) => {
         for (const key in result) {
+          if (this.fields[key]?.type === 'object') {
+            continue
+          }
+
           const humanizedResult = humanize(this.normalizedFields[key], result[key])
           const formattedResult = isEmpty({ value: humanizedResult }) ? this.emptyResultText : humanizedResult
 
@@ -386,7 +420,8 @@ export default {
       return {
         'qas-table-generator--mobile': this.$qas.screen.isSmall,
         'qas-table-generator--sticky-header': this.useStickyHeader,
-        'qas-table-generator--has-actions': this.hasActionsMenu
+        'qas-table-generator--has-actions': this.hasActionsMenu,
+        'qas-table-generator--multiline': this.useMultiline
       }
     },
 
@@ -593,57 +628,29 @@ export default {
     },
 
     getTgSkeletonProps (column, row) {
-      const actionsProps = {
-        width: '76px',
-        height: '18px',
-        class: 'bg-blue-grey-4'
-      }
-
-      if (column === 'actions') {
-        return actionsProps
-      }
-
       const normalizedFieldsProps = typeof this.fieldsProps === 'function'
         ? this.fieldsProps(row)
         : this.fieldsProps || {}
 
       const columnFieldProps = normalizedFieldsProps[column]
 
-      if (columnFieldProps) {
-        const { component } = columnFieldProps
-
-        if (component === 'QasBadge') {
-          return {
-            width: '60px',
-            height: '24px'
-          }
-        }
-
-        if (component === 'QasToggleVisibility') {
-          return {
-            ...actionsProps,
-            width: '140px'
-          }
-        }
-
-        if (component === 'QasTextTruncate') {
-          return {
-            ...actionsProps,
-            width: '200px'
-          }
-        }
-
-        return actionsProps
-      }
-
       const min = 100
-      const max = 200
+      const max = 160
 
       const width = Math.floor(Math.random() * (max - min + 1)) + min
 
+      const isActions = column === 'actions'
+
+      const type = (
+        (isActions ? 'QasActionsMenu' : undefined) ||
+        columnFieldProps?.component ||
+        (this.useMultiline ? undefined : 'text')
+      )
+
       return {
-        type: 'text',
-        width: `${width + 20}px`
+        type,
+        height: this.useMultiline && !isActions ? '68px' : undefined,
+        width: columnFieldProps?.component || isActions ? undefined : `${width + 20}px`
       }
     },
 
@@ -654,6 +661,8 @@ export default {
       const width = Math.floor(Math.random() * (max - min + 1)) + min
 
       return {
+        type: 'text',
+        useTitle: true,
         width: `${width}px`
       }
     }
@@ -671,7 +680,7 @@ export default {
     }
 
     th {
-      @include set-typography($subtitle1);
+      @include set-typography($subtitle2);
 
       color: $grey-10;
 
@@ -686,18 +695,11 @@ export default {
         }
       }
 
-      border: 0 !important;
-      padding-bottom: 0;
+      line-height: 100% !important;
+      padding-bottom: var(--qas-spacing-sm);;
       padding-left: 0;
+      padding-right: var(--qas-spacing-md);
       padding-top: 0;
-
-      &:not(:last-child) {
-        padding-right: var(--qas-spacing-md);
-      }
-
-      &:last-child {
-        padding-right: 0;
-      }
     }
 
     td,
@@ -708,7 +710,7 @@ export default {
     }
 
     td {
-      @include set-typography($body1);
+      @include set-typography($body2);
 
       height: 40px;
       padding-bottom: var(--qas-spacing-sm);
@@ -716,13 +718,10 @@ export default {
       padding-top: var(--qas-spacing-sm);
       position: relative;
       z-index: 0;
+      padding-right: var(--qas-spacing-md);
 
-      &:not(:last-child) {
-        padding-right: var(--qas-spacing-md);
-      }
-
-      &:last-child {
-        padding-right: 0;
+      * {
+        line-height: 100% !important;
       }
 
       &::before {
@@ -780,16 +779,20 @@ export default {
     }
   }
 
+  &--multiline {
+    @media (min-width: $breakpoint-sm) {
+      .q-table td {
+        *:not(.qas-btn, .qas-btn *, .q-badge, .q-badge *){
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+  }
+
   .q-table__container {
     margin-left: calc(var(--qas-spacing-md) * -1);
     margin-right: calc(var(--qas-spacing-md) * -1);
-  }
-
-  &--has-actions {
-    td:last-child #{$root}__td-item {
-      display: flex;
-      justify-content: flex-end;
-    }
   }
 
   &--mobile {

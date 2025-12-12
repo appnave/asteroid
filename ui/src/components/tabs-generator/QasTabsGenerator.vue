@@ -7,17 +7,15 @@
             <q-icon v-if="tab.icon" :name="tab.icon" size="sm" />
 
             <div v-if="tab.status">
-              <qas-skeleton v-if="props.loading" type="QasStatus" use-title />
-
-              <qas-status v-else :color="tab.status" />
+              <qas-status :color="tab.status" />
             </div>
 
-            <div class="q-ml-xs relative-position">
-              <qas-skeleton v-if="props.loading" type="QasBtn" use-overlay width="100%" />
-
+            <div class="flex items-center no-wrap q-ml-xs">
               <span>
                 {{ getFormattedLabel(tab) }}
               </span>
+
+              <qas-skeleton v-if="props.loading && !tab.counter" class="q-ml-sm" height="22px" type="text" width="25px" />
             </div>
           </slot>
         </component>
@@ -87,7 +85,7 @@ const model = computed({
       ? props.tabs.find(tab => tab?.value === value)
       : formattedTabs.value[value]
 
-    if (currentTab?.disabled || props.loading) return
+    if (currentTab?.disabled) return
 
     emit('update:modelValue', value)
   }
