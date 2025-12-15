@@ -99,7 +99,7 @@ Exemplo:
 }
 ```
 :::
-<doc-example file="QasFormGenerator/Loading" title="Loading" />
+<doc-example file="QasFormGenerator/Skeleton" title="Skeleton" />
 <doc-example file="QasFormGenerator/WithSubsets" title="Usando com subseções" />
 <doc-example file="QasFormGenerator/WithSubsetsSlots" title="Acessando slots de subseções" />
 

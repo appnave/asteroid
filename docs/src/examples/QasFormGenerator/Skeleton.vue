@@ -15,7 +15,7 @@
 <script setup>
 import { ref } from 'vue'
 
-defineOptions({ name: 'PageLoading' })
+defineOptions({ name: 'PageSkeleton' })
 
 // refs
 const model = ref({})
@@ -23,7 +23,7 @@ const model = ref({})
 // consts
 const baseFormGeneratorProps = {
   commonColumns: { col: 12, sm: 4 },
-  loading: true,
+  skeleton: true,
   columns: { others: { col: 8 }, comment: { col: 12 } },
   fields: {
     uuid: {

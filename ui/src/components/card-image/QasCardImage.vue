@@ -16,14 +16,14 @@
           </div>
         </slot>
 
-        <qas-skeleton v-if="props.loading" use-overlay />
+        <qas-skeleton v-if="props.skeleton" use-overlay />
       </header>
 
       <q-card-section class="col-grow column full-width justify-between">
         <div class="full-width relative-position" :class="gutterClass">
           <slot />
 
-          <qas-skeleton v-if="props.loading" use-overlay />
+          <qas-skeleton v-if="props.skeleton" use-overlay />
         </div>
       </q-card-section>
 
@@ -69,7 +69,7 @@ const props = defineProps({
     type: Boolean
   },
 
-  loading: {
+  skeleton: {
     type: Boolean
   },
 

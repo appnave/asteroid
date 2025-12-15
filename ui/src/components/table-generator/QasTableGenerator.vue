@@ -5,7 +5,7 @@
     </slot>
 
     <q-table v-show="hasResults" ref="table" v-bind="attributes" v-model:selected="selectedModel" class="bg-white text-grey-8">
-      <template v-if="loading" #header-cell="props">
+      <template v-if="skeleton" #header-cell="props">
         <q-th :props="props">
           <qas-skeleton v-bind="getThSkeletonProps()" />
         </q-th>
@@ -21,7 +21,7 @@
 
       <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
       <template #header-selection="props">
-        <qas-skeleton v-if="loading" type="QasCheckbox" />
+        <qas-skeleton v-if="skeleton" type="QasCheckbox" />
 
         <div v-else class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
           <qas-checkbox v-model="props.selected" />
@@ -30,7 +30,7 @@
 
       <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
       <template #body-selection="props">
-        <qas-skeleton v-if="loading" type="QasCheckbox" />
+        <qas-skeleton v-if="skeleton" type="QasCheckbox" />
 
         <div v-else class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
           <qas-checkbox v-model="props.selected" />
@@ -43,7 +43,7 @@
 
       <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
         <q-td :class="getTdClasses(context.row)">
-          <qas-skeleton v-if="loading" v-bind="getTgSkeletonProps(fieldName, context.row)" />
+          <qas-skeleton v-if="skeleton" v-bind="getTgSkeletonProps(fieldName, context.row)" />
 
           <component :is="tdChildComponent" v-else class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
             <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
@@ -163,7 +163,7 @@ export default {
       type: Array
     },
 
-    loading: {
+    skeleton: {
       type: Boolean
     },
 
@@ -217,7 +217,7 @@ export default {
 
   computed: {
     normalizedFields () {
-      if (this.loading) {
+      if (this.skeleton) {
         const fields = {}
 
         this.normalizedColumns.forEach(column => {
@@ -237,7 +237,7 @@ export default {
     },
 
     normalizedResults () {
-      if (this.loading) {
+      if (this.skeleton) {
         const generatedResults = []
 
         for (let i = 0; i < 12; i++) {
@@ -375,8 +375,8 @@ export default {
     },
 
     columnsWithTooltip () {
-      // quando estiver em loading, não precisa processar as colunas com tooltip
-      if (this.loading) return []
+      // quando estiver em skeleton, não precisa processar as colunas com tooltip
+      if (this.skeleton) return []
 
       return this.normalizedColumns.filter(column => column.tooltip)
     },
@@ -388,8 +388,8 @@ export default {
     resultsByFields () {
       if (!Object.keys(this.normalizedFields).length) return []
 
-      // Validação necessária para evitar processamento sem necessidade quando estiver em loading.
-      if (this.loading) return this.normalizedResults
+      // Validação necessária para evitar processamento sem necessidade quando estiver em skeleton.
+      if (this.skeleton) return this.normalizedResults
 
       const results = extend(true, [], this.normalizedResults)
 
@@ -585,7 +585,7 @@ export default {
     },
 
     getTdChildComponentProps (row) {
-      if (!this.rowRouteFn || this.loading) return
+      if (!this.rowRouteFn || this.skeleton) return
 
       return {
         class: [
@@ -603,7 +603,7 @@ export default {
     },
 
     onRowClick () {
-      if (this.loading) return
+      if (this.skeleton) return
 
       this.$attrs.onRowClick(...arguments)
     },

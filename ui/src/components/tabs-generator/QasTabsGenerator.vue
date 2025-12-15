@@ -15,7 +15,7 @@
                 {{ getFormattedLabel(tab) }}
               </span>
 
-              <qas-skeleton v-if="props.loading && !tab.counter" class="q-ml-sm" height="22px" type="text" width="25px" />
+              <qas-skeleton v-if="props.skeleton && !tab.counter" class="q-ml-sm" height="22px" type="text" width="25px" />
             </div>
           </slot>
         </component>
@@ -42,7 +42,7 @@ const props = defineProps({
     type: Object
   },
 
-  loading: {
+  skeleton: {
     type: Boolean
   },
 

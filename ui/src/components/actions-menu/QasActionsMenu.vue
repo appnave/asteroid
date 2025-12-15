@@ -81,6 +81,10 @@ const props = defineProps({
     type: Object
   },
 
+  skeleton: {
+    type: Boolean
+  },
+
   splitName: {
     default: '',
     type: String
@@ -152,6 +156,7 @@ const primaryKey = computed(() => {
 const defaultButtonPropsList = computed(() => {
   const defaultButtonPropsList = {
     useHoverOnWhiteColor: true,
+    // skeleton: props.skeleton,
     useLabelOnSmallScreen: false
   }
 
@@ -181,6 +186,7 @@ const btnDropdownProps = computed(() => {
   return {
     buttonsPropsList: defaultButtonPropsList.value,
     disable: props.disable,
+    skeleton: props.skeleton,
     useSplit: hasSplit.value,
     useAutoClose: !hasActiveLoading.value
   }

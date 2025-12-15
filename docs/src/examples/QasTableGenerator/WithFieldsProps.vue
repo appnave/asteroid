@@ -11,7 +11,7 @@ import { fields, results } from 'src/mocks/users'
 defineOptions({ name: 'WithFieldsProps' })
 
 // refs
-const isLoading = ref(true)
+const showSkeleton = ref(true)
 
 // computeds
 const tableGeneratorProps = computed(() => {
@@ -97,16 +97,17 @@ const tableGeneratorProps = computed(() => {
       }
     },
 
-    loading: isLoading.value,
+    skeleton: showSkeleton.value,
 
     onRowClick: () => alert('Clicando na linha')
   }
 })
 
-const buttonLabel = computed(() => isLoading.value ? 'Desativar loading' : 'Ativar loading')
+// computeds
+const buttonLabel = computed(() => showSkeleton.value ? 'Desativar skeleton' : 'Ativar skeleton')
 
 // functions
 function onClick () {
-  isLoading.value = !isLoading.value
+  showSkeleton.value = !showSkeleton.value
 }
 </script>

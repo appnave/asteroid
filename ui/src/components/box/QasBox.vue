@@ -3,7 +3,7 @@
     <div ref="content" class="relative-position">
       <slot />
 
-      <qas-skeleton v-if="props.loading" use-overlay />
+      <qas-skeleton v-if="props.skeleton" use-overlay />
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@ const props = defineProps({
     default: undefined
   },
 
-  loading: {
+  skeleton: {
     type: Boolean
   },
 

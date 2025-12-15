@@ -6,13 +6,13 @@
           <slot name="header">
             <div class="ellipsis flex full-width no-wrap">
               <slot v-if="props.useSelection" name="header-left">
-                <qas-skeleton v-if="props.loading" class="q-mr-sm" type="QasCheckbox" />
+                <qas-skeleton v-if="props.skeleton" class="q-mr-sm" type="QasCheckbox" />
 
                 <qas-checkbox v-else v-model="selected" :false-value="props.falseValue" :true-value="props.trueValue" />
               </slot>
 
               <component :is="titleComponent.is" class="ellipsis full-width text-h5 text-no-decoration" v-bind="titleComponent.props">
-                <qas-skeleton v-if="props.loading" type="text" use-title />
+                <qas-skeleton v-if="props.skeleton" type="text" use-title />
 
                 <slot v-else name="title">
                   {{ props.title }}
@@ -23,7 +23,7 @@
             </div>
 
             <div v-if="hasActions">
-              <qas-skeleton v-if="props.loading" class="q-ml-sm" type="QasBtn" />
+              <qas-skeleton v-if="props.skeleton" class="q-ml-sm" type="QasBtn" />
 
               <qas-actions-menu v-else v-bind="formattedActionsMenuProps" />
             </div>
@@ -31,7 +31,7 @@
         </header>
 
         <div class="qas-card__content relative-position" :class="contentClasses">
-          <qas-skeleton v-if="props.loading" use-overlay />
+          <qas-skeleton v-if="props.skeleton" use-overlay />
 
           <slot name="default" />
         </div>
@@ -40,7 +40,7 @@
           <q-separator v-if="hasFooter" class="q-mb-sm" />
 
           <div v-if="hasExpansion" class="div">
-            <div v-if="props.loading" class="flex justify-between">
+            <div v-if="props.skeleton" class="flex justify-between">
               <qas-skeleton type="text" use-title width="150px" />
 
               <qas-skeleton type="QasBtn" use-title />
@@ -88,7 +88,7 @@ const props = defineProps({
     default: false
   },
 
-  loading: {
+  skeleton: {
     type: Boolean
   },
 

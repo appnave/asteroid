@@ -51,11 +51,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-defineOptions({ name: 'PageLoading' })
+defineOptions({ name: 'PageSkeleton' })
 
 // refs
 const selected = ref(false)
-const isLoading = ref(true)
+const showSkeleton = ref(true)
 
 const expansionProps = {
   label: 'Mostrar mais',
@@ -82,14 +82,15 @@ const cardProps = computed(() => {
   return {
     route: { name: 'Root' },
     useSelection: true,
-    loading: isLoading.value
+    skeleton: showSkeleton.value
   }
 })
 
-const buttonLabel = computed(() => isLoading.value ? 'Desativar loading' : 'Ativar loading')
+// computeds
+const buttonLabel = computed(() => showSkeleton.value ? 'Desativar skeleton' : 'Ativar skeleton')
 
 // functions
 function onClick () {
-  isLoading.value = !isLoading.value
+  showSkeleton.value = !showSkeleton.value
 }
 </script>

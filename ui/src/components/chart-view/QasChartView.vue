@@ -343,7 +343,7 @@ export default {
       return {
         alignColumns: 'end',
         description: this.subtitle,
-        loading: this.isFetching,
+        skeleton: this.isFetching,
         labelProps: {
           label: this.title
         }

@@ -19,7 +19,7 @@ props:
     default: false
     type: [Boolean, String, Number, Array, Object]
 
-  loading:
+  skeleton:
     desc: Exibe um esqueleto de carregamento no lugar do conteúdo do card.
     default: false
     type: Boolean

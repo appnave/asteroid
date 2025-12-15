@@ -3,7 +3,7 @@
     <div v-for="(fieldsetItem, fieldsetItemKey) in normalizedFields" :key="fieldsetItemKey" :class="getFieldSetColumnClass(fieldsetItem.column)">
       <component :is="containerComponent.is" v-bind="containerComponent.props">
         <slot v-if="fieldsetItem.__hasFieldset" :name="`legend-${fieldsetItemKey}`">
-          <qas-header v-if="fieldsetItem.__hasHeader" v-bind="getHeaderProps({ values: fieldsetItem })" :loading="props.loading" />
+          <qas-header v-if="fieldsetItem.__hasHeader" v-bind="getHeaderProps({ values: fieldsetItem })" :skeleton="props.skeleton" />
         </slot>
 
         <div>
@@ -11,7 +11,7 @@
             <div class="q-col-gutter-md row">
               <div class="col">
                 <div :class="fieldContainerClasses">
-                  <div v-if="props.loading" class="col-12">
+                  <div v-if="props.skeleton" class="col-12">
                     <qas-skeleton v-bind="getFieldsetSkeletonContentProps(fieldsetItem)" />
                   </div>
 
@@ -26,7 +26,7 @@
               </div>
 
               <div v-if="hasButtonProps(fieldsetItem)" class="col-12 col-sm-auto items-end justify-end row">
-                <qas-skeleton v-if="props.loading" class="q-mt-md" type="QasBtn" width="80px" />
+                <qas-skeleton v-if="props.skeleton" class="q-mt-md" type="QasBtn" width="80px" />
 
                 <qas-btn v-else v-bind="fieldsetItem.buttonProps" />
               </div>
@@ -35,12 +35,12 @@
             <div v-if="fieldsetItem.__hasSubset" class="column q-col-gutter-y-md q-mt-none relative-position">
               <div v-for="(subsetItem, subsetKey) in fieldsetItem.subset" :key="subsetKey" class="col-12">
                 <slot :name="`legend-${fieldsetItemKey}-${subsetKey}`">
-                  <qas-header v-if="subsetItem.__hasHeader" v-bind="getHeaderProps({ values: subsetItem, isSubset: true} )" :loading="props.loading" />
+                  <qas-header v-if="subsetItem.__hasHeader" v-bind="getHeaderProps({ values: subsetItem, isSubset: true} )" :skeleton="props.skeleton" />
                 </slot>
 
                 <div class="relative-position">
                   <slot :fields="subsetItem.fields" :name="`legend-section-${fieldsetItemKey}-${subsetKey}`">
-                    <qas-skeleton v-if="props.loading" class="q-mt-md" v-bind="getFieldsetSkeletonContentProps(fieldsetItem, 'subset')" />
+                    <qas-skeleton v-if="props.skeleton" class="q-mt-md" v-bind="getFieldsetSkeletonContentProps(fieldsetItem, 'subset')" />
 
                     <template v-else>
                       <div :class="fieldContainerClasses">
@@ -65,7 +65,7 @@
             </div>
           </slot>
 
-          <!-- <qas-skeleton v-if="props.loading" use-overlay></qas-skeleton> -->
+          <!-- <qas-skeleton v-if="props.skeleton" use-overlay></qas-skeleton> -->
         </div>
 
         <slot v-if="fieldsetItem.__hasFieldset" :name="`legend-bottom-${fieldsetItemKey}`" />
@@ -122,7 +122,7 @@ const props = defineProps({
     type: Object
   },
 
-  loading: {
+  skeleton: {
     type: Boolean
   },
 

@@ -1,6 +1,6 @@
 <template>
   <div class="container q-py-lg">
-    <qas-box :loading="isLoading">
+    <qas-box :skeleton="showSkeleton">
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Similique optio cum eaque minima ipsum consequuntur eos laborum, at dignissimos possimus magnam eligendi veritatis saepe ducimus non quos itaque? Consectetur, modi?
     </qas-box>
 
@@ -11,16 +11,16 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-defineOptions({ name: 'PageLoading' })
+defineOptions({ name: 'PageSkeleton' })
 
 // refs
-const isLoading = ref(true)
+const showSkeleton = ref(true)
 
 // computeds
-const buttonLabel = computed(() => isLoading.value ? 'Desativar loading' : 'Ativar loading')
+const buttonLabel = computed(() => showSkeleton.value ? 'Desativar skeleton' : 'Ativar skeleton')
 
 // functions
 function onClick () {
-  isLoading.value = !isLoading.value
+  showSkeleton.value = !showSkeleton.value
 }
 </script>

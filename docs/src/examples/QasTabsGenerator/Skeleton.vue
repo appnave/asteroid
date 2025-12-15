@@ -1,6 +1,6 @@
 <template>
   <div class="container q-py-lg">
-    <qas-tabs-generator v-model="model" :loading="isLoading" :tabs="tabs" />
+    <qas-tabs-generator v-model="model" :skeleton="showSkeleton" :tabs="tabs" />
 
     <qas-btn class="q-mt-lg" :label="buttonLabel" @click="onClick" />
   </div>
@@ -9,11 +9,11 @@
 <script setup>
 import { ref, computed } from 'vue'
 
-defineOptions({ name: 'PageLoading' })
+defineOptions({ name: 'PageSkeleton' })
 
 // refs
 const model = ref('tab1')
-const isLoading = ref(true)
+const showSkeleton = ref(true)
 
 // consts
 const tabs = [
@@ -21,7 +21,7 @@ const tabs = [
     label: 'Tab 1',
     value: 'tab1',
     status: 'positive',
-    counter: 5
+    counter: 0
   },
   {
     label: 'Tab 2',
@@ -39,7 +39,7 @@ const tabs = [
     label: 'Tab 4',
     value: 'tab4',
     status: 'negative',
-    counter: 1
+    counter: 0
   },
   {
     label: 'Tab 5',
@@ -50,10 +50,10 @@ const tabs = [
 ]
 
 // computeds
-const buttonLabel = computed(() => isLoading.value ? 'Desativar loading' : 'Ativar loading')
+const buttonLabel = computed(() => showSkeleton.value ? 'Desativar skeleton' : 'Ativar skeleton')
 
 // functions
 function onClick () {
-  isLoading.value = !isLoading.value
+  showSkeleton.value = !showSkeleton.value
 }
 </script>
