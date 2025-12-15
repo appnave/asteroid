@@ -357,9 +357,7 @@ function useTemplate () {
   })
 
   const buttonLabel = computed(() => {
-    if (props.useAlwaysSeeMore) return props.seeMoreLabel
-
-    return isCounterMode.value ? counterLabel.value : props.seeMoreLabel
+    return isCounterMode.value && !props.useAlwaysSeeMore ? counterLabel.value : props.seeMoreLabel
   })
 
   return {
