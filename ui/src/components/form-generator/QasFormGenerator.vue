@@ -64,8 +64,6 @@
               </slot>
             </div>
           </slot>
-
-          <!-- <qas-skeleton v-if="props.skeleton" use-overlay></qas-skeleton> -->
         </div>
 
         <slot v-if="fieldsetItem.__hasFieldset" :name="`legend-bottom-${fieldsetItemKey}`" />
