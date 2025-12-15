@@ -12,7 +12,7 @@
       <slot v-if="useActions" name="actions">
         <qas-actions>
           <template v-if="useSubmitButton" #primary>
-            <qas-btn class="qas-form-view__btn" :data-cy="`form-view-submit-btn-${entity}`" :disable="disable" :label="submitButtonLabel" :loading="isSubmitting" type="submit" variant="primary" />
+            <qas-btn class="qas-form-view__btn" :data-cy="`form-view-submit-btn-${entity}`" :disable="disable" :label="submitButtonLabel" :loading="isSubmitting" :skeleton="mx_isFetching" type="submit" variant="primary" />
           </template>
 
           <template v-if="hasCancelButton" #secondary>

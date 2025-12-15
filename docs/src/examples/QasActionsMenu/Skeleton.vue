@@ -27,8 +27,7 @@ const visibility = {
 
 const edit = {
   icon: 'sym_r_edit',
-  label: 'Editar',
-  skeleton: true
+  label: 'Editar'
 }
 
 // computeds

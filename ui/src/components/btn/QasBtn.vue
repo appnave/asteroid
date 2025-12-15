@@ -1,6 +1,6 @@
 <template>
   <!-- "data-table-ignore-tr-hover" é para desabilitar o hover do tr no QasTableGenerator -->
-  <q-btn ref="button" class="overflow-hidden qas-btn" data-table-ignore-tr-hover v-bind="attributes">
+  <q-btn ref="button" class="qas-btn" data-table-ignore-tr-hover v-bind="attributes">
     <template v-for="(_, name) in nonDefaultSlots" #[name]="context">
       <slot :name="name" v-bind="context || {}" />
     </template>
@@ -23,7 +23,7 @@
 
     <qas-tooltip v-if="hasTooltip" :text="tooltipText" />
 
-    <qas-skeleton v-if="props.skeleton" type="round" use-overlay use-title />
+    <qas-skeleton v-if="props.skeleton" type="react" use-overlay use-title />
   </q-btn>
 </template>
 
@@ -183,6 +183,9 @@ const classes = computed(() => {
       'qas-btn--primary': isPrimary.value,
       'qas-btn--secondary': isSecondary.value,
       'qas-btn--tertiary': isTertiary.value,
+
+      // skeleton
+      'overflow-hidden': props.skeleton,
 
       // color
       [`qas-btn--tertiary-${defaultColor.value}`]: isTertiary.value,

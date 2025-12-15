@@ -256,7 +256,7 @@ export default {
           error: this.hasFetchError,
           fields: this.fields,
           fieldsProps: this.formattedFieldsProps,
-          loading: this.isFetching
+          skeleton: this.isFetching
         },
 
         /**

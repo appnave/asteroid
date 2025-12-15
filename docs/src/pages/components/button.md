@@ -101,6 +101,7 @@ A cor "negative" é usada em casos de erros no geral.
 :::
 ## Uso
 <doc-example file="QasBtn/ExBtnSizes" title='Básico' />
+<doc-example file="QasBtn/Skeleton" title="Skeleton" />
 <doc-example file="QasBtn/ExBtnUseLabelOnSmallScreen" title="use-label-on-small-screen" />
 
 :::info

@@ -132,8 +132,6 @@ const skeletonProps = computed(() => {
   &--overlay {
     top: 0 !important;
     width: 100%;
-    // right: 0 !important;
-    // left: 0 !important;
     bottom: 0 !important;
     position: absolute;
 

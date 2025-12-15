@@ -17,6 +17,7 @@ Este é um componente puro de dropdown, é utilizado para situações especifica
 ## Uso
 
 <doc-example file="QasBtnDropdown/Basic" title='Básico' />
+<doc-example file="QasBtnDropdown/Skeleton" title='Skeleton' />
 <doc-example file="QasBtnDropdown/BtnContentSlot" title='Slot btn-content-[key]' />
 <doc-example file="QasBtnDropdown/ExWithSplit" title='Uso com divisão' />
 <doc-example file="QasBtnDropdown/ExWithMenuPadding" title='Uso com padding no dropdown menu' />

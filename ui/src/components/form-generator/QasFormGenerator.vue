@@ -26,9 +26,7 @@
               </div>
 
               <div v-if="hasButtonProps(fieldsetItem)" class="col-12 col-sm-auto items-end justify-end row">
-                <qas-skeleton v-if="props.skeleton" class="q-mt-md" type="QasBtn" width="80px" />
-
-                <qas-btn v-else v-bind="fieldsetItem.buttonProps" />
+                <qas-btn :skeleton="props.skeleton" v-bind="fieldsetItem.buttonProps" />
               </div>
             </div>
 

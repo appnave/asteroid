@@ -54,14 +54,14 @@ Componente wrapper do `QasBtnDropdown` que implementa regras de negocio.
 - As labels dos tooltips vão ser as labels dentro da prop `list`.
 :::
 
-<!-- <doc-example file="QasActionsMenu/Basic" title="Básico" />
-<doc-example file="QasActionsMenu/ExSplit" title="Split de 2 itens" /> -->
+<doc-example file="QasActionsMenu/Basic" title="Básico" />
+<doc-example file="QasActionsMenu/ExSplit" title="Split de 2 itens" />
 <doc-example file="QasActionsMenu/Skeleton" title="Com Skeleton" />
-<!-- <doc-example file="QasActionsMenu/ExMultipleSplit" title="Split de vários itens" />
+<doc-example file="QasActionsMenu/ExMultipleSplit" title="Split de vários itens" />
 <doc-example file="QasActionsMenu/ExDisable" title="Desabilitado" />
 <doc-example file="QasActionsMenu/ExOptions" title="Opções" />
 <doc-example file="QasActionsMenu/ExDelete" title="Com deleção" />
 <doc-example file="QasActionsMenu/ExNoLabel" title="Sem label" />
 <doc-example file="QasActionsMenu/ExTooltip" title="Sem label com tooltip" />
 <doc-example file="QasActionsMenu/ExWithLoading" title="Com loading" />
-<doc-example file="QasActionsMenu/ExUseDropdownAlways" title="Sempre dropdown" /> -->
+<doc-example file="QasActionsMenu/ExUseDropdownAlways" title="Sempre dropdown" />

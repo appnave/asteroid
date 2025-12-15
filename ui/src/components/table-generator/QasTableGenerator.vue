@@ -238,9 +238,7 @@ export default {
 
     normalizedResults () {
       if (this.skeleton) {
-        const generatedResults = []
-
-        for (let i = 0; i < 12; i++) {
+        return Array.from({ length: 24 }).map(() => {
           const result = {}
 
           this.normalizedColumns.forEach(column => {
@@ -251,10 +249,8 @@ export default {
 
           result.default = result
 
-          generatedResults.push(result)
-        }
-
-        return generatedResults
+          return result
+        })
       }
 
       return this.results
