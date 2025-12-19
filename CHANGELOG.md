@@ -14,6 +14,10 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## [Não publicado]
+### Corrigido
+- `QasBtnDropdown`: corrigido validação da prop `disable`, onde ao passar a prop no `buttonsPropsList` não funcionava.
+
 ## [3.20.0-beta.4] - 12-12-2025
 ### Corrigido
 - `helpers/set-scroll-on-grab`: corrigido seletor de classe para só adicionar quando passado `cancelMouseDownTarget`.
