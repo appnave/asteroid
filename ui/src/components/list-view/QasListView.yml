@@ -91,6 +91,11 @@ props:
     default: true
     type: Boolean
 
+  use-query-pagination:
+    desc: Habilita o controle da paginação via query param da URL. Recomendado o uso como "false" em casos de ter mais de um list-view na mesma página.
+    default: true
+    type: Boolean
+
   use-refresh:
     desc: Controla o [pull-to-refresh](https://quasar.dev/vue-components/pull-to-refresh#basic).
     default: true

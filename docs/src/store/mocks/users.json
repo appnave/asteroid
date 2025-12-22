@@ -61,7 +61,7 @@
     },
     {
       "uuid": "62fc0a79-ddea-45b5-8d21-be6f0502923296",
-      "isActive": false,
+      "isActive": true,
       "company": "Sed occaecati cupiditate.",
       "name": "Quaerat veritatis aut voluptatem enim.",
       "email": "Jillian_Wilkinson97@gmail.com",
@@ -72,7 +72,7 @@
     },
     {
       "uuid": "2f8856d0-8eca-4e41-8146-63ed2a4f23ff4c",
-      "isActive": false,
+      "isActive": true,
       "company": "Dolores minus iusto quo et dolorem eveniet nesciunt.",
       "name": "Maiores animi non asperiores recusandae dolor exercitationem ut.",
       "email": "Rafael91@hotmail.com",
@@ -83,7 +83,7 @@
     },
     {
       "uuid": "5bda242f-5e99-43dd-af6a-093d68cee1235f",
-      "isActive": false,
+      "isActive": true,
       "company": "Excepturi ad nihil est.",
       "name": "Ullam eligendi dolor a placeat.",
       "email": "Katelyn_Bernhard76@gmail.com",
@@ -94,7 +94,7 @@
     },
     {
       "uuid": "620c8045-acc8-4c53-b083-fe7ed991233cf5",
-      "isActive": false,
+      "isActive": true,
       "company": "Quis ea voluptas recusandae omnis.",
       "name": "Debitis maiores itaque sit et recusandae et eveniet.",
       "email": "Syble42@yahoo.com",
@@ -105,7 +105,7 @@
     },
     {
       "uuid": "82f18f90-d5f9-486f-8b7b-b95745fa123d57",
-      "isActive": false,
+      "isActive": true,
       "company": "Quia qui blanditiis est minus ut quia dolores expedita aut.",
       "name": "Deleniti est quaerat qui dolores blanditiis qui vel maxime.",
       "email": "Felipe94@yahoo.com",
@@ -116,7 +116,7 @@
     },
     {
       "uuid": "570e003f-bb7d-4dae-a336-8f187c73242501",
-      "isActive": false,
+      "isActive": true,
       "company": "Voluptate omnis et.",
       "name": "Enim aut labore autem tempore cumque laborum ut.",
       "email": "Antone.Bednar30@yahoo.com",
@@ -127,7 +127,7 @@
     },
     {
       "uuid": "943e4923-12c0-473e-a07f-63eb28201a3491",
-      "isActive": false,
+      "isActive": true,
       "company": "Occaecati et velit magnam et recusandae rerum autem et voluptas.",
       "name": "Illo quam ad ratione.",
       "email": "Emmalee_McGlynn@gmail.com",
@@ -138,7 +138,7 @@
     },
     {
       "uuid": "ce2e298a-be37-408f-a789-4c7b18b4132432bc",
-      "isActive": false,
+      "isActive": true,
       "company": "Atque cum illum debitis consequatur exercitationem dolorum corporis.",
       "name": "Incidunt perferendis error iusto ut.",
       "email": "Heloise_Hegmann@hotmail.com",
@@ -149,7 +149,7 @@
     },
     {
       "uuid": "62fc0a79-ddea-45b5-8d21-be6f0502929645",
-      "isActive": false,
+      "isActive": true,
       "company": "Sed occaecati cupiditate.",
       "name": "Quaerat veritatis aut voluptatem enim.",
       "email": "Jillian_Wilkinson97@gmail.com",
