@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import ComponentCustom from './CustomComponent.vue'
+import CustomComponent from './CustomComponent.vue'
 import { h, computed } from 'vue'
 
 defineOptions({ name: 'AlwaysButtonAndCustomDescription' })
@@ -31,7 +31,7 @@ const textTruncatePropsWithComponent = computed(() => {
     text: 'Utilizando um componente na descrição',
 
     dialogProps: {
-      description: h(ComponentCustom)
+      description: h(CustomComponent)
     }
   }
 })
