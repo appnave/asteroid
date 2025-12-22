@@ -1,6 +1,12 @@
 <template>
   <div class="container spaced">
-    <qas-radio v-model="model" label="Opção 1" val="1" />
+    <div>
+      <qas-radio v-model="model" label="Opção 1" val="1" />
+    </div>
+
+    <div class="q-mt-lg">
+      <qas-radio v-model="model" disable label="Opção 1" val="1" />
+    </div>
   </div>
 </template>
 

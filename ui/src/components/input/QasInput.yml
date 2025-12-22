@@ -42,6 +42,11 @@ props:
     default: true
     type: Boolean
 
+  readonly:
+    desc: Modo somente leitura.
+    default: false
+    type: Boolean
+
   required:
     desc: Controla label do campo, se for "true" adiciona sufixo "*".
     default: false
@@ -49,6 +54,10 @@ props:
 
   use-remove-error-on-type:
     desc: Limpa os erros do campo caso os mesmos existam toda vez que o model atualiza.
+    type: Boolean
+
+  use-copy:
+    desc: Adiciona botão de copiar conteúdo do input (funciona apenas em conjunto com a prop "readonly").
     type: Boolean
 
   unmasked-value:

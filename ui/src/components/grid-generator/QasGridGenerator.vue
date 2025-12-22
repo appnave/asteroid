@@ -1,43 +1,89 @@
 <template>
   <component :is="component.is" v-bind="component.props">
-    <qas-header v-if="hasHeader" v-bind="props.headerProps" />
+    <div class="column q-col-gutter-y-lg">
+      <div v-for="(fieldsetItem, fieldsetItemKey) in normalizedFields" :key="fieldsetItemKey" class="full-width">
+        <q-separator v-if="hasSeparator({ item: fieldsetItem })" class="q-mb-lg" />
 
-    <div :class="classes">
-      <div v-for="(field, key) in fieldsByResult" :key="key" :class="getContainerClassses({ key })">
-        <slot :field="field" :name="`field-${field.name}`">
-          <qas-grid-item :use-ellipsis="hasEllipsis(field)" :use-inline="props.useInline">
-            <template #header>
-              <slot :field="field" :name="`header-field-${field.name}`">
-                <slot :field="field" name="header">
-                  <div :class="headerClass" :data-cy="`grid-generator-${field.name}-field`" :title="getTitle(field, 'label')">
-                    {{ field.label }}
-                  </div>
-                </slot>
-              </slot>
-            </template>
+        <qas-header v-if="fieldsetItem.__hasHeader" v-bind="getHeaderProps({ values: fieldsetItem })" />
 
-            <template #content>
-              <slot :field="field" :name="`content-field-${field.name}`">
-                <slot :field="field" name="content">
-                  <div :class="getContentClasses(field)" :data-cy="`grid-generator-${field.name}-result`" :title="getTitle(field, 'formattedResult')">
-                    {{ field.formattedResult }}
-                  </div>
+        <div :class="classes">
+          <div v-for="(field, key) in fieldsetItem.fields" :key="key" :class="getContainerClasses({ key })">
+            <slot :field="field" :name="`field-${field.name}`">
+              <qas-grid-item v-bind="getGridItemProps(field)">
+                <template #header>
+                  <slot :field="field" :name="`header-field-${field.name}`">
+                    <slot :field="field" name="header">
+                      <div :class="headerClasses" :data-cy="`grid-generator-${field.name}-field`" :title="getTitle(field, 'label')">
+                        {{ field.label }}
+                      </div>
+                    </slot>
+                  </slot>
+                </template>
+
+                <template #content>
+                  <slot :field="field" :name="`content-field-${field.name}`">
+                    <slot :field="field" name="content">
+                      <div :class="getContentClasses(field)" :data-cy="`grid-generator-${field.name}-result`" :title="getTitle(field, 'formattedResult')">
+                        {{ field.formattedResult }}
+                      </div>
+                    </slot>
+                  </slot>
+                </template>
+              </qas-grid-item>
+            </slot>
+          </div>
+        </div>
+
+        <div v-if="fieldsetItem.__hasSubset" class="q-gutter-y-md q-mt-md">
+          <div v-for="(subsetItem, subsetKey) in fieldsetItem.subset" :key="subsetKey">
+            <div v-if="hasSeparator({ item: subsetItem, isSubset: true })" class="q-pb-md">
+              <q-separator />
+            </div>
+
+            <qas-header v-if="subsetItem.__hasHeader" v-bind="getHeaderProps({ values: subsetItem, isSubset: true })" />
+
+            <div :class="classes">
+              <div v-for="(field, key) in subsetItem.fields" :key="key" :class="getContainerClasses({ key })">
+                <slot :field="field" :name="`field-${field.name}`">
+                  <qas-grid-item v-bind="getGridItemProps(field)">
+                    <template #header>
+                      <slot :field="field" :name="`header-field-${field.name}`">
+                        <slot :field="field" name="header">
+                          <div :class="headerClasses" :data-cy="`grid-generator-${field.name}-field`" :title="getTitle(field, 'label')">
+                            {{ field.label }}
+                          </div>
+                        </slot>
+                      </slot>
+                    </template>
+
+                    <template #content>
+                      <slot :field="field" :name="`content-field-${field.name}`">
+                        <slot :field="field" name="content">
+                          <div :class="getContentClasses(field)" :data-cy="`grid-generator-${field.name}-result`" :title="getTitle(field, 'formattedResult')">
+                            {{ field.formattedResult }}
+                          </div>
+                        </slot>
+                      </slot>
+                    </template>
+                  </qas-grid-item>
                 </slot>
-              </slot>
-            </template>
-          </qas-grid-item>
-        </slot>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </component>
 </template>
 
 <script setup>
+import QasBox from '../box/QasBox.vue'
+import QasGridItem from '../grid-item/QasGridItem.vue'
+import QasHeader from '../header/QasHeader.vue'
+
 import useGenerator, { baseProps } from '../../composables/private/use-generator'
-import { isEmpty, humanize } from '../../helpers'
 import { useScreen } from '../../composables'
-import { isObject } from 'lodash-es'
-import { ref, computed, watch } from 'vue'
+import { computed } from 'vue'
 
 // define component name
 defineOptions({ name: 'QasGridGenerator' })
@@ -54,13 +100,23 @@ const props = defineProps({
   },
 
   contentClass: {
-    default: '',
-    type: [Array, Object, String]
+    type: [Array, Object, String],
+    default: ''
+  },
+
+  fieldset: {
+    type: Object,
+    default: () => ({})
+  },
+
+  fieldsProps: {
+    type: Object,
+    default: () => ({})
   },
 
   headerClass: {
-    default: '',
-    type: [Array, Object, String]
+    type: [Array, Object, String],
+    default: ''
   },
 
   headerProps: {
@@ -69,13 +125,13 @@ const props = defineProps({
   },
 
   emptyResultText: {
-    default: '-',
-    type: String
+    type: String,
+    default: '-'
   },
 
   result: {
-    default: () => ({}),
-    type: Object
+    type: Object,
+    default: () => ({})
   },
 
   useBox: {
@@ -83,13 +139,13 @@ const props = defineProps({
   },
 
   useEmptyResult: {
-    default: true,
-    type: Boolean
+    type: Boolean,
+    default: true
   },
 
   useEllipsis: {
-    default: true,
-    type: Boolean
+    type: Boolean,
+    default: true
   },
 
   useInline: {
@@ -98,21 +154,23 @@ const props = defineProps({
 })
 
 // composables
-const { classes, getFieldClass } = useGenerator({ props })
+const {
+  classes,
+  getFieldClass,
+  getHeaderProps,
+  getNormalizedFields,
+  getFieldsByResult
+} = useGenerator({ props, isGrid: true })
 
-// computed
-const hasResult = computed(() => Object.keys(props.result).length)
-const hasFields = computed(() => Object.keys(props.fields).length)
-const hasHeader = computed(() => Object.keys(props.headerProps).length)
-
+// computeds
 const component = computed(() => {
   return {
-    is: props.useBox ? 'qas-box' : 'div',
+    is: props.useBox ? QasBox : 'div',
     props: props.useBox ? props.boxProps : {}
   }
 })
 
-const headerClass = computed(() => {
+const headerClasses = computed(() => {
   return [
     props.headerClass,
 
@@ -122,66 +180,31 @@ const headerClass = computed(() => {
   ]
 })
 
-const fieldsByResult = ref({})
+const normalizedFields = computed(() => {
+  const hasFieldset = !!Object.keys(props.fieldset).length
 
-/**
- * Retorna os "fields" formatados, caso a propriedade "useEmptyResult" seja "true", retorna todos os "fields", mesmo que não tenha resultado.
- * Caso a propriedade "useEmptyResult" seja "false", retorna apenas os "fields" que possuem resultado.
-*/
-const formattedFields = computed(() => {
-  if (props.useEmptyResult) return props.fields
-
-  if (!hasResult.value) return {}
-
-  const fields = {}
-
-  for (const key in props.fields) {
-    const result = props.result[key]
-
-    const validate = Array.isArray(result)
-      ? result.length
-      : isObject(result) ? Object.keys(result).length : result
-
-    if (validate) {
-      fields[key] = props.fields[key]
+  // No caso de não ter "fieldset", virá via props o result e fields.
+  if (!hasFieldset) {
+    return {
+      default: {
+        fields: getFieldsByResult({ fields: props.fields, result: props.result }),
+        headerProps: props.headerProps,
+        __hasHeader: Object.keys(props.headerProps).length
+      }
     }
   }
 
-  return fields
+  // No caso de ter "fieldset", deve normalizar os fields/result de acordo com o fieldset.
+  return getNormalizedFields({
+    items: props.fieldset,
+    fields: props.fields,
+    result: props.result,
+    isGrid: true
+  })
 })
 
-// watch
-watch(() => formattedFields.value, setFieldsByResult, { immediate: true })
-
 // functions
-function getFieldsByResult () {
-  if (!hasResult.value || !hasFields.value) return {}
-
-  const result = { ...props.result }
-  const fieldsByResult = {}
-
-  for (const key in formattedFields.value) {
-    const field = formattedFields.value[key] || {}
-
-    if (!field.type) continue
-
-    const humanizedResult = humanize(field, result[key])
-    const formattedResult = isEmpty({ value: humanizedResult }) ? props.emptyResultText : humanizedResult
-
-    fieldsByResult[key] = {
-      ...field,
-      formattedResult
-    }
-  }
-
-  return fieldsByResult
-}
-
-function setFieldsByResult () {
-  fieldsByResult.value = getFieldsByResult()
-}
-
-function getContainerClassses ({ key }) {
+function getContainerClasses ({ key }) {
   if (props.useInline) return 'row justify-between col-12'
 
   return getFieldClass({ index: key, isGridGenerator: true })
@@ -206,5 +229,22 @@ function getContentClasses (field) {
       ellipsis: !screen.isSmall && hasEllipsis(field)
     }
   ]
+}
+
+function getGridItemProps (field) {
+  return {
+    useEllipsis: hasEllipsis(field),
+    useInline: props.useInline,
+
+    ...(props.fieldsProps[field.name] || {})
+  }
+}
+
+function hasSeparator ({ item, isSubset }) {
+  /**
+   * No caso de for subset, por padrão terá o separator, à não ser que for passado
+   * o separator como false. Caso seja um fieldset, verificar se foi passado a chave "useSeparator".
+   */
+  return isSubset ? (item.useSeparator ?? true) : item.useSeparator
 }
 </script>

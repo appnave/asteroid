@@ -9,6 +9,10 @@ props:
     default: false
     type: Boolean
 
+  cancel-mouse-down-target:
+    desc: Classe do elemento no qual será ignorado para não realizar o grab.
+    type: String
+
 slots:
   default:
     desc: Slot para ter o conteúdo que terá o scroll na horizontal.

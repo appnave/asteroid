@@ -31,6 +31,9 @@
 </template>
 
 <script setup>
+import QasBadge from '../../badge/QasBadge.vue'
+import QasBtn from '../../btn/QasBtn.vue'
+
 import { dateTime } from '../../../helpers/filters'
 
 import { computed } from 'vue'
@@ -58,11 +61,7 @@ const isRecentNotification = computed(() => {
 
 const hasBadge = computed(() => isRecentNotification.value && !markedAsRead.value)
 
-const dateLabel = computed(() => {
-  return isRecentNotification.value
-    ? 'Agora mesmo'
-    : dateTime(props.notification.createdAt, 'dd/MM/yyyy HH:mm')
-})
+const dateLabel = computed(() => isRecentNotification.value ? 'Agora mesmo' : dateTime(props.notification.createdAt))
 
 const buttonProps = computed(() => {
   const { link } = props.notification

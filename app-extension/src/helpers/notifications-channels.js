@@ -1,4 +1,4 @@
-import useNotifications from '@bildvitta/quasar-ui-asteroid/src/composables/use-notifications'
+import { useNotifications } from 'asteroid'
 
 export function setNotificationsChannelListener () {
   const {

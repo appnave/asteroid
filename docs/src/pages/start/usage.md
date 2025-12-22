@@ -104,3 +104,5 @@ Abaixo temos uma lista de variáveis de ambiente, as que estão marcadas como `o
 | `SERVER_BASE_URL` * | Endereço base de acesso do servidor **(OBRIGATÓRIO)** |
 | `DEBUGGING` * | Habilita os loggers dos componentes **(OBRIGATÓRIO)** |
 | `MAPS_API_KEY` | Key do google maps **(OBRIGATÓRIO SE ESPECIFICADO NO "thirdPartyComponents")** |
+| `ABLY_KEY` | Key do Ably (notificações) |
+| `ME_VERSION` * | Versão do endpoint `users/me` **(OBRIGATÓRIO)** |

@@ -4,6 +4,46 @@ meta:
   desc: Componente usado para board de colunas.
 
 props:
+  before-update-position:
+    desc: função onde será executada antes do dialog de confirmação ou atualização da posição.
+    type: function
+    default: undefined
+    params:
+      event:
+        desc: Evento do "onAdd" do sortablejs.
+        type: Object
+        default: {}
+
+      cancel:
+        desc: Cancela o drag and drop.
+        type: Function
+        default: undefined
+
+      getItem:
+        desc: Recupera o item atual a ser dropado.
+        type: Function
+        default: {}
+
+      openConfirmDialog:
+        desc: Chama o dialog de confirmação para salvar nova posição.
+        type: Function
+        default: undefined
+
+      update:
+        desc: Salva nova posição.
+        type: Function
+        default: undefined
+
+      getColumnTo:
+        desc: Recupera o payload da coluna que o item será adicionado.
+        type: Function
+        default: {}
+
+      getColumnFrom:
+        desc: Recupera o payload da coluna que o item saiu.
+        type: Function
+        default: {}
+
   column-id-key:
     desc: chave que será o id usado para ser o identificador da coluna.
     type: String
@@ -20,19 +60,33 @@ props:
     required: true
 
   column-width:
-    desc: Largura da coluna
+    desc: Largura da coluna.
     type: String
     default: 288
+
+  confirm-dialog-props:
+    desc: Propriedade repassada ao `QasDialog` para confirmar um drag and drop. Caso não seja passado, não é usado dialog de confirmação. As ações de confirmar e cancelar são feitas por padrão no componente.
+    type: Object
+    default: {}
+
+  header-box-props:
+    desc: Propriedades repassadas ao `QasBox` do header.
+    type: Object
+    default: {}
 
   headers:
     desc: Lista de itens sendo cada um o header de cada coluna.
     default: []
     type: Array
-  
+
   height:
-    desc: Altura do container do board. Caso não seja passado um height, o calculo é feito para ocupar a maior altura possível da página.
+    desc: Altura do container do board. Caso não seja passado um height, o cálculo é feito para ocupar a maior altura possível da página.
     type: String
-  
+
+  item-id-key:
+    desc: Identificador único do item a ser movido, sendo que será usado nas requisições realizadas pelo drop.
+    type: String
+
   lazy-loading-fields-keys:
     desc: Chaves dos campos que são lazy loading para o tratamento de merge das options.
     type: Array
@@ -44,7 +98,7 @@ props:
     default: 12
 
   use-mark-raw:
-    desc: Define se os valores dos itens das colunas irá ser atribuido utilizando o "markRaw", onde somente a primeira camada do model será reativa.(https://vuejs.org/api/reactivity-advanced.html#markraw)
+    desc: Define se os valores dos itens das colunas irão ser atribuídos utilizando o "markRaw", onde somente a primeira camada do model será reativa. (https://vuejs.org/api/reactivity-advanced.html#markraw)
     type: Boolean
     default: true
 
@@ -55,6 +109,30 @@ props:
     examples: [v-model:results="resultsColumns"]
     model: true
 
+  sortable-config:
+    desc: Configuração passada para a instância do SortableJS.
+    type: Object
+    default: "{ animation: 500, swapThreshold: 1, delay: 50, delayOnTouchOnly: true, emptyInsertThreshold: 0 }"
+    debugger: true
+
+  use-drag-and-drop-x:
+    desc: Controla se irá ter drag and drop no eixo X (entre colunas).
+    type: Boolean
+
+  use-drag-and-drop-y:
+    desc: Controla se irá ter drag and drop no eixo Y (mesma coluna, utilizado para ordenação de itens).
+    type: Boolean
+
+  update-position-url:
+    desc: URL usada para realizar o PATCH do drag and drop.
+    type: String
+    default: ''
+
+  update-position-params:
+    desc: Parâmetros customizados caso precise passar para a API de PATCH.
+    type: Object
+    default: {}
+
 slots:
   header-column:
     desc: Slot para acessar o card do header de cada coluna.
@@ -63,9 +141,9 @@ slots:
         desc: Fields referente à coluna atual do template.
         type: Object
         default: {}
-      
+
       header:
-        desc: Informações de cada item do header que foi fornecido através da prop "headers"
+        desc: Informações de cada item do header que foi fornecido através da prop "headers".
         type: Object
         default: {}
 
@@ -76,7 +154,7 @@ slots:
         desc: Fields referente à coluna atual do template.
         type: Object
         default: {}
-      
+
       item:
         desc: Informações de cada item da coluna que foi buscado através da API.
         type: Object
@@ -98,14 +176,14 @@ events:
         type: Object
 
       header:
-        desc: header da coluna atual.
+        desc: Header da coluna atual.
         type: Object
 
   '@update:fetch-column-error -> function(error)':
     desc: Dispara quando o "fetchColumn" cai em uma exceção.
     params:
       error:
-        desc: Retorna todos os dados "cru" respondido na exceção do fetch.
+        desc: Retorna todos os dados "crus" respondidos na exceção do fetch.
         type: Object
 
   '@update:fetch-columns-success -> function()':
@@ -115,12 +193,29 @@ events:
     desc: Dispara quando algum "fetchColumn" cai em uma exceção.
     params:
       error:
-        desc: Retorna todos os dados "cru" respondido na exceção do fetch.
+        desc: Retorna todos os dados "crus" respondidos na exceção do fetch.
+        type: Object
+
+  '@update-success -> function()':
+    desc: Dispara quando o PATCH do drag and drop é com sucesso.
+    params:
+      data:
+        desc: Retorno da API.
+        type: Object
+
+  '@update-error -> function()':
+    desc: Dispara quando o PATCH do drag and drop cai em uma exceção.
+    params:
+      error:
+        desc: Retorno da API.
         type: Object
 
 methods:
+  'cancelDrop: () => void':
+    desc: Cancela o drop e volta o item para coluna original.
+
   'fetchColumns: () => void':
     desc: Busca todas colunas com base nos headers fornecidos.
 
   'fetchColumn: (header) => void':
-    desc: Busca uma coluna especifica com base no header fornecido.
+    desc: Busca uma coluna específica com base no header fornecido.

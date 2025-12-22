@@ -1,12 +1,12 @@
 <template>
-  <div class="cursor-pointer items-center no-wrap q-gutter-sm qas-app-user row" data-cy="app-user">
+  <div class="cursor-pointer items-center no-wrap q-gutter-x-sm qas-app-user row" data-cy="app-user">
     <div class="relative-position">
       <qas-avatar :image="props.user.photo" :size="props.avatarSize" :title="userName" />
 
       <qas-avatar v-if="hasNotificationInUserAvatar" v-bind="avatarNotificationCountProps" />
     </div>
 
-    <div class="ellipsis qas-app-user__data">
+    <div v-if="displayData" class="ellipsis qas-app-user__data">
       <div class="ellipsis qas-app-user__name text-grey-10">
         {{ userName }}
       </div>
@@ -70,9 +70,12 @@
 
 <script setup>
 import QasAvatar from '../avatar/QasAvatar.vue'
+import QasSelect from '../select/QasSelect.vue'
 
 import useNotifications from '../../composables/use-notifications'
 import useQueryCache from '../../composables/use-query-cache'
+import useScreen from '../../composables/use-screen'
+
 import { NotifySuccess, NotifyError } from '../../plugins'
 
 import { ref, computed, watch, inject } from 'vue'
@@ -105,26 +108,38 @@ const props = defineProps({
     default: () => ({}),
     required: true,
     type: Object
+  },
+
+  useDataOnSmallScreen: {
+    type: Boolean,
+    default: true
   }
 })
 
+// emits
 const emit = defineEmits(['sign-out', 'toggle-notifications'])
 
-// vindo direto do boot api.js
+// globals
 const axios = inject('axios')
 
+// composables
+const screen = useScreen()
 const router = useRouter()
 
 const { isNotificationsEnabled, unreadNotificationsCount } = useNotifications()
 
 const { reset } = useQueryCache()
 
+const { avatarNotificationCountProps } = useAvatarNotifications()
+
+// refs
 const companiesModel = ref('')
 const loading = ref(false)
 
-const { avatarNotificationCountProps } = useAvatarNotifications()
+// consts
+const IS_ME_VERSION_2 = process.env.ME_VERSION === 2
 
-// computed
+// computeds
 const defaultCompanyProps = computed(() => {
   return {
     loading: loading.value,
@@ -143,12 +158,59 @@ const hasNotificationInUserAvatar = computed(() => isNotificationsEnabled && has
 const unreadNotificationsToString = computed(() => String(unreadNotificationsCount.value))
 const userName = computed(() => props.user.name || props.user.givenName)
 
+const displayData = computed(() => props.useDataOnSmallScreen || screen.isMedium)
+
 // watch
 watch(() => props.companyProps.modelValue, value => {
   companiesModel.value = value
 }, { immediate: true })
 
-// composable
+// functions
+function signOut () {
+  emit('sign-out')
+}
+
+async function setCompanies (value) {
+  if (!value) return
+
+  loading.value = true
+
+  try {
+    await axios.patch('users/me', {
+      [IS_ME_VERSION_2 ? 'currentMainCompany' : 'companies']: value
+    })
+
+    setTimeout(() => location.reload(), 1500)
+
+    NotifySuccess('Vínculo alterado com sucesso.')
+  } catch {
+    companiesModel.value = props.companyProps.modelValue
+
+    NotifyError('Falha ao alterar vínculo.')
+  } finally {
+    loading.value = false
+
+    clearCachedFilters()
+  }
+}
+
+function clearCachedFilters () {
+  reset()
+
+  router.push({ query: {} })
+}
+
+function onMenuHide () {
+  if (!companiesModel.value) {
+    companiesModel.value = props.companyProps.modelValue
+  }
+}
+
+function toggleNotificationsDrawer () {
+  emit('toggle-notifications')
+}
+
+// composables definitions
 function useAvatarNotifications () {
   const hasAnimated = ref(false)
 
@@ -181,48 +243,6 @@ function useAvatarNotifications () {
   return {
     avatarNotificationCountProps
   }
-}
-
-// métodos
-function signOut () {
-  emit('sign-out')
-}
-
-async function setCompanies (value) {
-  if (!value) return
-
-  loading.value = true
-
-  try {
-    await axios.patch('users/me', { companies: value })
-    setTimeout(() => location.reload(), 1500)
-
-    NotifySuccess('Vínculo alterado com sucesso.')
-  } catch {
-    companiesModel.value = props.companyProps.modelValue
-
-    NotifyError('Falha ao alterar vínculo.')
-  } finally {
-    loading.value = false
-
-    clearCachedFilters()
-  }
-}
-
-function clearCachedFilters () {
-  reset()
-
-  router.push({ query: {} })
-}
-
-function onMenuHide () {
-  if (!companiesModel.value) {
-    companiesModel.value = props.companyProps.modelValue
-  }
-}
-
-function toggleNotificationsDrawer () {
-  emit('toggle-notifications')
 }
 </script>
 
@@ -269,12 +289,6 @@ function toggleNotificationsDrawer () {
 
     & + & {
       margin-top: var(--qas-spacing-sm);
-    }
-  }
-
-  @media (max-width: $breakpoint-xs) {
-    &__data {
-      display: none;
     }
   }
 }

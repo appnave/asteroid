@@ -33,7 +33,10 @@ export default {
       return {
         isActive: { col: 12 },
         company: { col: 12 },
-        phone: { col: 12 }
+        phone: { col: 12 },
+        manager: { col: 12, sm: 4 },
+        supervisor: { col: 12, sm: 4 },
+        realEstateBroker: { col: 12, sm: 4 }
       }
     },
 
@@ -87,6 +90,10 @@ export default {
           description: 'Informe o documento do usuário.',
           fields: ['phone', 'company'],
           column: { col: 12, sm: 6 }
+        },
+
+        salesTeam: {
+          fields: ['manager', 'supervisor', 'realEstateBroker']
         }
       }
     },
@@ -121,6 +128,54 @@ export default {
             {
               label: 'Empresa 3',
               value: 'empresa-3'
+            }
+          ]
+        },
+
+        manager: {
+          name: 'manager',
+          label: 'Gerente',
+          type: 'select',
+          options: [
+            {
+              label: 'Cleyton da Silva',
+              value: 'cleyton-da-silva'
+            },
+            {
+              label: 'Julio Souza',
+              value: 'julio-souza'
+            }
+          ]
+        },
+
+        supervisor: {
+          name: 'supervisor',
+          label: 'Supervisor',
+          type: 'select',
+          options: [
+            {
+              label: 'Cleyton da Silva',
+              value: 'cleyton-da-silva'
+            },
+            {
+              label: 'Julio Souza',
+              value: 'julio-souza'
+            }
+          ]
+        },
+
+        realEstateBroker: {
+          name: 'realEstateBroker',
+          label: 'Corretor',
+          type: 'select',
+          options: [
+            {
+              label: 'Cleyton da Silva',
+              value: 'cleyton-da-silva'
+            },
+            {
+              label: 'Julio Souza',
+              value: 'julio-souza'
             }
           ]
         },

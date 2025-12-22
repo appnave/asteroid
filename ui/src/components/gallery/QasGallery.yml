@@ -31,8 +31,14 @@ props:
     default: 6
     type: Number
 
+  show-more-align:
+    desc: Alinhamento do botão de "Ver mais".
+    default: center
+    type: String
+    examples: [center, left, right]
+
   show-more-label:
-    desc: Rótulo do botão de "mostrar mais".
+    desc: Rótulo do botão de "Ver mais".
     default: Ver mais
     type: String
 

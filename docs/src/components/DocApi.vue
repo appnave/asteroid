@@ -130,6 +130,7 @@ export default {
         events: 'Eventos',
         methods: 'Métodos',
         inject: 'Injeção',
+        provide: 'Providers',
         selectors: 'Seletores (data-cy)'
       }
 

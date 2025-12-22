@@ -54,3 +54,5 @@ Ex:
 <doc-example file="QasWelcome/Basic" title="Básico" />
 
 <doc-example file="QasWelcome/ActionsMenu" title="Com QasActionsMenu" />
+
+<doc-example file="QasWelcome/SlotAfterGreeting" title="Acessando after-greeting slot" />

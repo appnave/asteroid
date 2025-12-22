@@ -1,0 +1,26 @@
+type: component
+
+meta:
+  desc: Componente de dica com tooltip
+
+props:
+  text:
+    desc: Valor exibido no tooltip
+    default: ''
+    type: String
+
+  icon:
+    desc: Ícone utilizado no tip.
+    default: sym_r_help
+    type: String
+
+  size:
+    desc: Tamanho do ícone.
+    type: String
+    default: 16px
+    examples: ['sm', '24px']
+
+  color:
+    desc: Cor do ícone.
+    type: String
+    default: grey-8

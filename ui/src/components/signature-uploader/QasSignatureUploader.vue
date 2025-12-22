@@ -20,6 +20,7 @@
 import QasDialog from '../dialog/QasDialog.vue'
 import QasUploader from '../uploader/QasUploader.vue'
 import QasSignaturePad from '../signature-pad/QasSignaturePad.vue'
+
 import { base64ToBlob } from '../../helpers'
 import { NotifyError } from '../../plugins'
 
@@ -126,8 +127,6 @@ export default {
   },
 
   methods: {
-    NotifyError,
-
     closeSignature () {
       this.isOpenedDialog = false
     },

@@ -9,7 +9,7 @@ export default {
   computed: {
     headerProps () {
       return {
-        description: 'Algum texto de exemplo para ficar ao lado do botão de adicionar.',
+        description: 'Algum texto de descrição.',
         labelProps: {
           label: 'Título do header'
         },

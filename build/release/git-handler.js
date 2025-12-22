@@ -1,4 +1,4 @@
-function gitHandler ({ ora, execaSync, nextVersion, isBeta, packages }) {
+function gitHandler ({ ora, execaSync, nextVersion, packages }) {
   // commita as alterações
   const commitSpinner = ora('Commitando alterações...').start()
   execaSync('git', ['add', '.'], { cwd: packages.global.resolved })
@@ -17,8 +17,7 @@ function gitHandler ({ ora, execaSync, nextVersion, isBeta, packages }) {
 
   // envia as alterações para o github
   const pushSpinner = ora('Enviando push para o github...').start()
-  const pushCommands = ['push', 'origin']
-  pushCommands.push(isBeta ? 'develop' : 'main')
+  const pushCommands = ['push']
 
   execaSync('git', pushCommands, { cwd: packages.global.resolved })
   pushSpinner.succeed('Push enviado!')

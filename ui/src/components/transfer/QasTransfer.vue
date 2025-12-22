@@ -20,12 +20,14 @@
     <div class="col-12 col-sm-auto items-center justify-center q-col-gutter-md row" :class="actionsClass">
       <div>
         <qas-btn :class="iconClass" color="primary" :disabled="!firstQueue.length" icon="sym_r_arrow_circle_down" variant="tertiary" @click="setSelectedFromClick(true)" />
-        <q-tooltip anchor="top middle" self="center middle">Selecionar</q-tooltip>
+
+        <qas-tooltip text="Selecionar" />
       </div>
       <div>
         <div>
           <qas-btn :class="iconClass" color="primary" :disabled="!secondQueue.length" icon="sym_r_arrow_circle_up" variant="tertiary" @click="setSelectedFromClick()" />
-          <q-tooltip anchor="bottom middle" self="center middle">Remover</q-tooltip>
+
+          <qas-tooltip text="Remover" />
         </div>
       </div>
     </div>
@@ -54,6 +56,7 @@ import { extend } from 'quasar'
 import QasBtn from '../btn/QasBtn.vue'
 import QasLabel from '../label/QasLabel.vue'
 import QasSearchBox from '../search-box/QasSearchBox.vue'
+import QasTooltip from '../tooltip/QasTooltip.vue'
 
 export default {
   name: 'QasTransfer',
@@ -61,7 +64,8 @@ export default {
   components: {
     QasBtn,
     QasLabel,
-    QasSearchBox
+    QasSearchBox,
+    QasTooltip
   },
 
   props: {

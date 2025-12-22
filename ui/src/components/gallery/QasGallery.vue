@@ -8,17 +8,19 @@
           </template>
         </qas-gallery-card>
       </div>
+    </div>
 
+    <div class="q-mt-md">
       <slot>
-        <div v-if="!hideShowMore" class="full-width text-center">
+        <div v-if="!hideShowMore" :class="actionsClasses">
           <qas-btn color="primary" data-cy="gallery-btn-show-more" :label="props.showMoreLabel" variant="tertiary" @click="showMore" />
         </div>
       </slot>
-
-      <pv-gallery-carousel-dialog v-model="carouselDialog" v-model:imageIndex="imageIndex" :images="normalizedImages" />
-
-      <pv-gallery-delete-dialog v-model="showDeleteDialog" v-bind="deleteGalleryDialogProps" @cancel="resetCurrentModel" @error="onDeleteError" @success="onDeleteSuccess" />
     </div>
+
+    <pv-gallery-carousel-dialog v-model="carouselDialog" v-model:image-index="imageIndex" :images="normalizedImages" />
+
+    <pv-gallery-delete-dialog v-model="showDeleteDialog" v-bind="deleteGalleryDialogProps" @cancel="resetCurrentModel" @error="onDeleteError" @success="onDeleteSuccess" />
   </div>
 </template>
 
@@ -26,6 +28,7 @@
 import PvGalleryCarouselDialog from './private/PvGalleryCarouselDialog.vue'
 import PvGalleryDeleteDialog from './private/PvGalleryDeleteDialog.vue'
 import QasBtn from '../btn/QasBtn.vue'
+import QasGalleryCard from '../gallery-card/QasGalleryCard.vue'
 
 import { baseProps } from './composables/use-delete'
 import { useScreen } from '../../composables'
@@ -47,6 +50,12 @@ const props = defineProps({
     type: Number,
     default: 4,
     validator: value => [1, 2, 3, 4, 6, 12].includes(value)
+  },
+
+  showMoreAlign: {
+    type: String,
+    default: 'center',
+    validator: value => ['center', 'left', 'right'].includes(value)
   },
 
   showMoreLabel: {
@@ -97,6 +106,8 @@ const imageToBeDestroyed = ref({ index: null })
 const galleryCardCountToReRender = ref(1)
 
 // computed
+const actionsClasses = computed(() => `text-${props.showMoreAlign}`)
+
 const galleryColumnsClasses = computed(() => {
   const size = 12 / props.initialSize
   const col = `col-${size}`
@@ -138,16 +149,12 @@ function getActionsMenuProps ({ image, index }) {
   return {
     useLabel: false,
 
-    buttonProps: {
-      disable: isDestroyDisabled(image)
-    },
-
     list: {
       destroy: {
         label: 'Excluir',
         color: 'grey-10',
         icon: 'sym_r_delete',
-
+        disable: isDestroyDisabled(image),
         handler: () => onDelete(image, index)
       }
     }
@@ -155,10 +162,23 @@ function getActionsMenuProps ({ image, index }) {
 }
 
 function getGalleryCardProps ({ image, index }) {
+  const { headerProps } = props.galleryCardProps
+
   return {
-    actionsMenuProps: getActionsMenuProps({ image, index }),
-    card: image,
     imageProps: getImageProps({ image, index }),
+
+    ...image,
+
+    headerProps: {
+      ...image.headerProps,
+      ...headerProps,
+
+      actionsMenuProps: {
+        ...getActionsMenuProps({ image, index }),
+        ...image.headerProps?.actionsMenuProps,
+        ...headerProps?.actionsMenuProps
+      }
+    },
 
     ...props.galleryCardProps
   }
@@ -241,3 +261,51 @@ function showMore () {
   displayedImages.value += displayedImages.value
 }
 </script>
+
+<style lang="scss">
+.qas-gallery {
+  .qas-gallery-card__image {
+    transition: transform var(--qas-generic-transition);
+    border-radius: var(--qas-generic-border-radius);
+    position: relative;
+
+    &::before,
+    &::after {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      transition: transform var(--qas-generic-transition);
+      transform: scale(0);
+      pointer-events: none;
+    }
+
+    &::before {
+      border-radius: var(--qas-generic-border-radius);
+      background-color: black;
+      content: '';
+      opacity: 0.7;
+      z-index: 2;
+    }
+
+    &::after {
+      color: white;
+      content: 'zoom_out_map';
+      align-items: center;
+      font-family: 'Material Symbols Rounded';
+      display: flex;
+      justify-content: center;
+      font-size: 24px;
+      z-index: 3;
+    }
+
+    &:hover {
+      &::after,
+      &::before {
+        transform: scale(100%);
+      }
+    }
+  }
+}
+</style>

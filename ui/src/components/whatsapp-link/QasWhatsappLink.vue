@@ -3,6 +3,8 @@
 </template>
 
 <script setup>
+import QasBtn from '../btn/QasBtn.vue'
+
 import { computed } from 'vue'
 import { fabWhatsapp } from '@quasar/extras/fontawesome-v5'
 

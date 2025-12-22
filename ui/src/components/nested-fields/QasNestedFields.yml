@@ -5,7 +5,7 @@ meta:
 
 props:
   actions-menu-props:
-    desc: Repassa as propriedades para o componente QasActionsMenu. É possível passar um objeto com as propriedades ou uma função que recebe o 'index', 'row' e 'list' como parâmetro e retorna um objeto com as propriedades.
+    desc: Repassa as propriedades para o componente QasActionsMenu, APENAS quando se utilizar a prop useInlineActions. É possível passar um objeto com as propriedades ou uma função que recebe o 'index', 'row' e 'list' como parâmetro e retorna um objeto com as propriedades.
     default: {}
     type: [Object, Function]
 
@@ -20,10 +20,25 @@ props:
     type: String
 
   button-destroy-props:
-    desc: Props do botão de excluir linha contendo os campos.
+    desc: Props do botão de excluir linha contendo os campos, podendo ser um callback para controlar o comportamento de cada row.
     default: "{ label: 'Excluir', icon: 'sym_r_delete', flat: true, dense: true }"
     debugger: true
-    type: Object
+    params:
+      context:
+        desc: Payload da linha (row) -> index/row.
+        type: Object
+        params:
+          index:
+            desc: Índice da linha.
+            type: Number
+          row:
+            desc: Valores contendo na linha atual.
+            type: Object
+    examples: [
+      "{ label: 'Excluir este item', icon: 'sym_r_delete' }",
+      "({ index, row }) => ({ label: 'Teste', disable: !row.status })"
+    ]
+    type: [Object, Function]
 
   button-duplicate-props:
     desc: Props do botão de duplicar linha contendo os campos.
@@ -151,6 +166,11 @@ props:
 
   use-first-input-button:
     desc: Controla se vai ter um botão diferente para adicionar o primeiro campo.
+    default: true
+    type: Boolean
+
+  use-header:
+    desc: Controla se vai ter um header em cada linha.
     default: true
     type: Boolean
 

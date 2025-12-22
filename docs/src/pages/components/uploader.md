@@ -43,6 +43,13 @@ O formato padrão do model de objeto é:
 ## Uso
 
 <doc-example file="QasUploader/Basic" title="Básico" />
+<doc-example file="QasUploader/ExUploaderCustom" title="Custom list e card sem imagem" />
+
+:::info
+- Caso utilize o `headerProps`, por padrão sempre teremos o item `add` para realizar a adição dos arquivos, caso queira sobrescrever a ação de upload, basta passar um outro item `add` em list.
+:::
+<doc-example file="QasUploader/WithHeaderProps" title="Usando HeaderProps" />
+<doc-example file="QasUploader/WithError" title="Com erro" />
 <doc-example file="QasUploader/ExUploaderMultiple" title="Múltiplo" />
 <doc-example file="QasUploader/ExUploaderMultipleObjectModel" title="Múltiplo com useObjectModel" />
 <doc-example file="QasUploader/ExUploaderSingleObjectModel" title="Múltiplo com useObjectModel" />
@@ -64,4 +71,23 @@ O formato padrão do model de objeto é:
 
 <doc-print :src="require('assets/prints/uploader-editable.png')" />
 
+:::info
+##### Como funcionam prop `errors` no QasUploader
+
+Quando você passa erros para o componente através da propriedade `errors`, eles são tratados de forma inteligente:
+
+- **Erros de campos** (como `format`, `name`, etc.) → Aparecem nos inputs dentro de cada card
+- **Erros de `url`** → Aparecem como mensagem de erro no próprio card (não no input)
+
+**Exemplo prático:**
+```js
+{
+  'documents.0.format': ['Formato inválido'], // Aparece no campo "format" do 1º card
+  'documents.0.url': ['Arquivo corrompido'], // Aparece como erro do 1º card
+  'documents.1.format': ['Extensão não permitida'] // Aparece no campo "format" do 2º card
+}
+```
+
+Isso permite mostrar tanto erros específicos de campos quanto erros gerais do arquivo de forma organizada.
+:::
 <doc-example file="QasUploader/ExUploaderMultipleEditable" title="Múltiplo e editável" />

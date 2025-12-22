@@ -1,9 +1,13 @@
 <template>
   <div :class="classes.container">
-    <header v-bind="headerProps">
+    <header :class="classes.header">
       <slot name="header">
-        {{ props.label }}
+        <div v-bind="textAttributes">
+          {{ props.label }}
+        </div>
       </slot>
+
+      <qas-tip v-if="props.tip" class="q-ml-xs" :text="props.tip" />
     </header>
 
     <div v-bind="contentProps">
@@ -15,6 +19,7 @@
 </template>
 
 <script setup>
+import QasTip from '../tip/QasTip.vue'
 import { useScreen } from '../../composables'
 
 import { computed } from 'vue'
@@ -39,6 +44,16 @@ const props = defineProps({
   value: {
     type: [String, Number, Boolean],
     default: ''
+  },
+
+  tip: {
+    type: String,
+    default: ''
+  },
+
+  content: {
+    type: Object,
+    default: () => ({})
   }
 })
 
@@ -50,33 +65,39 @@ const hasEllipsis = computed(() => props.useEllipsis && !screen.isSmall)
 const classes = computed(() => {
   const isInline = props.useInline && !screen.isSmall
 
+  const { typography } = props.content
+
   return {
     container: {
-      flex: isInline,
-      'q-col-gutter-x-md': isInline,
-      'justify-between': isInline,
-      'col-12': isInline,
-      'no-wrap': isInline
+      'flex justify-between col-12 no-wrap': isInline
     },
 
     header: {
       'text-caption': !isInline,
-      'text-body1': isInline
+
+      /**
+       * Necessário adicionar o padding à direita no header ao invés do gutter, pois ao usar o gutter no eixo x,
+       * ele adiciona um espaçamento à direita do content de forma errada, deixando o espaçamento maior que o do header.
+       */
+      'text-body1 q-pr-md': isInline,
+
+      // classes por conta do tip.
+      'row no-wrap': props.tip,
+      'items-center': props.tip || typography,
+      flex: typography
     },
 
     content: {
-      'text-body1': !isInline,
-      'text-grey-10': !isInline,
-      'text-subtitle1': isInline,
+      'text-grey-10': true,
+
+      // é possível passar uma tipografia personalizada.
+      [`text-${typography}`]: typography,
+
+      'text-body1': !isInline && !typography,
+      'text-subtitle1': isInline && !typography,
+
       ellipsis: hasEllipsis.value
     }
-  }
-})
-
-const headerProps = computed(() => {
-  return {
-    class: classes.value.header,
-    ...(hasEllipsis.value && { title: props.label })
   }
 })
 
@@ -85,5 +106,9 @@ const contentProps = computed(() => {
     class: classes.value.content,
     ...(hasEllipsis.value && { title: props.value })
   }
+})
+
+const textAttributes = computed(() => {
+  return hasEllipsis.value ? { title: props.label } : undefined
 })
 </script>

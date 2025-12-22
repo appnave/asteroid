@@ -4,6 +4,18 @@ meta:
   desc: Componente para criação de tabela dinâmica usando o `QTable` do quasar.
 
 props:
+  actions-menu-props:
+    desc: Propriedades repassadas para o "QasActionsMenu" que adiciona uma coluna "actions" de forma automática.
+    default: undefined
+    type: Function
+    params:
+      row:
+        desc: Payload da linha da tabela.
+        type: Object
+      index:
+        desc: Índice da linha da tabela.
+        type: Number
+
   columns:
     desc: Colunas que vão ter na tabela.
     default: []
@@ -20,11 +32,29 @@ props:
     type: Object
     examples: ["{ email: { name: 'email', type: 'email', label: 'E-mail' } }"]
 
+  fields-props:
+    desc: Propriedade para controlar o uso de componentes dentro das row sem necessidade de abrir slot.
+    default: {}
+    type: [Object, Function]
+    examples: ["{ email: { component: 'QasCopy' } }"]
+    params:
+      row:
+        desc: Payload da linha da tabela.
+        type: Object
+      index:
+        desc: Índice da linha da tabela.
+        type: Number
+
   header-props:
     desc: Propriedades repassadas para o componente `QasHeader`.
     default: {}
     type: Object
     examples: ["{ description: 'Descrição', labelProps: { label: 'Titulo do header'} }"]
+
+  max-height:
+    desc: Usado para definir a altura máxima da tabela e exibir o scroll vertical. Somente funciona quando a propriedade "use-sticky-header" ou "use-virtual-scroll" é utilizada.
+    default: '528px'
+    type: String
 
   results:
     desc: Lista com resultados para serem mostrados na tabela.
@@ -42,6 +72,13 @@ props:
     type: Function
     examples: ["(row) => ({ path: 'table-generator', params: { id: row.uuid } })"]
 
+  selected:
+    desc: Usado como model das linhas selecionadas.
+    default: []
+    type: Array
+    model: true
+    examples: ["['uuid1', 'uuid2']"]
+
   use-box:
     desc: Controla se o componente vai usar QasBox ou div.
     default: true
@@ -52,9 +89,24 @@ props:
     default: false
     type: Boolean
 
+  use-selection:
+    desc: Usado para ativar a seleção de múltiplas linhas da tabela .
+    default: false
+    type: Boolean
+
   use-scroll-on-grab:
     desc: Adiciona scroll pelo mouse ao arrastar tabela em todas as telas (Celular, Desktop).
     default: true
+    type: Boolean
+
+  use-multiline:
+    desc: Usado para permitir que o conteúdo da célula quebre linha (não permite scroll na tabela a partir de tablet).
+    default: false
+    type: Boolean
+
+  use-object-selected-model:
+    desc: Usado para definir o modelo de seleção como um array de objeto ao invés de um array de string.
+    default: false
     type: Boolean
 
   use-sticky-header:
@@ -62,10 +114,10 @@ props:
     default: false
     type: Boolean
 
-  sticky-header-table-height:
-    desc: Usado para definir a altura máxima da tabela e exibir o scroll vertical quando a propriedade "use-sticky-header" é utilizada.
-    default: 528px
-    type: String
+  use-virtual-scroll:
+    desc: Usado para ativar o scroll virtual da tabela.
+    default: false
+    type: Boolean
 
 slots:
   body:
@@ -92,3 +144,10 @@ events:
       index:
         desc: Índice da linha.
         type: Number
+
+  '@update:selected -> function(values)':
+    desc: Dispara toda vez que que o usuário seleciona uma linha, pode ser array de objetos ou array de string, dependendo de como configurou pela prop "useObjectSelectedModel".
+    params:
+      values:
+        desc: Array de objeto ou array de string.
+        type: Array

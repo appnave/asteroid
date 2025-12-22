@@ -1,5 +1,5 @@
 import { decamelize } from 'humps'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash-es/isEqual'
 import { getAction } from '@bildvitta/store-adapter'
 
 export default {
@@ -52,6 +52,7 @@ export default {
       mx_isFetching: false,
       mx_isScrolling: false,
       mx_search: '',
+      mx_hasFetched: false,
       mx_pagination: {
         page: 1,
         lastPage: null,
@@ -214,6 +215,8 @@ export default {
         this.$emit('fetch-options-success', data)
 
         const options = this.mx_getOptions(results)
+
+        this.mx_hasFetched = true
 
         return this.mx_getNonDuplicatedOptions(options)
       } catch (error) {

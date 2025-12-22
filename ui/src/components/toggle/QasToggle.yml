@@ -3,3 +3,9 @@ type: component
 meta:
   desc: Componente wrapper do QToggle.
 
+props:
+  title:
+    type: String
+    default: ''
+    desc: Título exibido acima do toggle.
+

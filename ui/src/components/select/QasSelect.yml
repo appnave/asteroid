@@ -7,11 +7,16 @@ meta:
   desc: Componente para select que implementa o "QSelect" repassando propriedades, slots e eventos.
 
 props:
-  badge-list:
+  badge-props:
     desc: Configuração das badges no qual cada key é um callback com o valor booleano retornado pelo back.
     default: {}
     examples: ["{ isTester: () => { return { color: 'grey-8', label: 'Tester', textColor: 'white' }} }"]
     type: Object
+
+  disable:
+    desc: Desabilita o componente.
+    default: false
+    type: Boolean
 
   entity:
     desc: Entidade enviada para a action "fetchFieldOptions" (usar somente quando "useLazyLoading" estiver habilitada).
@@ -34,6 +39,11 @@ props:
       ignoreLocation: true
       keys: [label, value]
       threshold: 0.4
+
+  icon:
+    desc: Ícone da esquerda.
+    type: String
+    default: ''
 
   label:
     desc: Label do componente.
@@ -62,6 +72,11 @@ props:
     examples: [v-model="value"]
     model: true
 
+  multiple:
+    desc: Controla se o select vai permitir múltiplas seleções.
+    default: false
+    type: Boolean
+
   name:
     desc: Nome do campo a ser enviado para a action "fetchFieldOptions" (usar somente quando "useLazyLoading" estiver habilitada).
     type: String
@@ -76,6 +91,11 @@ props:
     desc: Opções do select.
     default: []
     type: Array
+
+  readonly:
+    desc: Controla se o componente é somente leitura.
+    default: false
+    type: Boolean
 
   required:
     desc: Controla label do campo, se for "true" adiciona sufixo "*".

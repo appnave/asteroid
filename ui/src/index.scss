@@ -36,3 +36,21 @@ $border-grey: var(--qas-border-grey);
 
 // utils
 @import './css/utils/index';
+
+// defaults
+$primary   : #0f53af;
+$secondary : #1565C0;
+$tertiary  : #c7ceff;
+$accent    : rgba(33, 33, 33, 10%);
+$dark      : #212121;
+$positive  : #21ba45;
+$negative  : $red-14;
+$info      : #31ccec;
+$warning   : #f2c037;
+
+// Asteroid
+$primary-contrast: #1976d2;
+$secondary-contrast: #90caf9;
+
+@include set-brand(primary-contrast, $primary-contrast);
+@include set-brand(secondary-contrast, $secondary-contrast);

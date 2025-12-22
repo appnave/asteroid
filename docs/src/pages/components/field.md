@@ -20,9 +20,6 @@ A prop `field` é um objeto que contém as propriedades do componente que será 
   type: 'email' // tipo do campo
 }
 ```
-
-Componente renderizado:
-<qas-field :field="{ name: 'email', label: 'E-mail', type: 'Email' }" />
 :::
 
 :::tip

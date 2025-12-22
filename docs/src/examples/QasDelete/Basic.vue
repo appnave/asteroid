@@ -1,6 +1,6 @@
 <template>
   <div class="container spaced">
-    <qas-delete v-model:deleting="isDeleting" :custom-id="customId" entity="users" label="Deletar este usuário" />
+    <qas-delete v-model:deleting="isDeleting" :custom-id="customId" entity="users" />
 
     <!-- Remover este código -->
     <div class="q-mt-lg">

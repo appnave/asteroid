@@ -13,3 +13,4 @@ Componente wrapper do QRadio/OptionGroup.
 
 <doc-example file="QasRadio/Basic" title="Básico" />
 <doc-example file="QasRadio/OptionGroup" title="Com opções" />
+<doc-example file="QasRadio/WithError" title="Com erro" />

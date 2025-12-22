@@ -1,7 +1,7 @@
 <template>
   <component :is="parentComponent.is" v-bind="parentComponent.props">
     <qas-header v-if="hasHeader" v-bind="headerProps">
-      <template #right>
+      <template #actions>
         <qas-filters v-bind="chartFiltersProps" />
       </template>
     </qas-header>
@@ -23,6 +23,13 @@
 </template>
 
 <script>
+import QasBox from '../box/QasBox.vue'
+import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
+import QasFilters from '../filters/QasFilters.vue'
+import QasHeader from '../header/QasHeader.vue'
+
+import { useOverlayNavigation } from '../../composables'
+
 // Importações do chart.js
 import {
   Chart as ChartJS,
@@ -46,8 +53,9 @@ import zoomPlugin from 'chartjs-plugin-zoom'
 import chartDataLabels from 'chartjs-plugin-datalabels'
 
 // Outras importações
-import { extend } from 'quasar'
 import { filterListByHandle } from '../../helpers'
+
+import { extend, is } from 'quasar'
 import { getAction } from '@bildvitta/store-adapter'
 
 const ChartTypes = {
@@ -62,7 +70,11 @@ export default {
   components: {
     BarChart,
     DoughnutChart,
-    LineChart
+    LineChart,
+    QasBox,
+    QasEmptyResultText,
+    QasFilters,
+    QasHeader
   },
 
   props: {
@@ -131,6 +143,11 @@ export default {
       type: String
     },
 
+    urlQueryList: {
+      default: () => (['company']),
+      type: Array
+    },
+
     useBox: {
       type: Boolean,
       default: true
@@ -148,12 +165,15 @@ export default {
   ],
 
   data () {
+    const { isBackgroundOverlay } = useOverlayNavigation()
+
     return {
       cancelBeforeFetch: false,
       data: [],
       filters: {},
       isFetched: false,
-      isFetching: false
+      isFetching: false,
+      isBackgroundOverlay
     }
   },
 
@@ -225,7 +245,8 @@ export default {
     chartOptions () {
       const { options, type } = this
 
-      return extend(true, charts[type], options)
+      // Retorna as opções do gráfico mescladas com as opções padrão em uma copia para evitar mutação
+      return extend(true, {}, charts[type], options)
     },
 
     chartPlugins () {
@@ -326,12 +347,16 @@ export default {
 
     parentComponent () {
       return {
-        is: this.useBox ? 'qas-box' : 'div',
+        is: this.useBox ? QasBox : 'div',
 
         props: {
           ...(this.useBox && { ...this.boxProps })
         }
       }
+    },
+
+    queryFromURL () {
+      return this.getQueryFromURL(this.$route.query)
     }
   },
 
@@ -342,6 +367,12 @@ export default {
 
     isFetching (value) {
       this.$emit('update:fetching', value)
+    },
+
+    $route (to, from) {
+      if (this.isBackgroundOverlay) return
+
+      this.onRouteChange(to, from)
     }
   },
 
@@ -350,16 +381,17 @@ export default {
     this.handleFetchData()
   },
 
-  unmounted () {
+  beforeUnmount () {
     this.unregisterChartJS()
   },
 
   methods: {
     handleFetchData () {
       const hasBeforeFetch = typeof this.beforeFetch === 'function'
+
       const payload = {
         url: this.url,
-        filters: this.filters
+        filters: { ...this.filters, ...this.queryFromURL }
       }
 
       if (hasBeforeFetch && !this.cancelBeforeFetch) {
@@ -435,6 +467,44 @@ export default {
         ...this.defaultChartItems,
         ...this.elementsChartItems[this.type]
       )
+    },
+
+    onRouteChange (to, from) {
+      const { query } = to
+
+      const isSameRoute = to.name === from.name
+      const hasQueryInURLQueryList = this.urlQueryList.some(urlQuery => query[urlQuery])
+
+      /**
+       * feito com função para evitar um deepEqual desnecessário, uma vez que
+       * caso "isSameRoute" seja falso, ou "hasQueryInURLQueryList" seja falso,
+       * não é necessário fazer a comparação.
+       */
+      const hasQueryChanged = () => !is.deepEqual(this.queryFromURL, this.getQueryFromURL(from.query))
+
+      /**
+       * Verifica se a rota atual é a mesma, se há uma query na URL que corresponde à queryList,
+       * e se a query correspondente à queryList foi alterada. Se todas essas condições forem
+       * verdadeiras, faz a requisição de dados.
+       */
+      if (isSameRoute && hasQueryInURLQueryList && hasQueryChanged()) this.handleFetchData()
+    },
+
+    /**
+     * "urlQueryList" é uma lista de query que o componente deve pegar da URL.
+     */
+    getQueryFromURL (query = {}) {
+      const newQuery = {}
+
+      this.urlQueryList.forEach(urlQuery => {
+        const queryValue = query[urlQuery]
+
+        if (queryValue) {
+          newQuery[urlQuery] = queryValue
+        }
+      })
+
+      return newQuery
     }
   }
 }

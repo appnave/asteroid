@@ -148,6 +148,11 @@ props:
     default: true
     type: Boolean
 
+  use-store:
+    desc: Controla se o componente usará internamente uma store do vuex/pinia ou se vai ser utilizado o axios diretamente.
+    default: true
+    type: Boolean
+
 slots:
   actions:
     desc: Slot para acessar a seção onde ficam os botões de ações (salvar e cancelar).

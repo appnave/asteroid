@@ -1,19 +1,19 @@
 <template>
   <qas-search-box ref="searchBox" v-model:results="results" v-bind="defaultSearchBoxProps" :list="sortedList">
     <template #after-search>
-      <div class="q-mb-md q-mt-xl">
-        <span class="q-pr-sm text-body1 text-grey-8">Seleção:</span>
-
-        <qas-btn :disable="isClearSelectionDisabled" label="Limpar seleção" variant="tertiary" @click="clearSelection" />
+      <div class="q-my-md">
+        <qas-btn color="grey-10" :disable="isClearSelectionDisabled" icon="sym_r_close" label="Limpar seleção" variant="tertiary" @click="clearSelection" />
       </div>
     </template>
 
     <template #default>
-      <q-list class="bg-white rounded-borders" separator>
+      <q-list class="bg-white q-py-sm rounded-borders" separator>
         <q-item v-for="result in results" :key="result.value" class="q-px-none" tag="label">
           <slot v-bind="slotData" :item="result" name="item">
             <q-item-section>
-              <pv-select-list-checkbox :readonly="readonly" :result="result" :use-active="hasValueInModel(result.value)" @add="add" @remove="remove" />
+              <q-item-label>
+                <pv-select-list-checkbox :readonly="readonly" :result="result" :use-active="hasValueInModel(result.value)" @add="add" @remove="remove" />
+              </q-item-label>
             </q-item-section>
           </slot>
         </q-item>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { sortBy } from 'lodash-es'
+import sortBy from 'lodash-es/sortBy'
 
 import QasBtn from '../btn/QasBtn.vue'
 import QasSearchBox from '../search-box/QasSearchBox.vue'

@@ -16,6 +16,8 @@
       </q-page-container>
     </slot>
 
+    <pv-layout-overlay-drawer />
+
     <q-ajax-bar color="primary" position="bottom" size="2px" />
 
     <pv-layout-notifications-drawer v-if="isNotificationsEnabled" v-model="notificationsDrawer" />
@@ -26,6 +28,7 @@
 import PvLayoutNotificationsDrawer from './private/PvLayoutNotificationsDrawer.vue'
 import QasAppBar from '../app-bar/QasAppBar.vue'
 import QasAppMenu from '../app-menu/QasAppMenu.vue'
+import PvLayoutOverlayDrawer from './private/PvLayoutOverlayDrawer.vue'
 
 import useScreen from '../../composables/use-screen'
 import useNotifications from '../../composables/use-notifications'

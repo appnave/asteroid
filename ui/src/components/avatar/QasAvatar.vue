@@ -19,12 +19,7 @@ defineOptions({
 const props = defineProps({
   color: {
     type: String,
-    default: AvatarColors.Primary,
-    validator: value => {
-      const availableColors = Object.values(AvatarColors)
-
-      return availableColors.includes(value)
-    }
+    default: AvatarColors.Primary
   },
 
   size: {
@@ -38,6 +33,11 @@ const props = defineProps({
   },
 
   image: {
+    default: '',
+    type: String
+  },
+
+  textColor: {
     default: '',
     type: String
   },
@@ -62,7 +62,6 @@ const attributes = computed(() => {
     rounded,
     square,
     fontSize,
-    textColor,
     ...attributes
   } = attrs
 
@@ -76,7 +75,7 @@ const attributes = computed(() => {
   return {
     size: props.size,
     color: props.color,
-    textColor: colors[props.color],
+    textColor: colors[props.color] || props.textColor,
     ...attributes
   }
 })

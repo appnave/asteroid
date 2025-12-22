@@ -55,6 +55,13 @@ props:
     type: Array
     model: true
 
+  select-list-model:
+    desc: Model dos itens selecionados dentro do dialog.
+    type: Array
+    default: []
+    examples: [v-model:select-list-model="selectedItems"]
+    model: true
+
   select-list-props:
     desc: Propriedades repassadas para o componente QasSelectList.
     default: []
@@ -74,6 +81,9 @@ slots:
 
   dialog-header:
     desc: Slot para substituir cabeçalho do dialog.
+
+  selected-content:
+    desc: Slot para personalizar o conteúdo dos itens adicionados.
 
 events:
   '@add -> function(items)':

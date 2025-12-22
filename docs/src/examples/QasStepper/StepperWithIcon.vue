@@ -1,6 +1,6 @@
 <template>
   <div class="container spaced">
-    <qas-stepper v-model="model" disable>
+    <qas-stepper v-model="model">
       <template #default="{ next, previous }">
         <q-step caption="example 1" :done="model > 1" icon="sym_r_article" :name="1" title="Página 1">
           <div class="q-mb-md">Conteúdo da Página 1</div>

@@ -1,10 +1,10 @@
 <template>
   <div class="container spaced">
     <div>Exemplo com path</div>
-    <qas-delete v-model:deleting="isDeleting" :custom-id="customId" entity="users" label="Deletar este usuário" redirect-route="/" />
+    <qas-delete v-model:deleting="isDeleting" :custom-id="customId" entity="users" redirect-route="/" />
 
     <div class="q-mt-lg">Exemplo com objeto</div>
-    <qas-delete v-model:deleting="isDeleting" :custom-id="customId" entity="users" label="Deletar este usuário" :redirect-route="{ path: '/' }" />
+    <qas-delete v-model:deleting="isDeleting" :custom-id="customId" entity="users" :redirect-route="{ path: '/' }" />
 
     <!-- Remover este código -->
     <div class="q-mt-lg">

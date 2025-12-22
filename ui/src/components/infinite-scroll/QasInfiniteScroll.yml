@@ -4,6 +4,13 @@ meta:
   desc: Componente de infinite scroll que implementa o "QInfiniteScroll".
 
 props:
+  fields:
+    desc: Model dos fields.
+    default: {}
+    type: Object
+    examples: [v-model:fields="fields"]
+    model: true
+
   list:
     desc: Model da lista de itens.
     default: []

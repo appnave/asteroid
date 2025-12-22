@@ -112,6 +112,9 @@ import { formatCompanyDocument } from 'asteroid'
 
 formatCompanyDocument('99999999999999')
 // retorna: '99.999.999/9999-99'
+
+formatCompanyDocument('ODH0LCRV000000')
+// retorna 'OD.H0L.CRV.0000-00'
 ```
 
 #### formatDocument
@@ -123,6 +126,10 @@ import { formatDocument } from 'asteroid'
 // CNPJ
 formatDocument('99999999999999')
 // retorna: '99.999.999/9999-99'
+
+// CNPJ
+formatDocument('ODH0LCRV000000')
+// retorna 'OD.H0L.CRV.0000-00'
 
 // CPF
 formatDocument('99999999999')

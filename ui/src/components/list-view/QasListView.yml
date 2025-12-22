@@ -10,6 +10,11 @@ props:
     type: Function
     examples: ['beforeFetch({ payload, resolve, done })']
 
+  empty-result-text:
+    desc: Texto a ser exibido quando a listagem estiver vazia. Caso não seja passado nada, irá utilizar o default do QasEmptyResultText.
+    default: undefined
+    type: String
+
   entity:
     desc: Entidade da store, por exemplo se tiver que trabalhar com modulo de usuários, teremos o model "users" na store, que vai ser nossa "entity".
     required: true
@@ -39,6 +44,11 @@ props:
     desc: Repassa as props para o componente "QasFilters".
     default: {}
     type: Object
+
+  results-per-page:
+    desc: Quantidade de itens por pagina que será enviada no limit (somente será aplicado em casos de não utilizar store).
+    default: 36
+    type: Number
 
   metadata:
     model: true
@@ -93,6 +103,11 @@ props:
 
   use-results-area-only:
     desc: Controla se irá sempre ser exibido os resultados independente se não há nenhum resultado a ser exibido.
+    type: Boolean
+
+  use-store:
+    desc: Controla se vai utilizar a store.
+    default: true
     type: Boolean
 
 slots:
@@ -163,3 +178,12 @@ events:
       value:
         desc: Retorna se está ou não fazendo fetching de dados.
         type: Boolean
+
+provide:
+  is-fetch-list-succeeded:
+    desc: Valor que diz se o `fetchList` foi realizado com sucesso ou não.
+    type: Boolean
+
+  is-list-view:
+    desc: Provide que diz quando se está utilizando o listView
+    type: Boolean

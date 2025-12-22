@@ -1,37 +1,38 @@
 <template>
   <div class="qas-uploader">
-    <q-uploader ref="uploader" auto-upload class="bg-transparent" :class="uploaderClasses" v-bind="attributes" :factory="factory" flat :max-files="maxFiles" method="PUT" @factory-failed="factoryFailed" @uploaded="uploaded" @uploading="updateUploading(true)">
+    <q-uploader ref="uploader" auto-upload class="bg-transparent" :class="uploaderClasses" v-bind="attributes" :factory flat :max-file-size :max-files method="PUT" @added="onAdded" @factory-failed="factoryFailed" @rejected="onRejected" @uploaded="uploaded" @uploading="updateUploading(true)">
       <template #header="scope">
         <slot name="header" :scope="scope">
-          <div class="flex items-center justify-between">
-            <div>
-              <qas-label v-bind="labelProps" />
-
-              <div v-if="errorMessage" class="q-mt-xs text-caption text-negative">
-                {{ errorMessage }}
+          <qas-header v-if="useHeader" class="q-mb-none" v-bind="getHeaderProps(scope)">
+            <template #description>
+              <div :class="headerDescriptionClasses">
+                {{ headerProps.description }}
               </div>
-            </div>
+            </template>
 
-            <div v-if="hasAddFile">
-              <qas-btn color="primary" icon="sym_r_add" :label="addButtonLabel" :use-label-on-small-screen="false" variant="tertiary" @click="onAddButtonClick(scope)" />
-            </div>
-          </div>
+            <template v-for="(_, name) in $slots" #[getHeaderSlotName(name)]="context">
+              <slot :name v-bind="context" />
+            </template>
+          </qas-header>
 
           <!-- ------------------------------------ tags hidden -------------------------------------- -->
           <input ref="hiddenInput" :accept="attributes.accept" class="qas-uploader__input" :multiple="isMultiple" type="file">
-          <qas-btn ref="buttonCleanFiles" class="hidden" @click="scope.removeUploadedFiles" />
         </slot>
       </template>
 
       <template #list="scope">
-        <div v-if="hasGalleryCardSection(getFilesList(scope.files, scope))" class="q-col-gutter-lg q-mt-sm row">
+        <div v-if="hasGalleryCardSection(getFilesList(scope.files, scope))" class="q-col-gutter-lg row">
           <div v-for="(file, key, index) in getFilesList(scope.files, scope)" :key="index" :class="columnClasses">
             <pv-uploader-gallery-card v-bind="getUploaderGalleryCardProps({ key, scope, file, index })" />
           </div>
         </div>
 
-        <div v-else class="q-mt-lg">
-          <qas-empty-result-text />
+        <qas-empty-result-text v-else-if="useEmptyResultText" />
+
+        <qas-error-message v-if="errorMessage" :message="errorMessage" />
+
+        <div v-if="hasBottomListSlot" class="q-mt-md">
+          <slot :context="self" name="bottom-list" />
         </div>
       </template>
     </q-uploader>
@@ -42,10 +43,16 @@
 
 <script>
 import PvUploaderGalleryCard from './private/PvUploaderGalleryCard.vue'
+import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
+import QasHeader from '../header/QasHeader.vue'
+import QasErrorMessage from '../error-message/QasErrorMessage.vue'
+
+import { baseErrorProps } from '../../composables/private/use-error-message'
+import { getImageSize, getResizeDimensions } from '../../helpers/images.js'
+import { constructObject } from '../../helpers'
 
 import { uid, extend } from 'quasar'
 import { NotifyError } from '../../plugins'
-import { getImageSize, getResizeDimensions } from '../../helpers/images.js'
 
 import Pica from 'pica'
 
@@ -53,12 +60,27 @@ export default {
   name: 'QasUploader',
 
   components: {
-    PvUploaderGalleryCard
+    PvUploaderGalleryCard,
+    QasEmptyResultText,
+    QasHeader,
+    QasErrorMessage
   },
 
   inheritAttrs: false,
 
   props: {
+    ...baseErrorProps,
+
+    errors: {
+      type: [Array, Object],
+      default: () => ({})
+    },
+
+    fieldName: {
+      type: String,
+      default: ''
+    },
+
     addButtonFn: {
       type: Function,
       default: undefined
@@ -96,15 +118,6 @@ export default {
       type: String
     },
 
-    error: {
-      type: Boolean
-    },
-
-    errorMessage: {
-      default: '',
-      type: String
-    },
-
     fields: {
       default: () => ({}),
       type: Object
@@ -125,12 +138,22 @@ export default {
       type: Object
     },
 
+    headerProps: {
+      type: Object,
+      default: () => ({})
+    },
+
     label: {
       type: String,
       default: ''
     },
 
     maxFiles: {
+      default: undefined,
+      type: Number
+    },
+
+    maxFileSize: {
       default: undefined,
       type: Number
     },
@@ -168,6 +191,21 @@ export default {
       type: Boolean
     },
 
+    useEmptyResultText: {
+      type: Boolean,
+      default: true
+    },
+
+    useGalleryCard: {
+      type: Boolean,
+      default: true
+    },
+
+    useHeader: {
+      type: Boolean,
+      default: true
+    },
+
     useObjectModel: {
       type: Boolean
     },
@@ -183,20 +221,28 @@ export default {
     }
   },
 
-  emits: ['update:modelValue', 'update:uploading'],
+  emits: ['update:modelValue', 'update:uploading', 'rejected', 'update:errors'],
 
   data () {
     return {
       hasError: false,
       hiddenInputElement: null,
       savedFiles: {},
-      uploader: null
+      uploader: null,
+      amountFilesSent: 0,
+      amountFilesRejected: 0
     }
   },
 
   computed: {
     attributes () {
       return this.$attrs
+    },
+
+    headerDescriptionClasses () {
+      return {
+        'text-negative': this.error
+      }
     },
 
     columnClasses () {
@@ -228,10 +274,24 @@ export default {
       return classes
     },
 
+    /**
+     * Controla o valor default das colunas do grid
+     *
+     * Se o usuário passar alguma coluna, utiliza a passada
+     * Se for múltiplo e estiver usando o gallery card, exibe 4 "{ col: 12, sm: 6, md: 4, lg: 3 }"
+     * Senão, exibe "{ col: 12, sm: 6 }"
+     */
     defaultColumns () {
+      const hasDefaultColumn = !!Object.keys(this.columns).length
+
+      if (hasDefaultColumn) return this.columns
+
+      const hasSmallSize = this.useGalleryCard && this.isMultiple
+
       return {
-        ...(this.isMultiple ? { col: 12, sm: 6, md: 4, lg: 3 } : { col: 12, sm: 6 }),
-        ...this.columns
+        col: 12,
+        sm: 6,
+        ...(hasSmallSize && { md: 4, lg: 3 })
       }
     },
 
@@ -252,7 +312,8 @@ export default {
         gridGeneratorProps,
         useDownload,
         useObjectModel,
-        dialogProps
+        dialogProps,
+        useGalleryCard
       } = this.$props
 
       return {
@@ -263,6 +324,7 @@ export default {
         gridGeneratorProps,
         useDownload,
         useObjectModel,
+        useGalleryCard,
 
         useMultiple: this.isMultiple
       }
@@ -286,17 +348,12 @@ export default {
       return this.$slots.header
     },
 
-    isMultiple () {
-      return this.$attrs.multiple || this.$attrs.multiple === ''
+    hasBottomListSlot () {
+      return this.$slots['bottom-list']
     },
 
-    labelProps () {
-      return {
-        label: this.label,
-        margin: 'none',
-
-        ...(this.error && { color: 'negative' })
-      }
+    isMultiple () {
+      return this.$attrs.multiple || this.$attrs.multiple === ''
     },
 
     self () {
@@ -305,6 +362,23 @@ export default {
 
     uploaderClasses () {
       return this.hasCustomUpload ? 'hidden' : 'fit'
+    },
+
+    isErrorArray () {
+      return Array.isArray(this.errors)
+    },
+
+    transformedErrors () {
+      return this.isErrorArray ? this.errors : constructObject(this.fieldName, this.errors)
+    },
+
+    /**
+     * Computada para ser usada para controle externamente do componente.
+     *
+     * Retorna true quando todos os arquivos enviados foram rejeitados.
+     */
+    hasAllFileRejected () {
+      return this.amountFilesSent === this.amountFilesRejected
     }
   },
 
@@ -312,7 +386,7 @@ export default {
     this.hiddenInputElement = this.$refs.hiddenInput
     this.uploader = this.$refs.uploader
 
-    this.hiddenInputElement?.addEventListener?.('change', this.addFiles)
+    this.hiddenInputElement?.addEventListener?.('change', () => this.addFiles())
 
     if (this.useObjectModel) {
       window.addEventListener('submit-success', this.handleSubmitSuccess)
@@ -320,7 +394,7 @@ export default {
   },
 
   unmounted () {
-    this.hiddenInputElement?.removeEventListener?.('change', this.addFiles)
+    this.hiddenInputElement?.removeEventListener?.('change', () => this.addFiles())
 
     if (this.useObjectModel) {
       window.removeEventListener('submit-success', this.handleSubmitSuccess)
@@ -328,25 +402,44 @@ export default {
   },
 
   methods: {
-    async addFiles () {
-      const filesList = Array.from(this.hiddenInputElement.files)
+    /**
+     * É possível passar os arquivos como parâmetro ou pegar os arquivos do input hidden,
+     * isto será útil para casos onde precisa manipular o QasUploader pelo lado de fora
+     * via ref.
+     *
+     * @param {File[]|FileList} files
+     */
+    async addFiles (files) {
+      const filesList = Array.from(files || this.hiddenInputElement.files)
+
       const processedFiles = []
 
-      this.$refs.hiddenInput.value = ''
+      // previne erro caso não exista hiddenInput
+      if (this.$refs.hiddenInput) {
+        this.$refs.hiddenInput.value = ''
+      }
 
       filesList.forEach(file => processedFiles.push(this.resizeImage(file)))
 
       this.uploader.addFiles(await Promise.all(processedFiles))
     },
 
+    /**
+     * @param {FileList} files
+     */
+    onAdded (files) {
+      // seta a quantidade de arquivos enviados, independentemente se forem aceitos ou rejeitados.
+      this.amountFilesSent += files.length
+    },
+
     dispatchUpload () {
-      this.$refs.buttonCleanFiles.$el.click()
-      this.hiddenInputElement.click()
+      this.uploader?.removeUploadedFiles?.()
+      this.hiddenInputElement?.click?.()
     },
 
     async factory ([file]) {
       if (!this.isMultiple && !this.hasHeaderSlot) {
-        this.$refs.buttonCleanFiles.$el.click()
+        this.uploader.removeUploadedFiles()
       }
 
       const name = `${uid()}.${file.name.split('.').pop()}`
@@ -455,12 +548,13 @@ export default {
         ...this.defaultUploaderGalleryCardProps,
 
         currentModelValue: modelValue,
+        errors: this.transformedErrors[index],
         file,
         fileKey: key,
         savedFiles: this.savedFiles,
 
         // eventos
-        onRemove: () => this.removeFile(key, scope, file),
+        onRemove: () => this.removeFile(key, scope, file, index),
         onUpdateModel: value => this.updateModelValue({ index, payload: value })
       }
     },
@@ -481,7 +575,23 @@ export default {
       return this.addButtonFn ? this.addButtonFn(scope) : this.$refs.hiddenInput.click()
     },
 
-    removeFile (key, scope, file) {
+    removeFile (key, scope, file, index) {
+      /**
+       * Remove o erro referente ao arquivo removido para não correr o risco
+       * de manter erros de arquivos que já foram removidos ao adicionar novos arquivos.
+       */
+      if (this.transformedErrors[index]) {
+        const errors = this.isErrorArray ? [...this.transformedErrors] : { ...this.transformedErrors }
+
+        if (this.isErrorArray) {
+          errors.splice(index, 1)
+        } else {
+          delete errors[index]
+        }
+
+        this.$emit('update:errors', errors)
+      }
+
       if (file.isUploaded) {
         scope.removeFile(scope.files[file.indexToDelete])
       }
@@ -613,6 +723,123 @@ export default {
       const emptyModel = this.isMultiple ? [] : this.useObjectModel ? {} : ''
 
       this.$emit('update:modelValue', emptyModel)
+    },
+
+    getHeaderSlotName (name) {
+      return name.replace('header-', '')
+    },
+
+    getHeaderProps (scope) {
+      const { labelProps, actionsMenuProps, ...othersHeaderProps } = this.headerProps
+
+      const { list, ...othersActionsMenuProps } = actionsMenuProps || {}
+
+      return {
+        spacing: 'lg',
+
+        labelProps: {
+          label: this.label,
+
+          margin: 'none',
+
+          ...labelProps,
+
+          ...(this.error && { color: 'negative' })
+        },
+
+        ...(this.hasAddFile && {
+          actionsMenuProps: {
+            list: {
+              add: {
+                icon: 'sym_r_add',
+                label: this.addButtonLabel,
+                handler: () => this.onAddButtonClick(scope)
+              },
+
+              ...list
+            },
+
+            ...othersActionsMenuProps
+          }
+        }),
+
+        ...othersHeaderProps
+      }
+    },
+
+    /**
+     * Trata os erros de arquivos rejeitados pelo QUploader para adicionar
+     * feedback com toast, trata os seguintes erros:
+     * - accept
+     * - maxFileSize
+     */
+    onRejected (rejectedFiles) {
+      // seta a quantidade de arquivos rejeitados.
+      this.amountFilesRejected += rejectedFiles.length
+
+      // seta a quantidade de arquivos enviados, é necessário usar no rejected porque esses arquivos não caem no onAdded.
+      this.amountFilesSent += rejectedFiles.length
+
+      this.$emit('rejected', rejectedFiles)
+
+      const errorsSize = {
+        accept: 0,
+        maxFileSize: 0
+      }
+
+      rejectedFiles.forEach(({ failedPropValidation }) => {
+        if (failedPropValidation === 'accept') {
+          errorsSize.accept += 1
+
+          return
+        }
+
+        if (failedPropValidation === 'max-file-size') {
+          errorsSize.maxFileSize += 1
+        }
+      })
+
+      const hasMaxFileSizeErrors = !!errorsSize.maxFileSize
+      const hasAcceptErrors = !!errorsSize.accept
+
+      // Caso o erro não seja de accept ou maxFileSize, não exibe nenhuma mensagem.
+      if (!hasMaxFileSizeErrors && !hasAcceptErrors) return
+
+      /**
+       * Mensagem genérica para quando hover erro de accept e maxFileSize de uma vez.
+       */
+      if (hasMaxFileSizeErrors && hasAcceptErrors) {
+        const mergedErrorsSize = errorsSize.maxFileSize + errorsSize.accept
+
+        NotifyError(`Não conseguimos selecionar ${mergedErrorsSize} arquivos. Por favor, escolha arquivos válidos.`)
+
+        return
+      }
+
+      /**
+       * Mensagens de erro para quando houver apenas erros de maxFileSize.
+       */
+      if (hasMaxFileSizeErrors) {
+        const megaByte = `${this.maxFileSize / 1000000}Mb` // converte para MB
+
+        // TODO-ISSUE: rever essa validação simples até issue #1365 ser resolvida.
+        NotifyError(
+          errorsSize.maxFileSize === 1
+            ? `Não conseguimos selecionar 1 arquivo, ele ultrapassa o limite de ${megaByte}. Por favor, escolha um arquivo dentro do limite permitido.`
+            : `Não conseguimos selecionar ${errorsSize.maxFileSize} arquivos, eles ultrapassam o limite de ${megaByte} definido para cada um. Por favor, escolha um arquivo dentro do limite permitido.`
+        )
+
+        return
+      }
+
+      /**
+       * Mensagens de erro para quando houver apenas erros de accept.
+       */
+      NotifyError(
+        errorsSize.accept === 1
+          ? 'Não conseguimos selecionar 1 arquivo, este tipo não é permitido. Por favor, escolha um arquivo válido.'
+          : `Não conseguimos selecionar ${errorsSize.accept} arquivos, estes tipos não são permitidos. Por favor, escolha arquivos válidos.`
+      )
     }
   }
 }
@@ -626,6 +853,43 @@ export default {
 
   .q-uploader {
     max-height: 100%;
+    position: relative;
+    transition: padding var(--qas-generic-transition) ease, background var(--qas-generic-transition) ease;
+
+    // Referente ao drag and drop.
+    &--dnd {
+      padding: var(--qas-spacing-md) !important;
+    }
+
+    // Referente ao drag and drop.
+    &__dnd {
+      align-items: center;
+      background: $primary !important;
+      background: white !important;
+      border-radius: $generic-border-radius !important;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: center;
+      opacity: 0.9;
+      outline-offset: 0 !important;
+      outline: 1px dashed var(--q-primary) !important;
+
+      // content e font-family para adicionar ícone do material icons.
+      &::before {
+        color: var(--q-primary);
+        content: 'attach_file_add';
+        font-family: 'Material Symbols Rounded';
+        font-size: 24px;
+      }
+
+      &::after {
+        @include set-typography($subtitle1);
+
+        color: var(--q-primary);
+        content: 'Solte o arquivo aqui.';
+      }
+    }
 
     &__header {
       background-color: transparent;

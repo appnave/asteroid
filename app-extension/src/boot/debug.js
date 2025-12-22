@@ -1,4 +1,4 @@
-import handleProcess from '@bildvitta/quasar-ui-asteroid/src/helpers/handle-process'
+import { handleProcess } from 'asteroid'
 
 import debug from 'debug'
 

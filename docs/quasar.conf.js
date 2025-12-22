@@ -84,21 +84,32 @@ module.exports = configure(function (quasar) {
       chainWebpack (chain) {
         const nodePolyfillWebpackPlugin = require('node-polyfill-webpack-plugin')
 
+        const AutoImportPlugin = require('unplugin-vue-components/webpack').default
+
         chain.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
 
         chain.plugin('node-polyfill').use(nodePolyfillWebpackPlugin)
         chain.plugin('eslint-webpack-plugin')
           .use(ESLintPlugin, [{ extensions: ['js', 'vue'] }])
 
+        chain.plugin('unplugin-vue-components')
+          .use(AutoImportPlugin({
+            dirs: ['../ui/src/components'],
+            deep: true,
+            dts: false
+          }))
+
         // Alias
         chain.resolve.alias.merge({
           'asteroid-config': path.resolve(__dirname, './asteroid.config.js'),
           'asteroid-boot': path.resolve(__dirname, '../app-extension/src/boot'),
-          asteroid: path.resolve(__dirname, '../ui/src/index.esm.js'),
+          asteroid: path.resolve(__dirname, '../ui/src/asteroid.js'),
           'asteroid-components': path.resolve(__dirname, '../ui/src/components'),
           'asteroid-plugins': path.resolve(__dirname, '../ui/src/plugins'),
           examples: path.resolve(__dirname, 'src/examples'),
-          uuid: path.resolve(__dirname, './node_modules/uuid/dist/index.js')
+          uuid: path.resolve(__dirname, './node_modules/uuid/dist/index.js'),
+          'vue-router': path.resolve(__dirname, './node_modules/vue-router/dist/vue-router.esm-bundler.js'),
+          quasar: path.resolve(__dirname, 'node_modules/quasar')
         })
 
         // YAML
@@ -159,7 +170,8 @@ module.exports = configure(function (quasar) {
       plugins: [
         'Meta',
         'Notify',
-        'Loading'
+        'Loading',
+        'Dialog'
       ]
     },
 

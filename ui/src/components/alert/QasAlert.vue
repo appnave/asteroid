@@ -1,46 +1,53 @@
 <template>
-  <div v-if="show" class="inline-block">
-    <div class="bg-dark flex justify-between no-wrap q-pa-md qas-alert relative-position">
-      <div class="qas-alert__border-left" :class="borderClass" />
+  <div v-if="displayAlert" class="inline-block qas-alert">
+    <component :is="component">
+      <div class="flex items-center no-wrap">
+        <div class="flex items-center no-wrap text-body1 text-grey-8">
+          <q-icon v-bind="iconProps" />
 
-      <div class="text-body1 text-white">
-        <slot>
-          {{ props.text }}
-        </slot>
+          <component
+            :is="textComponent"
+            v-if="useRegex"
+            class="q-ml-sm"
+          />
+
+          <span
+            v-else
+            class="q-ml-sm"
+          >
+            <slot>
+              {{ props.text }}
+            </slot>
+          </span>
+        </div>
+
+        <qas-btn v-if="useCloseButton" class="q-ml-sm" color="grey-10" icon="sym_r_close" variant="tertiary" @click="close" />
       </div>
-
-      <qas-btn
-        class="q-ml-xs qas-alert__close"
-        color="white"
-        icon="sym_r_close"
-        :use-hover-on-white-color="false"
-        @click="close"
-      />
-    </div>
+    </component>
   </div>
 </template>
 
 <script setup>
-import { LocalStorage } from 'quasar'
+import QasBox from '../box/QasBox.vue'
+import QasBtn from '../btn/QasBtn.vue'
+
 import { Status, StatusColor } from '../../enums/Status'
-import { computed, watch, ref } from 'vue'
+
+import { LocalStorage } from 'quasar'
+import { RouterLink } from 'vue-router'
+import { h, computed, inject } from 'vue'
 
 defineOptions({ name: 'QasAlert' })
 
 const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: true
+  buttonProps: {
+    type: [Object, Array],
+    default: () => ({})
   },
 
-  text: {
-    type: String,
-    default: ''
-  },
-
-  storageKey: {
-    type: String,
-    default: ''
+  routerLinkProps: {
+    type: [Object, Array],
+    default: () => ({})
   },
 
   status: {
@@ -49,62 +56,194 @@ const props = defineProps({
     validator: value => Object.values(Status).includes(value)
   },
 
+  storageKey: {
+    type: String,
+    default: 'default'
+  },
+
+  text: {
+    type: String,
+    default: ''
+  },
+
+  useBox: {
+    type: Boolean,
+    default: undefined
+  },
+
+  useCloseButton: {
+    type: Boolean
+  },
+
   usePersistentModelOnClose: {
+    type: Boolean
+  },
+
+  useRegex: {
     type: Boolean
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+// models
+const model = defineModel({ type: Boolean, default: true })
 
-const model = ref(props.modelValue)
+// globals
+const isBox = inject('isBox', false)
+const isDialog = inject('isDialog', false)
 
-watch(() => props.modelValue, value => {
-  model.value = value
-})
+// composables
+const { displayAlert, close } = useStorageClosed()
 
-const colorByStatus = computed(() => {
+// computeds
+const iconProps = computed(() => {
   const status = Object.keys(Status).find(key => Status[key] === props.status)
-  return StatusColor[status]
-})
 
-const borderClass = computed(() => `bg-${colorByStatus.value}`)
+  const statusList = {
+    [Status.Info]: {
+      icon: 'sym_r_info'
+    },
 
-const storageClosedKey = computed(() => `alert-${props.storageKey}-closed`)
+    [Status.Error]: {
+      icon: 'sym_r_error'
+    },
 
-const isClosed = computed(() => {
-  return props.usePersistentModelOnClose && LocalStorage.getItem(storageClosedKey.value)
-})
-
-const show = computed(() => !isClosed.value && model.value)
-
-function close () {
-  if (props.usePersistentModelOnClose) {
-    LocalStorage.set(storageClosedKey.value, true)
+    [Status.Success]: {
+      icon: 'sym_r_check_circle'
+    }
   }
 
-  model.value = false
+  return {
+    color: StatusColor[status],
+    name: statusList[props.status].icon,
+    size: 'sm'
+  }
+})
 
-  emit('update:modelValue', model.value)
+/**
+ * Por padrão, quando este componente estiver dentro de um QasBox ou QasDialog, ele não terá
+ * shadow, terá padding e não terá margin.
+ */
+const component = computed(() => {
+  const hasBoxProps = props.useBox !== undefined
+
+  // Se não tiver a prop useBox, assume que está dentro de um QasBox ou QasDialog
+  const useBox = hasBoxProps ? props.useBox : !isBox && !isDialog
+
+  return useBox ? QasBox : 'div'
+})
+
+const textComponent = computed(() => {
+  // Regex para encontrar caracteres que estiverem dentro de [].
+  const regex = /\[.*?\]/g
+
+  const matches = props.text.match(regex) || []
+
+  if (!matches.length) return h('span', props.text)
+
+  let processedText = props.text
+
+  /**
+   * Substitui cada match por um placeholder único na ordem correta
+   * Exemplo: "Clique [aqui] para [ver mais]" vira "Clique $0 para $1"
+   */
+  matches.forEach((match, index) => {
+    processedText = processedText.replace(match, `$${index}`)
+  })
+
+  // Divide o texto pelos placeholders
+  const parts = processedText.split(/\$\d+/)
+
+  const placeholders = processedText.match(/\$\d+/g) || []
+
+  const result = []
+
+  parts.forEach((part, index) => {
+    if (part) result.push(part)
+
+    if (index < placeholders.length) {
+      // Pega o índice do placeholder para encontrar o match correto
+      const placeholderIndex = parseInt(placeholders[index].replace('$', ''))
+
+      // Pega o texto original do match. Ex: '[Clique aqui]'
+      const match = matches[placeholderIndex]
+
+      // Remove os colchetes do match. Ex: [Clique aqui] para Clique aqui
+      const routerLabel = match.replaceAll(/[[\]]/g, '')
+
+      // Determina as props do botão/link baseado no índice
+      const isButtonPropsArray = Array.isArray(props.buttonProps)
+      const isRouterPropsArray = Array.isArray(props.routerLinkProps)
+
+      const buttonPropsForIndex = isButtonPropsArray
+        ? props.buttonProps[placeholderIndex]
+        : props.buttonProps
+
+      const routerLinkPropsForIndex = isRouterPropsArray
+        ? props.routerLinkProps[placeholderIndex]
+        : props.routerLinkProps
+
+      const hasButtonProps = buttonPropsForIndex && !!Object.keys(buttonPropsForIndex).length
+
+      const getRouterLinkRender = () => {
+        return h(
+          RouterLink,
+          {
+            ...routerLinkPropsForIndex,
+            class: 'text-primary text-subtitle1 qas-alert__link'
+          },
+          {
+            default: () => routerLabel
+          }
+        )
+      }
+
+      const getQasBtnRender = () => {
+        return h(
+          QasBtn,
+          {
+            variant: 'tertiary',
+            label: routerLabel,
+            ...buttonPropsForIndex
+          }
+        )
+      }
+
+      result.push(hasButtonProps ? getQasBtnRender() : getRouterLinkRender())
+    }
+  })
+
+  return h('span', result)
+})
+
+// composable definitions
+function useStorageClosed () {
+  // computeds
+  const storageClosedKey = computed(() => `alert-${props.storageKey}-closed`)
+
+  const displayAlert = computed(() => {
+    const isClosed = props.usePersistentModelOnClose && LocalStorage.getItem(storageClosedKey.value)
+
+    return !isClosed && model.value
+  })
+
+  // functions
+  function close () {
+    if (props.usePersistentModelOnClose) LocalStorage.set(storageClosedKey.value, true)
+
+    model.value = false
+  }
+
+  return {
+    displayAlert,
+    close
+  }
 }
-
 </script>
 
 <style lang="scss">
 .qas-alert {
-  border-radius: var(--qas-generic-border-radius);
-
-  &__border-left {
-    border-radius: var(--qas-generic-border-radius) 0 0 var(--qas-generic-border-radius);
-    bottom: 0;
-    content: '';
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 4px;
-  }
-
-  &__close {
-    top: calc(var(--qas-spacing-sm) * -1);
+  &__link {
+    text-decoration: none;
   }
 }
 </style>

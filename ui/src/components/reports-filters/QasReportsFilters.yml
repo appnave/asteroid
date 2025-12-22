@@ -1,0 +1,54 @@
+type: component
+
+meta:
+  desc: Componente para filtrar relatórios que serão exibidos em tela.
+
+props:
+  form-generator-props:
+    desc: Propriedades enviadas para o "QasFormGenerator".
+    type: Object
+    default: {}
+
+  description:
+    desc: Descrição da box de filtro.
+    type: Boolean
+
+  entity:
+    desc: Entidade da store, por exemplo se tiver que trabalhar com modulo de usuários, teremos o model "users" na store, que vai ser nossa "entity".
+    required: true
+    type: String
+
+  url:
+    desc: URL utilizada para fazer a busca dos campos de filtro.
+    default: ''
+    required: true
+    type: String
+  
+  use-default-filters:
+    desc: prop responsável por controlar se vai setar os valores default que vem no fields.
+    default: true
+    type: Boolean
+
+  use-form-errors:
+    desc: prop responsável por controlar se há erro no form, fazendo com que bloqueie o botão de filtrar.
+    type: Boolean
+
+slots:
+  default:
+    desc: Slot para acessar o conteúdo após filtrar.
+
+events:
+  '@update:model-value -> function (value)':
+    desc: Dispara toda vez que o model do formulário é atualizado, também utilizado para v-model.
+    params:
+      value:
+        desc: Novo valor do v-model
+        type: Object
+
+  '@update:default-filters -> function (value)':
+    desc: Dispara toda vez que o default dos campos são alterados.
+    params:
+      value:
+        desc: Novo valor do v-model
+        type: Object
+

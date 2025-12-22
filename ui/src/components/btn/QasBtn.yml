@@ -13,6 +13,15 @@ props:
     type: String
     examples: ['grey-10', 'primary', 'white']
 
+  disable:
+    desc: Desabilita o botão.
+    default: false
+    type: Boolean
+
+  disabled-tooltip:
+    desc: Texto do tooltip que aparecerá ao passar o mouse sobre o botão quando ele estiver desabilitado.
+    type: String
+
   icon:
     desc: Ícone a esquerda.
     type: String
@@ -20,6 +29,12 @@ props:
   icon-right:
     desc: Ícone a direita.
     type: String
+
+  size:
+    desc: Tamanho do botão, podendo ser "sm", "md" ou "lg".
+    default: lg
+    type: String
+    examples: ['sm', 'md', 'lg']
 
   use-ellipsis:
     desc: adiciona ellipsis no label caso o label seja maior que a área total do botão.
@@ -39,6 +54,10 @@ props:
 
   label:
     desc: Rótulo do botão.
+    type: String
+
+  tooltip:
+    desc: Texto do tooltip que aparecerá ao passar o mouse sobre o botão.
     type: String
 
   variant:

@@ -24,8 +24,6 @@ Estamos utilizando nos exemplos um `custom-id` pois é necessário para consegui
 :::tip
 - É recomendado utilizar o plugin `Delete` ao invés do componente `QasDelete`.
 - Este componente serve para lidar com **delete**.
-- Este componente renderiza componentes dinamicamente através da prop `tag` o que significa que você pode utilizar qualquer prop/evento/slot do componente que você utilizou, por exemplo:
-No exemplo abaixo estamos renderizando um `QasBtn` (que é o valor default da prop `tag`), com isto podemos utilizar todas as prop/evento/slot que este componente tem.
 :::
 
 ## Uso

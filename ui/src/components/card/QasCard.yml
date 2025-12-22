@@ -14,6 +14,11 @@ props:
     type: Object
     default: {}
 
+  false-value:
+    desc: Valor que representa o estado falso do card selecionado.
+    default: false
+    type: [Boolean, String, Number, Array, Object]
+
   route:
     desc: Rota que será utilizada ao clicar no título.
     default: {}
@@ -28,11 +33,33 @@ props:
   title:
     desc: Título principal do card.
     default: ''
-    type: String 
+    type: String
+
+  true-value:
+    desc: Valor que representa o estado verdadeiro do card selecionado.
+    default: true
+    type: [Boolean, String, Number, Array, Object]
+
+  use-selection:
+    desc: Habilita a seleção do card.
+    default: false
+    type: Boolean
+
+  selected:
+    desc: Define se o card está selecionado ou não.
+    type: [Boolean, String, Number, Array, Object]
+    default: false
+    model: true
 
 slots:
   default:
     desc: Slot para acessar conteúdo principal do card.
+
+  header:
+    desc: Slot para acessar o header do card.
+
+  header-left:
+    desc: Slot para acessar o conteúdo à esquerda do header, útil quando "use-selection" está ativo.
 
   title:
     desc: Slot para acessar conteúdo do título do card.

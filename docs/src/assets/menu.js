@@ -6,6 +6,12 @@ module.exports = [
   },
 
   {
+    icon: 'sym_r_arrow_menu_open',
+    name: 'Navegação em overlay (drawer)',
+    path: '/overlay-navigation'
+  },
+
+  {
     icon: 'sym_r_flight_takeoff',
     name: 'Começando',
     children: [
@@ -104,6 +110,10 @@ module.exports = [
         path: '/components/card-image'
       },
       {
+        name: 'Copy',
+        path: '/components/copy'
+      },
+      {
         name: 'ChartView',
         path: '/components/chart-view'
       },
@@ -112,8 +122,8 @@ module.exports = [
         path: '/components/checkbox'
       },
       {
-        name: 'Copy',
-        path: '/components/copy'
+        name: 'Container',
+        path: '/components/container'
       },
       {
         name: 'Date',
@@ -146,6 +156,10 @@ module.exports = [
       {
         name: 'EmptyResultText',
         path: '/components/empty-result-text'
+      },
+      {
+        name: 'ErrorMessage',
+        path: '/components/error-message'
       },
       {
         name: 'ExpansionItem',
@@ -200,10 +214,6 @@ module.exports = [
         path: '/components/input'
       },
       {
-        name: 'Info',
-        path: '/components/info'
-      },
-      {
         name: 'Label',
         path: '/components/label'
       },
@@ -252,8 +262,16 @@ module.exports = [
         path: '/components/password-strength-checker'
       },
       {
+        name: 'PdfViewer',
+        path: '/components/pdf-viewer'
+      },
+      {
         name: 'Profile',
         path: '/components/profile'
+      },
+      {
+        name: 'ReportsFilters',
+        path: '/components/reports-filters'
       },
       {
         name: 'Radio',
@@ -274,6 +292,10 @@ module.exports = [
       {
         name: 'Select',
         path: '/components/select'
+      },
+      {
+        name: 'SelectFilter',
+        path: '/components/select-filter'
       },
       {
         name: 'SelectList',
@@ -324,12 +346,20 @@ module.exports = [
         path: '/components/text-truncate'
       },
       {
+        name: 'Tip',
+        path: '/components/tip'
+      },
+      {
         name: 'Toggle',
         path: '/components/toggle'
       },
       {
         name: 'ToggleVisibility',
         path: '/components/toggle-visibility'
+      },
+      {
+        name: 'Tooltip',
+        path: '/components/tooltip'
       },
       {
         name: 'Timeline',
@@ -400,6 +430,10 @@ module.exports = [
       {
         name: 'camelizeFieldsName',
         path: '/helpers/camelize-fields-name'
+      },
+      {
+        name: 'colors',
+        path: '/helpers/colors'
       },
       {
         name: 'constructObject',
@@ -478,6 +512,10 @@ module.exports = [
         path: '/helpers/is-local-development'
       },
       {
+        name: 'setScrollGradient',
+        path: '/helpers/set-scroll-gradient'
+      },
+      {
         name: 'setScrollOnGrab',
         path: '/helpers/set-scroll-on-grab'
       }
@@ -525,6 +563,10 @@ module.exports = [
         path: '/styles/set-button'
       },
       {
+        name: 'set-error-message',
+        path: '/styles/set-error-message'
+      },
+      {
         name: 'set-typography',
         path: '/styles/set-typography'
       },
@@ -548,6 +590,10 @@ module.exports = [
         path: '/composables/use-context'
       },
       {
+        name: 'useDefaultFilters',
+        path: '/composables/use-default-filters'
+      },
+      {
         name: 'useForm',
         path: '/composables/use-form'
       },
@@ -558,6 +604,10 @@ module.exports = [
       {
         name: 'useNotifications',
         path: '/composables/use-notifications'
+      },
+      {
+        name: 'useOverlayNavigation',
+        path: '/composables/use-overlay-navigation'
       },
       {
         name: 'useQueryCache',
@@ -577,6 +627,10 @@ module.exports = [
       {
         name: 'Forbidden - 403',
         path: '/paginas/forbidden'
+      },
+      {
+        name: 'Unauthorized - 401',
+        path: '/paginas/unauthorized'
       },
       {
         name: 'NotFound - 404',

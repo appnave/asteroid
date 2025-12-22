@@ -3,10 +3,20 @@
   $icon-only: false,
   $no-hover-on-white: false,
   $color: false,
-  $ellipsis: false
+  $ellipsis: false,
+  $size: lg
 ) {
   @extend .qas-btn;
   @extend .qas-btn--#{$variant};
+  @extend .qas-btn--#{$size};
+
+  @if $variant == primary and $color {
+    @extend .qas-btn--primary-#{$color};
+  }
+
+  @if $variant == secondary and $color {
+    @extend .qas-btn--secondary-#{$color};
+  }
 
   @if $variant == tertiary and $color {
     @extend .qas-btn--tertiary-#{$color};

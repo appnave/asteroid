@@ -14,6 +14,10 @@
       </slot>
     </div>
 
+    <div v-if="hasAfterGreetingSlot" class="q-mt-lg">
+      <slot name="after-greeting" />
+    </div>
+
     <div v-if="hasShortcuts">
       <qas-label class="q-mt-lg" label="Atalhos" />
 
@@ -30,6 +34,8 @@
 
 <script>
 import PvWelcomeShortcutCard from './private/PvWelcomeShortcutCard.vue'
+import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
+import QasLabel from '../label/QasLabel.vue'
 
 import { date } from 'quasar'
 import dateConfig from '../../shared/date-config.js'
@@ -38,7 +44,9 @@ export default {
   name: 'QasWelcome',
 
   components: {
-    PvWelcomeShortcutCard
+    PvWelcomeShortcutCard,
+    QasActionsMenu,
+    QasLabel
   },
 
   props: {
@@ -102,6 +110,10 @@ export default {
       if (time >= '12:00' && time < '18:59') return 'Boa tarde'
 
       return 'Boa noite'
+    },
+
+    hasAfterGreetingSlot () {
+      return !!this.$slots['after-greeting']
     }
   }
 }

@@ -31,10 +31,13 @@
 </template>
 
 <script>
+import QasBox from '../box/QasBox.vue'
+import QasSearchInput from '../search-input/QasSearchInput.vue'
+import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
+
 import { QInfiniteScroll } from 'quasar'
 import Fuse from 'fuse.js'
 import fuseConfig from '../../shared/fuse-config'
-import QasBox from '../box/QasBox.vue'
 import { searchFilterMixin } from '../../mixins'
 
 export default {
@@ -42,6 +45,8 @@ export default {
 
   components: {
     QasBox,
+    QasSearchInput,
+    QasEmptyResultText,
     QInfiniteScroll
   },
 
@@ -58,8 +63,13 @@ export default {
       type: Object
     },
 
-    height: {
+    maxHeight: {
       default: '300px',
+      type: String
+    },
+
+    height: {
+      default: '',
       type: String
     },
 
@@ -120,7 +130,11 @@ export default {
     },
 
     containerStyle () {
-      return { maxHeight: this.containerHeight }
+      return {
+        // Caso tenha height, deverá ter um tamanho fixo com base no height, portanto não terá max-height.
+        maxHeight: this.height ? 'auto' : this.containerHeight,
+        ...(this.height && { height: this.height })
+      }
     },
 
     hasNoOptionsOnFirstFetch () {
@@ -130,7 +144,7 @@ export default {
     containerHeight () {
       const hasEmptyList = (!this.list.length && !this.useLazyLoading) || this.hasNoOptionsOnFirstFetch
 
-      return hasEmptyList ? this.emptyListHeight : this.height
+      return hasEmptyList ? this.emptyListHeight : this.maxHeight
     },
 
     component () {

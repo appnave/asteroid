@@ -24,7 +24,7 @@ props:
     default: {}
     type: Object
 
-  error:
+  errors:
     desc: Objeto contendo propriedades contendo a mensagem de erro.
     default: {}
     type: Object
@@ -55,7 +55,7 @@ props:
 
   gutter:
     desc: Espaçamento entre colunas.
-    default: lg
+    default: md
     type: [String, Boolean]
     examples: [xs, sm, md, lg, xl, '2xl', '3xl', '4xl', '5xl', false]
 
@@ -99,6 +99,21 @@ slots:
 
   'legend-bottom-[nome-da-chave]':
     desc: Acessa o slot da seção abaixo do conteúdo do form de um fieldset específico.
+
+
+  'legend-[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
+    desc: Acessa o slot de um rótulo (label) de um subset.
+
+  'legend-section-[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
+    desc: Acessa o slot da seção de fields daquele subset.
+    scope:
+      fields:
+        desc: Campos daquela seção.
+        default: {}
+        type: Object
+
+  'legend-bottom[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
+    desc: Acessa o slot da seção abaixo do conteúdo do form de um subset específico.
 
 events:
   '@update:model-value -> function(value)':

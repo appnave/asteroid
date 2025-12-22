@@ -1,5 +1,5 @@
 <template>
-  <component :is="props.typography" :class="classes">
+  <component :is="props.typography" class="qas-label" :class="classes">
     <slot :label-with-suffix="formattedLabel">{{ formattedLabel }}</slot>
   </component>
 </template>

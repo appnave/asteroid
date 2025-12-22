@@ -33,18 +33,9 @@ export default {
   computed: {
     images () {
       return [
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300',
-        'https://via.placeholder.com/200x300'
+        'https://placehold.co/600x400',
+        'https://placehold.co/600x400/orange/white',
+        'https://placehold.co/600x400/blue/white'
       ]
     }
   }

@@ -2,6 +2,7 @@ function getNormalizedVersions (versions = {}) {
   const normalizedVersion = {
     beta: {},
     stable: {},
+    alpha: {},
     all: {}
   }
 
@@ -12,7 +13,7 @@ function getNormalizedVersions (versions = {}) {
 
     normalizedVersion.all[key] = versions[key]
 
-    const keyVersion = key.includes('-beta') ? 'beta' : 'stable'
+    const keyVersion = key.includes('-alpha') ? 'alpha' : key.includes('-beta') ? 'beta' : 'stable'
 
     normalizedVersion[keyVersion][key] = versions[key]
   }

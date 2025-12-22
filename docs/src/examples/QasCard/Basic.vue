@@ -23,8 +23,8 @@
 
       <div class="col-4">
         <qas-card
-          :actions-menu-props="actionsMenuProps" :expansion-props="expansionProps" :route="{ name: 'Root' }"
-          status-color="red-14" title="Titulo" use-expansion
+          :actions-menu-props="actionsMenuProps" :expansion-props="expansionProps"
+          :route="{ name: 'Root' }" status-color="red-14" title="Titulo" use-expansion
         >
           <template #default>
             <div>
@@ -42,14 +42,16 @@ export default {
   computed: {
     actionsMenuProps () {
       return {
-        show: {
-          label: 'Ir para detalhes',
-          icon: 'sym_r_visibility'
-        },
+        list: {
+          show: {
+            label: 'Ir para detalhes',
+            icon: 'sym_r_visibility'
+          },
 
-        edit: {
-          label: 'Editar',
-          icon: 'sym_r_edit'
+          edit: {
+            label: 'Editar',
+            icon: 'sym_r_edit'
+          }
         }
       }
     },

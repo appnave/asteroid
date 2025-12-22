@@ -1,7 +1,6 @@
-import { boot } from 'quasar/wrappers'
 import { Loading } from 'quasar'
 
-export default boot(() => {
+export default () => {
   Loading.setDefaults({
     backgroundColor: 'white',
     boxClass: 'text-body1',
@@ -10,4 +9,4 @@ export default boot(() => {
     messageColor: 'primary',
     spinnerColor: 'primary'
   })
-})
+}

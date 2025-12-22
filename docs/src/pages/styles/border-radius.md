@@ -9,7 +9,7 @@ A propriedade CSS border-radius permite definir como bordas arredondadas são.
 |`rounded-borders-sm`| Cria um pequeno raio de borda em todos os lados do objeto |`border-radius: calc(#{$generic-border-radius} / 2)`|
 |`rounded-borders-lg`| Cria um grande raio de borda em todos os lados do objeto  |`border-radius: calc(#{$generic-border-radius} * 2)`|
 
-`*$generic-border-radius`: **`8px`**.
+`*$generic-border-radius`: **`4px`**.
 
 ### Composições
 Define qual direção será criado um arrendondamento de borda

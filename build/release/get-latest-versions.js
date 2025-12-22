@@ -26,11 +26,13 @@ function getLatestVersions ({ execaSync, ora }) {
     ui: {
       stable: getNearestVersion(normalizedUiVersions.stable, today),
       beta: getNearestVersion(normalizedUiVersions.beta, today),
+      alpha: getNearestVersion(normalizedUiVersions.alpha, today),
       latest: getNearestVersion(normalizedUiVersions.all, today)
     },
     appExtension: {
       stable: getNearestVersion(normalizedAppExtensionVersions.stable, today),
       beta: getNearestVersion(normalizedAppExtensionVersions.beta, today),
+      alpha: getNearestVersion(normalizedAppExtensionVersions.alpha, today),
       latest: getNearestVersion(normalizedAppExtensionVersions.all, today)
     }
   }

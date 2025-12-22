@@ -1,27 +1,16 @@
 <template>
-  <!-- Utilizando o list-view apenas para facilitar para recuperar os dados dos dados. -->
-  <qas-list-view v-model:fields="fields" v-model:results="results" :entity="entity" :use-filter="false">
-    <template #default>
-      <qas-table-generator :fields="fields" :results="results" row-key="uuid" />
-    </template>
-  </qas-list-view>
+  <qas-table-generator :columns :fields :results />
 </template>
 
-<script>
-export default {
-  name: 'UsersList',
+<script setup>
+import { fields, results } from 'src/mocks/users'
 
-  data () {
-    return {
-      fields: {},
-      results: []
-    }
-  },
+defineOptions({ name: 'Basic' })
 
-  computed: {
-    entity () {
-      return 'users'
-    }
-  }
-}
+const columns = [
+  { tooltip: 'Tooltip de exemplo', name: 'isActive' },
+  'name',
+  'createdAt',
+  'date'
+]
 </script>

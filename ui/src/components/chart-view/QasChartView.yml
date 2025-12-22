@@ -70,6 +70,12 @@ props:
     desc: Envia como parâmetro para a action "fetchList" do modulo correspondente a "entity".
     type: String
 
+  url-query-list:
+    desc: Lista de query que serão recuperadas da URL e enviadas como parâmetro para a action "fetchList" do modulo correspondente a "entity".
+    type: Array
+    default:
+      - company
+
   use-box:
     desc: Controla se o componente vai ter o QasBox englobando ou não.
     default: true

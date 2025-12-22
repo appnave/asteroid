@@ -1,0 +1,41 @@
+type: component
+
+meta:
+  desc: Componente para gerar dinamicamente checkbox agrupados.
+
+props:
+  inline:
+    desc: Controla se o componente vai aparece em linha ou em bloco.
+    default: true
+    type: Boolean
+
+  label:
+    desc: Label utilizada em casos de ser checkbox-group.
+    default: ''
+    type: String
+
+  model-value:
+    desc: Model do componente, usado para v-model.
+    default: []
+    type: Array
+    examples: [v-model"value"]
+    model: true
+
+  multiple:
+    desc: Habilita multi-seleção.
+    default: false
+    type: Boolean
+
+  options:
+    desc: Opções para gerar os checkbox.
+    default: []
+    type: Array
+
+events:
+  '@update:model-value -> function(value)':
+    desc: Dispara quando o model-value altera, também usado para v-model.
+    params:
+      value:
+        desc: Novo valor do model.
+        default: []
+        type: Array

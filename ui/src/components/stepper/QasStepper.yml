@@ -9,6 +9,11 @@ props:
     default: false
     type: Boolean
 
+  header-nav:
+    desc: Define se o stepper terá navegação no cabeçalho.
+    default: false
+    type: Boolean
+
   spacing:
     desc: Espaçamento entre o stepper e o conteúdo da página.
     default: lg
@@ -19,6 +24,11 @@ props:
     desc: Model do componente, responsável por controlar em qual step deverá ser exibido.
     model: true
     type: [Number, String]
+
+  use-vertical:
+    desc: Define se o stepper deve ser exibido na vertical.
+    default: false
+    type: Boolean
 
 events:
   '@update:model-value -> function(value)':

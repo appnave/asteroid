@@ -61,9 +61,11 @@
 <script>
 import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasBtn from '../btn/QasBtn.vue'
+import QasBox from '../box/QasBox.vue'
 import QasFormGenerator from '../form-generator/QasFormGenerator.vue'
 import QasInput from '../input/QasInput.vue'
 import QasLabel from '../label/QasLabel.vue'
+import QasHeader from '../header/QasHeader.vue'
 
 import { constructObject } from '../../helpers'
 import { Spacing, SpacingWithNumber } from '../../enums/Spacing'
@@ -80,9 +82,11 @@ export default {
   components: {
     QasActionsMenu,
     QasBtn,
+    QasBox,
     QasFormGenerator,
     QasInput,
     QasLabel,
+    QasHeader,
 
     // Vue
     TransitionGroup
@@ -105,7 +109,7 @@ export default {
     },
 
     buttonDestroyProps: {
-      type: Object,
+      type: [Object, Function],
       default: () => {
         return {
           color: 'grey-10',
@@ -223,6 +227,11 @@ export default {
       default: true
     },
 
+    useHeader: {
+      type: Boolean,
+      default: true
+    },
+
     useIndexLabel: {
       type: Boolean
     },
@@ -266,7 +275,7 @@ export default {
     },
 
     containerComponent () {
-      return this.useBox ? 'qas-box' : 'div'
+      return this.useBox ? QasBox : 'div'
     },
 
     componentTag () {
@@ -310,6 +319,10 @@ export default {
 
     formGeneratorParentClasses () {
       return this.useInlineActions ? 'col-12 justify-between q-col-gutter-x-md row' : 'full-width'
+    },
+
+    isButtonDestroyPropsFunction () {
+      return typeof this.buttonDestroyProps === 'function'
     }
   },
 
@@ -356,6 +369,10 @@ export default {
     getDefaultActionsMenuList (index, row) {
       const list = {}
 
+      const destroyProps = this.isButtonDestroyPropsFunction
+        ? this.buttonDestroyProps({ index, row })
+        : this.buttonDestroyProps
+
       if (this.useDuplicate) {
         list.duplicate = {
           ...this.buttonDuplicateProps,
@@ -365,7 +382,7 @@ export default {
 
       if (this.showDestroyButton) {
         list.destroy = {
-          ...this.buttonDestroyProps,
+          ...destroyProps,
           handler: () => this.destroy(index, row)
         }
       }
@@ -533,7 +550,7 @@ export default {
     },
 
     hasHeader ({ row }) {
-      return this.hasBlockActions(row) || !this.useSingleLabel
+      return (this.hasBlockActions(row) || !this.useSingleLabel) && this.useHeader
     },
 
     getHeaderProps ({ index, row }) {

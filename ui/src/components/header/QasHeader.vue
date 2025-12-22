@@ -1,7 +1,7 @@
 <template>
-  <div :class="containerClasses">
+  <div v-if="hasHeaderContent" :class="containerClasses">
     <div v-if="hasLabelSection" class="full-width items-center justify-between no-wrap row" :class="labelSectionClasses">
-      <div class="items-center q-col-gutter-sm row">
+      <div class="items-center overflow-hidden q-col-gutter-sm row">
         <slot name="label">
           <qas-label v-if="hasLabel" v-bind="defaultLabelProps" />
         </slot>
@@ -13,23 +13,23 @@
         </div>
       </div>
 
-      <slot name="actions">
-        <div class="q-mt-xs text-right">
-          <component :is="actionsComponent.is" v-if="hasActionsSection" v-bind="actionsComponent.props" />
-        </div>
-      </slot>
+      <div v-if="hasActionsSection" class="text-right">
+        <slot name="actions">
+          <component :is="actionsComponent.is" v-if="hasActionsComponent" v-bind="actionsComponent.props" />
+        </slot>
+      </div>
     </div>
 
-    <div class="items-start no-wrap q-col-gutter-sm row" :class="descriptionSectionClasses">
+    <div v-if="hasDescriptionOrOnlyActionsSection" class="items-start no-wrap q-col-gutter-sm row" :class="descriptionSectionClasses">
       <div v-if="hasDescriptionSection" class="text-body1 text-grey-8">
         <slot name="description">
           {{ props.description }}
         </slot>
       </div>
 
-      <div v-if="!hasLabelSection" class="justify-end row">
+      <div v-if="!hasLabelSection" class="justify-end row text-right">
         <slot name="actions">
-          <component :is="actionsComponent.is" v-if="hasActionsSection" v-bind="actionsComponent.props" />
+          <component :is="actionsComponent.is" v-if="hasActionsComponent" v-bind="actionsComponent.props" />
         </slot>
       </div>
     </div>
@@ -37,6 +37,12 @@
 </template>
 
 <script setup>
+import QasLabel from '../label/QasLabel.vue'
+import QasBadge from '../badge/QasBadge.vue'
+import QasBtn from '../btn/QasBtn.vue'
+import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
+import QasFilters from '../filters/QasFilters.vue'
+
 import { Spacing } from '../../enums/Spacing'
 import { gutterValidator } from '../../helpers/private/gutter-validator'
 
@@ -79,6 +85,10 @@ const props = defineProps({
     default: Spacing.Md,
     type: String,
     validator: gutterValidator
+  },
+
+  useEllipsis: {
+    type: Boolean
   }
 })
 
@@ -102,6 +112,10 @@ const descriptionSectionClasses = computed(() => {
 
 const defaultLabelProps = computed(() => {
   return {
+    class: {
+      ellipsis: props.useEllipsis
+    },
+
     margin: 'none',
     ...props.labelProps
   }
@@ -110,7 +124,7 @@ const defaultLabelProps = computed(() => {
 const actionsComponent = computed(() => {
   const component = {
     [hasDefaultButton.value]: {
-      is: 'qas-btn',
+      is: QasBtn,
       props: {
         ...props.buttonProps,
         useLabelOnSmallScreen: false
@@ -118,12 +132,12 @@ const actionsComponent = computed(() => {
     },
 
     [hasDefaultActionsMenu.value]: {
-      is: 'qas-actions-menu',
+      is: QasActionsMenu,
       props: props.actionsMenuProps
     },
 
     [hasDefaultFilters.value]: {
-      is: 'qas-filters',
+      is: QasFilters,
       props: {
         useSearch: false,
         useChip: false,
@@ -136,15 +150,30 @@ const actionsComponent = computed(() => {
   return component.true
 })
 
-const hasActionsSection = computed(() => {
-  return !!slots.actions || hasDefaultButton.value || hasDefaultActionsMenu.value || hasDefaultFilters.value
+const hasActionsComponent = computed(() => {
+  return hasDefaultButton.value || hasDefaultActionsMenu.value || hasDefaultFilters.value
 })
+
+const hasActionsSection = computed(() => !!slots.actions || hasActionsComponent.value)
 
 const hasBadges = computed(() => !!props.badges.length)
 const hasLabel = computed(() => !!Object.keys(props.labelProps).length)
 const hasDefaultButton = computed(() => !!Object.keys(props.buttonProps).length)
 const hasDefaultFilters = computed(() => !!Object.keys(props.filtersProps).length)
 const hasDefaultActionsMenu = computed(() => !!Object.keys(props.actionsMenuProps).length)
-const hasDescriptionSection = computed(() => props.description || slots.description)
+const hasDescriptionSection = computed(() => !!props.description || !!slots.description)
 const hasLabelSection = computed(() => hasLabel.value || slots.label || hasBadges.value)
+
+const hasHeaderContent = computed(() => {
+  return hasLabelSection.value || hasDescriptionSection.value || hasActionsSection.value
+})
+
+/**
+ * Só exibo a seção de descrição com a seção de ações ao lado quando:
+ * - Tenha descrição;
+ * - OU não tenha seção da label E tenha componente de ações.
+ */
+const hasDescriptionOrOnlyActionsSection = computed(() => {
+  return hasDescriptionSection.value || (!hasLabelSection.value && hasActionsComponent.value)
+})
 </script>

@@ -31,6 +31,8 @@
 </template>
 
 <script setup>
+import QasBtn from '../btn/QasBtn.vue'
+
 import { Spacing } from '../../enums/Spacing'
 
 import { ref, computed, useSlots } from 'vue'

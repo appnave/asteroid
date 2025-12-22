@@ -68,6 +68,7 @@ Observação: Alguns componentes do Quasar precisam ser importados manualmente d
 | `DEBUGGING` | Habilita os loggers dos componentes |
 | `MAPS_API_KEY` | Key do google maps |
 | `ABLY_KEY` | Key do Ably (notificações) |
+| `ME_VERSION` | Versão do endpoint /me |
 
 ## Roadmap:
 

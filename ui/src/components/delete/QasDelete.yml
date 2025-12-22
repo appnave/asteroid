@@ -4,6 +4,11 @@ meta:
   desc: Componente para C.R.U.D. responsável por deletar (Delete).
 
 props:
+  button-props:
+    desc: Props para ser repassada para o componente "QasBtn"
+    default: {}
+    type: Object
+
   custom-id:
     desc: Por padrão, o componente vai pegar o "id" que vem como parâmetro na url, caso queira que o id seja diferente da url, use esta prop.
     type: String
@@ -24,12 +29,6 @@ props:
     desc: Entidade da store, por exemplo se tiver que trabalhar com modulo de usuários, teremos o model "users" na store, que vai ser nossa "entity".
     required: true
     type: String
-
-  tag:
-    desc: Tag do componente.
-    default: qas-btn
-    type: String
-    examples: [q-item]
 
   url:
     desc: Envia como parâmetro para a action "fetchSingle" do modulo correspondente a "entity".

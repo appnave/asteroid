@@ -1,0 +1,15 @@
+type: component
+
+meta:
+  desc: Componente para exibir um PDF diretamente no navegador, renderizando todas as páginas do documento.
+
+props:
+  url:
+    desc: URL do arquivo PDF a ser exibido.
+    default: ''
+    type: String
+
+  max-height:
+    desc: Altura máxima do container do PDF. Se não definida, usa a altura natural do documento.
+    default: undefined
+    type: String

@@ -14,3 +14,5 @@ Recomendamos o uso deste componente sempre que utilizar o slot `field-[nome-da-c
 <doc-example file="QasGridItem/Basic" title="Básico" />
 <doc-example file="QasGridItem/UseInline" title="Inline" />
 <doc-example file="QasGridItem/UseEllipsis" title="Ellipsis" />
+<doc-example file="QasGridItem/WithTip" title="Com Tip" />
+<doc-example file="QasGridItem/WithCustomTypography" title="Com tipografia customizada" />

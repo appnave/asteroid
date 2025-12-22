@@ -1,0 +1,10 @@
+type: component
+
+meta:
+  desc: Componente wrapper do [QTooltip](https://quasar.dev/vue-components/tooltip#introduction).
+
+props:
+  text:
+    desc: Texto exibido no tooltip
+    default: ''
+    type: String

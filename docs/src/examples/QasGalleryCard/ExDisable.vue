@@ -13,6 +13,10 @@ export default {
   computed: {
     props () {
       return {
+        name: 'Meu titulo',
+
+        url: 'https://picsum.photos/200/300.jpg',
+
         disable: true,
 
         actionsMenuProps: {
@@ -29,11 +33,6 @@ export default {
               handler: () => alert('Clicado no remover.')
             }
           }
-        },
-
-        card: {
-          name: 'Meu titulo',
-          url: 'https://picsum.photos/200/300.jpg'
         },
 
         gridGeneratorProps: {

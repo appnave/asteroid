@@ -9,6 +9,11 @@ props:
     default: true
     type: Boolean
 
+  label:
+    desc: Label utilizada em casos de ser checkbox-group.
+    default: ''
+    type: String
+
   model-value:
     desc: Model do componente, usado para v-model.
     default: []
@@ -20,6 +25,19 @@ props:
     desc: Opções para gerar os checkbox.
     default: []
     type: Array
+
+  error:
+    desc: Booleano que caso seja true a label passa a ter a cor vermelha.
+    type: Boolean
+
+  error-message:
+    desc: Mensagem de erro exibida na parte inferior do checkbox.
+    type: String
+
+  required:
+    desc: Controla se exibirá o sufixo "*" ao lado do texto.
+    default: false
+    type: Boolean
 
 events:
   '@update:model-value -> function(value)':

@@ -1,8 +1,8 @@
 <template>
-  <div class="qas-map">
-    <g-map-map :center="props.centerPosition" class="qas-map__draw" :zoom="props.zoom">
-      <g-map-marker v-for="(marker, index) in props.markers" :key="index" :draggable="marker.draggable" :icon="marker.icon" :position="marker.position" @dragend="updatePosition" @mouseout="closePopup" @mouseover="openPopup(marker, index)">
-        <g-map-info-window :opened="canShowPopup(index)">
+  <div :key="counterKey" class="qas-map">
+    <component :is="mapsComponents.GMapMap" :center="props.centerPosition" class="qas-map__draw" :zoom="props.zoom">
+      <component :is="mapsComponents.GMapMarker" v-for="(marker, index) in props.markers" :key="index" :draggable="marker.draggable" :icon="marker.icon" :position="marker.position" @dragend="updatePosition" @mouseout="closePopup" @mouseover="openPopup(marker, index)">
+        <component :is="mapsComponents.GMapInfoWindow" :opened="canShowPopup(index)">
           <div class="text-weight-bold">
             {{ marker.title }}
           </div>
@@ -10,14 +10,15 @@
           <div>
             {{ marker.description }}
           </div>
-        </g-map-info-window>
-      </g-map-marker>
-    </g-map-map>
+        </component>
+      </component>
+    </component>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onBeforeMount, getCurrentInstance } from 'vue'
+import { handleProcess } from '../../helpers'
 
 defineOptions({ name: 'QasMap' })
 
@@ -42,11 +43,30 @@ const props = defineProps({
   }
 })
 
+// emits
 const emit = defineEmits(['update-position'])
 
+// refs
 const isPopupDisplayed = ref(false)
 const indexMarker = ref(null)
+const counterKey = ref(0)
 
+// consts
+/**
+ * Se usar diretamente o componente no template, o Vue não consegue interpretar
+ * corretamente os componentes do plugin e gera um erro.
+ * Por isso, usamos <component :is /> para renderizar dinamicamente.
+ */
+const mapsComponents = {
+  GMapMap: 'g-map-map',
+  GMapMarker: 'g-map-marker',
+  GMapInfoWindow: 'g-map-info-window'
+}
+
+// hooks
+onBeforeMount(initializeMap)
+
+// functions
 function canShowPopup (index) {
   return isPopupDisplayed.value && props.usePopup && index === indexMarker.value
 }
@@ -62,6 +82,25 @@ function openPopup ({ title, description }, index) {
 
 function updatePosition (mouseEvent) {
   emit('update-position', mouseEvent.latLng.toJSON())
+}
+
+async function initializeMap () {
+  const instance = getCurrentInstance()
+  const app = instance?.appContext.app
+
+  if (!app) return
+
+  // Importa o plugin dinamicamente
+  const { default: VueGoogleMaps } = await import('@fawmi/vue-google-maps')
+
+  const key = handleProcess(() => process.env.MAPS_API_KEY)
+
+  app.use(VueGoogleMaps, {
+    load: { libraries: 'places', key }
+  })
+
+  // Força o re-render do componente para garantir que o mapa seja inicializado
+  counterKey.value += 1
 }
 </script>
 

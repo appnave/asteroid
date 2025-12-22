@@ -1,10 +1,12 @@
 <template>
-  <div class="container spaced">
+  <div class="container q-gutter-y-lg spaced">
     <qas-checkbox v-model="model" :false-value="false" label="Aceitar" :true-value="true" />
 
-    <div class="q-mt-lg">
-      model: {{ model }}
-    </div>
+    <qas-checkbox v-model="model" disable :false-value="false" label="Aceitar" :true-value="true" />
+
+    <qas-checkbox v-model="model" error :false-value="false" label="Aceitar" :true-value="true" />
+
+    <qas-debugger :inspect="[model]" />
   </div>
 </template>
 

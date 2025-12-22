@@ -1,5 +1,6 @@
 .q-item {
   font-size: 16px;
+  min-height: 36px;
 
   &:not(.disabled) {
     font-weight: 600;
@@ -7,6 +8,10 @@
 
   &:not(&--clickable) {
     color: $grey-8;
+  }
+
+  &.q-manual-focusable--focused {
+    color: var(--q-primary-contrast) !important;
   }
 
   &.q-router-link--active {
@@ -26,11 +31,14 @@
   }
 
   &--clickable:not(&--active) {
-    color: $grey-10;
+    &:not(.q-manual-focusable--focused) {
+      color: $grey-10 !important;
+    }
+
     transition: var(--qas-generic-transition);
 
     &:not(&.q-router-link--active):hover {
-      color: var(--q-primary-contrast);
+      color: var(--q-primary-contrast) !important;
     }
   }
 

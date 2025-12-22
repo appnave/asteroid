@@ -1,5 +1,18 @@
 type: component
 
+props:
+  error:
+    desc: Booleano que caso seja true a label passa a ter a cor vermelha.
+    type: Boolean
+
+  error-message:
+    desc: Mensagem de erro exibida na parte inferior do checkbox.
+    type: String
+
+  label:
+    desc: Label utilizada em casos de ser q-option-group.
+    default: ''
+    type: String
+
 meta:
   desc: Componente wrapper do QRadio.
-

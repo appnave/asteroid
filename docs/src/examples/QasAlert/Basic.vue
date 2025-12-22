@@ -1,5 +1,29 @@
 <template>
-  <div class="container q-py-lg">
-    <qas-alert text="Estamos passando por manutenção entre os dias 02/04 e 03/04. A estabilização do sistema está prevista para 03/04 às 15:00." />
+  <div class="container q-gutter-y-lg spaced">
+    <div>
+      <qas-alert :text />
+    </div>
+
+    <div>
+      <qas-alert status="error" :text />
+    </div>
+
+    <div>
+      <qas-alert status="success" :text />
+    </div>
+
+    <div>
+      <qas-alert :text use-close-button />
+    </div>
+
+    <div>
+      <qas-alert :text use-close-button use-persistent-model-on-close />
+    </div>
   </div>
 </template>
+
+<script setup>
+defineOptions({ name: 'Basic' })
+
+const text = 'Usuário incompleto, atualize para completar.'
+</script>

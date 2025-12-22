@@ -6,6 +6,30 @@ Componente responsável pela renderização de gráficos. Esse componente utiliz
 
 <doc-api file="chart-view/QasChartView" name="QasChartView" />
 
+:::warning
+##### Instalação
+
+Este componente necessita de algumas bibliotecas instalada no projeto, instale manualmente.
+
+###### Configuração
+
+```bash
+npm i chart.js@4.3.0; npm i chartjs-plugin-datalabels@2.2.0; npm i chartjs-plugin-zoom@2.0.1; npm i vue-chartjs@5.2.0
+```
+
+```js
+// package.json
+{
+  "dependencies": {
+    "chart.js": "^4.3.0",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "chartjs-plugin-zoom": "^2.0.1",
+    "vue-chartjs": "^5.2.0"
+  }
+}
+```
+:::
+
 :::info
 Este componente depende do `Vuex` ou `Pinia`, ele utiliza módulos com actions e state para manipular/recuperar os dados. Por exemplo, para você utilizar o componente `qas-chart-view`, você **deve** ter um módulo com o nome da entidade e dentro desse módulo seguir os requisitos:
 - state: list
@@ -97,6 +121,11 @@ O retorno da API deverá conter a seguinte estrutura:
 :::
 
 ## Uso
+:::info
+Quando utilizar o componente e precisar utilizar a query da URL para enviar no fetch do QasChartView, utilize a propriedade `urlQueryList (default: ['company'])`, por exemplo:
+:::
+<doc-example file="QasChartView/BarWithSelectFilter" title="Gráfico de barra com QasSelectFilter" />
+
 <doc-example file="QasChartView/Bar" title="Gráfico de barra" />
 <doc-example file="QasChartView/Doughnut" title="Gráfico de rosquinha" />
 <doc-example file="QasChartView/Line" title="Gráfico de linha" />

@@ -1,8 +1,7 @@
 import FontFaceObserver from 'fontfaceobserver'
 import asteroidConfig from 'asteroid-config'
-import { boot } from 'quasar/wrappers'
 
-export default boot(async () => {
+export default async () => {
   function setFontFaceObserver () {
     const font = new FontFaceObserver('Material Symbols Rounded')
 
@@ -34,4 +33,4 @@ export default boot(async () => {
   }
 
   setFontFaceObserver()
-})
+}

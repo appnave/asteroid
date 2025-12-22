@@ -1,60 +1,60 @@
 .q-notification {
+  $root: &;
+
   &:not(.boot-notification).qas-notification {
     margin-top: 80px;
-    max-width: 560px;
+    max-width: 740px;
   }
 
+
   &.qas-notification {
-    &--error::before,
-    &--success::before {
-      border-radius: var(--qas-generic-border-radius) 0 0 var(--qas-generic-border-radius);
-      bottom: 0;
-      content: '';
-      left: calc(var(--qas-spacing-md) * -1);
-      position: relative;
-      top: 0;
-      width: 4px;
+    box-shadow: none;
+
+    &--error #{$root}__progress {
+      background-color: $negative;
     }
 
-    &--error::before {
-      background-color: var(--q-negative);
-    }
-
-    &--success::before {
-      background-color: var(--q-positive);
+    &--success #{$root}__progress {
+      background-color: $positive;
     }
 
     .q-notification__actions {
-      align-self: start;
+      align-self: self-start;
       padding-top: var(--qas-spacing-xs);
+    }
 
-      .q-btn {
-        color: white !important;
-        height: var(--qas-spacing-md);
-        min-height: auto;
-        min-width: auto;
-        padding: 0;
-        text-align: center;
-        text-transform: none;
-        width: var(--qas-spacing-md);
+    .q-notification__badge {
+      @include set-typography($caption);
 
-        &__content {
-          height: var(--qas-spacing-md);
+      box-shadow: none;
+    }
 
-          span {
-            align-self: center;
-            height: var(--qas-spacing-md);
-            line-height: 0.9;
-            width: var(--qas-spacing-md);
-          }
-        }
-      }
+    .q-btn {
+      @include set-button(tertiary, true, true, 'white');
+
+      // o quasar não usa um ícone, mas sim um label "x", por isto o font-size e font-weight.
+      font-size: 24px;
+      font-weight: 400;
     }
 
     .q-notification__content {
       .q-icon {
         margin-right: var(--qas-spacing-sm);
       }
+    }
+
+    .q-notification__progress {
+      border-radius: 0 0 var(--qas-generic-border-radius) var(--qas-generic-border-radius);
+      left: calc(var(--qas-spacing-md) * -1);
+      right: calc(var(--qas-spacing-md) * -1);
+      opacity: 1;
+    }
+
+    .q-notification__message {
+      @include set-typography($body1);
+
+      padding-top: var(--qas-spacing-md);
+      padding-bottom: var(--qas-spacing-md);
     }
   }
 

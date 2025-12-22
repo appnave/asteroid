@@ -19,6 +19,20 @@ defineOptions({ name: 'CustomOption' })
 
 const model = ref('')
 
+const companyBadgeProps = {
+  company1: {
+    color: 'primary',
+    textColor: 'white',
+    label: 'Empresa 1'
+  },
+
+  company2: {
+    color: 'cyan-14',
+    textColor: 'white',
+    label: 'Empresa 2'
+  }
+}
+
 const badgeProps = {
   isTester: {
     color: 'grey-8',
@@ -35,6 +49,13 @@ const badgeProps = {
         label: value ? 'Disponível' : 'Inativo'
       }
     }
+  },
+
+  company: value => {
+    return {
+      show: true,
+      props: companyBadgeProps[value]
+    }
   }
 }
 
@@ -47,12 +68,19 @@ const optionsWithBadge = [
     label: 'Usuario 2',
     value: 2,
     isTester: true,
-    isAvailable: false
+    isAvailable: false,
+    company: 'company2'
   },
   {
     label: 'Usuario 3',
     value: 3,
-    isAvailable: true
+    isAvailable: true,
+    company: 'company2'
+  },
+  {
+    label: 'Usuario 4',
+    value: 4,
+    company: 'company1'
   }
 ]
 

@@ -1,6 +1,12 @@
 <template>
   <div class="container spaced">
-    <qas-radio v-model="model" :options />
+    <div>
+      <qas-radio v-model="model" label="Com opções" :options />
+    </div>
+
+    <div class="q-mt-lg">
+      <qas-radio v-model="model" disable label="Com opções desabilitadas" :options />
+    </div>
   </div>
 </template>
 

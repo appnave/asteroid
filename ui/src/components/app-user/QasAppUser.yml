@@ -39,6 +39,11 @@ props:
       "
     ]
 
+  use-data-on-small-screen:
+    desc: Habilita os dados do usuário como nome/email em telas pequenas/ (mobile).
+    type: Boolean
+    default: true
+
 events:
   '@sign-out -> function()':
     desc: Dispara quando o botão de "sair" é clicado.

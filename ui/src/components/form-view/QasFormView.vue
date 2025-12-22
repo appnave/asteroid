@@ -1,5 +1,5 @@
 <template>
-  <div class="qas-form-view" :class="mx_componentClass">
+  <qas-container class="qas-form-view" :use-boundary>
     <header v-if="mx_hasHeaderSlot">
       <slot name="header" />
     </header>
@@ -31,21 +31,24 @@
     <q-inner-loading :showing="mx_isFetching">
       <q-spinner color="grey" size="3em" />
     </q-inner-loading>
-  </div>
+  </qas-container>
 </template>
 
 <script>
+import QasActions from '../actions/QasActions.vue'
 import QasBtn from '../btn/QasBtn.vue'
+import QasContainer from '../container/QasContainer.vue'
 import QasDialog from '../dialog/QasDialog.vue'
 
 import { NotifyError, NotifySuccess } from '../../plugins'
-import { useHistory } from '../../composables'
+import { useHistory, useOverlayNavigation } from '../../composables'
 import { viewMixin } from '../../mixins'
 
+import { decamelize } from 'humps'
 import debug from 'debug'
 import { extend } from 'quasar'
 import { getAction } from '@bildvitta/store-adapter'
-import { isEqualWith } from 'lodash-es'
+import isEqualWith from 'lodash-es/isEqual'
 import { onBeforeRouteLeave } from 'vue-router'
 
 const log = debug('asteroid-ui:qas-form-view')
@@ -54,11 +57,19 @@ export default {
   name: 'QasFormView',
 
   components: {
+    QasActions,
     QasBtn,
+    QasContainer,
     QasDialog
   },
 
   mixins: [viewMixin],
+
+  provide () {
+    return {
+      updateUnsavedChangesCache: this.updateUnsavedChangesCache
+    }
+  },
 
   props: {
     beforeSubmit: {
@@ -130,7 +141,7 @@ export default {
     },
 
     useCancelButton: {
-      default: true,
+      default: undefined,
       type: Boolean
     },
 
@@ -142,6 +153,11 @@ export default {
     useSubmitButton: {
       default: true,
       type: Boolean
+    },
+
+    useStore: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -156,7 +172,12 @@ export default {
   ],
 
   data () {
+    const { toggleCanLeaveOverlay, isOverlay } = useOverlayNavigation()
+
     return {
+      toggleCanLeaveOverlay,
+      isOverlay,
+
       cachedResult: {},
       isSubmitting: false,
       showDialog: false,
@@ -179,8 +200,16 @@ export default {
       return this.url ? (`${this.url}/${this.isCreateMode ? 'new' : 'edit'}`) : ''
     },
 
+    /**
+     * O botão de cancelar é mostrado quando:
+     * - A propriedade cancelRoute não está explicitamente definida como false (boolean false)
+     * - E ou useCancelButton é true OU o componente não está em modo overlay
+     */
     hasCancelButton () {
-      return !(typeof this.cancelRoute === 'boolean' && !this.cancelRoute) && this.useCancelButton
+      return (
+        !(typeof this.cancelRoute === 'boolean' && !this.cancelRoute) &&
+        (this.useCancelButton ?? !this.isOverlay)
+      )
     },
 
     id () {
@@ -285,11 +314,7 @@ export default {
           ...externalPayload
         }
 
-        const response = await getAction.call(this, {
-          entity: this.entity,
-          key: 'fetchSingle',
-          payload
-        })
+        const response = await this.handleFetchAction(payload)
 
         const { errors, fields, metadata, result } = response.data
 
@@ -307,11 +332,12 @@ export default {
 
         result && Object.assign(modelValue, result)
 
+        this.$emit('update:modelValue', modelValue)
+
         if (this.useDialogOnUnsavedChanges) {
-          this.cachedResult = extend(true, {}, result || modelValue)
+          this.updateUnsavedChangesCache()
         }
 
-        this.$emit('update:modelValue', modelValue)
         this.$emit('fetch-success', response, this.modelValue)
 
         log(`[${this.entity}]:fetchSingle:success`, { response, modelValue })
@@ -402,6 +428,8 @@ export default {
 
       this.isSubmitting = true
 
+      this.toggleCanLeaveOverlay(false)
+
       try {
         const payload = {
           id: this.id,
@@ -410,16 +438,12 @@ export default {
           ...externalPayload
         }
 
-        const response = await getAction.call(this, {
-          entity: this.entity,
-          key: this.mode,
-          payload
-        })
+        const response = await this.handleSubmitAction(payload)
 
         const modelValue = { ...this.modelValue, ...response.data.result }
 
         if (this.useDialogOnUnsavedChanges) {
-          this.cachedResult = extend(true, {}, modelValue)
+          this.updateUnsavedChangesCache(modelValue)
         }
 
         this.mx_setErrors()
@@ -454,6 +478,7 @@ export default {
         log(`[${this.entity}]:submit:error`, error)
       } finally {
         this.isSubmitting = false
+        this.toggleCanLeaveOverlay(true)
       }
     },
 
@@ -469,6 +494,78 @@ export default {
 
     setIgnoreRouterGuard ({ detail: { id, entity } }) {
       this.ignoreRouterGuard = this.id === id && this.entity === entity
+    },
+
+    getFormattedURL ({ payload, isSubmit = false } = {}) {
+      const { url: customURL } = payload
+      const decamelizedEntity = decamelize(this.entity, { separator: '-' })
+
+      // Utiliza a URL passada via prop, ou monta a URL baseada na entity e id.
+      const baseURL = this.url || (this.id ? `${decamelizedEntity}/${this.id}` : decamelizedEntity)
+
+      /**
+       * Utiliza a customURL que pode vir via payload, no caso de um beforeSubmit por exemplo
+       * Caso for uma ação de submit, retorna a customURL ou a baseURL (sem o mode new ou edit).
+       */
+      if (isSubmit) {
+        return customURL || baseURL
+      }
+
+      const mode = this.isCreateMode ? 'new' : 'edit'
+
+      /**
+       * Utiliza a customURL que pode vir via payload, no caso de um beforeFetch por exemplo,
+       * ou então concatena a baseURL com o mode (new ou edit).
+       */
+      return customURL || `${baseURL}/${mode}`
+    },
+
+    handleFetchAction (payload) {
+      if (this.useStore) {
+        return getAction.call(this, {
+          entity: this.entity,
+          key: 'fetchSingle',
+          payload
+        })
+      }
+
+      const { id: unusedID, url: unusedURL, form: unusedForm, ...externalPayload } = payload
+
+      // Formata a url com base em mode, entity, url via props, etc
+      const fetchURL = this.getFormattedURL({ payload })
+
+      return this.$axios.get(fetchURL, { ...externalPayload })
+    },
+
+    handleSubmitAction (payload) {
+      if (this.useStore) {
+        return getAction.call(this, {
+          entity: this.entity,
+          key: this.mode,
+          payload
+        })
+      }
+
+      const methods = {
+        create: 'post',
+        update: 'patch',
+        replace: 'put'
+      }
+
+      // Formata a url com base em mode, entity, url via props, etc
+      const url = this.getFormattedURL({ payload, isSubmit: true })
+
+      return this.$axios({
+        method: methods[this.mode],
+        url,
+        data: this.modelValue
+      })
+    },
+
+    updateUnsavedChangesCache (newValues) {
+      this.$nextTick(() => {
+        this.cachedResult = extend(true, {}, (newValues || this.modelValue))
+      })
     }
   }
 }

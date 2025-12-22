@@ -56,6 +56,52 @@ Muitas vezes precisamos adicionar rótulos (label) e descrições (description) 
 <doc-example file="QasFormGenerator/Fieldset" title="Agrupando fields por rótulo (label)" />
 <doc-example file="QasFormGenerator/WithButton" title="Usando botão dentro do fieldset" />
 
+:::info
+##### Subset
+
+Além da possibilidade de separar em seções (rótulos), também é possível ter subseções dentro de cada seção.
+A mesma estrutura de um fieldset, é aceita dentro de um subset, sendo que será definido dentro do próprio fieldset.
+
+> Observação: A tipografia da label sempre será `h5` para manter a hierarquia da estrutura e não será possível dividir em colunas.
+
+Exemplo:
+```js
+{
+  informations: {
+    label: 'Informações',
+    description: 'Informe algumas informações do usuário.',
+    fields: ['isActive', 'phone', 'name', 'company', 'uuid'],
+    subset: {
+      others: {
+        headerProps: {
+          labelProps: { label: 'Uma subseção' },
+          badges: [
+            {
+              label: 'Minha badge',
+              textColor: 'grey-10'
+            }
+          ],
+          buttonProps: {
+            label: 'Atualizar',
+            onClick: () => alert('Atualizando...')
+          }
+        },
+        fields: ['email', 'others']
+      },
+
+      description: {
+        label: 'Outra subseção',
+        description: 'Exemplo utilizando outra subseção.',
+        fields: ['comment']
+      }
+    }
+  }
+}
+```
+:::
+<doc-example file="QasFormGenerator/WithSubsets" title="Usando com subseções" />
+<doc-example file="QasFormGenerator/WithSubsetsSlots" title="Acessando slots de subseções" />
+
 Em alguns casos, queremos acessar todo o conteúdo de um campo especifico para fazer uma logica um pouco mais detalhada, neste caso conseguimos acessar o slot de cada campo individualmente.
 <doc-example file="QasFormGenerator/CustomSlot" title="Acessando slots" />
 <doc-example file="QasFormGenerator/CustomProps" title="Custom props" />

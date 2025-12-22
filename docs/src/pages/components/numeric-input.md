@@ -19,6 +19,8 @@ Este componente utiliza a biblioteca [autonumeric](http://autonumeric.org/).
 
 <doc-example file="QasNumericInput/Basic" title="Básico" />
 
+<doc-example file="QasNumericInput/Places" title="Com diferentes casas decimais" />
+
 :::tip
 Utilize a propriedade `use-negative` com o valor `true` para permitir valores negativos.
 :::

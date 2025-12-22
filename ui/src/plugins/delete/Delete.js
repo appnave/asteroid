@@ -1,5 +1,4 @@
 import { Dialog, NotifySuccess, NotifyError } from 'asteroid'
-import { Loading } from 'quasar'
 import { getAction } from '@bildvitta/store-adapter'
 import { useHistory } from '../../composables'
 
@@ -20,9 +19,12 @@ export default function (config = {}) {
   const { entity, id, url } = deleteActionParams
 
   const defaultDialogProps = {
+    useForm: true,
+
     ...dialogProps,
 
     card: {
+      title: 'Excluir',
       description: 'Tem certeza que deseja excluir este item?',
 
       ...dialogProps.card
@@ -42,9 +44,9 @@ export default function (config = {}) {
   }
 
   async function destroy () {
-    Loading.show()
-
     try {
+      setLoadingStateOnDialog(true)
+
       onDelete(true)
 
       const hasDeleteAction = typeof deleteAction === 'function'
@@ -72,6 +74,8 @@ export default function (config = {}) {
       onDeleteSuccess(response)
 
       redirectRoute && replaceRoute(this)
+
+      dialog.hide()
     } catch (error) {
       onDeleteError(error)
 
@@ -79,7 +83,7 @@ export default function (config = {}) {
     } finally {
       onDelete(false)
 
-      Loading.hide()
+      setLoadingStateOnDialog(false)
     }
   }
 
@@ -103,5 +107,23 @@ export default function (config = {}) {
     window.dispatchEvent(event)
   }
 
-  Dialog(defaultDialogProps)
+  function setLoadingStateOnDialog (isDeleting) {
+    dialog.update({
+      ...defaultDialogProps,
+
+      ok: {
+        ...defaultDialogProps.ok,
+
+        loading: isDeleting
+      },
+
+      cancel: {
+        ...defaultDialogProps.cancel,
+
+        disable: isDeleting
+      }
+    })
+  }
+
+  const dialog = Dialog(defaultDialogProps)
 }

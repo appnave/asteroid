@@ -1,7 +1,7 @@
 <template>
   <qas-stepper ref="stepper" v-model="model" v-bind="stepperProps">
     <template #default>
-      <q-step v-for="(step, stepIndex) in props.steps" :key="stepIndex" :done="isDone(stepIndex)" :name="getStepName(stepIndex)" v-bind="stepPropsList[stepIndex]">
+      <q-step v-for="(step, stepIndex) in props.steps" :key="stepIndex" :done="isDone(stepIndex)" :name="getStepName({ step, stepIndex })" v-bind="stepPropsList[stepIndex]">
         <component :is="step.component" />
       </q-step>
     </template>
@@ -9,6 +9,8 @@
 </template>
 
 <script setup>
+import QasStepper from '../stepper/QasStepper.vue'
+
 import { ref, provide, computed } from 'vue'
 
 defineOptions({ name: 'QasStepperFormView' })
@@ -30,7 +32,9 @@ const props = defineProps({
   }
 })
 
-const model = defineModel({ type: Number, default: 1 })
+defineExpose({ setStepProps })
+
+const model = defineModel({ type: [Number, String], default: 1 })
 
 const values = ref({})
 const stepPropsList = ref([])
@@ -68,8 +72,8 @@ function isDone (stepIndex) {
   return model.value > stepIndex + 1
 }
 
-function getStepName (stepIndex) {
-  return stepIndex + 1
+function getStepName ({ step, stepIndex }) {
+  return step.name || stepIndex + 1
 }
 
 provide('stepper', {

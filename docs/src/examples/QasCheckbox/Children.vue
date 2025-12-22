@@ -1,10 +1,14 @@
 <template>
-  <div class="container spaced">
-    <qas-checkbox v-model="model" label="Aceitar" :options="optionsChildren" />
+  <div class="container q-gutter-y-lg spaced">
+    <qas-checkbox v-model="model" label="Checkbox com children" :options="optionsChildren" />
 
-    <div class="q-mt-lg">
-      model: {{ model }}
-    </div>
+    <qas-checkbox v-model="model" disable label="Checkbox com children" :options="optionsChildren" />
+
+    <qas-checkbox v-model="model" error label="Checkbox com children" :options="optionsChildren" />
+
+    <qas-checkbox v-model="model" error error-message="Mensagem de erro" label="Checkbox com children" :options="optionsChildren" />
+
+    <qas-debugger :inspect="[model]" />
   </div>
 </template>
 
@@ -17,7 +21,7 @@ const model = ref([])
 
 const optionsChildren = [
   {
-    label: 'Opção 1',
+    label: 'Selecionar todos',
     value: 1,
     children: [
       {
@@ -27,6 +31,14 @@ const optionsChildren = [
       {
         label: 'Opção 3',
         value: 3
+      },
+      {
+        label: 'Opção 4',
+        value: 4
+      },
+      {
+        label: 'Opção 5',
+        value: 5
       }
     ]
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="container spaced">
     <div>
-      <qas-numeric-input v-model="integer" icon-right="sym_r_person" label="integer" />
+      <qas-numeric-input v-model="integer" icon="sym_r_person" label="integer" />
       integer: {{ integer }}
     </div>
     <div class="q-my-lg">
@@ -19,15 +19,13 @@
   </div>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      integer: 10,
-      decimal: 0.10,
-      percent: 0.10,
-      money: 0.10
-    }
-  }
-}
+<script setup>
+import { ref } from 'vue'
+
+defineOptions({ name: 'Basic' })
+
+const integer = ref(undefined)
+const decimal = ref(0.10)
+const percent = ref(0.10)
+const money = ref(0.10)
 </script>

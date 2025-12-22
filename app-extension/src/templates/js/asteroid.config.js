@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   /**
    * Configurações de API
    * @type {{ serverTimeout: number=10000 }}
@@ -8,13 +8,6 @@ module.exports = {
   },
 
   framework: {
-    /**
-     * O asteroid ao identificar que a aplicação tenha dependências terceiras e
-     * não estão declarados na opção "thirdPartyComponents" ele remove as dependências da aplicação (package.json), caso precise dessas dependências mesmo que sem os thirdPartyComponents, desative esta opção setando como "false".
-     * @type {boolean=true}
-    */
-    autoRemoveThirdDependencies: true,
-
     fonts: {
       observer: {
         /**
@@ -46,13 +39,6 @@ module.exports = {
      */
     featureToggle: {
       useNotifications: false
-    },
-
-    /**
-     * Componentes que necessitam de instalação de bibliotecas de terceiros
-     * dentro da aplicação que utiliza o asteroid, a instalação é feita automaticamente pelo asteroid.
-     * @type {Array<'QasChartView' | 'QasMap'>}
-    */
-    thirdPartyComponents: []
+    }
   }
 }

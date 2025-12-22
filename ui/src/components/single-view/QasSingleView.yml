@@ -62,7 +62,7 @@ props:
     default: true
     type: Boolean
 
-  use-route:
+  use-store:
     desc: Controla se o componente usará internamente uma store do vuex/pinia ou se vai ser utilizado o axios diretamente.
     default: true
     type: Boolean

@@ -33,7 +33,12 @@ props:
 
   height:
     desc: Define altura do box quando a lista não está vazia.
-    default: 300px
+    default: auto
+    type: String
+
+  maxHeight:
+    desc: Define altura máxima do box quando a lista não está vazia.
+    default: auto
     type: String
 
   lazy-loading-props:

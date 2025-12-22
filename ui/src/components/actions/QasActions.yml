@@ -26,6 +26,21 @@ props:
     default: false
     type: Boolean
 
+  primary-button-props:
+    desc: Propriedades do botão primário.
+    default: {}
+    type: Object
+
+  secondary-button-props:
+    desc: Propriedades do botão secundário.
+    default: {}
+    type: Object
+
+  tertiary-button-props:
+    desc: Propriedades do botão terciário.
+    default: {}
+    type: Object
+
 slots:
   primary:
     desc: 'Slot para ação primaria (ex: botão de salvar), em telas menores que sm, se torna o primeiro elemento.'

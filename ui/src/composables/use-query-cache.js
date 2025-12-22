@@ -19,7 +19,7 @@ export default function () {
   }
 
   function findOne (key, filter) {
-    return cachedFilters[key][filter]
+    return cachedFilters[key]?.[filter]
   }
 
   function findAll (key) {

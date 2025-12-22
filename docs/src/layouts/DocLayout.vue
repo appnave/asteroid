@@ -32,10 +32,13 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <pv-layout-overlay-drawer />
   </q-layout>
 </template>
 
 <script>
+import PvLayoutOverlayDrawer from '@bildvitta/quasar-ui-asteroid/src/components/layout/private/PvLayoutOverlayDrawer.vue'
 
 import { version } from 'asteroid'
 import { createMetaMixin } from 'quasar'
@@ -46,6 +49,10 @@ import menuItems from 'assets/menu.js'
 import '@docsearch/css'
 
 export default {
+  components: {
+    PvLayoutOverlayDrawer
+  },
+
   mixins: [createMetaMixin({
     title: 'Asteroid Docs',
     titleTemplate: title => `${title} | Asteroid Docs`

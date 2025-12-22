@@ -9,4 +9,5 @@ title: QasActions
 ## Uso
 
 <doc-example file="QasActions/Basic" title="Básico" />
+<doc-example file="QasActions/WithSlot" title="Com slot" />
 <doc-example file="QasActions/WithTertiary" title="Terciário" />

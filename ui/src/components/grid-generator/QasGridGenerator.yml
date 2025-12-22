@@ -36,8 +36,8 @@ props:
     examples: ["{ email: { name: 'email', type: 'email', label: 'E-mail' } }"]
 
   gutter:
-    desc: Espaçamento entre colunas.
-    default: lg
+    desc: Em caso de uso inline o default é "sm" senão é "md".
+    default: ''
     type: String
     examples: [xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 5xl]
 

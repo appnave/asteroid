@@ -1,6 +1,6 @@
 export default function getPlaceholder (type, defaultPlaceholder = 'Digite aqui...') {
   const placeholders = {
-    'company-document': '00.000.000/0000-00',
+    'company-document': 'XX.XXX.XXX/XXXX-00',
     date: 'dd/mm/aaaa',
     datetime: 'dd/mm/aaaa hh:mm',
     decimal: '0,00',

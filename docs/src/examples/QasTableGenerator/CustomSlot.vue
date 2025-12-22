@@ -6,11 +6,6 @@
         <template #body-cell-isActive="{ row }">
           <div class="text-weight-bold">{{ row.isActive }}</div>
         </template>
-        <template #body-cell-actions="{ row }">
-          <div class="flex justify-end no-wrap q-gutter-x-sm">
-            <qas-delete :custom-id="row.uuid" entity="users" icon="sym_r_delete" />
-          </div>
-        </template>
       </qas-table-generator>
     </template>
   </qas-list-view>
@@ -33,8 +28,7 @@ export default {
     columns () {
       return [
         'isActive',
-        'name',
-        { align: 'right', name: 'actions' }
+        'name'
       ]
     }
   }

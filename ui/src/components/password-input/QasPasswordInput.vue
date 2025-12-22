@@ -5,7 +5,7 @@
     </template>
 
     <template #append>
-      <qas-btn color="primary" :icon="icon" variant="tertiary" @click="toggle" />
+      <qas-btn color="primary" :disable="isButtonDisabled" :icon="icon" variant="tertiary" @click="toggle" />
     </template>
 
     <template v-for="(_, name) in $slots" #[name]="context">
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import QasBtn from '../btn/QasBtn.vue'
 import QasInput from '../input/QasInput.vue'
 import passwordMixin from '../../mixins/password.js'
 import QasPasswordStrengthChecker from '../password-strength-checker/QasPasswordStrengthChecker.vue'
@@ -28,7 +29,8 @@ export default {
 
   components: {
     QasInput,
-    QasPasswordStrengthChecker
+    QasPasswordStrengthChecker,
+    QasBtn
   },
 
   mixins: [passwordMixin],
@@ -57,7 +59,11 @@ export default {
 
   computed: {
     icon () {
-      return this.toggleType ? 'sym_r_visibility_off' : 'sym_r_visibility'
+      return this.toggleType ? 'sym_r_visibility' : 'sym_r_visibility_off'
+    },
+
+    isButtonDisabled () {
+      return !this.model.length
     },
 
     model: {

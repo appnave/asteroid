@@ -1,4 +1,4 @@
-module.exports = function (api) {
+export default function (api) {
   api.onExitLog(`
              _               _    _
      __ _ __| |_ ___ _ _ ___(_)__| |

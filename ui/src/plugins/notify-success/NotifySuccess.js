@@ -8,6 +8,7 @@ export default (message, caption) => {
     caption,
     classes: 'qas-notification qas-notification--success',
     message,
-    type: 'success'
+    type: 'success',
+    icon: 'sym_r_check_circle'
   })
 }

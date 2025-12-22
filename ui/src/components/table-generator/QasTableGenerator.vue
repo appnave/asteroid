@@ -1,22 +1,48 @@
 <template>
-  <component :is="parentComponent.is">
+  <component :is="parentComponent.is" class="qas-table-generator" :class="tableClasses">
     <slot name="parent-header">
       <qas-header v-if="hasHeaderProps" v-bind="headerProps" />
     </slot>
 
-    <q-table v-show="hasResults" ref="table" class="bg-white qas-table-generator text-grey-8" v-bind="attributes">
+    <q-table v-show="hasResults" ref="table" v-bind="attributes" v-model:selected="selectedModel" class="bg-white text-grey-8">
       <template v-for="(_, name) in slots" #[name]="context">
         <slot :name="name" v-bind="context" />
       </template>
 
+      <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
+      <template #header-selection="props">
+        <div class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
+          <qas-checkbox v-model="props.selected" />
+        </div>
+      </template>
+
+      <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
+      <template #body-selection="props">
+        <div class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
+          <qas-checkbox v-model="props.selected" />
+        </div>
+      </template>
+
       <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
-        <q-td>
-          <component :is="tdChildComponent" v-bind="getTdChildComponentProps(context.row)">
+        <q-td :class="getTdClasses(context.row)">
+          <component :is="tdChildComponent" class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
             <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
-              {{ context.row?.[fieldName] }}
+              <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="fields[fieldName]?.label" :name="fieldName" :row="context.row" />
+
+              <template v-else>
+                {{ context.row?.[fieldName] }}
+              </template>
             </slot>
           </component>
         </q-td>
+      </template>
+
+      <template v-for="(column, index) in columnsWithTooltip" :key="index" #[`header-cell-${column.name}`]="context">
+        <q-th :props="context">
+          {{ context.col.label }}
+
+          <qas-tip class="q-pl-xs" :text="column.tooltip" />
+        </q-th>
       </template>
     </q-table>
 
@@ -25,13 +51,53 @@
 </template>
 
 <script>
+import PvTableGeneratorTd from './private/PvTableGeneratorTd.vue'
+import QasBox from '../box/QasBox.vue'
+import QasCheckbox from '../checkbox/QasCheckbox.vue'
+import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
+import QasHeader from '../header/QasHeader.vue'
+import QasTip from '../tip/QasTip.vue'
+
+import { isEmpty, humanize, setScrollOnGrab, setScrollGradient } from '../../helpers'
+
 import { extend } from 'quasar'
-import { isEmpty, humanize, setScrollOnGrab } from '../../helpers'
 
 export default {
   name: 'QasTableGenerator',
 
+  components: {
+    PvTableGeneratorTd,
+    QasBox,
+    QasEmptyResultText,
+    QasHeader,
+    QasCheckbox,
+    QasTip
+  },
+
+  provide () {
+    return {
+      /**
+       * @see QasBtn.vue - Injetando os valores padrões para o QasBtn.
+       */
+      btnPropsDefaults: {
+        size: 'sm'
+      },
+
+      /**
+       * @see QasTextTruncate.vue - Injetando os valores padrões para o QasTextTruncate.
+       */
+      textTruncatePropsDefaults: {
+        typography: 'body2'
+      }
+    }
+  },
+
   props: {
+    actionsMenuProps: {
+      default: undefined,
+      type: Function
+    },
+
     columns: {
       default: () => [],
       type: Array
@@ -47,9 +113,19 @@ export default {
       type: [Array, Object]
     },
 
+    fieldsProps: {
+      default: () => ({}),
+      type: [Object, Function]
+    },
+
     headerProps: {
       default: () => ({}),
       type: Object
+    },
+
+    maxHeight: {
+      type: String,
+      default: '528px'
     },
 
     results: {
@@ -68,14 +144,31 @@ export default {
       type: String
     },
 
+    selected: {
+      default: () => [],
+      type: Array
+    },
+
     useBox: {
       type: Boolean,
       default: true
     },
 
+    useSelection: {
+      type: Boolean
+    },
+
     useScrollOnGrab: {
       type: Boolean,
       default: true
+    },
+
+    useMultiline: {
+      type: Boolean
+    },
+
+    useObjectSelectedModel: {
+      type: Boolean
     },
 
     useExternalLink: {
@@ -86,18 +179,20 @@ export default {
       type: Boolean
     },
 
-    stickyHeaderTableHeight: {
-      default: '528px',
-      type: String
+    useVirtualScroll: {
+      type: Boolean
     }
   },
+
+  emits: ['update:selected'],
 
   data () {
     return {
       scrollableElement: null,
       scrollOnGrab: {},
       elementToObserve: null,
-      resizeObserver: null
+      resizeObserver: null,
+      scrollGradientX: setScrollGradient({ orientation: 'x' })
     }
   },
 
@@ -111,8 +206,8 @@ export default {
     bodyCellNameSlots () {
       if (this.hasBodyCellSlot) return []
 
-      return this.columns.length
-        ? this.columns.map(column => typeof column === 'object' ? column.name : column)
+      return this.normalizedColumns.length
+        ? this.normalizedColumns.map(column => typeof column === 'object' ? column.name : column)
         : Object.keys(this.fields)
     },
 
@@ -138,7 +233,6 @@ export default {
 
     attributes () {
       const attributes = {
-        class: this.tableClass,
         columns: this.columnsByFields,
         flat: true,
         hideBottom: true,
@@ -146,6 +240,18 @@ export default {
         rowKey: this.rowKey,
         rows: this.resultsByFields,
         style: this.tableStyle,
+        virtualScroll: this.useVirtualScroll,
+
+        // fixo, sempre será múltipla
+        ...(this.useSelection && { selection: 'multiple' }),
+
+        /**
+         * Necessário para aplicar o scroll vertical no container, essa funcionalidade existe quando a prop
+         * "useStickyHeader" ou "useVirtualScroll" for passada.
+         */
+        tableClass: {
+          'overflow-hidden-y': !this.useStickyHeader && !this.useVirtualScroll
+        },
 
         // Eventos.
         onRowClick: this.$attrs.onRowClick && this.onRowClick
@@ -156,25 +262,24 @@ export default {
 
     columnsByFields () {
       if (!this.hasFields) {
-        return this.columns.filter(column => column instanceof Object)
+        return this.normalizedColumns.filter(column => column instanceof Object)
       }
 
       const columns = []
 
       function columnByField (field) {
-        const { align, label, name } = field
+        const { label, name } = field
 
         columns.push({
-          align: align || 'left',
+          align: 'left',
           field: name,
           label,
-          name,
-          headerClasses: 'text-grey-10'
+          name
         })
       }
 
       // Automatic columns.
-      if (!this.columns.length) {
+      if (!this.normalizedColumns.length) {
         for (const index in this.fields) {
           columnByField(this.fields[index])
         }
@@ -183,15 +288,31 @@ export default {
       }
 
       // Sorting from the column list.
-      this.columns.forEach(column => {
+      this.normalizedColumns.forEach(column => {
         if (column instanceof Object) {
-          columnByField(column)
+          // repassa as props e mergeia com as do field
+          columnByField({ ...column, ...this.fields[column.name] })
         } else if (this.fields[column]) {
           columnByField(this.fields[column])
         }
       })
 
       return columns
+    },
+
+    hasActionsMenu () {
+      return typeof this.actionsMenuProps === 'function'
+    },
+
+    /**
+     * caso tenha a prop "actionsMenuProps" é adicionado automaticamente a coluna "actions" como ultimo item
+     */
+    normalizedColumns () {
+      return this.hasActionsMenu ? [...this.columns, { name: 'actions', label: 'Ações' }] : this.columns
+    },
+
+    columnsWithTooltip () {
+      return this.normalizedColumns.filter(column => column.tooltip)
     },
 
     hasFields () {
@@ -205,6 +326,10 @@ export default {
 
       const mappedResults = results.map((result, index) => {
         for (const key in result) {
+          if (this.fields[key]?.type === 'object') {
+            continue
+          }
+
           const humanizedResult = humanize(this.fields[key], result[key])
           const formattedResult = isEmpty({ value: humanizedResult }) ? this.emptyResultText : humanizedResult
 
@@ -222,16 +347,18 @@ export default {
       return this.results.length
     },
 
-    tableClass () {
+    tableClasses () {
       return {
         'qas-table-generator--mobile': this.$qas.screen.isSmall,
-        'qas-table-generator--sticky-header': this.useStickyHeader
+        'qas-table-generator--sticky-header': this.useStickyHeader,
+        'qas-table-generator--has-actions': this.hasActionsMenu,
+        'qas-table-generator--multiline': this.useMultiline
       }
     },
 
     tableStyle () {
       return {
-        maxHeight: this.useStickyHeader ? this.stickyHeaderTableHeight : 'initial'
+        ...((this.useStickyHeader || this.useVirtualScroll) && { maxHeight: this.maxHeight })
       }
     },
 
@@ -241,16 +368,65 @@ export default {
 
     parentComponent () {
       return {
-        is: this.useBox ? 'qas-box' : 'div'
+        is: this.useBox ? QasBox : 'div'
       }
     },
 
     hasHeaderProps () {
       return !!Object.keys(this.headerProps).length
+    },
+
+    hasAutoScrollY () {
+      return this.useStickyHeader || this.useVirtualScroll
+    },
+
+    hasRowClick () {
+      return typeof this.$attrs.onRowClick === 'function'
+    },
+
+    /**
+     * Computada responsável por retornar o modelo selecionado normalizando os dados de acordo
+     * com a prop "useObjectSelectedModel".
+     *
+     * @example - selectedModel
+     * [{ uuid: '2f8856d0-8eca-4e41-8146-63ed2a4f23ff4c' }] // considerando que a prop "rowKey" é "uuid"
+     */
+    selectedModel: {
+      get () {
+        if (!this.useSelection) return []
+
+        /**
+         * Caso a prop "useObjectSelectedModel" for passada, que já é o padrão, o retorno é o objeto completo da linha,
+         * que já o padrão do quasar, então não é necessário fazer nada.
+         */
+        if (this.useObjectSelectedModel) return this.selected
+
+        /**
+         * É necessário retornar o objeto completo da linha, pois o QasTableGenerator espera receber o objeto que
+         * contém a chave "rowKey" para poder identificar a linha selecionada.
+         *
+         * @example - selected ['2f8856d0-8eca-4e41-8146-63ed2a4f23ff4c']
+         */
+        return this.selected.map(row => ({ [this.rowKey]: row }))
+      },
+
+      /**
+       * Se a prop "useObjectSelectedModel" for passada, o evento "update:selected" é emitido array com o objeto completo
+       * da linha, caso contrário, é emitido apenas o array com valor da chave da linha (rowKey).
+       */
+      set (rows) {
+        this.$emit('update:selected', this.useObjectSelectedModel ? rows : rows.map(row => row[this.rowKey]))
+      }
     }
   },
 
   mounted () {
+    if (!this.hasAutoScrollY) {
+      const scrollElement = this.getScrollElement()
+
+      this.scrollGradientX.initializeScrollGradient(scrollElement)
+    }
+
     if (!this.useScrollOnGrab) return
 
     this.setObserver()
@@ -258,6 +434,12 @@ export default {
   },
 
   onUnmounted () {
+    if (!this.hasAutoScrollY) {
+      const scrollElement = this.getScrollElement()
+
+      this.scrollGradientX.removeScrollGradient(scrollElement)
+    }
+
     if (!this.hasScrollOnGrab) return
 
     this.destroyObserver()
@@ -269,13 +451,17 @@ export default {
     initializeScrollOnGrab () {
       if (this.hasScrollOnGrab) return
 
-      const element = this.getTableElementComponent().querySelector('.q-table__middle.scroll')
+      const element = this.getScrollElement()
 
-      this.scrollOnGrab = setScrollOnGrab(element)
+      this.scrollOnGrab = setScrollOnGrab(element, {}, 'qas-table-generator__cancel-mouse-target')
     },
 
     getTableElementComponent () {
       return this.$refs?.table?.$el
+    },
+
+    getScrollElement () {
+      return this.getTableElementComponent().querySelector('.q-table__middle.scroll')
     },
 
     getTableElement () {
@@ -319,11 +505,29 @@ export default {
       this.resizeObserver.unobserve(this.elementToObserve)
     },
 
+    getTdClasses (row) {
+      const routePayload = this.rowRouteFn?.(row)
+      const isRoutePayloadObject = typeof routePayload === 'object'
+      const hasRoutePayload = isRoutePayloadObject ? !!Object.keys(routePayload).length : !!routePayload
+
+      return {
+        'qas-table-generator__td--has-action': this.hasRowClick || hasRoutePayload
+      }
+    },
+
     getTdChildComponentProps (row) {
       if (!this.rowRouteFn) return
 
       return {
-        class: 'text-no-decoration text-grey-8 flex full-width items-center full-height',
+        class: [
+          'text-no-decoration',
+          'text-grey-8',
+          'flex',
+          'full-width',
+          'items-center',
+          'full-height'
+        ],
+
         [this.useExternalLink ? 'href' : 'to']: this.rowRouteFn(row),
         ...(this.useExternalLink && { target: '_blank' })
       }
@@ -331,6 +535,25 @@ export default {
 
     onRowClick () {
       this.$attrs.onRowClick(...arguments)
+    },
+
+    getFieldsProps (row, index) {
+      const isFieldsPropsFunction = typeof this.fieldsProps === 'function'
+
+      return {
+        ...(isFieldsPropsFunction ? this.fieldsProps(row, index) : this.fieldsProps),
+
+        /**
+         * caso tenha a prop "actionsMenuProps" é adicionado automaticamente a prop "actionsMenuProps"
+         * dentro de "fieldsProps".
+         */
+        ...(this.hasActionsMenu && {
+          actions: {
+            component: 'QasActionsMenu',
+            props: this.actionsMenuProps?.(row, index)
+          }
+        })
+      }
     }
   }
 }
@@ -338,16 +561,34 @@ export default {
 
 <style lang="scss">
 .qas-table-generator {
+  $root: &;
+
   .q-table {
     thead tr {
       height: 24px;
     }
 
     th {
-      @include set-typography($subtitle1);
+      @include set-typography($subtitle2);
 
-      border: 0 !important;
-      padding: 0 calc(var(--qas-spacing-lg) / 2);
+      color: $grey-10;
+
+      // altera o tamanho do ícone força o botão não quebrar.
+      .qas-btn {
+        .q-icon {
+          font-size: 18px !important;
+        }
+
+        .q-btn__content {
+          flex-wrap: nowrap;
+        }
+      }
+
+      line-height: 100% !important;
+      padding-bottom: var(--qas-spacing-sm);;
+      padding-left: 0;
+      padding-right: var(--qas-spacing-md);
+      padding-top: 0;
     }
 
     td,
@@ -358,32 +599,89 @@ export default {
     }
 
     td {
-      @include set-typography($body1);
+      @include set-typography($body2);
 
       height: 40px;
-      padding-left: calc(var(--qas-spacing-lg) / 2);
-      padding-right: calc(var(--qas-spacing-lg) / 2);
+      padding-bottom: var(--qas-spacing-sm);
+      padding-left: 0;
+      padding-top: var(--qas-spacing-sm);
+      position: relative;
+      z-index: 0;
+      padding-right: var(--qas-spacing-md);
 
-      &:before {
-        transition: background-color var(--qas-generic-transition);
+      * {
+        line-height: 100% !important;
+      }
+
+      &::before {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        z-index: -1;
+        background-color: transparent;
+      }
+
+      &:first-child::before {
+        left: calc(var(--qas-spacing-md) * -1);
+      }
+
+      &:last-child::before {
+        right: calc(var(--qas-spacing-md) * -1);
       }
     }
 
-    tr {
-      &:hover {
-        td:before {
-          background-color: var(--qas-background-color);
-        }
-      }
+    tr:hover td::before {
+      background-color: var(--qas-background-color);
+    }
 
-      &:last-child td {
-        padding-bottom: 0;
+    &__middle {
+      padding-left: var(--qas-spacing-md);
+      padding-right: var(--qas-spacing-md);
+    }
+
+    // Necessário para não ter cor de fundo quando uma linha estiver sido selecionada pela prop "selected".
+    tbody td:after {
+      background-color: transparent;
+    }
+
+    tbody tr {
+      /*
+        A regra só é aplicada se nenhum elemento filho com o atributo "data-table-ignore-tr-hover"
+        estiver também em estado de hover, impedindo que estilos conflitantes sejam aplicados.
+        Especificamente, dentro da célula:
+        - Elementos que não possuem filhos com "data-table-ignore-tr-hover" ou "data-table-ignore-hover"
+          receberão a cor definida pela variável CSS "--q-primary-contrast".
+        - Elementos dentro de células marcadas como tendo ações ("qas-table-generator__td--has-action")
+          e também com o atributo "data-table-hover" serão estilizados da mesma maneira.
+      */
+      &:hover:not(:has(td *[data-table-ignore-tr-hover]:hover)) {
+        td:not(:has(*[data-table-ignore-tr-hover])):not(:has(*[data-table-ignore-hover])).qas-table-generator__td--has-action *,
+        td.qas-table-generator__td--has-action *[data-table-hover] {
+          color: var(--q-primary-contrast) !important;
+        }
       }
     }
 
     thead tr:hover {
-      background-color: white;
+      background-color: white !important;
     }
+  }
+
+  &--multiline {
+    @media (min-width: $breakpoint-sm) {
+      .q-table td {
+        *:not(.qas-btn, .qas-btn *, .q-badge, .q-badge *){
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+      }
+    }
+  }
+
+  .q-table__container {
+    margin-left: calc(var(--qas-spacing-md) * -1);
+    margin-right: calc(var(--qas-spacing-md) * -1);
   }
 
   &--mobile {

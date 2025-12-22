@@ -67,6 +67,8 @@ const defaultAppUserProps = computed(() => {
       self: 'top end'
     },
 
+    useDataOnSmallScreen: false,
+
     onSignOut: signOut,
     onToggleNotifications: toggleNotifications,
     ...props.appUserProps

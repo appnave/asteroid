@@ -1,13 +1,13 @@
 <template>
   <qas-input ref="input" v-bind="attributes" v-model="currentValue" inputmode="numeric" :unmasked-value="false" @blur="validateDateTimeOnBlur" @focus="resetError" @update:model-value="updateModelValue">
     <template #append>
-      <qas-btn v-if="!props.useTimeOnly" color="grey-10" :disable="attrs.readonly" icon="sym_r_calendar_today" variant="tertiary">
+      <qas-btn v-if="hasDatePicker" color="primary" :disable="props.disable" icon="sym_r_calendar_today" variant="tertiary">
         <q-popup-proxy ref="dateProxy" transition-hide="scale" transition-show="scale" v-bind="props.datePopupProxyProps">
           <qas-date v-model="currentValue" v-bind="defaultDateProps" :mask="maskDate" width="290px" @update:model-value="updateModelValue" />
         </q-popup-proxy>
       </qas-btn>
 
-      <qas-btn v-if="!props.useDateOnly" class="q-ml-sm" color="grey-10" :disable="attrs.readonly" icon="sym_r_access_time">
+      <qas-btn v-if="hasTimePicker" class="q-ml-sm" color="primary" :disable="props.disable" icon="sym_r_access_time">
         <q-popup-proxy ref="timeProxy" transition-hide="scale" transition-show="scale" v-bind="props.timePopupProxyProps">
           <q-time v-model="currentValue" v-bind="defaultTimeProps" format24h :mask="maskDate" @update:model-value="updateModelValue" />
         </q-popup-proxy>
@@ -17,6 +17,10 @@
 </template>
 
 <script setup>
+import QasInput from '../input/QasInput.vue'
+import QasDate from '../date/QasDate.vue'
+import QasBtn from '../btn/QasBtn.vue'
+
 import { date as dateFn, getPlaceholder } from '../../helpers'
 
 import { date } from 'quasar'
@@ -41,6 +45,14 @@ const props = defineProps({
   datePopupProxyProps: {
     default: () => ({}),
     type: Object
+  },
+
+  disable: {
+    type: Boolean
+  },
+
+  readonly: {
+    type: Boolean
   },
 
   timeMask: {
@@ -122,14 +134,16 @@ const attributes = computed(() => {
     errorMessage: errorMessage.value,
     ...restAttributes,
     mask: mask.value,
+    readonly: props.readonly,
+    disable: props.disable,
     placeholder: placeholder || getPlaceholder(maskType.value)
   }
 })
 
 const defaultDateTimeProps = computed(() => {
   return {
-    readonly: attrs.readonly,
-    disable: attrs.disable
+    readonly: props.readonly,
+    disable: props.readonly
   }
 })
 
@@ -146,6 +160,9 @@ const defaultTimeProps = computed(() => {
     ...props.timeProps
   }
 })
+
+const hasDatePicker = computed(() => !props.useTimeOnly && !props.readonly)
+const hasTimePicker = computed(() => !props.useDateOnly && !props.readonly)
 
 watch(() => props.modelValue, (current, original) => {
   if (!current || props.useTimeOnly) {

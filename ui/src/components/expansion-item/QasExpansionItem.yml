@@ -8,6 +8,16 @@ props:
     desc: Lista de badges que serão exibidas na parte superior do card.
     type: Array
 
+  disable:
+    desc: Desabilita o componente e aplica estilo de desabilitado no label e no button.
+    default: false
+    type: Boolean
+
+  disable-button:
+    desc: Desabilita o componente sem aplicar o estilo de desabilitado no label (usar em casos onde não tem conteúdo no slot content).
+    default: false
+    type: Boolean
+
   error:
     desc: Booleano que caso seja true o card passa a ter uma borda vermelha.
     type: Boolean
@@ -16,28 +26,46 @@ props:
     desc: Mensagem de erro onde será exibida na parte inferior do card.
     type: String
 
+  group:
+    desc: Agrupamento para estado aberto|fechado.
+    default: ''
+    type: String
+
   label:
     desc: Titulo exibido na parte superior do card.
+    type: String
+
+  model-value:
+    desc: Model que controla o estado aberto|fechado.
+    default: false
+    type: Boolean
+
+  max-content-height:
+    desc: Define um tamanho máximo de altura do conteúdo.
+    default: ''
     type: String
 
   grid-generator-props:
     desc: Propriedades que serão repassadas para o QasGridGenerator.
     type: Object
 
-  use-header-separator:
-    desc: Propriedade para forçar o QSeparator no header.
-    type: Boolean
-    default: undefined
-
 slots:
   header:
-    desc: 'Slot para substituir o conteúdo do header'
+    desc: Slot para substituir o conteúdo do header (não inclui o botão dropdown).
 
   header-bottom:
-    desc: 'Slot para acessar o conteúdo que fica abaixo do header.'
+    desc: Slot para acessar o conteúdo que fica abaixo do header.
 
-  label:
-    desc: 'Slot para substituir o conteúdo da label do header.'
+  header-label:
+    desc: Slot para substituir o conteúdo da label do header.
 
   content:
-    desc: 'Slot para substituir o conteúdo principal do card.'
+    desc: Slot para substituir o conteúdo principal do card.
+
+events:
+  '@update:model-value -> function(value)':
+    desc: Dispara quando o model-value altera, também usado para v-model.
+    params:
+      value:
+        desc: Novo valor do model.
+        type: Boolean

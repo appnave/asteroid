@@ -17,8 +17,16 @@
 </template>
 
 <script>
+import QasBreakline from '../components/breakline/QasBreakline.vue'
+import QasBtn from '../components/btn/QasBtn.vue'
+
 export default {
   name: 'ErrorComponent',
+
+  components: {
+    QasBreakline,
+    QasBtn
+  },
 
   props: {
     buttonProps: {

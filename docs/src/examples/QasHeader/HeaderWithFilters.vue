@@ -16,6 +16,6 @@ const headerProps = {
     label: 'Com filtro'
   },
 
-  description: 'lorem ipsum dolor sit amet consectetur adipiscing elit'
+  description: 'Algum texto de descrição.'
 }
 </script>

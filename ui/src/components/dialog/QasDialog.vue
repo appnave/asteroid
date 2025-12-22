@@ -11,7 +11,7 @@
         </slot>
       </header>
 
-      <section class="text-body1 text-grey-8">
+      <section class="relative-position text-body1 text-grey-8">
         <component :is="mainComponent.is" ref="form" v-bind="mainComponent.props">
           <slot name="description">
             <component :is="descriptionComponent" data-cy="dialog-description">{{ props.card.description }}</component>
@@ -21,11 +21,11 @@
             <slot name="actions">
               <qas-actions v-bind="defaultActionsProps">
                 <template v-if="hasOk" #primary>
-                  <qas-btn v-close-popup="!props.useForm" class="full-width" data-cy="dialog-ok-btn" variant="primary" v-bind="defaultOk" />
+                  <qas-btn v-close-popup="!props.useForm" class="full-width" data-cy="dialog-ok-btn" size="lg" variant="primary" v-bind="defaultOk" />
                 </template>
 
                 <template v-if="hasCancel" #secondary>
-                  <qas-btn v-close-popup class="full-width" data-cy="dialog-cancel-btn" v-bind="defaultCancel" variant="secondary" />
+                  <qas-btn v-close-popup class="full-width" data-cy="dialog-cancel-btn" size="lg" v-bind="defaultCancel" variant="secondary" />
                 </template>
               </qas-actions>
             </slot>
@@ -39,6 +39,7 @@
 <script setup>
 import QasActions from '../actions/QasActions.vue'
 import QasBtn from '../btn/QasBtn.vue'
+import QasLabel from '../label/QasLabel.vue'
 
 import useCancel from './composables/use-cancel'
 import useDynamicComponents from './composables/use-dynamic-components'

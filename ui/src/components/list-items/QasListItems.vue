@@ -30,7 +30,9 @@
 </template>
 
 <script setup>
+import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
+import QasLabel from '../label/QasLabel.vue'
 
 import { computed } from 'vue'
 
@@ -76,7 +78,7 @@ const emit = defineEmits(['click-item'])
 
 const classes = computed(() => ({ 'qas-list-items--no-click': !props.useClickableItem }))
 
-const component = computed(() => props.useBox ? 'qas-box' : 'div')
+const component = computed(() => props.useBox ? QasBox : 'div')
 
 // functions
 function onClick ({ item, index }, fromItem) {

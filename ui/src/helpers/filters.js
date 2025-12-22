@@ -11,6 +11,16 @@ function __format (value, token, options = {}) {
   return format(value, token, { locale: ptBR, ...options })
 }
 
+function _formatNumericValues (value, options = {}) {
+  const numericValue = Number(value)
+
+  if (value === null || value === undefined || isNaN(numericValue)) {
+    return ''
+  }
+
+  return numericValue.toLocaleString('pt-BR', options)
+}
+
 // Asset
 function asset (value) {
   const bucketURL = process.env.BUCKET_URL || location.origin
@@ -23,7 +33,7 @@ function date (value, token = 'dd/MM/yyyy', options) {
   return __format(value, token, options)
 }
 
-function dateTime (value, token = 'dd/MM/yyyy HH:mm:ss', options) {
+function dateTime (value, token = "dd/MM/yyyy 'às' HH:mm:ss", options) {
   return __format(value, token, options)
 }
 
@@ -42,8 +52,7 @@ function decimal (value = 0) {
 }
 
 function money (value = 0, options = { style: 'currency', currency: 'BRL' }) {
-  value = Number(value)
-  return isNaN(value) ? '' : value.toLocaleString('pt-BR', options)
+  return _formatNumericValues(value, options)
 }
 
 function percent (value = 0, places = 2) {
@@ -57,15 +66,30 @@ function squareArea (value = 0, suffix = 'm²') {
 }
 
 function formatPercent (value = 0, places = 2) {
-  value = Number(value)
-  return value ? value.toLocaleString('pt-BR', { style: 'percent', minimumFractionDigits: places }) : ''
+  return _formatNumericValues(value, { style: 'percent', minimumFractionDigits: places })
 }
 
+/**
+ * Formata documento de empresa (CNPJ) aplicando máscara XX.XXX.XXX/XXXX-XX
+ * Aceita caracteres alfanuméricos (letras e números)
+ *
+ * @param {string} value - String com 14 caracteres
+ * @returns {string} - String formatada como CNPJ
+ *
+ * @example
+ * formatCompanyDocument('12345678000195') // '12.345.678/0001-95'
+ * formatCompanyDocument('ODH8LCRV000146') // 'OD.H8L.CRV/0001-46'
+ */
 function formatCompanyDocument (value) {
-  return value.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/g, '$1.$2.$3/$4-$5')
+  return value.replace(
+    /^([A-Za-z0-9]{2})([A-Za-z0-9]{3})([A-Za-z0-9]{3})([A-Za-z0-9]{4})([A-Za-z0-9]{2})/g,
+    '$1.$2.$3/$4-$5'
+  )
 }
 
 function formatDocument (value) {
+  if (!value) return ''
+
   return value.length < 12
     ? formatPersonalDocument(value)
     : formatCompanyDocument(value)

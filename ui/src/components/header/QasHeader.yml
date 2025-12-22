@@ -39,6 +39,11 @@ props:
     type: String
     examples: [none, xs, sm, md, lg, xl, '2xl', '3xl', '4xl', '5xl']
 
+  use-ellipsis:
+    desc: Adiciona ellipsis ao título (label).
+    type: Boolean
+    default: false
+
 slots:
   actions:
     desc: slot para acessar seção da direita (ações).

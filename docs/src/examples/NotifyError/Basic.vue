@@ -1,16 +1,19 @@
 <template>
   <div class="container spaced text-center">
-    <qas-btn @click="$qas.error('Deu erro!')">Usando plugin com injeção</qas-btn>
-    <qas-btn @click="NotifyError('Deu erro!')">Usando plugin com import</qas-btn>
+    <div>
+      <qas-btn @click="$qas.error(message)">Usando plugin com injeção</qas-btn>
+    </div>
+
+    <div class="q-mt-lg">
+      <qas-btn @click="NotifyError(message)">Usando plugin com import</qas-btn>
+    </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import { NotifyError } from 'asteroid'
 
-export default {
-  methods: {
-    NotifyError
-  }
-}
+defineOptions({ name: 'Basic' })
+
+const message = 'Não conseguimos carregar a imagem. Por favor, tente novamente em alguns minutos.'
 </script>

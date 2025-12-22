@@ -42,6 +42,7 @@
     "axios",
     "breakline",
     "Breakline",
+    "computeds",
     "decamelize",
     "fawmi",
     "fontfaceobserver",
@@ -52,5 +53,6 @@
     "Resizer",
     "soketi",
     "uuid"
-  ]
+  ],
+  "findUnusedExports.detectCircularImports": true
 }

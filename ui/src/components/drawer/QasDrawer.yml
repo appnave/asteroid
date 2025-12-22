@@ -30,6 +30,9 @@ props:
     type: String
 
 slots:
+  header:
+    desc: Slot para conteúdo do cabeçalho.
+
   default:
     desc: Slot para conteúdo principal.
 

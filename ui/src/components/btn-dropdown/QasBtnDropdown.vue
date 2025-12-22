@@ -3,8 +3,10 @@
     <div v-if="hasButtons" :class="classes.list">
       <div v-for="(buttonProps, key, index) in props.buttonsPropsList" :key="key">
         <div class="flex no-wrap">
-          <qas-btn :disable="props.disable" v-bind="buttonProps" no-wrap variant="tertiary" @click="onClick">
-            <q-menu v-if="hasMenuOnLeftSide" v-model="isMenuOpened" anchor="bottom right" auto-close self="top right" @update:model-value="onUpdateMenuValue">
+          <qas-btn :data-btn-dropdown="key" :disable="props.disable" v-bind="buttonProps" no-wrap variant="tertiary" @click="onClick">
+            <slot v-if="hasBtnContentSlot(key)" :name="`btn-content-${key}`" />
+
+            <q-menu v-else-if="hasMenuOnLeftSide" v-model="isMenuOpened" anchor="bottom right" :auto-close="props.useAutoClose" class="qas-menu" self="top right" @update:model-value="onUpdateMenuValue">
               <div :class="classes.menuContent">
                 <slot />
               </div>
@@ -20,7 +22,7 @@
 
     <div v-if="props.useSplit">
       <qas-btn v-bind="splittedButtonProps">
-        <q-menu v-if="hasDefaultSlot" anchor="bottom right" auto-close self="top right">
+        <q-menu v-if="hasDefaultSlot" v-model="isMenuOpened" anchor="bottom right" :auto-close="props.useAutoClose" class="qas-menu" self="top right" @update:model-value="onUpdateMenuValue">
           <div :class="classes.menuContent">
             <slot />
           </div>
@@ -31,6 +33,8 @@
 </template>
 
 <script setup>
+import QasBtn from '../btn/QasBtn.vue'
+
 import useScreen from '../../composables/use-screen'
 
 import { ref, watch, computed, useSlots } from 'vue'
@@ -68,6 +72,11 @@ const props = defineProps({
   },
 
   useTooltip: {
+    type: Boolean,
+    default: true
+  },
+
+  useAutoClose: {
     type: Boolean,
     default: true
   }
@@ -134,6 +143,10 @@ function isLast (index) {
 
 function hasSeparator (index) {
   return props.useSplit || !isLast(index)
+}
+
+function hasBtnContentSlot (name) {
+  return !!slots[`btn-content-${name}`]
 }
 </script>
 

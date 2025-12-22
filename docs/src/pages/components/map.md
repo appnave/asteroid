@@ -4,25 +4,22 @@ title: QasMap
 
 Componente para utilizar mapa do Google.
 
-:::info
+:::warning
 ##### Instalação
 
-Este componente necessita da biblioteca `'@fawmi/vue-google-maps': '^0.9.79'` instalada no projeto, caso não tenha, a primeira vez que rodar `quasar dev`, ele tentará instalar automaticamente, caso não funcione, instale manualmente.
+Este componente necessita da biblioteca `'@fawmi/vue-google-maps': '^0.9.79'` instalada no projeto, instale manualmente.
 
 ###### Configuração
 
+```bash
+npm i @fawmi/vue-google-maps@0.9.79
+```
+
 ```js
-// package.json (caso não adicione automaticamente ao rodar "quasar dev")
+// package.json
 {
   "dependencies": {
     "@fawmi/vue-google-maps": "^0.9.79"
-  }
-}
-
-// asteroid.config.js
-{
-  framework: {
-    thirdPartyComponents: ['QasMap']
   }
 }
 

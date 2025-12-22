@@ -4,58 +4,71 @@ meta:
   desc: Componente de card de galeria (utilizado no QasUploader, QasGallery e nos produtos).
 
 props:
-  actions-menu-props:
-    desc: Propriedades repassadas para o QasActionsMenu.
-    default: {}
-    type: Object
-
   error-icon:
     desc: Ícone que aparecerá quando uma imagem falhar ao carregar.
-    default: ''
+    default: 'sym_r_error'
     type: String
 
   error-message:
     desc: Texto que aparecerá quando uma imagem falhar ao carregar.
-    default: ''
+    default: 'Erro ao carregar imagem.'
     type: String
-
-  card:
-    desc: Informações do card, como name (nome) e url.
-    default: {}
-    type: Object
-    examples: ["{ name: 'meu nome', url: 'minha-url-da-imagem' }"]
 
   disable:
     desc: Propriedade que aplica estilos de desabilitado.
     type: Boolean
 
+  file-type:
+    desc: Extensão do arquivo (usado para mostrar quando a imagem não carrega).
+    default: ''
+    type: String
+
   grid-generator-props:
     desc: Propriedades repassadas para o QasGridGenerator.
     type: Boolean
+
+  header-props:
+    desc: Propriedades repassadas para o QasHeader.
+    default: {}
+    type: Object
 
   image-props:
     desc: Propriedades repassadas para o QImg.
     default: {}
     type: Object
 
-slots:
-  actions:
-    desc: Slot para ações do cabeçalho.
+  url:
+    desc: URL da imagem ou video.
+    default: ''
+    type: String
 
+  use-video:
+    desc: Controla se vai exibir o QVideo no lugar do QImg.
+    type: Boolean
+
+  video-props:
+    desc: Propriedades repassadas para o QVideo.
+    default: {}
+    type: Object
+
+slots:
   bottom:
     desc: Slot para acessar o conteúdo abaixo da imagem.
 
   image:
     desc: Slot para acessar o conteúdo da imagem (onde fica o QasGridGenerator).
 
-  image-error:
-    desc: Slot para acessar o conteúdo da imagem quando existe algum erro com a imagem.
+  image-bottom:
+    desc: Slot para acessar o conteúdo imediatamente abaixo da imagem (sem espaçamento).
+
+  image-error-container:
+    desc: Slot para acessar o conteúdo do container de erro da imagem (onde fica o ícone e a mensagem de erro).
+
+  image-error-message:
+    desc: Slot para acessar o conteúdo de mensagem da imagem quando existe algum erro com a imagem.
 
   image-error-icon:
     desc: Slot para acessar o conteúdo de ícone quando existe algum erro com a imagem.
 
-  header:
-    desc: Slot para acessar o conteúdo do cabeçalho.
-
-  name:
-    desc: Slot para acessar o conteúdo do nome, acima da imagem.
+  video:
+    desc: Slot para acessar o conteúdo do video (onde fica o QasGridGenerator).

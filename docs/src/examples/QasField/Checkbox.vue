@@ -1,14 +1,12 @@
 <template>
   <div class="container spaced">
-    <div>Com children: </div>
-    <qas-field v-model="model" :field="{ ...field, options: childrenOptions }" />
+    <qas-field v-model="model" :field="fieldWithChildren" />
 
     <div class="q-my-lg">
       model: <qas-debugger :inspect="[model]" />
     </div>
 
-    <div>Sem children: </div>
-    <qas-field v-model="model2" :field="{ ...field, options }" />
+    <qas-field v-model="model2" :field="fieldWithoutChildren" />
 
     <div class="q-my-lg">
       model2: <qas-debugger :inspect="[model2]" />
@@ -26,48 +24,46 @@ export default {
   },
 
   computed: {
-    field () {
+    fieldWithChildren () {
       return {
         name: 'checkbox',
         type: 'checkbox',
-        label: 'Campo checkbox'
+        label: 'Campo checkbox com children',
+        options: [
+          {
+            label: 'Opção 1',
+            value: 1,
+            children: [
+              {
+                label: 'Opção 2',
+                value: 2
+              },
+              {
+                label: 'Opção 3',
+                value: 3
+              }
+            ]
+          }
+        ]
       }
     },
 
-    childrenOptions () {
-      return [
-        {
-          label: 'Opção 1',
-          value: 1,
-          children: [
-            {
-              label: 'Opção 2',
-              value: 2
-            },
-            {
-              label: 'Opção 3',
-              value: 3
-            }
-          ]
-        }
-      ]
-    },
-
-    options () {
-      return [
-        {
-          label: 'Opção 1',
-          value: 1
-        },
-        {
-          label: 'Opção 2',
-          value: 2
-        },
-        {
-          label: 'Opção 3',
-          value: 3
-        }
-      ]
+    fieldWithoutChildren () {
+      return {
+        name: 'checkbox',
+        type: 'checkbox',
+        label: 'Campo checkbox sem children',
+        options: [
+          {
+            label: 'Opção 2',
+            value: 2
+          },
+          {
+            label: 'Opção 3',
+            value: 3
+          }
+        ]
+      }
     }
   }
 }

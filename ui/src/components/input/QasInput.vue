@@ -1,11 +1,14 @@
 <template>
-  <q-input ref="input" v-model="model" :autogrow="isTextarea" bottom-slots :class="classes" :counter="hasCounter" :dense="dense" :error="errorData" v-bind="$attrs" :error-message="errorMessage" :inputmode="defaultInputmode" :label="formattedLabel" :mask="currentMask" no-error-icon :outlined="outlined" :placeholder="placeholder" :unmasked-value="unmaskedValue" @paste="onPaste">
-    <template v-if="icon" #append>
+  <q-input ref="input" v-model="model" :autogrow="isTextarea" bottom-slots :class="classes" :counter="hasCounter" :dense="dense" :error="errorData" v-bind="$attrs" :error-message="errorMessage" :inputmode="defaultInputmode" :label="formattedLabel" :mask="currentMask" no-error-icon :outlined="outlined" :placeholder="placeholder" :readonly :unmasked-value="unmaskedValue" @paste="onPaste">
+    <template v-if="icon" #prepend>
       <q-icon :name="icon" size="xs" />
     </template>
 
-    <template v-if="iconRight" #prepend>
-      <q-icon :name="iconRight" size="xs" />
+    <template v-if="hasAppendComponent" #append>
+      <component
+        :is="appendComponent.is"
+        v-bind="appendComponent.props"
+      />
     </template>
 
     <template v-for="(_, name) in $slots" #[name]="context">
@@ -17,6 +20,8 @@
 <script>
 import { getRequiredLabel, getPlaceholder } from '../../helpers'
 
+import { defineAsyncComponent, computed } from 'vue'
+
 const Masks = {
   CompanyDocument: 'company-document',
   Document: 'document',
@@ -27,6 +32,25 @@ const Masks = {
 
 export default {
   name: 'QasInput',
+
+  components: {
+    QasCopy: defineAsyncComponent(() => import('../copy/QasCopy.vue'))
+  },
+
+  provide () {
+    return {
+      /**
+       * @see QasBtn.vue - Injetando os valores padrões para o QasBtn.
+       */
+      btnPropsDefaults: computed(() => {
+        return {
+          size: 'md',
+          variant: 'tertiary',
+          ...(this.hasError && { color: 'negative' })
+        }
+      })
+    }
+  },
 
   inheritAttrs: false,
 
@@ -59,6 +83,10 @@ export default {
       type: Boolean
     },
 
+    readonly: {
+      type: Boolean
+    },
+
     required: {
       type: Boolean
     },
@@ -80,6 +108,10 @@ export default {
     iconRight: {
       type: String,
       default: ''
+    },
+
+    useCopy: {
+      type: Boolean
     }
   },
 
@@ -95,15 +127,20 @@ export default {
 
   computed: {
     hasError () {
-      return this.inputReference.hasError
+      return this.inputReference?.hasError
     },
 
     masks () {
       return {
-        [Masks.CompanyDocument]: () => '##.###.###/####-##',
-        [Masks.Document]: () => this.toggleMask('###.###.###-###', '##.###.###/####-##'),
+        [Masks.CompanyDocument]: () => 'XX.XXX.XXX/XXXX-##',
+
+        [Masks.Document]: () => this.toggleDocumentMask({
+          firstMask: 'XXX.XXX.XXX-XXX',
+          secondMask: 'XX.XXX.XXX/XXXX-##'
+        }),
+
         [Masks.PersonalDocument]: () => '###.###.###-##',
-        [Masks.Phone]: () => this.toggleMask('(##) ####-#####', '(##) #####-####'),
+        [Masks.Phone]: () => this.toggleMask({ firstMask: '(##) ####-#####', secondMask: '(##) #####-####' }),
         [Masks.PostalCode]: () => '#####-###'
       }
     },
@@ -112,8 +149,8 @@ export default {
       const { inputmode, type } = this.$attrs
 
       const defaults = {
-        [Masks.CompanyDocument]: 'numeric',
-        [Masks.Document]: 'numeric',
+        [Masks.CompanyDocument]: 'text',
+        [Masks.Document]: 'text',
         [Masks.PersonalDocument]: 'numeric',
         [Masks.Phone]: 'tel',
         [Masks.PostalCode]: 'numeric',
@@ -163,7 +200,41 @@ export default {
     },
 
     hasPrepend () {
-      return !!this.$slots.prepend || this.iconRight
+      return !!this.$slots.prepend || this.icon
+    },
+
+    /**
+     * Só existe o componente QasCopy quando utilizado em conjunto com a prop readonly.
+     */
+    hasCopy () {
+      return this.useCopy && this.readonly
+    },
+
+    hasAppendComponent () {
+      return this.hasCopy || !!this.iconRight
+    },
+
+    /**
+     * Importa o dinamicamente os componentes para ser usado no append.
+     *
+     * a propriedade "useCopy" tem prioridade sobre a propriedade "iconRight".
+     */
+    appendComponent () {
+      return {
+        is: this.hasCopy ? 'qas-copy' : 'q-icon',
+        props: {
+          ...(this.hasCopy && {
+            text: this.model,
+            useText: false,
+            disable: true
+          }),
+
+          ...(this.iconRight && {
+            name: this.iconRight,
+            size: 'xs'
+          })
+        }
+      }
     }
   },
 
@@ -191,6 +262,13 @@ export default {
       },
 
       immediate: true
+    },
+
+    /**
+     * Pode acontecer da máscara ser alternada, entre CNPJ e CPF por exemplo.
+     */
+    mask () {
+      this.handleMask()
     }
   },
 
@@ -207,9 +285,34 @@ export default {
       return this.inputReference.resetValidation()
     },
 
-    toggleMask (first, second) {
-      const length = first.split('#').length - 2
-      return this.modelValue?.length > length ? second : first
+    /**
+     * Com base na quantidade de caracteres digitados, alterna entre duas máscaras.
+     * @param {Object} params
+     * @param {string} params.firstMask - Máscara inicial (ex: CPF -> ###.###.###-##)
+     * @param {string} params.secondMask - Máscara secundária (ex: CNPJ -> XX.XXX.XXX/XXXX-##)
+     * @param {string} [params.character='#'] - Token da máscara
+     */
+    toggleMask ({ firstMask, secondMask, character = '#' }) {
+      const length = firstMask.split(character).length - 2
+
+      return this.modelValue?.length > length ? secondMask : firstMask
+    },
+
+    /**
+     * Com base na quantidade de caracteres digitados, alterna entre duas máscaras de CPF e CNPJ.
+     * @param {Object} params
+     * @param {string} params.firstMask - Máscara inicial -> ###.###.###-##
+     * @param {string} params.secondMask - Máscara secundária -> XX.XXX.XXX/XXXX-##
+     */
+    toggleDocumentMask ({ firstMask, secondMask }) {
+      // Verifica se tem letras no model.
+      const regex = /[a-zA-Z]/
+      const containsLyrics = regex.test(this.modelValue)
+
+      // Caso contenha letras, aplica a máscara de CNPJ, pois o CPF não possui letras.
+      if (containsLyrics) return secondMask
+
+      return this.toggleMask({ firstMask, secondMask, character: 'X' })
     },
 
     validate (value) {
@@ -239,8 +342,6 @@ export default {
     },
 
     handleMask () {
-      if (!this.modelValue?.length) return
-
       const hasDefaultMask = Object.prototype.hasOwnProperty.call(this.masks, this.mask)
 
       this.$nextTick(() => {

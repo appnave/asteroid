@@ -13,10 +13,13 @@ Caso ocorra algum erro ao encontrar este mixin, use uma variável scss comentada
 // $
 
 @include set-button(
-  primary,
-  false,
-  false
-);
+  $variant,
+  $icon-only: false,
+  $no-hover-on-white: false,
+  $color: false,
+  $ellipsis: false,
+  $size: lg
+)
 </style>
 ```
 

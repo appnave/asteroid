@@ -15,10 +15,10 @@ props:
     type: String
     required: true
 
-  help-chat-link:
-    desc: Link para ser usado no iframe do chat, caso não passe nada, o chat não será exibido.
-    type: String
-    default: ''
+  home-route:
+    desc: Rota do item de "home/inicio".
+    type: [String, Object]
+    default: undefined
 
   items:
     desc: Itens do menu.
@@ -48,6 +48,16 @@ props:
   title:
     desc: Título que vai ficar no label do select de módulos.
     type: String
+
+  use-chat:
+    desc: Componente para controlar se vai ter ou não o chat.
+    type: Boolean
+    default: true
+
+  use-home-item:
+    desc: Propriedade que adiciona item no menu de "inicio", forçando padronização.
+    type: Boolean
+    default: true
 
 slots:
   user:

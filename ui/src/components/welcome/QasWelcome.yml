@@ -21,3 +21,6 @@ props:
 slots:
   actions:
     desc: Slot para substituir o QasActionsMenu.
+
+  after-greeting:
+    desc: Slot para acessar o conteúdo depois da saudação.

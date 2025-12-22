@@ -1,11 +1,15 @@
 <template>
-  <div class="container q-col-gutter-sm q-py-lg row">
+  <div class="container q-col-gutter-lg q-py-lg row">
     <div class="col-6">
-      <qas-select v-model="model" label="Meu select!" :options="options" />
+      <qas-select v-model="model" label="Meu select!" :options />
     </div>
 
     <div class="col-6">
-      <qas-select v-model="model2" label="Meu select multiple" multiple :options="options" />
+      <qas-select v-model="model2" label="Meu select multiple" multiple :options />
+    </div>
+
+    <div class="col-6">
+      <qas-select v-model="model2" error error-message="Com erro" label="Meu select multiple" multiple :options />
     </div>
   </div>
 </template>

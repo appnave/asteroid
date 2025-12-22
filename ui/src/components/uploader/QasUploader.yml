@@ -54,10 +54,21 @@ props:
     required: true
     type: String
 
+  field-name:
+    desc: Nome do campo para normalizar `errors` dentro da propriedade `form-generator-props`.
+    default: ''
+    type: String
+
   error:
     desc: Habilita modo erro.
     default: false
     type: Boolean
+
+  errors:
+    desc: Erros por arquivo, repassados para o QasFormGenerator e usado no QasGalleryCard quando existe erro na URL.
+    default: {}
+    model: true
+    type: [Object, Array]
 
   error-message:
     desc: Mensagem de erro.
@@ -83,13 +94,23 @@ props:
     default: {}
     type: Object
 
+  header-props:
+    desc: Propriedades repassadas para o componente "QasHeader".
+    default: {}
+    type: Object
+
   label:
-    desc: Label do componente, repassado para o componente "QasLabel".
+    desc: Label do componente.
     type: String
 
   max-files:
     desc: Quantidade maxima de arquivos no upload.
     default: undefined
+    type: Number
+
+  max-file-size:
+    desc: Tamanho máximo do arquivo em bytes.
+    default: 10485760
     type: Number
 
   model-value:
@@ -134,6 +155,21 @@ props:
     default: true
     type: Boolean
 
+  use-empty-result-text:
+    desc: Controla se o texto de resultado vazio será exibido.
+    default: true
+    type: Boolean
+
+  use-gallery-card:
+    desc: Controla se o componente vai usar o "QasGalleryCard" para exibir os arquivos.
+    default: true
+    type: Boolean
+
+  use-header:
+    desc: Controla se o header do componente será exibido.
+    default: true
+    type: Boolean
+
   use-object-model:
     desc: Controla se a model retornará um array de objetos.
     type: Boolean
@@ -149,6 +185,11 @@ props:
     default: true
     type: Boolean
 
+  use-validate-encrypted-pdf:
+    desc: Controla se o componente vai validar se o PDF está encriptado antes de fazer o upload.
+    default: false
+    type: Boolean
+
 slots:
   header:
     desc: Acesso ao header do <q-uploader />.
@@ -157,6 +198,15 @@ slots:
         desc: Payload repassado pelo QUploader.
         default: {}
         type: Object
+
+  header-actions:
+    desc: Acessa o slot actions do "QasHeader".
+
+  header-description:
+    desc: Acessa o slot description do "QasHeader".
+
+  header-label:
+    desc: Acessa o slot label do "QasHeader".
 
   list:
     desc: Acesso ao conteúdo onde fica a listagem de arquivos.

@@ -19,15 +19,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      integer: -10,
-      decimal: -0.10,
-      percent: -0.10,
-      money: -0.10
-    }
-  }
-}
+<script setup>
+import { ref } from 'vue'
+
+const integer = ref(-10)
+const decimal = ref(-0.10)
+const percent = ref(-0.10)
+const money = ref(-0.10)
 </script>

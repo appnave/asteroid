@@ -13,26 +13,29 @@ export default {
   computed: {
     props () {
       return {
-        actionsMenuProps: {
-          list: {
-            edit: {
-              label: 'Editar',
-              icon: 'sym_r_edit',
-              handler: () => alert('Clicado no editar.')
-            },
+        headerProps: {
+          labelProps: {
+            label: 'Meu titulo'
+          },
 
-            remove: {
-              label: 'Remover',
-              icon: 'sym_r_delete',
-              handler: () => alert('Clicado no remover.')
+          actionsMenuProps: {
+            list: {
+              edit: {
+                label: 'Editar',
+                icon: 'sym_r_edit',
+                handler: () => alert('Clicado no editar.')
+              },
+
+              remove: {
+                label: 'Remover',
+                icon: 'sym_r_delete',
+                handler: () => alert('Clicado no remover.')
+              }
             }
           }
         },
 
-        card: {
-          name: 'Meu titulo',
-          url: 'https://picsum.photos/200/300.jpg'
-        },
+        url: 'https://picsum.photos/200/300.jpg',
 
         gridGeneratorProps: {
           fields: {

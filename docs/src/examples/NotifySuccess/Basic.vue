@@ -1,16 +1,19 @@
 <template>
   <div class="container spaced text-center">
-    <qas-btn @click="$qas.success('Deu certo!')">Usando plugin com injeção</qas-btn>
-    <qas-btn @click="NotifySuccess('Deu certo!')">Usando plugin com import</qas-btn>
+    <div>
+      <qas-btn @click="$qas.success(message)">Usando plugin com injeção</qas-btn>
+    </div>
+
+    <div class="q-mt-lg">
+      <qas-btn @click="NotifySuccess(message)">Usando plugin com import</qas-btn>
+    </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import { NotifySuccess } from 'asteroid'
 
-export default {
-  methods: {
-    NotifySuccess
-  }
-}
+defineOptions({ name: 'Basic' })
+
+const message = 'Dados alterados com sucesso.'
 </script>

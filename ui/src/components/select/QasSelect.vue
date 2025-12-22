@@ -1,7 +1,7 @@
 <template>
-  <q-select v-model="model" v-bind="attributes" class="qas-select" :class="componentClasses" no-error-icon :outlined="false">
-    <template v-if="isSearchable" #prepend>
-      <q-icon name="sym_r_search" />
+  <q-select v-model="model" v-bind="attributes" class="qas-select" :class="componentClasses" no-error-icon>
+    <template v-if="hasIcon" #prepend>
+      <q-icon :name="defaultIcon" />
     </template>
 
     <template #no-option>
@@ -38,7 +38,7 @@
               {{ scope.opt.label }}
             </q-item-label>
 
-            <div v-for="(badge, index) in getFilteredBadgeList(scope.opt)" :key="index">
+            <div v-for="(badge, index) in getFilteredBadgeList(scope.opt)" :key="index" class="flex">
               <qas-badge v-if="hasBadge(badge)" v-bind="getBadgeProps(badge)" />
             </div>
           </div>
@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import QasBadge from '../badge/QasBadge.vue'
+
 import { getRequiredLabel } from '../../helpers'
 import { searchFilterMixin } from '../../mixins'
 import fuseConfig from '../../shared/fuse-config'
@@ -75,7 +77,17 @@ import Fuse from 'fuse.js'
 export default {
   name: 'QasSelect',
 
+  components: {
+    QasBadge
+  },
+
   mixins: [searchFilterMixin],
+
+  inject: {
+    isBox: { default: false },
+    isDialog: { default: false },
+    updateUnsavedChangesCache: { default: null }
+  },
 
   props: {
     badgeProps: {
@@ -83,9 +95,18 @@ export default {
       type: Object
     },
 
+    disable: {
+      type: Boolean
+    },
+
     fuseOptions: {
       default: () => ({}),
       type: Object
+    },
+
+    icon: {
+      type: String,
+      default: ''
     },
 
     label: {
@@ -98,6 +119,10 @@ export default {
       type: [Array, Object, String, Number, Boolean]
     },
 
+    multiple: {
+      type: Boolean
+    },
+
     noOptionLabel: {
       default: 'Nenhum resultado foi encontrado.',
       type: String
@@ -106,6 +131,15 @@ export default {
     options: {
       default: () => [],
       type: Array
+    },
+
+    prefix: {
+      type: String,
+      default: ''
+    },
+
+    readonly: {
+      type: Boolean
     },
 
     required: {
@@ -132,6 +166,10 @@ export default {
     useSearch: {
       type: Boolean,
       default: undefined
+    },
+
+    useFilterMode: {
+      type: Boolean
     }
   },
 
@@ -146,18 +184,23 @@ export default {
 
   computed: {
     attributes () {
+      const { useChips, ...attrs } = this.$attrs
+
       return {
-        clearable: this.isSearchable,
+        clearable: !this.required,
         emitValue: true,
         mapOptions: true,
-        outlined: true,
+        outlined: this.useFilterMode,
         dense: true,
         dropdownIcon: 'sym_r_expand_more',
         clearIcon: 'sym_r_close',
         popupContentClass: `qas-select__menu ${this.popupContentClass}`,
-        useChips: this.isMultiple && this.isPopupContentOpen,
+        useChips: this.multiple && this.isPopupContentOpen,
+        multiple: this.multiple,
+        disable: this.disable,
+        readonly: this.readonly,
 
-        ...this.$attrs,
+        ...attrs,
 
         label: this.formattedLabel,
         error: this.hasError,
@@ -185,7 +228,7 @@ export default {
     },
 
     isSearchable () {
-      return this.hasFuse || this.useLazyLoading
+      return (this.hasFuse || this.useLazyLoading) && !(this.disable || this.readonly)
     },
 
     hasError () {
@@ -229,28 +272,55 @@ export default {
     },
 
     canSetDefaultOption () {
-      return (this.required || this.useAutoSelect) && this.options.length === 1 && !this.modelValue
+      // Como o default do model pode ser um array (caso de multiple), é necessário validar o length
+      const hasModelValue = Array.isArray(this.modelValue) ? !!this.modelValue.length : !!this.modelValue
+
+      /**
+       * Só pode setar uma opção default quando:
+       * - O campo for required ou tiver a prop useAutoSelect
+       * - Tiver apenas uma option
+       * - O modelValue estiver vazio
+       *
+       * Caso o campo for lazyLoading, precisamos validar se já realizou a requisição, então também valida:
+       * - O count de requisições for maior que 0 (this.mx_fetchCount > 0);
+       * - E não estiver buscando mais opções (this.mx_isFetching === false).
+       */
+      return (
+        (this.required || this.useAutoSelect) &&
+        this.mx_filteredOptions.length === 1 &&
+        !hasModelValue &&
+        (this.useLazyLoading ? (!!this.mx_fetchCount && !this.mx_isFetching) : true)
+      )
     },
 
     // redesign
     componentClasses () {
+      const isBordered = (this.isBox || this.isDialog) && this.useFilterMode
+
+      // estilos definidos no arquivo field.scss
       return {
-        'qas-select--has-icon': this.isSearchable || this.hasAppend,
+        ...(this.useFilterMode && {
+          'qas-select--filter': true,
+          'qas-select--filter-border': isBordered,
+          'qas-select--filter-shadow': !isBordered
+        }),
+
+        'qas-select--has-icon': this.hasAppend || this.hasIcon,
         'qas-select--closed': !this.isPopupContentOpen,
         'qas-select--loading': this.hasLoading
       }
     },
 
-    isDisabled () {
-      return this.$attrs.disable || this.$attrs.disable === ''
-    },
-
-    isMultiple () {
-      return this.$attrs.multiple || this.$attrs.multiple === ''
-    },
-
     hasAppend () {
       return !!this.$slots.append
+    },
+
+    defaultIcon () {
+      return this.icon || 'sym_r_search'
+    },
+
+    hasIcon () {
+      return this.isSearchable || !!this.icon
     }
   },
 
@@ -271,15 +341,33 @@ export default {
       this.setDefaultOption()
     },
 
+    /**
+     * Caso tenha realizado o primeiro fetch do lazy loading, chama o `setDefaultOption` se o
+     * `canSetDefaultOption` for true.
+     */
+    mx_hasFetched: {
+      async handler (value) {
+        if (!value) return
+
+        /**
+         * Necessário utilizar o nextTick para garantir que as opções do select sejam atualizadas, pois primeiro é
+         * trocado o fetched e somente depois seta as opções, então preciso esperar para conseguir seta.
+         */
+        await this.$nextTick()
+
+        if (this.canSetDefaultOption) this.setDefaultOption()
+      }
+    },
+
     options: {
       handler () {
         if (this.useLazyLoading && this.mx_hasFilteredOptions) return
 
         if (this.fuse || this.hasFuse) this.setFuse()
 
-        if (this.canSetDefaultOption) this.setDefaultOption()
-
         this.mx_filteredOptions = [...this.options]
+
+        if (this.canSetDefaultOption) this.setDefaultOption()
       },
 
       deep: true,
@@ -361,10 +449,18 @@ export default {
 
     setDefaultOption () {
       const modelValue = this.attributes.emitValue
-        ? this.options[0].value
-        : this.options[0]
+        ? this.mx_filteredOptions[0].value
+        : this.mx_filteredOptions[0]
 
-      this.$emit('update:modelValue', modelValue)
+      // Quando for múltiplo adiciona o valor em um array
+      this.$emit('update:modelValue', this.multiple ? [modelValue] : modelValue)
+
+      /**
+       * Atualiza o model de cache dos dados do formulário no QasFormView,
+       * usado para fazer o comparativo para saber se houve mudanças no formulário,
+       * para exibir o dialog. Só terá essa funcionalidade se o componente estiver dentro de um QasFormView.
+       */
+      if (this.updateUnsavedChangesCache) this.updateUnsavedChangesCache()
     },
 
     getFilteredBadgeList (payload = {}) {
@@ -401,7 +497,9 @@ export default {
     hasBadge (badge) {
       const model = Object.keys(badge)[0]
 
-      return badge[model] || this.badgeProps[model](badge[model]).show
+      const isFunction = typeof this.badgeProps[model] === 'function'
+
+      return badge[model] || (isFunction && this.badgeProps[model]?.(badge[model])?.show)
     },
 
     getCaptionArray (caption) {
@@ -430,8 +528,16 @@ export default {
   }
 
   &__menu {
+    padding: var(--qas-spacing-sm) var(--qas-spacing-md);
+
+    .q-item + .q-item {
+      border-top: 1px solid $grey-4 !important;
+    }
+
     .q-item {
       font-weight: 400 !important;
+      padding-left: 0;
+      padding-right: 0;
     }
   }
 
@@ -456,19 +562,30 @@ export default {
 
   .q-field__prepend,
   .q-field__append {
-    .q-icon {
+    .q-icon:not(button) {
       color: $grey-8;
+    }
+
+    button.q-icon {
+      @include set-button(
+        tertiary,
+        false,
+        false,
+        grey-10
+      );
+
+      // necessários para sobrescrever os tamanhos aplicados pelo set-button
+      width: 18px !important;
+      height: 18px !important;
+      min-height: 18px !important;
     }
   }
 
-  .q-field__focusable-action {
-    opacity: 1;
+  &.q-field--readonly .q-field__append {
+    display: none;
   }
 
-  .q-chip {
-    font-size: 11px;
-  }
-
+  .q-field__focusable-action,
   .q-chip__icon--remove {
     opacity: 1;
   }

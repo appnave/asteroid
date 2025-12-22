@@ -1,7 +1,10 @@
 <template>
-  <div>
-    <h4 class="q-mb-md text-h4">Imagem de exemplo</h4>
-    <q-img :alt="alt" :src="src" width="100%" />
+  <div class="doc-print">
+    <h4 class="q-mb-md text-h4">
+      {{ title }}
+    </h4>
+
+    <q-img :alt="alt" :src="src" :width="width" />
   </div>
 </template>
 
@@ -10,6 +13,11 @@ export default {
   name: 'DocPrint',
 
   props: {
+    title: {
+      type: String,
+      default: 'Imagem de exemplo'
+    },
+
     alt: {
       type: String,
       default: ''
@@ -18,6 +26,11 @@ export default {
     src: {
       type: String,
       default: ''
+    },
+
+    width: {
+      type: String,
+      default: '100%'
     }
   }
 }

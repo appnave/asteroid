@@ -21,6 +21,9 @@
 </template>
 
 <script setup>
+import QasBtn from '../../btn/QasBtn.vue'
+import QasDialog from '../../dialog/QasDialog.vue'
+
 import { useScreen } from '../../../composables'
 
 import { computed } from 'vue'

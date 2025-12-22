@@ -26,5 +26,4 @@ const headerProps = {
     label: 'Novo usuário'
   }
 }
-
 </script>

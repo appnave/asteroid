@@ -4,6 +4,8 @@
     <qas-box>
       <div class="q-mb-md">Conteúdo dentro de uma box, o Expansion deverá ter uma borda.</div>
       <qas-expansion-item :badges="badges" :grid-generator-props="gridGeneratorProps" label="John Doe" />
+
+      <qas-expansion-item class="q-mt-md" error error-message="Card com mensagem de erro" :grid-generator-props="gridGeneratorProps" label="John Doe" />
     </qas-box>
   </qas-single-view>
 </template>

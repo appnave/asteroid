@@ -2,54 +2,136 @@
   $root: &;
 
   box-shadow: none;
-  min-height: 48px !important;
-  padding: var(--qas-spacing-xs) var(--qas-spacing-lg) !important;
   text-transform: initial !important;
+  font-weight: 600;
   transition: color var(--qas-generic-transition), background-color var(--qas-generic-transition);
 
-  .q-icon {
-    font-size: 24px !important;
+  // Tamanhos
+  &--sm {
+    @include set-typography($subtitle2);
+
+    min-height: 30px !important;
+    padding: var(--qas-spacing-xs) var(--qas-spacing-md) !important;
+
+    .q-icon {
+      font-size: 18px !important;
+    }
+
+    &.qas-btn--icon-only.qas-btn--primary,
+    &.qas-btn--icon-only.qas-btn--secondary {
+      height: 30px !important;
+      width: 30px !important;
+    }
+
+    &.qas-btn--icon-only.qas-btn--tertiary {
+      height: 18px !important;
+      width: 18px !important;
+    }
+  }
+
+  &--md {
+    @include set-typography($subtitle1);
+
+    min-height: 38px !important;
+    padding: var(--qas-spacing-xs) var(--qas-spacing-md) !important;
+
+    .q-icon {
+      font-size: 18px !important;
+    }
+
+    &.qas-btn--icon-only.qas-btn--primary,
+    &.qas-btn--icon-only.qas-btn--secondary {
+      height: 38px !important;
+      width: 38px !important;
+    }
+
+    &.qas-btn--icon-only.qas-btn--tertiary {
+      height: 18px !important;
+      width: 18px !important;
+    }
+  }
+
+  &--lg {
+    @include set-typography($subtitle1);
+
+    min-height: 46px !important;
+    padding: var(--qas-spacing-xs) var(--qas-spacing-lg) !important;
+
+    .q-icon {
+      font-size: 24px !important;
+    }
+
+    &.qas-btn--icon-only.qas-btn--primary,
+    &.qas-btn--icon-only.qas-btn--secondary {
+      height: 46px !important;
+      width: 46px !important;
+    }
+
+    &.qas-btn--icon-only.qas-btn--tertiary {
+      height: 24px !important;
+      width: 24px !important;
+    }
+  }
+
+  // Nosso loading fica desabilitado, mas é necessário mostrar o cursor correto.
+  &--loading {
+    &.disabled *,
+    &.disabled {
+      cursor: progress !important;
+    }
   }
 
   &:disabled {
     opacity: 1 !important;
   }
 
-  &:not(&--primary):not(:disabled):not(&--no-hover-on-white.qas-btn--tertiary-white):hover {
-    color: var(--q-primary-contrast) !important;
-  }
-
+  // Variantes
   &--primary {
-    background-color: var(--q-primary) !important;
     color: white !important;
+
+    &-primary {
+      background-color: var(--q-primary) !important;
+
+      &:not(:disabled):hover {
+        background-color: var(--q-primary-contrast) !important;
+      }
+    }
+
+    &-negative {
+      background-color: var(--q-negative) !important;
+
+      &:not(:disabled):hover {
+        background-color: $red-6 !important;
+      }
+    }
 
     &:disabled {
       background-color: $grey-4 !important;
       color: $grey-8 !important;
     }
-
-    &:not(:disabled):hover {
-      background-color: var(--q-primary-contrast) !important;
-    }
   }
 
   &--secondary {
     border: 1px solid currentColor !important;
-    color: var(--q-primary) !important;
-    position: relative;
+
+    &-primary {
+      color: var(--q-primary);
+
+      &:hover {
+        color: var(--q-primary-contrast) !important;
+      }
+    }
+
+    &-negative {
+      color: var(--q-negative) !important;
+
+      &:hover {
+        color: $red-6 !important;
+      }
+    }
 
     &:disabled {
       color: $grey-6 !important;
-    }
-  }
-
-  &--primary,
-  &--secondary {
-    &-icon-only {
-      height: 48px !important;
-      min-width: auto !important;
-      padding: 0 !important;
-      width: 48px !important;
     }
   }
 
@@ -62,15 +144,35 @@
     }
 
     &-grey-10 {
-      color: $grey-10 !important;
+      color: $grey-10;
+
+      &:hover:not(&:disabled) {
+        color: var(--q-primary-contrast) !important;
+      }
     }
 
     &-primary {
       color: var(--q-primary) !important;
+
+      &:hover:not(:disabled) {
+        color: var(--q-primary-contrast) !important;
+      }
     }
 
     &-white {
       color: white !important;
+
+      &:hover:not(.qas-btn--no-hover-on-white.qas-btn--tertiary-white):not(:disabled) {
+        color: var(--q-primary-contrast) !important;
+      }
+    }
+
+    &-negative {
+      color: var(--q-negative) !important;
+
+      &:hover:not(:disabled) {
+        color: $red-6 !important;
+      }
     }
 
     &-icon-only {
@@ -78,6 +180,15 @@
       min-width: auto !important;
       padding: 0 !important;
       width: 24px !important;
+    }
+  }
+
+  // Modificadores comuns às variantes
+  &--primary,
+  &--secondary {
+    &-icon-only {
+      min-width: auto !important;
+      padding: 0 !important;
     }
   }
 
@@ -101,11 +212,13 @@
     }
   }
 
-  .q-icon.on-left {
+  .q-icon.on-left,
+  .q-spinner.on-left {
     margin-right: var(--qas-spacing-xs);
   }
 
-  .q-icon.on-right {
+  .q-icon.on-right,
+  .q-spinner.on-right {
     margin-left: var(--qas-spacing-xs);
   }
 

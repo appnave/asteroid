@@ -1,8 +1,10 @@
 import asteroidConfig from 'asteroid-config'
-import hasParentByClassName from '../helpers/private/has-parent-by-class-name'
+import hasParentByClassName from '../helpers/private/has-parent-by-class-name.js'
 
 import { Notify } from 'quasar'
 import { ref } from 'vue'
+
+import naveNotificationSound from '../assets/sounds/nave-notification.mp3'
 
 const callbackFunctions = {
   onNotificationReceived: []
@@ -63,6 +65,8 @@ export default function () {
       timeout: 30000
     })
 
+    sendNotificationSound()
+
     /**
      * Função que é chamada quando o usuário clica na notificação, se a notificação
      * tem link, então ele vai ser redirecionado para o link em uma nova aba, caso
@@ -95,6 +99,16 @@ export default function () {
            </div>
          </div>
       `)
+    }
+
+    /**
+     * Função que toca o som de notificação.
+     */
+    function sendNotificationSound () {
+      const audio = new Audio(naveNotificationSound)
+
+      // o áudio agora é reproduzível; reproduza-o se as permissões permitirem
+      audio.addEventListener('canplaythrough', audio.play)
     }
   }
 

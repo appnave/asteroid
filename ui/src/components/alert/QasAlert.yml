@@ -1,29 +1,51 @@
 type: component
 
 meta:
-  desc: Cria um seção para alertar sobre um conteúdo.
+  desc: Componente para alerta de informações.
 
 props:
+  buttonProps:
+    desc: Props do componente QasBtn.
+    default:
+      variant: primary
+    type: [Object, Array]
+
   model-value:
     desc: Model do componente, controla se o componente aparece ou não.
     default: true
     type: Boolean
 
-  text:
-    desc: Texto do componente.
-    type: String
-
   status:
     desc: Status do alerta.
     type: String
-    examples: ['error', 'info']
+    examples: ['error', 'info', 'success']
 
   storage-key:
     desc: Chave a ser salva no localStorage, necessário caso esteja usando mais de um QasAlert na aplicação e ambos estejam com a prop "use-persist-model-on-close" ativada.
     type: String
 
+  router-link-props:
+    desc: Propriedades do componente RouterLink.
+    default: {}
+    type: [Object, Array]
+
+  text:
+    desc: Texto a ser exibido.
+    type: String
+    default: ''
+
+  use-box:
+    desc: Controla se vai ter ou não box (componente tem um controle interno que lida automaticamente, serve para a maioria dos casos).
+    type: Boolean
+    default: undefined
+
   use-persistent-model-on-close:
     desc: Habilita salvar o model em localStorage ao fechar o alerta para não aparecer novamente.
+    type: Boolean
+
+  use-regex:
+    desc: Faz a busca pelos "[]" dentro da propriedade "text" para substituir pelo QasBtn ou RouterLink.
+    default: true
     type: Boolean
 
 slots:

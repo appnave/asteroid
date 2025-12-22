@@ -1,0 +1,9 @@
+type: component
+
+meta:
+  desc: Componente para mensagem de erro como em inputs, radio, checkbox, uploader, etc.
+
+props:
+  message:
+    desc: Mensagem de erro que será exibida.
+    type: String

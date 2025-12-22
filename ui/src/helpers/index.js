@@ -19,6 +19,7 @@ export { default as isLocalDevelopment } from './is-local-development.js'
 export { default as promiseHandler } from './promise-handler.js'
 export { default as setScrollOnGrab } from './set-scroll-on-grab.js'
 export { default as getPlaceholder } from './get-placeholder.js'
+export { default as setScrollGradient } from './set-scroll-gradient.js'
 
 export * from './filters.js'
 export * from './images.js'

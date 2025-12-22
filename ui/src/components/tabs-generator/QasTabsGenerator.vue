@@ -23,8 +23,9 @@ import QasStatus from '../status/QasStatus.vue'
 
 import { decimal } from '../../helpers'
 
-import { computed } from 'vue'
-import { extend } from 'quasar'
+import { computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { extend, QRouteTab, QTab } from 'quasar'
 
 defineOptions({ name: 'QasTabsGenerator' })
 
@@ -45,12 +46,22 @@ const props = defineProps({
     type: [Object, Array]
   },
 
+  querySlug: {
+    default: '',
+    type: String
+  },
+
   useRouteTab: {
     type: Boolean
   }
 })
 
+// emits
 const emit = defineEmits(['update:modelValue'])
+
+// composables
+const route = useRoute()
+const router = useRouter()
 
 // computed
 const model = computed({
@@ -81,7 +92,11 @@ const formattedTabs = computed(() => {
   return tabs
 })
 
-const tabComponent = computed(() => props.useRouteTab ? 'q-route-tab' : 'q-tab')
+const tabComponent = computed(() => props.useRouteTab ? QRouteTab : QTab)
+
+// watch
+watch(() => route.query[props.querySlug], onQuerySlugChange, { immediate: true })
+watch(() => model.value, onTabsChange, { immediate: true })
 
 // functions
 function getFormattedLabel ({ label, counter, value }) {
@@ -98,6 +113,28 @@ function getTabProps (tab) {
   const { icon, label, ...payload } = tab
 
   return payload
+}
+
+function onTabsChange (value) {
+  if (!props.querySlug) return
+
+  const { ...query } = route.query
+
+  if (!value && props.querySlug) {
+    delete query[props.querySlug]
+
+    router.push({ query })
+
+    return
+  }
+
+  router.push({ query: { ...query, [props.querySlug]: value } })
+}
+
+function onQuerySlugChange (value) {
+  if (value && value !== model.value) {
+    model.value = value
+  }
 }
 </script>
 

@@ -1,10 +1,15 @@
 <template>
-  <component :is="component.is" v-bind="component.props" class="q-px-sm qas-badge text-caption">
+  <!-- "data-table-ignore-hover" é para não habilitar hover no texto no QasTableGenerator -->
+  <component :is="component.is" v-bind="component.props" class="q-px-sm qas-badge text-body2" data-table-ignore-hover>
     <slot />
   </component>
 </template>
 
 <script setup>
+import { QChip, QBadge } from 'quasar'
+
+import { baseProps } from '../../shared/badge-config'
+
 import { computed } from 'vue'
 
 defineOptions({
@@ -12,35 +17,7 @@ defineOptions({
   inheritAttrs: false
 })
 
-const props = defineProps({
-  color: {
-    type: String,
-    default: 'light-blue-2'
-  },
-
-  label: {
-    type: String,
-    default: ''
-  },
-
-  multiLine: {
-    type: Boolean
-  },
-
-  textColor: {
-    type: String,
-    default: 'black'
-  },
-
-  removable: {
-    type: Boolean
-  },
-
-  tabindex: {
-    type: [String, Number],
-    default: undefined
-  }
-})
+const props = defineProps(baseProps)
 
 const emit = defineEmits(['remove'])
 const model = defineModel({ type: Boolean, default: true })
@@ -49,7 +26,7 @@ const component = computed(() => {
   const isChip = props.removable
 
   return {
-    is: isChip ? 'q-chip' : 'q-badge',
+    is: isChip ? QChip : QBadge,
     props: {
       // comum
       color: props.color,

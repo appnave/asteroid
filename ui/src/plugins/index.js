@@ -1,13 +1,5 @@
-import Delete from './delete/Delete.js'
-import Dialog from './dialog/Dialog.js'
-import NotifyError from './notify-error/NotifyError.js'
-import NotifySuccess from './notify-success/NotifySuccess.js'
-import Screen from './screen/Screen.js'
-
-export {
-  Delete,
-  Dialog,
-  NotifyError,
-  NotifySuccess,
-  Screen
-}
+export { default as Delete } from './delete/Delete.js'
+export { default as Dialog } from './dialog/Dialog.js'
+export { default as NotifyError } from './notify-error/NotifyError.js'
+export { default as NotifySuccess } from './notify-success/NotifySuccess.js'
+export { default as Screen } from './screen/Screen.js'

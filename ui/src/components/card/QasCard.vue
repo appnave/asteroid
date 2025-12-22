@@ -1,18 +1,28 @@
 <template>
   <div class="qas-card">
-    <qas-box class="rounded-borders-right" v-bind="boxProps">
+    <qas-box :class="boxClasses" v-bind="boxProps">
       <q-card class="column full-height overflow-hidden shadow-0">
-        <div class="items-center justify-between row">
-          <component :is="titleComponent" class="text-h4 text-no-decoration" :class="titleClasses" :to="route">
-            <slot name="title">
-              {{ props.title }}
-            </slot>
-          </component>
+        <header v-if="hasHeader" class="full-width items-center justify-between no-wrap q-mb-sm row">
+          <slot name="header">
+            <div class="ellipsis flex no-wrap">
+              <slot v-if="props.useSelection" name="header-left">
+                <qas-checkbox v-model="selected" :false-value="props.falseValue" :true-value="props.trueValue" />
+              </slot>
 
-          <qas-actions-menu v-if="hasActions" :list="props.actionsMenuProps" :use-label="false" />
-        </div>
+              <component :is="titleComponent.is" class="ellipsis text-h5 text-no-decoration" v-bind="titleComponent.props">
+                <slot name="title">
+                  {{ props.title }}
+                </slot>
 
-        <div class="q-my-sm qas-card__content">
+                <qas-tooltip v-if="props.tooltip" :text="props.tooltip" />
+              </component>
+            </div>
+
+            <qas-actions-menu v-if="hasActions" v-bind="formattedActionsMenuProps" />
+          </slot>
+        </header>
+
+        <div class="qas-card__content" :class="contentClasses">
           <slot name="default" />
         </div>
 
@@ -33,8 +43,12 @@
 </template>
 
 <script setup>
-import { computed, useSlots, inject } from 'vue'
+import QasTooltip from '../tooltip/QasTooltip.vue'
+import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
+import QasCheckbox from '../checkbox/QasCheckbox.vue'
+import QasBox from '../box/QasBox.vue'
 
+import { computed, useSlots, inject } from 'vue'
 import { colors } from 'quasar'
 
 defineOptions({ name: 'QasCard' })
@@ -50,6 +64,11 @@ const props = defineProps({
     default: () => ({})
   },
 
+  falseValue: {
+    type: [Boolean, String, Number, Array, Object],
+    default: false
+  },
+
   route: {
     type: Object,
     default: () => ({})
@@ -63,16 +82,46 @@ const props = defineProps({
   title: {
     type: String,
     default: ''
+  },
+
+  tooltip: {
+    type: String,
+    default: ''
+  },
+
+  trueValue: {
+    type: [Boolean, String, Number, Array, Object],
+    default: true
+  },
+
+  useSelection: {
+    type: Boolean
   }
 })
 
-const isInsideBox = inject('isBox', false)
+// models
+const selected = defineModel('selected', { type: [Boolean, String, Number, Array, Object], default: false })
 
+// consts
+const isInsideBox = inject('isBox', false)
+const isInsideDialog = inject('isDialog', false)
+
+// composables
+const slots = useSlots()
+
+// computeds
+/**
+ * Quando o card está dentro de um box ou dialog, ele terá bordas ao invés da box.
+ */
 const boxProps = computed(() => {
+  const useBorder = isInsideBox || isInsideDialog
+
   return {
-    outlined: isInsideBox,
-    unelevated: isInsideBox,
-    spacingY: 'sm',
+    outlined: useBorder,
+    unelevated: useBorder,
+
+    // Terá o padding vertical menor se for um card com status ou tiver o expansion.
+    spacingY: (props.statusColor || hasExpansion.value) ? 'sm' : 'md',
     style: style.value
   }
 })
@@ -81,15 +130,23 @@ const hasActions = computed(() => !!Object.keys(props.actionsMenuProps).length)
 
 const hasExpansion = computed(() => !!Object.keys(props.expansionProps).length)
 
-const hasRoute = computed(() => !!Object.keys(props.route).length)
+const contentClasses = computed(() => hasFooter.value && 'q-mb-sm')
 
-const titleClasses = computed(() => {
+const boxClasses = computed(() => props.statusColor ? 'rounded-borders-right' : 'rounded-borders')
+
+const titleComponent = computed(() => {
+  const hasRoute = !!Object.keys(props.route).length
+
   return {
-    'qas-card__router ': hasRoute.value
+    is: hasRoute ? 'router-link' : 'h5',
+    props: {
+      ...(hasRoute && {
+        to: props.route,
+        class: 'qas-card__router'
+      })
+    }
   }
 })
-
-const titleComponent = computed(() => hasRoute.value ? 'router-link' : 'div')
 
 const style = computed(() => {
   if (!props.statusColor) return
@@ -101,11 +158,23 @@ const style = computed(() => {
   }
 })
 
-const slots = useSlots()
-
 const hasFooterSlot = computed(() => !!slots.footer)
 
+const hasHeader = computed(() => {
+  const hasHeaderSlot = !!slots.header
+  const hasTitleSlot = !!slots.title
+
+  return hasHeaderSlot || hasTitleSlot || !!props.title
+})
+
 const hasFooter = computed(() => hasFooterSlot.value || hasExpansion.value)
+
+const formattedActionsMenuProps = computed(() => {
+  return {
+    ...props.actionsMenuProps,
+    useLabel: false
+  }
+})
 </script>
 
 <style lang="scss">

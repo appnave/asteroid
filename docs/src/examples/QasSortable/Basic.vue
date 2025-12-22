@@ -22,9 +22,9 @@ export default {
   computed: {
     list () {
       return [
-        { photo: 'https://via.placeholder.com/200x300/ff0000/969696', id: '1w312l' },
-        { photo: 'https://via.placeholder.com/200x300/09ff00/969696', id: '3x432q' },
-        { photo: 'https://via.placeholder.com/200x300/0044ff/969696', id: '2y927s' }
+        { photo: 'https://placehold.co/600x400', id: '1w312l' },
+        { photo: 'https://placehold.co/600x400/orange/white', id: '3x432q' },
+        { photo: 'https://placehold.co/600x400/blue/white', id: '2y927s' }
       ]
     }
   }

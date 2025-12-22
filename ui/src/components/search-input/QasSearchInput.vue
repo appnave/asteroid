@@ -1,24 +1,30 @@
 <template>
-  <component :is="component" class="qas-search-input" :class="containerClasses" :use-spacing="false">
-    <qas-input ref="input" v-model="model" class="qas-search-input__input" v-bind="$attrs" data-cy="search-input" :debounce="debounce" dense hide-bottom-space input-class="ellipsis text-grey-8" inputmode="search" outlined type="search">
-      <template #prepend>
-        <q-icon v-if="useSearchOnType" color="grey-8" name="sym_r_search" />
+  <qas-input ref="input" v-model="model" class="qas-search-input" :class="classes" v-bind="$attrs" data-cy="search-input" :debounce hide-bottom-space input-class="ellipsis text-grey-8" inputmode="search" outlined type="search">
+    <template #prepend>
+      <q-icon v-if="useSearchOnType" color="grey-8" name="sym_r_search" />
 
-        <qas-btn v-else color="grey-10" icon="sym_r_search" variant="tertiary" @click="$emit('filter')" />
-      </template>
+      <qas-btn v-else color="grey-10" icon="sym_r_search" variant="tertiary" @click="$emit('filter')" />
+    </template>
 
-      <template #append>
-        <qas-btn v-if="hasSearch" color="grey-10" icon="sym_r_clear" variant="tertiary" @click="clear" />
+    <template #append>
+      <qas-btn v-if="hasSearch" color="grey-10" icon="sym_r_clear" variant="tertiary" @click="clear" />
 
-        <slot name="after-clear" />
-      </template>
-    </qas-input>
-  </component>
+      <slot name="after-clear" />
+    </template>
+  </qas-input>
 </template>
 
 <script>
+import QasInput from '../input/QasInput.vue'
+import QasBtn from '../btn/QasBtn.vue'
+
 export default {
   name: 'QasSearchInput',
+
+  components: {
+    QasInput,
+    QasBtn
+  },
 
   inject: {
     isBox: { default: false },
@@ -51,18 +57,13 @@ export default {
   ],
 
   computed: {
-    component () {
-      return this.isBoxOrDialog ? 'div' : 'qas-box'
-    },
+    classes () {
+      const bordered = this.isBox || this.isDialog
 
-    containerClasses () {
       return {
-        bordered: this.isBoxOrDialog
+        'qas-search-input--border': bordered,
+        'qas-search-input--shadow': !bordered
       }
-    },
-
-    isBoxOrDialog () {
-      return this.isBox || this.isDialog
     },
 
     debounce () {
@@ -96,11 +97,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.qas-search-input {
-  .qas-search-input__input .q-field__control:before {
-    border: 0;
-  }
-}
-</style>

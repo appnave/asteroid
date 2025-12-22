@@ -1,15 +1,21 @@
 <template>
   <div class="q-mt-sm" :class="classes">
-    <div v-if="hasTertiarySlot" :class="columnClasses">
-      <slot name="tertiary" />
+    <div v-if="hasTertiaryButton" :class="columnClasses">
+      <slot name="tertiary">
+        <qas-btn v-bind="formattedButtonsProps.tertiary" class="full-width" />
+      </slot>
     </div>
 
-    <div v-if="hasSecondarySlot" :class="columnClasses">
-      <slot name="secondary" />
+    <div v-if="hasSecondaryButton" :class="columnClasses">
+      <slot name="secondary">
+        <qas-btn v-bind="formattedButtonsProps.secondary" class="full-width" />
+      </slot>
     </div>
 
-    <div v-if="hasPrimarySlot" :class="columnClasses">
-      <slot name="primary" />
+    <div v-if="hasPrimaryButton" :class="columnClasses">
+      <slot name="primary">
+        <qas-btn v-bind="formattedButtonsProps.primary" class="full-width" />
+      </slot>
     </div>
   </div>
 </template>
@@ -18,6 +24,8 @@
 import useScreen from '../../composables/use-screen'
 import { FlexAlign } from '../../enums/Align'
 import { Spacing } from '../../enums/Spacing'
+
+import QasBtn from '../btn/QasBtn.vue'
 
 import { computed, useSlots } from 'vue'
 
@@ -34,6 +42,21 @@ const props = defineProps({
     default: '',
     type: String,
     validator: value => !value || Object.values(Spacing).includes(value)
+  },
+
+  primaryButtonProps: {
+    type: Object,
+    default: () => ({})
+  },
+
+  secondaryButtonProps: {
+    type: Object,
+    default: () => ({})
+  },
+
+  tertiaryButtonProps: {
+    type: Object,
+    default: () => ({})
   },
 
   useFullWidth: {
@@ -78,4 +101,16 @@ const columnClasses = computed(() => {
 const hasPrimarySlot = computed(() => !!slots.primary)
 const hasSecondarySlot = computed(() => !!slots.secondary)
 const hasTertiarySlot = computed(() => !!slots.tertiary)
+
+const hasPrimaryButton = computed(() => hasPrimarySlot.value || Object.keys(props.primaryButtonProps).length)
+const hasSecondaryButton = computed(() => hasSecondarySlot.value || Object.keys(props.secondaryButtonProps).length)
+const hasTertiaryButton = computed(() => hasTertiarySlot.value || Object.keys(props.tertiaryButtonProps).length)
+
+const formattedButtonsProps = computed(() => {
+  return {
+    primary: { ...props.primaryButtonProps, variant: 'primary' },
+    secondary: { ...props.secondaryButtonProps, variant: 'secondary' },
+    tertiary: { ...props.tertiaryButtonProps, variant: 'tertiary' }
+  }
+})
 </script>

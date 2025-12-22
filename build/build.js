@@ -34,11 +34,6 @@ const packageCore = {
   license: 'MIT'
 }
 
-// Methods
-function logError (error) {
-  return console.error(error.red)
-}
-
 // Main
 async function main () {
   const { execaSync } = await import('execa') // https://github.com/sindresorhus/execa
@@ -64,16 +59,21 @@ async function main () {
   )
 
   const currentBranch = execaSync('git', ['branch', '--show-current']).stdout
-  const acceptableBranch = ['main', 'develop']
+  const acceptableBranch = ['main', 'develop', /^feature\/.+/]
   const isBeta = currentBranch === 'develop'
+  const isAlpha = /^feature\/.+/.test(currentBranch)
 
-  if (!acceptableBranch.includes(currentBranch)) {
-    ora('Só é possível publicar nas branchs "main" e "develop"').fail()
+  const isAcceptableBranch = acceptableBranch.some(branch => {
+    return typeof branch === 'string' ? branch === currentBranch : branch.test(currentBranch)
+  })
+
+  if (!isAcceptableBranch) {
+    ora('Só é possível publicar nas branchs "main", "develop" e "feature/*"').fail()
     return
   }
 
   const latestVersions = getLatestVersions({ execaSync, ora, isBeta })
-  const model = isBeta ? 'beta' : 'stable'
+  const model = isBeta ? 'beta' : isAlpha ? 'alpha' : 'stable'
 
   const currentVersion = require('../package.json').version
 
@@ -81,17 +81,7 @@ async function main () {
     name: 'nextVersion',
     type: 'input',
     message: 'Qual será o número da próxima versão?',
-    initial: currentVersion,
-
-    validate (value) {
-      value = semver.clean(value)
-
-      if (!value || semver.lt(value, currentVersion)) {
-        return logError('\n✘ Informe uma versão válida e superior a atual.')
-      }
-
-      return true
-    }
+    initial: currentVersion
   })
 
   const nextVersion = semver.clean(responses.nextVersion)
@@ -163,7 +153,7 @@ async function main () {
     latestVersions
   })
 
-  if (!hasUnreleased) {
+  if (!isAlpha && !hasUnreleased) {
     ora(
       'Não foi possível encontrar o "## Não publicado" dentro do CHANGELOG.md por favor adicione para continuar'
     ).fail()
@@ -171,10 +161,13 @@ async function main () {
     return
   }
 
-  const changelogContent = getContent()
   const publishCommands = ['publish']
 
-  isBeta && publishCommands.push('--tag', 'beta')
+  if (isBeta) {
+    publishCommands.push('--tag', 'beta')
+  } else if (isAlpha) {
+    publishCommands.push('--tag', 'alpha')
+  }
 
   // Se a proxima versão for diferente da ultima versão publicada, então significa que podemos lançar uma nova versão do ui
   if (nextVersion !== latestVersions.ui[model]) {
@@ -200,44 +193,47 @@ async function main () {
   if (appExtensionError) return
 
   // atualiza o CHANGELOG.md
-  updateContent()
+  if (!isAlpha) updateContent()
 
-  // commita,faz o push, cria tag e faz push da tag
+  // commita, faz o push, cria tag e faz push da tag
   gitHandler({
     ora,
     execaSync,
     nextVersion,
-    isBeta,
     packages
   })
 
-  let createdReleaseFromAPI = false
+  if (!isAlpha) {
+    const changelogContent = getContent()
 
-  if (process.env.GITHUB_TOKEN) {
-    const { success } = await createGithubRelease({
-      body: changelogContent,
-      isBeta,
-      ora,
-      version: nextVersion
-    })
+    let createdReleaseFromAPI = false
 
-    createdReleaseFromAPI = success
-  } else {
-    createGithubReleaseFromBrowser({
-      changelogContent,
-      nextVersion,
-      ora
-    })
-  }
+    if (process.env.GITHUB_TOKEN) {
+      const { success } = await createGithubRelease({
+        body: changelogContent,
+        isBeta,
+        ora,
+        version: nextVersion
+      })
 
-  if (process.env.DISCORD_WEBHOOK_CHANGELOG) {
-    notifyDiscordChat({
-      changelogContent,
-      ora,
-      nextVersion,
-      isBeta,
-      hasGithubRelease: !!process.env.GITHUB_TOKEN && createdReleaseFromAPI
-    })
+      createdReleaseFromAPI = success
+    } else {
+      createGithubReleaseFromBrowser({
+        changelogContent,
+        nextVersion,
+        ora
+      })
+    }
+
+    if (process.env.DISCORD_WEBHOOK_CHANGELOG) {
+      notifyDiscordChat({
+        changelogContent,
+        ora,
+        nextVersion,
+        isBeta,
+        hasGithubRelease: !!process.env.GITHUB_TOKEN && createdReleaseFromAPI
+      })
+    }
   }
 }
 

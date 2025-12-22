@@ -1,41 +1,61 @@
 <template>
   <div ref="parent" :class="classes">
-    <div class="no-wrap row text-no-wrap">
-      <div ref="truncate" class="ellipsis">
-        <slot>{{ formattedText }}</slot>
+    <div class="items-center no-wrap row text-no-wrap">
+      <!-- "data-table-hover" habilita o hover no texto dentro do QasTableGenerator -->
+      <div ref="truncate" class="ellipsis" data-table-hover>
+        <slot>
+          <div v-if="hasBadges" class="items-center q-col-gutter-sm row" :class="badgeParentClasses">
+            <div v-for="(item, index) in normalizedBadgesList" :key="index">
+              <qas-badge v-bind="getBadgeProps(item)" />
+            </div>
+          </div>
+
+          <div v-else class="ellipsis">
+            {{ formattedText }}
+          </div>
+        </slot>
       </div>
 
-      <qas-btn v-if="hasButton" class="q-ml-sm" :label="buttonLabel" @click.stop.prevent="toggle" />
+      <qas-btn v-if="hasButton" class="q-ml-xs" :label="buttonLabel" @click.stop.prevent="toggle" />
     </div>
 
-    <qas-dialog v-model="show" v-bind="defaultProps" aria-label="Diálogo de texto completo" role="dialog">
+    <qas-dialog v-model="show" v-bind="defaultProps" aria-label="Diálogo de texto completo" max-width="500px" role="dialog" use-full-max-width>
       <template v-if="isCounterMode" #description>
-        <div class="q-col-gutter-y-md row">
-          <div
-            v-for="(item, index) in normalizedList"
-            :key="index"
-            class="col-12"
-          >
-            {{ item }}
-          </div>
-        </div>
+        <component :is="dialogComponent.is" v-bind="dialogComponent.props" v-model:results="searchModel">
+          <q-list separator>
+            <q-item v-for="(item, index) in dialogComponent.list" :key="index" class="q-px-none">
+              <q-item-section>
+                <div class="text-body1">
+                  {{ item }}
+                </div>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </component>
       </template>
     </qas-dialog>
   </div>
 </template>
 
 <script setup>
+import QasBadge from '../badge/QasBadge.vue'
+import QasBtn from '../btn/QasBtn.vue'
+import QasDialog from '../dialog/QasDialog.vue'
+import QasSearchBox from '../search-box/QasSearchBox.vue'
+
+import { baseProps } from '../../shared/badge-config'
+
 import {
   computed,
+  nextTick,
   onMounted,
   onUnmounted,
   ref,
+  inject,
+  isRef,
   watch
 } from 'vue'
 
-import QasDialog from '../dialog/QasDialog.vue'
-
-// define component name
 defineOptions({ name: 'QasTextTruncate' })
 
 // props
@@ -53,6 +73,11 @@ const props = defineProps({
   dialogTitle: {
     type: String,
     default: ''
+  },
+
+  emptyText: {
+    type: String,
+    default: '-'
   },
 
   maxWidth: {
@@ -77,7 +102,7 @@ const props = defineProps({
 
   typography: {
     type: String,
-    default: 'body1'
+    default: undefined
   },
 
   list: {
@@ -85,15 +110,21 @@ const props = defineProps({
     default: () => []
   },
 
+  useBadge: {
+    type: Boolean
+  },
+
   useObjectList: {
     type: Boolean
   },
 
-  emptyText: {
-    type: String,
-    default: '-'
+  useWrapBadge: {
+    type: Boolean
   }
 })
+
+// globals
+const injectedDefaults = inject('textTruncatePropsDefaults', {}) // Inject reativo ou não reativo com fallback vazio
 
 // template refs
 const truncate = ref(null)
@@ -101,14 +132,23 @@ const parent = ref(null)
 
 // composable
 const {
+  hasBadges,
+  badgeParentClasses,
+  normalizedBadgesList,
+  getBadgeProps
+} = useBadgeHandler()
+
+const {
   textContent,
   isTruncated,
   truncateText
-} = useTruncate({ parent, props })
+} = useTruncate({ parent, props, hasBadges })
 
 const {
   defaultProps,
+  dialogComponent,
   show,
+  searchModel,
   toggle
 } = useDialog({ props, textContent })
 
@@ -122,7 +162,26 @@ const {
 
 useMutationObserver({ truncate, callbackFn: truncateText })
 
-const classes = computed(() => [`text-${props.color}`, `text-${props.typography}`])
+// computeds
+/**
+ * Seta os valores padrões, dando prioridade:
+ *  1. Props
+ *  2. Injetado (pode ser reativo ou não reativo)
+ *  3. Caso esteja dentro do QasBox, seta o size para 'sm' se for primary ou secondary.
+ *  4. Hardcoded (tertiary, md, primary)
+ */
+const textTruncatePropsDefaults = computed(() => {
+  const defaultProps = isRef(injectedDefaults) ? injectedDefaults.value : injectedDefaults
+
+  return {
+    typography: 'body1',
+    ...defaultProps
+  }
+})
+
+const defaultTypography = computed(() => props.typography || textTruncatePropsDefaults.value.typography)
+
+const classes = computed(() => [`text-${props.color}`, `text-${defaultTypography.value}`])
 
 const formattedText = computed(() => props.list.length || props.text ? displayText.value : props.emptyText)
 
@@ -130,6 +189,7 @@ const formattedText = computed(() => props.list.length || props.text ? displayTe
 function useDialog ({ props, textContent }) {
   // reactive vars
   const show = ref(false)
+  const searchModel = ref([])
 
   // computed
   const description = computed(() => props.text || textContent.value)
@@ -148,6 +208,31 @@ function useDialog ({ props, textContent }) {
     }
   })
 
+  const normalizedSearchModel = computed(() => {
+    return props.useObjectList ? searchModel.value.map(({ label }) => label) : searchModel.value
+  })
+
+  const dialogComponent = computed(() => {
+    const hasSearchBox = normalizedList.value.length > 12
+
+    if (hasSearchBox) {
+      return {
+        is: QasSearchBox,
+        list: normalizedSearchModel.value,
+        props: {
+          height: '510px',
+          list: props.list,
+          ...(props.useObjectList && { fuseOptions: { keys: ['label'] } })
+        }
+      }
+    }
+
+    return {
+      is: 'div',
+      list: normalizedList.value
+    }
+  })
+
   // functions
   function toggle () {
     show.value = !show.value
@@ -155,8 +240,10 @@ function useDialog ({ props, textContent }) {
 
   return {
     defaultProps,
+    dialogComponent,
 
     show,
+    searchModel,
 
     toggle
   }
@@ -182,7 +269,7 @@ function useMutationObserver ({ truncate, callbackFn = () => {} }) {
   }
 }
 
-function useTruncate ({ parent, props }) {
+function useTruncate ({ parent, props, hasBadges }) {
   // reactive vars
   const maxPossibleWidth = ref('')
   const textContent = ref('')
@@ -191,14 +278,19 @@ function useTruncate ({ parent, props }) {
   // lifecycle
   onMounted(() => truncateText())
 
-  // watch
-  watch(() => props.maxWidth, truncateText)
-
   // computed
   const isTruncated = computed(() => textWidth.value > maxPossibleWidth.value)
 
+  // watch
+  watch(() => props.maxWidth, truncateText)
+
   // functions
-  function truncateText () {
+  async function truncateText () {
+    await nextTick()
+
+    // Se tiver badges, então não pode ser feito calculo de width.
+    if (hasBadges.value) return
+
     parent.value.style.maxWidth = '100%'
     textWidth.value = truncate.value.clientWidth
     textContent.value = truncate.value?.innerHTML
@@ -269,6 +361,36 @@ function useCounter () {
     normalizedList,
     normalizedCounterText,
     counterLabel
+  }
+}
+
+function useBadgeHandler () {
+  const hasBadges = computed(() => props.useBadge && props.useObjectList && props.list.length)
+
+  const normalizedBadgesList = computed(() => props.list.slice(0, props.maxVisibleItem))
+  const badgeParentClasses = computed(() => ({ 'no-wrap': !props.useWrapBadge }))
+
+  function getBadgeProps (item) {
+    const itemProps = {}
+
+    /**
+     * recupera somente keys que estão em baseProps do QasBadge
+     * pra evitar que passe propriedades desnecessárias
+     */
+    for (const key in item) {
+      if (baseProps[key]) {
+        itemProps[key] = item[key]
+      }
+    }
+
+    return itemProps
+  }
+
+  return {
+    hasBadges,
+    badgeParentClasses,
+    normalizedBadgesList,
+    getBadgeProps
   }
 }
 </script>

@@ -26,10 +26,12 @@ export default {
     fieldsProps () {
       return {
         company: {
-          'onUpdate:modelValue': () => alert('Alterou a empresa')
+          'onUpdate:modelValue': () => alert('Alterou a empresa'),
+          disable: true
         },
         name: {
           dense: true,
+          disable: true,
           bgColor: 'primary',
           color: 'white'
         }

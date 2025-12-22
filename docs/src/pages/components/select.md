@@ -24,6 +24,15 @@ Hoje Utilizamos 1 biblioteca compatível:
 <doc-example file="QasSelect/Required" title="Obrigatório" />
 
 :::info
+#### Modo filtro
+
+- Utilize o modo de filtro apenas em casos onde o select serve para filtrar informações na tela.
+- Sempre utilize um ícone personalizado quando utilizado no modo filtro.
+- Select fora de box/dialog tem estilo com sombra, dentro de box/dialog tem estilo com borda.
+:::
+<doc-example file="QasSelect/FilterMode" title="Modo Filtro" />
+
+:::info
 Quando o select for `required` ou tiver a prop `use-auto-select` e houver apenas UMA opção disponível, o seu valor é setado automaticamente.
 :::
 <doc-example file="QasSelect/AutoSelect" title="Auto select" />
@@ -31,17 +40,25 @@ Quando o select for `required` ou tiver a prop `use-auto-select` e houver apenas
 <doc-example file="QasSelect/Searchable" title="Com pesquisa" />
 
 :::info
+Para usar opções customizadas, é necessário adicionar a prop `use-custom-options`.
+
 Caso queira usar badges nas opções, o back precisa retornar a chave em questão dizendo qual badge será mostrada, ex:
 ```js
 [
   {
     label: 'Label 1',
     value: '1',
-    isTester: true // chave que vai ser usada pra validação da badge no nosso exemplo
+    isTester: true, // chave que vai ser usada pra validação da badge no nosso exemplo,
+    isAvailable: false, // chave que vai ser usada pra validação da badge no nosso exemplo,
+    company: 'company1' // chave que vai ser usada pra validação da badge no nosso exemplo,
   }
 ]
 ```
 Por padrão caso for false, não é exibido a badge, sendo que caso queira que sempre exiba, basta passar `show: true` na key desejado da `badgeProps`, assim você consegue colocar um estilo diferente de acordo com o valor enviado pelo backend.
+
+Devido cada chave ser um `callback`, podemos receber outros valores que não sejam booleans para assim termos um controle maior da personalização.
+
+Obs: Caso não encontre a props da badge em questão, a mesma não é exibida na opção do select.
 :::
 <doc-example file="QasSelect/CustomOption" title="Com opção personalizada" />
 
@@ -83,3 +100,5 @@ _Opcional:_ Com base nas props `entity` e `name`, a função de fetchOptions dos
   decamelizeFieldName: Boolean // Caso utilize da URL padrão, esse parâmetro irá transformar o `fieldName` para `field-name` no momento de montar a URL da API.
 }
 ```
+
+<doc-example file="QasSelect/Readonly" title="Readonly" />

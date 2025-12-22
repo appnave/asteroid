@@ -18,6 +18,10 @@ props:
     desc: Seta o título do dialog.
     type: String
 
+  empty-text:
+    desc: Texto a ser exibido no caso de não houver itens no "list" ou o "text" for vazio.
+    type: String
+
   max-width:
     desc: Seta o tamanho máximo do texto.
     type: Number
@@ -47,13 +51,20 @@ props:
     default: []
     type: Array
 
-  use-object-list:
-    desc: Utiliza a propriedade "list" como array de objeto contendo label (uso junto a prop list).
+  use-badge:
+    desc: Habilita badges para cada item da lista.
+    default: false
     type: Boolean
 
-  empty-text:
-    desc: Texto a ser exibido no caso de não houver itens no "list" ou o "text" for vazio.
-    type: String
+  use-object-list:
+    desc: Utiliza a propriedade "list" como array de objeto contendo label (uso junto a prop list).
+    default: false
+    type: Boolean
+
+  use-wrap-badge:
+    desc: habilita a quebra de linha das badges quando o texto for muito grande.
+    default: false
+    type: Boolean
 
 slots:
   default:

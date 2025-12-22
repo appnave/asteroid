@@ -22,11 +22,21 @@ props:
     default: {}
     type: Object
 
+  disable:
+    desc: Desabilita o componente.
+    default: false
+    type: Boolean
+
   model-value:
     desc: Model do componente, usado para v-model.
     default: ''
     type: String
     model: true
+
+  readonly:
+    desc: Modo somente leitura.
+    default: false
+    type: Boolean
 
   time-mask:
     desc: Máscara do componente de input de hora.
