@@ -20,6 +20,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - Adicionado prop `useAlwaysSeeMore` para sempre exibir o botão de "Ver mais", mesmo quando não está truncado.
   - Adicionado possibilidade de passar descrição personalizada para o dialog, podendo ser texto comum ou componente personalizado.
 
+### Corrigido
+- `QasBtnDropdown`: corrigido validação da prop `disable`, onde ao passar a prop no `buttonsPropsList` não funcionava.
+
 ## [3.20.0-beta.4] - 12-12-2025
 ### Corrigido
 - `helpers/set-scroll-on-grab`: corrigido seletor de classe para só adicionar quando passado `cancelMouseDownTarget`.
