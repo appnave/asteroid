@@ -9,7 +9,7 @@
     </div>
 
     <div>
-      <qas-skeleton use-title width="100px" />
+      <qas-skeleton use-contrast width="100px" />
     </div>
 
     <div>

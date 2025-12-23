@@ -156,7 +156,6 @@ const primaryKey = computed(() => {
 const defaultButtonPropsList = computed(() => {
   const defaultButtonPropsList = {
     useHoverOnWhiteColor: true,
-    // skeleton: props.skeleton,
     useLabelOnSmallScreen: false
   }
 

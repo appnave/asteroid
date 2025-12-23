@@ -23,7 +23,7 @@
 
     <qas-tooltip v-if="hasTooltip" :text="tooltipText" />
 
-    <qas-skeleton v-if="props.skeleton" type="react" use-overlay use-title />
+    <qas-skeleton v-if="props.skeleton" type="react" use-contrast use-overlay />
   </q-btn>
 </template>
 

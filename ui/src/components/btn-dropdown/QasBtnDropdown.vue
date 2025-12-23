@@ -3,7 +3,7 @@
     <div v-if="hasButtons" :class="classes.list">
       <div v-for="(buttonProps, key, index) in props.buttonsPropsList" :key="key">
         <div class="flex no-wrap">
-          <qas-btn v-bind="getButtonProps(buttonProps)" :data-btn-dropdown="key" :disable="props.disable" variant="tertiary" @click="onClick">
+          <qas-btn v-bind="getButtonProps(buttonProps)" :data-btn-dropdown="key" :disable="props.disable" no-wrap variant="tertiary" @click="onClick">
             <slot v-if="hasBtnContentSlot(key)" :name="`btn-content-${key}`" />
 
             <q-menu v-else-if="hasMenuOnLeftSide" v-model="isMenuOpened" anchor="bottom right" :auto-close="props.useAutoClose" class="qas-menu" self="top right" @update:model-value="onUpdateMenuValue">

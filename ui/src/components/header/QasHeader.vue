@@ -3,7 +3,7 @@
     <div v-if="hasLabelSection" class="full-width items-center justify-between no-wrap row" :class="labelSectionClasses">
       <div class="items-center overflow-hidden q-col-gutter-sm row">
         <div v-if="props.skeleton">
-          <q-skeleton animation="blink" class="bg-blue-grey-4" type="text" width="200px" />
+          <qas-skeleton type="text" use-contrast width="200px" />
         </div>
 
         <slot v-else name="label">
@@ -27,9 +27,9 @@
     </div>
 
     <div v-if="hasDescriptionOrOnlyActionsSection" class="items-start no-wrap q-col-gutter-sm row" :class="descriptionSectionClasses">
-      <div v-if="hasDescriptionSection" class="full-width text-body1 text-grey-8">
-        <div v-if="props.skeleton">
-          <qas-skeleton max-width="400px" type="text" width="100%" />
+      <div v-if="hasDescriptionSection" class="text-body1 text-grey-8">
+        <div v-if="props.skeleton" class="full-width">
+          <qas-skeleton max-width="400px" type="text" />
         </div>
 
         <slot v-else name="description">
@@ -38,7 +38,7 @@
       </div>
 
       <div v-if="!hasLabelSection" class="justify-end row text-right">
-        <q-skeleton v-if="props.skeleton" animation="blink" class="bg-blue-grey-4" height="18px" width="76px" />
+        <qas-skeleton v-if="props.skeleton" type="QasBtn" />
 
         <slot v-else name="actions">
           <component :is="actionsComponent.is" v-if="hasActionsComponent" v-bind="actionsComponent.props" />

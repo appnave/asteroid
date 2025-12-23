@@ -658,7 +658,7 @@ export default {
 
       return {
         type: 'text',
-        useTitle: true,
+        useContrast: true,
         width: `${width}px`
       }
     }

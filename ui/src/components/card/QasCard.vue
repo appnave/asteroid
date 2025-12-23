@@ -12,7 +12,7 @@
               </slot>
 
               <component :is="titleComponent.is" class="ellipsis full-width text-h5 text-no-decoration" v-bind="titleComponent.props">
-                <qas-skeleton v-if="props.skeleton" type="text" use-title />
+                <qas-skeleton v-if="props.skeleton" type="text" use-contrast />
 
                 <slot v-else name="title">
                   {{ props.title }}
@@ -41,9 +41,9 @@
 
           <div v-if="hasExpansion" class="div">
             <div v-if="props.skeleton" class="flex justify-between">
-              <qas-skeleton type="text" use-title width="150px" />
+              <qas-skeleton type="text" use-contrast width="150px" />
 
-              <qas-skeleton type="QasBtn" use-title />
+              <qas-skeleton size="24px" type="QasBtn" />
             </div>
 
             <slot v-else name="footer">

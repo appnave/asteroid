@@ -13,13 +13,6 @@ const props = defineProps({
     default: undefined
   },
 
-  btnProps: {
-    type: Object,
-    default: () => ({
-      iconOnly: false
-    })
-  },
-
   width: {
     type: String,
     default: undefined
@@ -50,7 +43,7 @@ const props = defineProps({
     default: undefined
   },
 
-  useTitle: {
+  useContrast: {
     type: Boolean
   },
 
@@ -107,7 +100,7 @@ const skeletonProps = computed(() => {
 
   const classes = {
     [`qas-skeleton--${props.gutter}`]: !!props.gutter,
-    'bg-blue-grey-4': props.useTitle || actionTypes.includes(props.type),
+    'bg-blue-grey-4': props.useContrast || actionTypes.includes(props.type),
     'qas-skeleton--overlay': props.useOverlay
   }
 
