@@ -17,6 +17,56 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ## Não publicado
 ### Adicionado
 - `QasAlert`: Adicionado possiblidade de dar destaque nos textos (bold) passando eles dentro de `**asteriscos**`. [[#1410](https://github.com/bildvitta/asteroid/issues/1410)]
+- `QasTextTruncate`:
+  - Adicionado prop `useAlwaysSeeMore` para sempre exibir o botão de "Ver mais", mesmo quando não está truncado.
+  - Adicionado possibilidade de passar descrição personalizada para o dialog, podendo ser texto comum ou componente personalizado.
+
+### Corrigido
+- `QasBtnDropdown`: corrigido validação da prop `disable`, onde ao passar a prop no `buttonsPropsList` não funcionava.
+
+## [3.20.0-beta.4] - 12-12-2025
+### Corrigido
+- `helpers/set-scroll-on-grab`: corrigido seletor de classe para só adicionar quando passado `cancelMouseDownTarget`.
+
+## [3.20.0-beta.3] - 08-12-2025
+### Adicionado
+- `QasTextTruncate`:
+  - adicionado recurso para configurar prop `typography` default dinamicamente via provide/inject semelhante ao `QasBtn`.
+  - adicionado `items-center` para alinhamento correto agora que o line-height na tabela foi alterado e estava desalinhado.
+
+### Modificado
+- `QasToggleVisibility`: adicionado data `data-no-grab` para não arrastar conteúdo ao clicar nele, resolvendo problema de miss click.
+- `helpers/set-scroll-on-grab`: adicionado nativamente elemento de `button` para ser ignorado e um novo data `data-no-grab` para resolver problemas de miss click em ações.
+- `QasTableGenerator`:
+  - modificado line-height para tabela ser sempre `100%`ao invés de seguir tipografia das fontes.
+  - modificado tipografia padrão do `QasTextTruncate` via provide `textTruncatePropsDefaults` para `body2`.
+
+### Corrigido
+- `QasBtn`: corrigido tamanho dos ícones para seriem 18px no sm. <!-- N/A -->
+
+## [3.20.0-beta.2] - 05-12-2025
+## BREAKING CHANGES
+- Validar todos locais que usam o `QasTableGenerator` pois tiveram bastante mudanças visuais.
+
+### Adicionado
+- `QasTableGenerator`:
+  - adicionado nova propriedade `useMultiline`.
+  - adicionado `QasTip`usado via prop `columns`.
+  - adicionado label "Ações" na coluna de ação.
+- `QasActionsMenu`: adicionado nova propriedade `useDropdownAlways`.
+- `QasTooltip`: adicionado o componente `QasBreakline`para ser usado na prop `text`, agora é possível quebrar textos usando `\n`.
+- `QasToggleVisibility`: adicionado propriedade `visibleTooltip` e `hiddenTooltip`.
+
+### Modificado
+- `QasTooltip`: modificado tamanho de largura máxima para `300px`.
+- `QasBtn`: modificado tamanho do botão para `18px` quando o `size` ser `sm`.
+- `helpers/filters/formatDocument`: adicionado validação para parâmetro vazio.
+- `QasTableGenerator`:
+  - adicionado borda abaixo do titulo das colunas.
+  - modificado tipografia de `body1` para `body2`.
+  - modificado tamanho padrão do `QasBtn` de `md` para `sm`.
+  - modificado validação do `mappedResults`, quando usado type `object` ele não passa pelo `humanize` e não adicionado na chave `default` visando performance.
+  - coluna de ação agora tem o conteúdo alinhado á esquerda igual aos demais. 
 
 ## [3.20.0-beta.1] - 25-11-2025
 ### Adicionado
@@ -4772,3 +4822,6 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.19.0]: https://github.com/bildvitta/asteroid/compare/v3.18.2...v3.19.0?expand=1
 [3.20.0-beta.0]: https://github.com/bildvitta/asteroid/compare/v3.19.0...v3.20.0-beta.0?expand=1
 [3.20.0-beta.1]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.0...v3.20.0-beta.1?expand=1
+[3.20.0-beta.2]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.1...v3.20.0-beta.2?expand=1
+[3.20.0-beta.3]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.2...v3.20.0-beta.3?expand=1
+[3.20.0-beta.4]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.3...v3.20.0-beta.4?expand=1

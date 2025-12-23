@@ -1,5 +1,6 @@
 <template>
-  <div class="qas-toggle-visibility">
+  <!-- "data-no-grab" para prevenir o click drag  -->
+  <div class="qas-toggle-visibility" data-no-grab>
     <!-- "data-table-ignore-tr-hover" é para desabilitar o hover do tr no QasTableGenerator -->
     <div :aria-expanded="isVisible" aria-label="Alternar visibilidade do conteúdo" class="cursor-pointer items-center no-wrap qas-toggle-visibility__container row" data-table-ignore-tr-hover role="button" :style @click.prevent.stop="toggleVisibility">
       <div class="ellipsis qas-toggle-visibility__content">
@@ -21,12 +22,15 @@
       </div>
 
       <qas-btn class="q-ml-sm qas-toggle-visibility__button" :icon />
+
+      <qas-tooltip :text="tooltipText" />
     </div>
   </div>
 </template>
 
 <script setup>
 import QasBtn from '../btn/QasBtn.vue'
+import QasTooltip from '../tooltip/QasTooltip.vue'
 
 import { useToggleVisibility } from '../../composables/private'
 
@@ -54,6 +58,16 @@ const props = defineProps({
   width: {
     type: String,
     default: '140px'
+  },
+
+  visibleTooltip: {
+    type: String,
+    default: 'Ocultar conteúdo'
+  },
+
+  hiddenTooltip: {
+    type: String,
+    default: 'Visualizar conteúdo'
   }
 })
 
@@ -64,6 +78,7 @@ const {
 
 const icon = computed(() => isVisible.value ? 'sym_r_visibility' : 'sym_r_visibility_off')
 const style = computed(() => ({ width: props.width }))
+const tooltipText = computed(() => isVisible.value ? props.visibleTooltip : props.hiddenTooltip)
 </script>
 
 <style lang="scss">
