@@ -16,6 +16,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Adicionado
+- `QasAlert`: Adicionado possiblidade de dar destaque nos textos (bold) passando eles dentro de `**asteriscos**`. [[#1410](https://github.com/bildvitta/asteroid/issues/1410)]
 - `QasTextTruncate`:
   - Adicionado prop `useAlwaysSeeMore` para sempre exibir o botão de "Ver mais", mesmo quando não está truncado.
   - Adicionado possibilidade de passar descrição personalizada para o dialog, podendo ser texto comum ou componente personalizado.
