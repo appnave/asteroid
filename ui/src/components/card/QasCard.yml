@@ -20,7 +20,7 @@ props:
     type: [Boolean, String, Number, Array, Object]
 
   skeleton:
-    desc: Exibe um esqueleto de carregamento no lugar do conteúdo do card.
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
     default: false
     type: Boolean
 

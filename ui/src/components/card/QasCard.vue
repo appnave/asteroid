@@ -158,7 +158,7 @@ const contentClasses = computed(() => hasFooter.value && 'q-mb-sm')
 const boxClasses = computed(() => props.statusColor ? 'rounded-borders-right' : 'rounded-borders')
 
 const titleComponent = computed(() => {
-  const hasRoute = !!Object.keys(props.route).length
+  const hasRoute = !!Object.keys(props.route).length && !props.skeleton
 
   return {
     is: hasRoute ? 'router-link' : 'h5',

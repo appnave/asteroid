@@ -79,6 +79,11 @@ props:
     model: true
     examples: ["['uuid1', 'uuid2']"]
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   use-box:
     desc: Controla se o componente vai usar QasBox ou div.
     default: true

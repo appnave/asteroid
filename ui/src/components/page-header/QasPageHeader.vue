@@ -3,7 +3,7 @@
     <q-toolbar class="justify-between q-mb-md q-px-none qas-page-header">
       <div class="ellipsis">
         <q-toolbar-title v-if="props.title" class="text-h3">
-          <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="200px" />
+          <qas-skeleton v-if="props.skeleton" max-width="300px" type="text" use-contrast />
 
           <template v-else>
             {{ props.title }}

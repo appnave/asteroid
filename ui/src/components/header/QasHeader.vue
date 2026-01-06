@@ -12,7 +12,7 @@
 
         <div v-if="hasBadges" class="col-auto items-center q-col-gutter-sm row">
           <div v-for="(badge, badgeIndex) in props.badges" :key="badgeIndex">
-            <q-skeleton v-if="props.skeleton" animation="blink" height="24px" width="60px" />
+            <qas-skeleton v-if="props.skeleton" type="QasBadge" />
 
             <qas-badge v-else v-bind="badge" />
           </div>
@@ -27,10 +27,8 @@
     </div>
 
     <div v-if="hasDescriptionOrOnlyActionsSection" class="items-start no-wrap q-col-gutter-sm row" :class="descriptionSectionClasses">
-      <div v-if="hasDescriptionSection" class="text-body1 text-grey-8">
-        <div v-if="props.skeleton" class="full-width">
-          <qas-skeleton max-width="400px" type="text" />
-        </div>
+      <div v-if="hasDescriptionSection" class="text-body1 text-grey-8" :class="descriptionClasses">
+        <qas-skeleton v-if="props.skeleton" max-width="400px" type="text" />
 
         <slot v-else name="description">
           {{ props.description }}
@@ -124,6 +122,17 @@ const descriptionSectionClasses = computed(() => {
   return {
     'justify-between': hasDescriptionSection.value,
     'justify-end': hasActionsSection.value && !hasDescriptionSection.value
+  }
+})
+
+/**
+ * É necessário adicionar full-width na descrição quando tem skeleton pois o skeleton
+ * precisa ter max-width, e para width funcionar corretamente, o pai precisa ser full-width.
+ * Se sempre deixar como full-width, quebra layout quando tem descrição com ação sem label.
+ */
+const descriptionClasses = computed(() => {
+  return {
+    'full-width': props.skeleton
   }
 })
 

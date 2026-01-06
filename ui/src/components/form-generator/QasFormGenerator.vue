@@ -1,9 +1,11 @@
 <template>
   <div :class="fieldsetClasses">
     <div v-for="(fieldsetItem, fieldsetItemKey) in normalizedFields" :key="fieldsetItemKey" :class="getFieldSetColumnClass(fieldsetItem.column)">
-      <component :is="containerComponent.is" v-bind="containerComponent.props">
+      <qas-skeleton v-if="props.skeleton" height="200px" />
+
+      <component :is="containerComponent.is" v-else v-bind="containerComponent.props">
         <slot v-if="fieldsetItem.__hasFieldset" :name="`legend-${fieldsetItemKey}`">
-          <qas-header v-if="fieldsetItem.__hasHeader" v-bind="getHeaderProps({ values: fieldsetItem })" :skeleton="props.skeleton" />
+          <qas-header v-if="fieldsetItem.__hasHeader" v-bind="getHeaderProps({ values: fieldsetItem })" />
         </slot>
 
         <div>
@@ -11,46 +13,34 @@
             <div class="q-col-gutter-md row">
               <div class="col">
                 <div :class="fieldContainerClasses">
-                  <div v-if="props.skeleton" class="col-12">
-                    <qas-skeleton v-bind="getFieldsetSkeletonContentProps(fieldsetItem)" />
+                  <div v-for="(field, key) in getVisibleFields(fieldsetItem)" :key="key" :class="getFieldClass({ index: key, fields: normalizedFields })">
+                    <slot :field="field" :name="`field-${field.name}`">
+                      <qas-field :disable="isFieldDisabled(field)" v-bind="props.fieldsProps[field.name]" :error="props.errors[key]" :field="field" :model-value="props.modelValue[field.name]" @update:model-value="updateModelValue({ key: field.name, value: $event })" />
+                    </slot>
                   </div>
-
-                  <template v-else>
-                    <div v-for="(field, key) in getVisibleFields(fieldsetItem)" :key="key" :class="getFieldClass({ index: key, fields: normalizedFields })">
-                      <slot :field="field" :name="`field-${field.name}`">
-                        <qas-field :disable="isFieldDisabled(field)" v-bind="props.fieldsProps[field.name]" :error="props.errors[key]" :field="field" :model-value="props.modelValue[field.name]" @update:model-value="updateModelValue({ key: field.name, value: $event })" />
-                      </slot>
-                    </div>
-                  </template>
                 </div>
               </div>
 
               <div v-if="hasButtonProps(fieldsetItem)" class="col-12 col-sm-auto items-end justify-end row">
-                <qas-btn :skeleton="props.skeleton" v-bind="fieldsetItem.buttonProps" />
+                <qas-btn v-bind="fieldsetItem.buttonProps" />
               </div>
             </div>
 
-            <div v-if="fieldsetItem.__hasSubset" class="column q-col-gutter-y-md q-mt-none relative-position">
+            <div v-if="fieldsetItem.__hasSubset" class="column q-col-gutter-y-md q-mt-none">
               <div v-for="(subsetItem, subsetKey) in fieldsetItem.subset" :key="subsetKey" class="col-12">
                 <slot :name="`legend-${fieldsetItemKey}-${subsetKey}`">
-                  <qas-header v-if="subsetItem.__hasHeader" v-bind="getHeaderProps({ values: subsetItem, isSubset: true} )" :skeleton="props.skeleton" />
+                  <qas-header v-if="subsetItem.__hasHeader" v-bind="getHeaderProps({ values: subsetItem, isSubset: true} )" />
                 </slot>
 
-                <div class="relative-position">
-                  <slot :fields="subsetItem.fields" :name="`legend-section-${fieldsetItemKey}-${subsetKey}`">
-                    <qas-skeleton v-if="props.skeleton" class="q-mt-md" v-bind="getFieldsetSkeletonContentProps(fieldsetItem, 'subset')" />
-
-                    <template v-else>
-                      <div :class="fieldContainerClasses">
-                        <div v-for="(field, key) in subsetItem.fields" :key="key" :class="getFieldClass({ index: key, fields: fieldsetItem.subset })">
-                          <slot :field="field" :name="`field-${field.name}`">
-                            <qas-field :disable="isFieldDisabled(field)" v-bind="props.fieldsProps[field.name]" :error="props.errors[key]" :field :model-value="props.modelValue[field.name]" @update:model-value="updateModelValue({ key: field.name, value: $event })" />
-                          </slot>
-                        </div>
-                      </div>
-                    </template>
-                  </slot>
-                </div>
+                <slot :fields="subsetItem.fields" :name="`legend-section-${fieldsetItemKey}-${subsetKey}`">
+                  <div :class="fieldContainerClasses">
+                    <div v-for="(field, key) in subsetItem.fields" :key="key" :class="getFieldClass({ index: key, fields: fieldsetItem.subset })">
+                      <slot :field="field" :name="`field-${field.name}`">
+                        <qas-field :disable="isFieldDisabled(field)" v-bind="props.fieldsProps[field.name]" :error="props.errors[key]" :field :model-value="props.modelValue[field.name]" @update:model-value="updateModelValue({ key: field.name, value: $event })" />
+                      </slot>
+                    </div>
+                  </div>
+                </slot>
 
                 <slot :name="`legend-bottom-${fieldsetItemKey}-${subsetKey}`" />
               </div>
@@ -118,10 +108,6 @@ const props = defineProps({
     type: Object
   },
 
-  skeleton: {
-    type: Boolean
-  },
-
   modelValue: {
     default: () => ({}),
     required: true,
@@ -131,6 +117,10 @@ const props = defineProps({
   order: {
     default: () => [],
     type: Array
+  },
+
+  skeleton: {
+    type: Boolean
   },
 
   useBox: {
@@ -287,17 +277,5 @@ function getVisibleFields (fieldsetItem) {
   }
 
   return fields
-}
-
-/**
- *
- * @param {Object} fieldsetItem
- */
-function getFieldsetSkeletonContentProps (fieldsetItem, fieldKey = 'fields') {
-  // const useOverlay = !!Object.keys(fieldsetItem[fieldKey]).length
-
-  return {
-    minHeight: '80px'
-  }
 }
 </script>

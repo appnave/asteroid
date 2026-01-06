@@ -15,8 +15,8 @@ Para saber mais sobre o **API Design Pattern** clice [aqui](https://www.notion.s
 :::
 
 ## Uso
-<doc-example file="QasFormGenerator/Basic" title="Básico" />
-<doc-example file="QasFormGenerator/Boxed" title="Com box" />
+<!-- <doc-example file="QasFormGenerator/Basic" title="Básico" />
+<doc-example file="QasFormGenerator/Boxed" title="Com box" /> -->
 
 :::tip
 ##### Fieldset
@@ -53,8 +53,8 @@ Muitas vezes precisamos adicionar rótulos (label) e descrições (description) 
 ```
 :::
 
-<doc-example file="QasFormGenerator/Fieldset" title="Agrupando fields por rótulo (label)" />
-<doc-example file="QasFormGenerator/WithButton" title="Usando botão dentro do fieldset" />
+<!-- <doc-example file="QasFormGenerator/Fieldset" title="Agrupando fields por rótulo (label)" />
+<doc-example file="QasFormGenerator/WithButton" title="Usando botão dentro do fieldset" /> -->
 
 :::info
 ##### Subset
@@ -100,10 +100,10 @@ Exemplo:
 ```
 :::
 <doc-example file="QasFormGenerator/Skeleton" title="Skeleton" />
-<doc-example file="QasFormGenerator/WithSubsets" title="Usando com subseções" />
-<doc-example file="QasFormGenerator/WithSubsetsSlots" title="Acessando slots de subseções" />
+<!-- <doc-example file="QasFormGenerator/WithSubsets" title="Usando com subseções" />
+<doc-example file="QasFormGenerator/WithSubsetsSlots" title="Acessando slots de subseções" /> -->
 
 Em alguns casos, queremos acessar todo o conteúdo de um campo especifico para fazer uma logica um pouco mais detalhada, neste caso conseguimos acessar o slot de cada campo individualmente.
-<doc-example file="QasFormGenerator/CustomSlot" title="Acessando slots" />
+<!-- <doc-example file="QasFormGenerator/CustomSlot" title="Acessando slots" />
 <doc-example file="QasFormGenerator/CustomProps" title="Custom props" />
-<doc-example file="QasFormGenerator/ExFormCommonColumns" title="Common columns" />
+<doc-example file="QasFormGenerator/ExFormCommonColumns" title="Common columns" /> -->

@@ -127,22 +127,6 @@ const skeletonProps = computed(() => {
     width: 100%;
     bottom: 0 !important;
     position: absolute;
-
-    &.qas-skeleton--sm {
-      width: calc(100% - var(--qas-spacing-sm)) !important;
-    }
-
-    &.qas-skeleton--md {
-      width: calc(100% - var(--qas-spacing-md)) !important;
-    }
-
-    &.qas-skeleton--lg {
-      width: calc(100% - var(--qas-spacing-lg)) !important;
-    }
-
-    &.qas-skeleton--xl {
-      width: calc(100% - var(--qas-spacing-xl)) !important;
-    }
   }
 }
 </style>

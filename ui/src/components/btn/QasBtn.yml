@@ -30,6 +30,11 @@ props:
     desc: Ícone a direita.
     type: String
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   size:
     desc: Tamanho do botão, podendo ser "sm", "md" ou "lg".
     default: lg

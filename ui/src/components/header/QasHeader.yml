@@ -33,6 +33,11 @@ props:
     type: Object
     default: {}
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   spacing:
     desc: Espaçamento entre o componente e o conteúdo abaixo.
     default: xl
