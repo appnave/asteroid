@@ -19,8 +19,8 @@
       <qas-btn v-if="hasButton" class="q-ml-xs" :label="buttonLabel" @click.stop.prevent="toggle" />
     </div>
 
-    <qas-dialog v-model="show" v-bind="defaultProps" aria-label="Diálogo de texto completo" max-width="500px" role="dialog" use-full-max-width>
-      <template v-if="isCounterMode" #description>
+    <qas-dialog v-model="show" v-bind="defaultProps" aria-label="Diálogo de texto completo" role="dialog">
+      <template v-if="showDescriptionSlot" #description>
         <component :is="dialogComponent.is" v-bind="dialogComponent.props" v-model:results="searchModel">
           <q-list separator>
             <q-item v-for="(item, index) in dialogComponent.list" :key="index" class="q-px-none">
@@ -110,6 +110,10 @@ const props = defineProps({
     default: () => []
   },
 
+  useAlwaysSeeMore: {
+    type: Boolean
+  },
+
   useBadge: {
     type: Boolean
   },
@@ -147,6 +151,7 @@ const {
 const {
   defaultProps,
   dialogComponent,
+  hasDialogDescription,
   show,
   searchModel,
   toggle
@@ -185,19 +190,38 @@ const classes = computed(() => [`text-${props.color}`, `text-${defaultTypography
 
 const formattedText = computed(() => props.list.length || props.text ? displayText.value : props.emptyText)
 
+/**
+ * Se estiver em modo contador (list prop preenchida) e não houver descrição
+ * personalizada no diálogo, então mostra o slot de descrição.
+ */
+const showDescriptionSlot = computed(() => isCounterMode.value && !hasDialogDescription?.value)
+
 // composable functions
 function useDialog ({ props, textContent }) {
   // reactive vars
   const show = ref(false)
   const searchModel = ref([])
 
-  // computed
-  const description = computed(() => props.text || textContent.value)
+  // computeds
+  const hasDialogDescription = computed(() => !!props.dialogProps?.description)
+
+  const description = computed(() => {
+    // Se dialogProps.description estiver setado, usa ele
+    if (hasDialogDescription.value) {
+      return props.dialogProps.description
+    }
+
+    // Senão, usa o comportamento padrão
+    return props.text || textContent.value
+  })
 
   const defaultProps = computed(() => {
     return {
       cancel: false,
       ok: false,
+
+      useFullMaxWidth: true,
+      maxWidth: '500px',
 
       ...props.dialogProps,
 
@@ -241,6 +265,7 @@ function useDialog ({ props, textContent }) {
   return {
     defaultProps,
     dialogComponent,
+    hasDialogDescription,
 
     show,
     searchModel,
@@ -321,6 +346,9 @@ function useTemplate () {
   const isCounterMode = computed(() => !!props.list.length)
 
   const hasButton = computed(() => {
+    // Caso a propriedade useAlwaysSeeMore esteja ativa, sempre exibe o botão
+    if (props.useAlwaysSeeMore) return true
+
     return isCounterMode.value ? normalizedList.value.length > props.maxVisibleItem : isTruncated.value
   })
 
@@ -329,7 +357,7 @@ function useTemplate () {
   })
 
   const buttonLabel = computed(() => {
-    return isCounterMode.value ? counterLabel.value : props.seeMoreLabel
+    return isCounterMode.value && !props.useAlwaysSeeMore ? counterLabel.value : props.seeMoreLabel
   })
 
   return {

@@ -61,3 +61,9 @@ Quando for utilizar por slot, não pode haver nenhum elemento englobando o texto
 - Utilize a propriedade "useWrapBadge" quando utilizar fora de tabela em casos que precise quebrar as badges em mais linhas.
 :::
 <doc-example file="QasTextTruncate/WithBadge" title="Uso com badges" />
+
+:::info
+- Ao utilizar a prop "useAlwaysSeeMore", o botão de "Ver mais" sempre aparecerá, mesmo caso não tenha truncate.
+- Recomendado utilizar quando for necessário customizar o o dialog de detalhes.
+:::
+<doc-example file="QasTextTruncate/AlwaysButtonAndCustomDescription" title="Sempre com botão e descrição personalizada" />
