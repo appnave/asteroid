@@ -14,6 +14,27 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- Adicionado novo componente `QasSkeleton`.
+- Adicionado prop `skeleton` nos components:
+  - QasBox
+  - QasCard
+  - QasCardImage
+  - QasTableGenerator
+  - QasTabsGenerator
+  - QasFormGenerator
+  - QasBtn
+  - QasHeader
+  - QasActionsMenu
+  - QasBtnDropdown
+  - QasChartView
+  - QasFilters
+  - QasPageHeader
+- Adicionado prop `useLoading`nos componentes:
+  - QasListView
+  - QasFormView
+
 ## [3.20.0-beta.5] - 23-12-2025
 ### Adicionado
 - `QasAlert`: Adicionado possiblidade de dar destaque nos textos (bold) passando eles dentro de `**asteriscos**`. [[#1410](https://github.com/bildvitta/asteroid/issues/1410)]
