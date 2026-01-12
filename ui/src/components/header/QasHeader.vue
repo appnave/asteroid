@@ -2,13 +2,19 @@
   <div v-if="hasHeaderContent" :class="containerClasses">
     <div v-if="hasLabelSection" class="full-width items-center justify-between no-wrap row" :class="labelSectionClasses">
       <div class="items-center overflow-hidden q-col-gutter-sm row">
-        <slot name="label">
+        <div v-if="props.skeleton">
+          <qas-skeleton type="text" use-contrast width="200px" />
+        </div>
+
+        <slot v-else name="label">
           <qas-label v-if="hasLabel" v-bind="defaultLabelProps" />
         </slot>
 
         <div v-if="hasBadges" class="col-auto items-center q-col-gutter-sm row">
           <div v-for="(badge, badgeIndex) in props.badges" :key="badgeIndex">
-            <qas-badge v-bind="badge" />
+            <qas-skeleton v-if="props.skeleton" type="QasBadge" />
+
+            <qas-badge v-else v-bind="badge" />
           </div>
         </div>
       </div>
@@ -21,14 +27,18 @@
     </div>
 
     <div v-if="hasDescriptionOrOnlyActionsSection" class="items-start no-wrap q-col-gutter-sm row" :class="descriptionSectionClasses">
-      <div v-if="hasDescriptionSection" class="text-body1 text-grey-8">
-        <slot name="description">
+      <div v-if="hasDescriptionSection" class="text-body1 text-grey-8" :class="descriptionClasses">
+        <qas-skeleton v-if="props.skeleton" max-width="400px" type="text" />
+
+        <slot v-else name="description">
           {{ props.description }}
         </slot>
       </div>
 
       <div v-if="!hasLabelSection" class="justify-end row text-right">
-        <slot name="actions">
+        <qas-skeleton v-if="props.skeleton" type="QasBtn" />
+
+        <slot v-else name="actions">
           <component :is="actionsComponent.is" v-if="hasActionsComponent" v-bind="actionsComponent.props" />
         </slot>
       </div>
@@ -42,6 +52,7 @@ import QasBadge from '../badge/QasBadge.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasFilters from '../filters/QasFilters.vue'
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 
 import { Spacing } from '../../enums/Spacing'
 import { gutterValidator } from '../../helpers/private/gutter-validator'
@@ -81,6 +92,10 @@ const props = defineProps({
     default: () => ({})
   },
 
+  skeleton: {
+    type: Boolean
+  },
+
   spacing: {
     default: Spacing.Md,
     type: String,
@@ -110,6 +125,17 @@ const descriptionSectionClasses = computed(() => {
   }
 })
 
+/**
+ * É necessário adicionar full-width na descrição quando tem skeleton pois o skeleton
+ * precisa ter max-width, e para width funcionar corretamente, o pai precisa ser full-width.
+ * Se sempre deixar como full-width, quebra layout quando tem descrição com ação sem label.
+ */
+const descriptionClasses = computed(() => {
+  return {
+    'full-width': props.skeleton
+  }
+})
+
 const defaultLabelProps = computed(() => {
   return {
     class: {
@@ -126,6 +152,7 @@ const actionsComponent = computed(() => {
     [hasDefaultButton.value]: {
       is: QasBtn,
       props: {
+        skeleton: props.skeleton,
         ...props.buttonProps,
         useLabelOnSmallScreen: false
       }
@@ -133,12 +160,16 @@ const actionsComponent = computed(() => {
 
     [hasDefaultActionsMenu.value]: {
       is: QasActionsMenu,
-      props: props.actionsMenuProps
+      props: {
+        skeleton: props.skeleton,
+        ...props.actionsMenuProps
+      }
     },
 
     [hasDefaultFilters.value]: {
       is: QasFilters,
       props: {
+        skeleton: props.skeleton,
         useSearch: false,
         useChip: false,
         useSpacing: false,

@@ -24,6 +24,11 @@ props:
     desc: Insere uma borda sólida em volta do componente.
     type: Boolean
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   unelevated:
     desc: Remove a sombra do componente.
     type: Boolean

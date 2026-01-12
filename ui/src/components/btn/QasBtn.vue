@@ -22,10 +22,13 @@
     <slot />
 
     <qas-tooltip v-if="hasTooltip" :text="tooltipText" />
+
+    <qas-skeleton v-if="props.skeleton" type="react" use-contrast use-overlay />
   </q-btn>
 </template>
 
 <script setup>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasTooltip from '../tooltip/QasTooltip.vue'
 
 import { useScreen } from '../../composables'
@@ -80,6 +83,10 @@ const props = defineProps({
   },
 
   loading: {
+    type: Boolean
+  },
+
+  skeleton: {
     type: Boolean
   },
 
@@ -176,6 +183,9 @@ const classes = computed(() => {
       'qas-btn--primary': isPrimary.value,
       'qas-btn--secondary': isSecondary.value,
       'qas-btn--tertiary': isTertiary.value,
+
+      // skeleton
+      'overflow-hidden': props.skeleton,
 
       // color
       [`qas-btn--tertiary-${defaultColor.value}`]: isTertiary.value,

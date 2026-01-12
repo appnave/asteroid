@@ -1,12 +1,19 @@
 <template>
-  <qas-table-generator v-bind="tableGeneratorProps" />
+  <qas-container>
+    <qas-table-generator v-bind="tableGeneratorProps" />
+
+    <qas-btn class="q-mt-lg" :label="buttonLabel" @click="onClick" />
+  </qas-container>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { fields, results } from 'src/mocks/users'
 
 defineOptions({ name: 'WithFieldsProps' })
+
+// refs
+const showSkeleton = ref(true)
 
 // computeds
 const tableGeneratorProps = computed(() => {
@@ -92,7 +99,17 @@ const tableGeneratorProps = computed(() => {
       }
     },
 
+    skeleton: showSkeleton.value,
+
     onRowClick: () => alert('Clicando na linha')
   }
 })
+
+// computeds
+const buttonLabel = computed(() => showSkeleton.value ? 'Desativar skeleton' : 'Ativar skeleton')
+
+// functions
+function onClick () {
+  showSkeleton.value = !showSkeleton.value
+}
 </script>

@@ -249,13 +249,14 @@ export default {
         orderByOptions: this.orderByOptions,
         useOrderBy: this.hasOrderByOptions,
         useFilterButton: this.useFilterButton,
+        isFetchingFilters: this.isFetching,
 
         filtersButtonProps: {
           color: this.filterButtonColor,
           error: this.hasFetchError,
           fields: this.fields,
           fieldsProps: this.formattedFieldsProps,
-          loading: this.isFetching
+          skeleton: this.isFetching
         },
 
         /**

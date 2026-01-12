@@ -72,6 +72,7 @@ export const QasSignaturePad = defineAsyncComponent(() => import('./components/s
 export const QasSignatureUploader = defineAsyncComponent(() => import('./components/signature-uploader/QasSignatureUploader.vue'))
 export const QasSingleView = defineAsyncComponent(() => import('./components/single-view/QasSingleView.vue'))
 export const QasSortable = defineAsyncComponent(() => import('./components/sortable/QasSortable.vue'))
+export const QasSkeleton = defineAsyncComponent(() => import('./components/skeleton/QasSkeleton.vue'))
 export const QasStatus = defineAsyncComponent(() => import('./components/status/QasStatus.vue'))
 export const QasStepper = defineAsyncComponent(() => import('./components/stepper/QasStepper.vue'))
 export const QasStepperFormView = defineAsyncComponent(() => import('./components/stepper-form-view/QasStepperFormView.vue'))

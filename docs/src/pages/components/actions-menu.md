@@ -56,6 +56,7 @@ Componente wrapper do `QasBtnDropdown` que implementa regras de negocio.
 
 <doc-example file="QasActionsMenu/Basic" title="Básico" />
 <doc-example file="QasActionsMenu/ExSplit" title="Split de 2 itens" />
+<doc-example file="QasActionsMenu/Skeleton" title="Com Skeleton" />
 <doc-example file="QasActionsMenu/ExMultipleSplit" title="Split de vários itens" />
 <doc-example file="QasActionsMenu/ExDisable" title="Desabilitado" />
 <doc-example file="QasActionsMenu/ExOptions" title="Opções" />

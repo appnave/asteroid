@@ -30,6 +30,11 @@ props:
     desc: Ícone a direita.
     type: String
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   size:
     desc: Tamanho do botão, podendo ser "sm", "md" ou "lg".
     default: lg
@@ -50,7 +55,6 @@ props:
     desc: Esconde o rótulo (label) do botão quando o tamanho da tela for pequeno (esta propriedade só funciona se o "rotulo") for passado via propriedade "label".
     default: true
     type: Boolean
-
 
   label:
     desc: Rótulo do botão.

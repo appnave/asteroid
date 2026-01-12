@@ -74,6 +74,10 @@ const props = defineProps({
 
   useOrderBy: {
     type: Boolean
+  },
+
+  isFetchingFilters: {
+    type: Boolean
   }
 })
 
@@ -99,6 +103,7 @@ const btnDropdownProps = computed(() => {
       ...(props.useFilterButton && {
         filtersButton: {
           label: 'Filtrar',
+          skeleton: props.isFetchingFilters,
           useLabelOnSmallScreen: false,
           icon: 'sym_r_filter_alt',
           'data-cy': 'filters-btn' // manter compatibilidade

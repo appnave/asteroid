@@ -72,6 +72,11 @@ props:
     default: []
     type: Array
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   use-box:
     desc: Contra QasBox dentro do form-generator e fieldset.
     default: false

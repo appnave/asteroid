@@ -3,7 +3,7 @@
     <div v-if="hasButtons" :class="classes.list">
       <div v-for="(buttonProps, key, index) in props.buttonsPropsList" :key="key">
         <div class="flex no-wrap">
-          <qas-btn :data-btn-dropdown="key" :disable="props.disable" v-bind="buttonProps" no-wrap variant="tertiary" @click="onClick">
+          <qas-btn :data-btn-dropdown="key" :disable="props.disable" v-bind="getButtonProps(buttonProps)" no-wrap variant="tertiary" @click="onClick">
             <slot v-if="hasBtnContentSlot(key)" :name="`btn-content-${key}`" />
 
             <q-menu v-else-if="hasMenuOnLeftSide" v-model="isMenuOpened" anchor="bottom right" :auto-close="props.useAutoClose" class="qas-menu" self="top right" @update:model-value="onUpdateMenuValue">
@@ -63,6 +63,10 @@ const props = defineProps({
     type: Boolean
   },
 
+  skeleton: {
+    type: Boolean
+  },
+
   useMenuPadding: {
     type: Boolean
   },
@@ -117,6 +121,7 @@ const splittedButtonProps = computed(() => {
 
   return {
     color: 'grey-10',
+    skeleton: props.skeleton,
     disable: props.disable,
     [iconKey]: props.dropdownIcon,
     variant: 'tertiary',
@@ -147,6 +152,13 @@ function hasSeparator (index) {
 
 function hasBtnContentSlot (name) {
   return !!slots[`btn-content-${name}`]
+}
+
+function getButtonProps (buttonProps) {
+  return {
+    ...buttonProps,
+    skeleton: buttonProps.skeleton || props.skeleton
+  }
 }
 </script>
 

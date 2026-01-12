@@ -12,7 +12,7 @@
       <slot v-if="useActions" name="actions">
         <qas-actions>
           <template v-if="useSubmitButton" #primary>
-            <qas-btn class="qas-form-view__btn" :data-cy="`form-view-submit-btn-${entity}`" :disable="disable" :label="submitButtonLabel" :loading="isSubmitting" type="submit" variant="primary" />
+            <qas-btn class="qas-form-view__btn" :data-cy="`form-view-submit-btn-${entity}`" :disable="disable" :label="submitButtonLabel" :loading="isSubmitting" :skeleton="mx_isFetching" type="submit" variant="primary" />
           </template>
 
           <template v-if="hasCancelButton" #secondary>
@@ -28,7 +28,7 @@
 
     <qas-dialog v-model="showDialog" v-bind="defaultDialogProps" />
 
-    <q-inner-loading :showing="mx_isFetching">
+    <q-inner-loading :showing="mx_isFetching && useLoading">
       <q-spinner color="grey" size="3em" />
     </q-inner-loading>
   </qas-container>
@@ -146,6 +146,11 @@ export default {
     },
 
     useNotifySuccess: {
+      type: Boolean,
+      default: true
+    },
+
+    useLoading: {
       type: Boolean,
       default: true
     },

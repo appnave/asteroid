@@ -94,6 +94,7 @@ fieldsProps: {
 ```
 :::
 <doc-example file="QasTableGenerator/WithFieldsProps" title="Com componentes por props e ação na ultima coluna" />
+<doc-example file="QasTableGenerator/Skeleton" title="Skeleton" />
 <doc-example file="QasTableGenerator/WithHeader" title="Com header" />
 <doc-example file="QasTableGenerator/HeaderSlot" title="Acessando slot do header" />
 <doc-example file="QasTableGenerator/NoBox" title="Sem box" />

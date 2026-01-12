@@ -5,36 +5,10 @@
     </slot>
 
     <q-table v-show="hasResults" ref="table" v-bind="attributes" v-model:selected="selectedModel" class="bg-white text-grey-8">
-      <template v-for="(_, name) in slots" #[name]="context">
-        <slot :name="name" v-bind="context" />
-      </template>
-
-      <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
-      <template #header-selection="props">
-        <div class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
-          <qas-checkbox v-model="props.selected" />
-        </div>
-      </template>
-
-      <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
-      <template #body-selection="props">
-        <div class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
-          <qas-checkbox v-model="props.selected" />
-        </div>
-      </template>
-
-      <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
-        <q-td :class="getTdClasses(context.row)">
-          <component :is="tdChildComponent" class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
-            <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
-              <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="fields[fieldName]?.label" :name="fieldName" :row="context.row" />
-
-              <template v-else>
-                {{ context.row?.[fieldName] }}
-              </template>
-            </slot>
-          </component>
-        </q-td>
+      <template v-if="skeleton" #header-cell="props">
+        <q-th :props="props">
+          <qas-skeleton v-bind="getThSkeletonProps()" />
+        </q-th>
       </template>
 
       <template v-for="(column, index) in columnsWithTooltip" :key="index" #[`header-cell-${column.name}`]="context">
@@ -43,6 +17,44 @@
 
           <qas-tip class="q-pl-xs" :text="column.tooltip" />
         </q-th>
+      </template>
+
+      <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
+      <template #header-selection="props">
+        <qas-skeleton v-if="skeleton" type="QasCheckbox" />
+
+        <div v-else class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
+          <qas-checkbox v-model="props.selected" />
+        </div>
+      </template>
+
+      <!-- Necessário para sobrescrever o QCheckbox e usar o QasCheckbox. -->
+      <template #body-selection="props">
+        <qas-skeleton v-if="skeleton" type="QasCheckbox" />
+
+        <div v-else class="qas-table-generator__cancel-mouse-target" data-table-ignore-tr-hover>
+          <qas-checkbox v-model="props.selected" />
+        </div>
+      </template>
+
+      <template v-for="(_, name) in slots" #[name]="context">
+        <slot :name="name" v-bind="context" />
+      </template>
+
+      <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
+        <q-td :class="getTdClasses(context.row)">
+          <qas-skeleton v-if="skeleton" v-bind="getTgSkeletonProps(fieldName, context.row)" />
+
+          <component :is="tdChildComponent" v-else class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
+            <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
+              <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="normalizedFields[fieldName]?.label" :name="fieldName" :row="context.row" />
+
+              <template v-else>
+                {{ context.row?.[fieldName] }}
+              </template>
+            </slot>
+          </component>
+        </q-td>
       </template>
     </q-table>
 
@@ -57,6 +69,7 @@ import QasCheckbox from '../checkbox/QasCheckbox.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasHeader from '../header/QasHeader.vue'
 import QasTip from '../tip/QasTip.vue'
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 
 import { isEmpty, humanize, setScrollOnGrab, setScrollGradient } from '../../helpers'
 
@@ -71,7 +84,8 @@ export default {
     QasEmptyResultText,
     QasHeader,
     QasCheckbox,
-    QasTip
+    QasTip,
+    QasSkeleton
   },
 
   provide () {
@@ -149,6 +163,10 @@ export default {
       type: Array
     },
 
+    skeleton: {
+      type: Boolean
+    },
+
     useBox: {
       type: Boolean,
       default: true
@@ -197,6 +215,51 @@ export default {
   },
 
   computed: {
+    normalizedFields () {
+      if (this.skeleton) {
+        const fields = {}
+
+        this.normalizedColumns.forEach(column => {
+          const columnName = column?.name || column
+
+          fields[columnName] = {
+            name: columnName,
+            label: columnName.charAt(0).toUpperCase() + columnName.slice(1),
+            type: 'text'
+          }
+        })
+
+        return fields
+      }
+
+      return this.fields
+    },
+
+    /**
+     * Caso esteja em skeleton, retorna uma lista de resultados vazios com a mesma estrutura das colunas.
+     * Isso é necessário para que o QasTableGenerator renderize as linhas de skeleton corretamente.
+     * Cada resultado terá chaves correspondentes aos nomes das colunas, todas com valores vazios.
+     */
+    normalizedResults () {
+      if (this.skeleton) {
+        return Array.from({ length: 24 }).map(() => {
+          const result = {}
+
+          this.normalizedColumns.forEach(column => {
+            const columnName = column?.name || column
+
+            result[columnName] = ''
+          })
+
+          result.default = result
+
+          return result
+        })
+      }
+
+      return this.results
+    },
+
     tdChildComponent () {
       if (this.useExternalLink) return 'a'
 
@@ -208,7 +271,7 @@ export default {
 
       return this.normalizedColumns.length
         ? this.normalizedColumns.map(column => typeof column === 'object' ? column.name : column)
-        : Object.keys(this.fields)
+        : Object.keys(this.normalizedFields)
     },
 
     slots () {
@@ -280,8 +343,8 @@ export default {
 
       // Automatic columns.
       if (!this.normalizedColumns.length) {
-        for (const index in this.fields) {
-          columnByField(this.fields[index])
+        for (const index in this.normalizedFields) {
+          columnByField(this.normalizedFields[index])
         }
 
         return columns
@@ -291,9 +354,9 @@ export default {
       this.normalizedColumns.forEach(column => {
         if (column instanceof Object) {
           // repassa as props e mergeia com as do field
-          columnByField({ ...column, ...this.fields[column.name] })
-        } else if (this.fields[column]) {
-          columnByField(this.fields[column])
+          columnByField({ ...column, ...this.normalizedFields[column.name] })
+        } else if (this.normalizedFields[column]) {
+          columnByField(this.normalizedFields[column])
         }
       })
 
@@ -312,17 +375,23 @@ export default {
     },
 
     columnsWithTooltip () {
+      // quando estiver em skeleton, não precisa processar as colunas com tooltip
+      if (this.skeleton) return []
+
       return this.normalizedColumns.filter(column => column.tooltip)
     },
 
     hasFields () {
-      return Object.keys(this.fields).length
+      return Object.keys(this.normalizedFields).length
     },
 
     resultsByFields () {
-      if (!Object.keys(this.fields).length) return []
+      if (!Object.keys(this.normalizedFields).length) return []
 
-      const results = extend(true, [], this.results)
+      // Validação necessária para evitar processamento sem necessidade quando estiver em skeleton.
+      if (this.skeleton) return this.normalizedResults
+
+      const results = extend(true, [], this.normalizedResults)
 
       const mappedResults = results.map((result, index) => {
         for (const key in result) {
@@ -330,10 +399,10 @@ export default {
             continue
           }
 
-          const humanizedResult = humanize(this.fields[key], result[key])
+          const humanizedResult = humanize(this.normalizedFields[key], result[key])
           const formattedResult = isEmpty({ value: humanizedResult }) ? this.emptyResultText : humanizedResult
 
-          result.default = this.results[index]
+          result.default = this.normalizedResults[index]
           result[key] = formattedResult
         }
 
@@ -344,7 +413,7 @@ export default {
     },
 
     rowsPerPage () {
-      return this.results.length
+      return this.normalizedResults.length
     },
 
     tableClasses () {
@@ -516,7 +585,7 @@ export default {
     },
 
     getTdChildComponentProps (row) {
-      if (!this.rowRouteFn) return
+      if (!this.rowRouteFn || this.skeleton) return
 
       return {
         class: [
@@ -534,6 +603,8 @@ export default {
     },
 
     onRowClick () {
+      if (this.skeleton) return
+
       this.$attrs.onRowClick(...arguments)
     },
 
@@ -553,6 +624,62 @@ export default {
             props: this.actionsMenuProps?.(row, index)
           }
         })
+      }
+    },
+
+    /**
+     * Retorna propriedades para o componente QasSkeleton usado nas células do QasTableGenerator
+     *
+     * @param {string} column - nome da coluna
+     * @param {Object} row - dados da linha
+     */
+    getTgSkeletonProps (column, row) {
+      const normalizedFieldsProps = typeof this.fieldsProps === 'function'
+        ? this.fieldsProps(row)
+        : this.fieldsProps || {}
+
+      const columnFieldProps = normalizedFieldsProps[column]
+
+      const min = 100
+      const max = 160
+
+      // Gera uma largura aleatória entre min e max entre 100 e 160 pixels
+      const width = Math.floor(Math.random() * (max - min + 1)) + min
+
+      const isActions = column === 'actions'
+
+      // Define o tipo do skeleton baseado na configuração da coluna
+      const type = (
+        (isActions ? 'QasActionsMenu' : undefined) ||
+        columnFieldProps?.component ||
+        (this.useMultiline ? undefined : 'text')
+      )
+
+      return {
+        type,
+
+        // se for multiline e não for actions, define a altura do skeleton
+        height: this.useMultiline && !isActions ? '68px' : undefined,
+
+        // Define a largura do skeleton
+        width: columnFieldProps?.component || isActions ? undefined : `${width + 20}px`
+      }
+    },
+
+    /**
+     * Retorna propriedades para o componente QasSkeleton usado nos cabeçalhos do QasTableGenerator
+     */
+    getThSkeletonProps () {
+      const min = 60
+      const max = 120
+
+      // Gera uma largura aleatória entre min e max entre 60 e 120 pixels
+      const width = Math.floor(Math.random() * (max - min + 1)) + min
+
+      return {
+        type: 'text',
+        useContrast: true,
+        width: `${width}px`
       }
     }
   }

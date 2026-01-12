@@ -81,6 +81,10 @@ const props = defineProps({
     type: Object
   },
 
+  skeleton: {
+    type: Boolean
+  },
+
   splitName: {
     default: '',
     type: String
@@ -181,6 +185,7 @@ const btnDropdownProps = computed(() => {
   return {
     buttonsPropsList: defaultButtonPropsList.value,
     disable: props.disable,
+    skeleton: props.skeleton,
     useSplit: hasSplit.value,
     useAutoClose: !hasActiveLoading.value
   }
