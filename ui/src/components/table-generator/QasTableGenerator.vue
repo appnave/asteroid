@@ -1,5 +1,5 @@
 <template>
-  <component :is="parentComponent.is" :key="counterKey" class="qas-table-generator" :class="tableClasses">
+  <component :is="parentComponent.is" class="qas-table-generator" :class="tableClasses">
     <slot name="parent-header">
       <qas-header v-if="hasHeaderProps" v-bind="headerProps" />
     </slot>
@@ -210,8 +210,7 @@ export default {
       scrollOnGrab: {},
       elementToObserve: null,
       resizeObserver: null,
-      scrollGradientX: setScrollGradient({ orientation: 'x' }),
-      counterKey: 0
+      scrollGradientX: setScrollGradient({ orientation: 'x' })
     }
   },
 
@@ -236,6 +235,11 @@ export default {
       return this.fields
     },
 
+    /**
+     * Caso esteja em skeleton, retorna uma lista de resultados vazios com a mesma estrutura das colunas.
+     * Isso é necessário para que o QasTableGenerator renderize as linhas de skeleton corretamente.
+     * Cada resultado terá chaves correspondentes aos nomes das colunas, todas com valores vazios.
+     */
     normalizedResults () {
       if (this.skeleton) {
         return Array.from({ length: 24 }).map(() => {
@@ -623,6 +627,12 @@ export default {
       }
     },
 
+    /**
+     * Retorna propriedades para o componente QasSkeleton usado nas células do QasTableGenerator
+     *
+     * @param {string} column - nome da coluna
+     * @param {Object} row - dados da linha
+     */
     getTgSkeletonProps (column, row) {
       const normalizedFieldsProps = typeof this.fieldsProps === 'function'
         ? this.fieldsProps(row)
@@ -633,10 +643,12 @@ export default {
       const min = 100
       const max = 160
 
+      // Gera uma largura aleatória entre min e max entre 100 e 160 pixels
       const width = Math.floor(Math.random() * (max - min + 1)) + min
 
       const isActions = column === 'actions'
 
+      // Define o tipo do skeleton baseado na configuração da coluna
       const type = (
         (isActions ? 'QasActionsMenu' : undefined) ||
         columnFieldProps?.component ||
@@ -645,15 +657,23 @@ export default {
 
       return {
         type,
+
+        // se for multiline e não for actions, define a altura do skeleton
         height: this.useMultiline && !isActions ? '68px' : undefined,
+
+        // Define a largura do skeleton
         width: columnFieldProps?.component || isActions ? undefined : `${width + 20}px`
       }
     },
 
+    /**
+     * Retorna propriedades para o componente QasSkeleton usado nos cabeçalhos do QasTableGenerator
+     */
     getThSkeletonProps () {
       const min = 60
       const max = 120
 
+      // Gera uma largura aleatória entre min e max entre 60 e 120 pixels
       const width = Math.floor(Math.random() * (max - min + 1)) + min
 
       return {

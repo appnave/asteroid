@@ -121,7 +121,6 @@ const truncatedBreadcrumbs = computed(() => {
 
   const beforeLast = {
     ...transformedBreadcrumbs.value.at(-2),
-    __isTruncated: true,
     label: '...'
   }
 
@@ -133,6 +132,10 @@ const truncatedBreadcrumbs = computed(() => {
   ]
 })
 
+/**
+ * Caso a prop skeleton esteja ativa, retorna um array com 3 elementos vazios para renderizar
+ * os esqueletos dos breadcrumbs. Caso contrário, retorna os breadcrumbs truncados.
+ */
 const normalizedBreadcrumbs = computed(() => {
   if (props.skeleton) {
     return Array.from({ length: 3 }).map(() => ({ label: '', route: null }))
@@ -146,10 +149,14 @@ const hasHeader = computed(() => !!Object.keys(props.headerProps).length)
 const homeRoute = computed(() => router.hasRoute('Root') ? { name: 'Root' } : '/')
 
 // functions
+/**
+ * Retorna propriedades para o componente QasSkeleton usado nos breadcrumbs
+ */
 function getBreadcrumbSkeletonProps () {
   const min = 60
   const max = 160
 
+  // Gera uma largura aleatória entre min e max entre 60 e 160 pixels
   const width = Math.floor(Math.random() * (max - min + 1)) + min
 
   return {

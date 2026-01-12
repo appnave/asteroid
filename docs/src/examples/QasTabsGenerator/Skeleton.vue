@@ -1,6 +1,6 @@
 <template>
   <div class="container q-py-lg">
-    <qas-tabs-generator v-model="model" :skeleton="showSkeleton" :tabs="tabs" />
+    <qas-tabs-generator v-model="model" :skeleton="showSkeleton" :tabs />
 
     <qas-btn class="q-mt-lg" :label="buttonLabel" @click="onClick" />
   </div>

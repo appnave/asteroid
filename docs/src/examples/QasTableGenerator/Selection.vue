@@ -1,7 +1,7 @@
 <template>
   <qas-list-view v-model:fields="viewState.fields" v-model:results="viewState.results" :entity :use-filter="false">
     <template #default>
-      <qas-table-generator v-model:selected="selectedUsers" loading v-bind="tableGeneratorProps" />
+      <qas-table-generator v-model:selected="selectedUsers" v-bind="tableGeneratorProps" />
 
       <qas-debugger :inspect="[selectedUsers]" />
 

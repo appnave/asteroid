@@ -6,6 +6,18 @@ Um simples componente com fundo branco e bordas arredondadas para encapsular o s
 
 <doc-api file="skeleton/QasSkeleton" name="QasSkeleton" />
 
+:::info
+##### Prop "type"
+É possível passar todas props type do `QSkeleton` do quasar e passar custom types, sendo elas:
+- QasBadge
+- QasActionsMenu
+- QasCheckbox
+- QasBtn
+- QasToggleVisibility
+- QasTextTruncate
+- QasStatus
+:::
+
 ## Uso
 
 <doc-example file="QasSkeleton/Basic" title="Básico" />

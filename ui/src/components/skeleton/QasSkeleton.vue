@@ -57,7 +57,7 @@ const attrs = useAttrs()
 
 // computeds
 const skeletonProps = computed(() => {
-  const defaultProps = {
+  const defaultCustomProps = {
     QasBadge: {
       width: props.width || '60px',
       height: props.height || '24px'
@@ -104,14 +104,21 @@ const skeletonProps = computed(() => {
     'qas-skeleton--overlay': props.useOverlay
   }
 
+  /**
+   * Se o tipo for um dos tipos customizados, usa as propriedades definidas, não podemos passar por
+   * exemplo "QasBtn" na prop "type"para o QSkeleton, caso seja passado uma prop type que não seja
+   * custom, passa o valor normalmente.
+   */
+  const type = defaultCustomProps[props.type] ? defaultCustomProps[props.type].type : props.type
+
   return {
     animation: 'blink',
     size: props.size,
-    ...(props.type === 'text' && { type: 'text' }),
+    type,
     class: [classes, attrs.class],
     width: props.width,
     height: props.height,
-    ...defaultProps[props.type],
+    ...defaultCustomProps[props.type],
     style: {
       ...(props.maxWidth && { maxWidth: props.maxWidth }),
       ...(props.minHeight && { minHeight: props.minHeight })
