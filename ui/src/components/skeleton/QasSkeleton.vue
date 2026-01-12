@@ -106,7 +106,7 @@ const skeletonProps = computed(() => {
 
   /**
    * Se o tipo for um dos tipos customizados, usa as propriedades definidas, não podemos passar por
-   * exemplo "QasBtn" na prop "type"para o QSkeleton, caso seja passado uma prop type que não seja
+   * exemplo "QasBtn" na prop "type" para o QSkeleton, caso seja passado uma prop type que não seja
    * custom, passa o valor normalmente.
    */
   const type = defaultCustomProps[props.type] ? defaultCustomProps[props.type].type : props.type
