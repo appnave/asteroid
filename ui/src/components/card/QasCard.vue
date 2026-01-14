@@ -90,6 +90,11 @@ const props = defineProps({
     default: false
   },
 
+  gradientStatusColor: {
+    type: String,
+    default: ''
+  },
+
   skeleton: {
     type: Boolean
   },
@@ -176,12 +181,15 @@ const titleComponent = computed(() => {
 const style = computed(() => {
   if (!props.statusColor) return
 
-  const { getPaletteColor, lighten } = colors
+  const { getPaletteColor } = colors
 
-  const palletColor = getPaletteColor('blue-2')
+  const palletColor = getPaletteColor(props.statusColor)
 
   return {
-    backgroundImage: `linear-gradient(270deg, ${lighten(palletColor, 62)} 0%, #FFFFFF 60%) !important`,
+    backgroundImage: props.gradientStatusColor
+      ? `linear-gradient(270deg, ${props.gradientStatusColor} 0%, #FFFFFF 60%) !important`
+      : undefined,
+
     borderLeft: `4px solid ${palletColor} !important`
   }
 })
