@@ -14,11 +14,13 @@
               <component :is="titleComponent.is" class="ellipsis full-width text-h5 text-no-decoration" v-bind="titleComponent.props">
                 <qas-skeleton v-if="props.skeleton" type="text" use-contrast />
 
-                <slot v-else name="title">
-                  {{ props.title }}
-                </slot>
+                <span v-else>
+                  <slot name="title">
+                    {{ props.title }}
+                  </slot>
 
-                <qas-tooltip v-if="props.tooltip" :text="props.tooltip" />
+                  <qas-tooltip v-if="props.tooltip" :text="props.tooltip" />
+                </span>
               </component>
             </div>
 
@@ -174,10 +176,13 @@ const titleComponent = computed(() => {
 const style = computed(() => {
   if (!props.statusColor) return
 
-  const { getPaletteColor } = colors
+  const { getPaletteColor, lighten } = colors
+
+  const palletColor = getPaletteColor('blue-2')
 
   return {
-    borderLeft: `4px solid ${getPaletteColor(props.statusColor)} !important`
+    backgroundImage: `linear-gradient(270deg, ${lighten(palletColor, 62)} 0%, #FFFFFF 60%) !important`,
+    borderLeft: `4px solid ${palletColor} !important`
   }
 })
 
@@ -204,6 +209,10 @@ const formattedActionsMenuProps = computed(() => {
 .qas-card {
   &__content {
     max-width: 100%;
+  }
+
+  .q-card {
+    background-color: transparent;
   }
 
   &__router {
