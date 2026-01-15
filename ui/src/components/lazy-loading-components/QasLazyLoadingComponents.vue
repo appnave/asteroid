@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, useSlots, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount, useSlots, nextTick, watch } from 'vue'
 
 defineOptions({ name: 'QasLazyLoadingComponents' })
 
@@ -91,12 +91,10 @@ const placeholderRefs = new Map()
 let observer = null
 
 // lifecycle hooks
-onMounted(() => {
-  setItems()
+onMounted(handleObserver)
 
-  // Aguarda Vue renderizar DOM e o navegador calcular layout antes de observar
-  nextTick(() => requestAnimationFrame(createObserver))
-})
+// Observa mudanças no slot para atualizar items
+watch(() => slots.default?.(), handleObserver)
 
 onBeforeUnmount(() => {
   if (!observer) return
@@ -150,6 +148,17 @@ function createObserver () {
   placeholderRefs.forEach(element => {
     observer.observe(element)
   })
+}
+
+function handleObserver () {
+  setItems()
+
+  // Reconstrói o observer com os novos items
+  if (observer) {
+    observer.disconnect()
+  }
+
+  nextTick(() => requestAnimationFrame(createObserver))
 }
 
 /**
