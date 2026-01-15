@@ -115,6 +115,12 @@ export default function (config = {}) {
         ...defaultDialogProps.ok,
 
         loading: isDeleting
+      },
+
+      cancel: {
+        ...defaultDialogProps.cancel,
+
+        disable: isDeleting
       }
     })
   }

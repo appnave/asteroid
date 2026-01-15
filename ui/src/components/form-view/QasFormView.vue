@@ -1,5 +1,5 @@
 <template>
-  <div class="qas-form-view" :class="mx_componentClass">
+  <qas-container class="qas-form-view" :use-boundary>
     <header v-if="mx_hasHeaderSlot">
       <slot name="header" />
     </header>
@@ -12,7 +12,7 @@
       <slot v-if="useActions" name="actions">
         <qas-actions>
           <template v-if="useSubmitButton" #primary>
-            <qas-btn class="qas-form-view__btn" :data-cy="`form-view-submit-btn-${entity}`" :disable="disable" :label="submitButtonLabel" :loading="isSubmitting" type="submit" variant="primary" />
+            <qas-btn class="qas-form-view__btn" :data-cy="`form-view-submit-btn-${entity}`" :disable="disable" :label="submitButtonLabel" :loading="isSubmitting" :skeleton="mx_isFetching" type="submit" variant="primary" />
           </template>
 
           <template v-if="hasCancelButton" #secondary>
@@ -28,19 +28,20 @@
 
     <qas-dialog v-model="showDialog" v-bind="defaultDialogProps" />
 
-    <q-inner-loading :showing="mx_isFetching">
+    <q-inner-loading :showing="mx_isFetching && useLoading">
       <q-spinner color="grey" size="3em" />
     </q-inner-loading>
-  </div>
+  </qas-container>
 </template>
 
 <script>
-import QasBtn from '../btn/QasBtn.vue'
-import QasDialog from '../dialog/QasDialog.vue'
 import QasActions from '../actions/QasActions.vue'
+import QasBtn from '../btn/QasBtn.vue'
+import QasContainer from '../container/QasContainer.vue'
+import QasDialog from '../dialog/QasDialog.vue'
 
 import { NotifyError, NotifySuccess } from '../../plugins'
-import { useHistory } from '../../composables'
+import { useHistory, useOverlayNavigation } from '../../composables'
 import { viewMixin } from '../../mixins'
 
 import { decamelize } from 'humps'
@@ -58,6 +59,7 @@ export default {
   components: {
     QasActions,
     QasBtn,
+    QasContainer,
     QasDialog
   },
 
@@ -139,11 +141,16 @@ export default {
     },
 
     useCancelButton: {
-      default: true,
+      default: undefined,
       type: Boolean
     },
 
     useNotifySuccess: {
+      type: Boolean,
+      default: true
+    },
+
+    useLoading: {
       type: Boolean,
       default: true
     },
@@ -170,7 +177,12 @@ export default {
   ],
 
   data () {
+    const { toggleCanLeaveOverlay, isOverlay } = useOverlayNavigation()
+
     return {
+      toggleCanLeaveOverlay,
+      isOverlay,
+
       cachedResult: {},
       isSubmitting: false,
       showDialog: false,
@@ -193,8 +205,16 @@ export default {
       return this.url ? (`${this.url}/${this.isCreateMode ? 'new' : 'edit'}`) : ''
     },
 
+    /**
+     * O botão de cancelar é mostrado quando:
+     * - A propriedade cancelRoute não está explicitamente definida como false (boolean false)
+     * - E ou useCancelButton é true OU o componente não está em modo overlay
+     */
     hasCancelButton () {
-      return !(typeof this.cancelRoute === 'boolean' && !this.cancelRoute) && this.useCancelButton
+      return (
+        !(typeof this.cancelRoute === 'boolean' && !this.cancelRoute) &&
+        (this.useCancelButton ?? !this.isOverlay)
+      )
     },
 
     id () {
@@ -413,6 +433,8 @@ export default {
 
       this.isSubmitting = true
 
+      this.toggleCanLeaveOverlay(false)
+
       try {
         const payload = {
           id: this.id,
@@ -461,6 +483,7 @@ export default {
         log(`[${this.entity}]:submit:error`, error)
       } finally {
         this.isSubmitting = false
+        this.toggleCanLeaveOverlay(true)
       }
     },
 

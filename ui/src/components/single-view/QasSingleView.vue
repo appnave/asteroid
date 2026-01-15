@@ -1,5 +1,5 @@
 <template>
-  <div :class="componentClass">
+  <qas-container :use-boundary="props.useBoundary">
     <header v-if="hasHeaderSlot">
       <slot name="header" />
     </header>
@@ -21,13 +21,15 @@
     <q-inner-loading :showing="viewState.fetching">
       <q-spinner color="grey" size="3em" />
     </q-inner-loading>
-  </div>
+  </qas-container>
 </template>
 
 <script setup>
+import QasContainer from '../container/QasContainer.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 
 import useView, { baseProps, baseEmits } from '../../composables/private/use-view'
+import { useOverlayNavigation } from '../../composables'
 
 import debug from 'debug'
 import { decamelize } from 'humps'
@@ -69,12 +71,13 @@ const qas = inject('qas')
 // composables
 const route = useRoute()
 
+const { isBackgroundOverlay } = useOverlayNavigation()
+
 const {
   // state
   viewState,
 
   // computed
-  componentClass,
   hasHeaderSlot,
   hasFooterSlot,
   canShowFetchErrorSlot,
@@ -105,6 +108,8 @@ const hasResult = computed(() => !!resultModel.value)
 
 // watch
 watch(() => route, (to, from) => {
+  if (isBackgroundOverlay.value) return
+
   if (to.name === from.name) {
     fetchHandler({ id: id.value, url: props.url }, fetchSingle)
   }

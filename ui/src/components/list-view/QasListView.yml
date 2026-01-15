@@ -86,6 +86,11 @@ props:
     default: true
     type: Boolean
 
+  use-loading:
+    desc: Controla se o componente vai exibir um loading quando estiver fazendo fetch dos dados.
+    default: true
+    type: Boolean
+
   use-pagination:
     desc: Controla se vai ter ou não paginação.
     default: true

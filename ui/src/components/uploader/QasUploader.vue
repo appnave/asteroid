@@ -71,6 +71,11 @@ export default {
   props: {
     ...baseErrorProps,
 
+    errors: {
+      type: [Array, Object],
+      default: () => ({})
+    },
+
     fieldName: {
       type: String,
       default: ''
@@ -191,10 +196,6 @@ export default {
       default: true
     },
 
-    useValidateEncryptedPdf: {
-      type: Boolean
-    },
-
     useGalleryCard: {
       type: Boolean,
       default: true
@@ -220,7 +221,7 @@ export default {
     }
   },
 
-  emits: ['update:modelValue', 'update:uploading', 'rejected'],
+  emits: ['update:modelValue', 'update:uploading', 'rejected', 'update:errors'],
 
   data () {
     return {
@@ -363,10 +364,12 @@ export default {
       return this.hasCustomUpload ? 'hidden' : 'fit'
     },
 
-    transformedFormGeneratorErrors () {
-      const { errors } = this.formGeneratorProps || {}
+    isErrorArray () {
+      return Array.isArray(this.errors)
+    },
 
-      return Array.isArray(errors) ? errors : constructObject(this.fieldName, errors)
+    transformedErrors () {
+      return this.isErrorArray ? this.errors : constructObject(this.fieldName, this.errors)
     },
 
     /**
@@ -439,9 +442,6 @@ export default {
         this.uploader.removeUploadedFiles()
       }
 
-      // valida se o PDF está encriptado
-      await this.validateEncryptedPDF(file)
-
       const name = `${uid()}.${file.name.split('.').pop()}`
       const { endpoint } = await this.fetchCredentials(name) || {}
 
@@ -457,22 +457,12 @@ export default {
       }
     },
 
-    /**
-     * - Se existir o "byPass" como true, não faz nada.
-     * - Se existir o "customMessage", exibe a mensagem personalizada.
-     *
-     * @param {{ byPass?: boolean, customMessage?: string }} error
-     */
-    factoryFailed (error) {
-      if (error?.byPass) return
-
+    factoryFailed () {
       this.hasError = true
 
       this.updateUploading(false)
 
-      const message = error?.customMessage || 'Falha ao carregar arquivo.'
-
-      NotifyError(message)
+      NotifyError('Falha ao carregar arquivo.')
     },
 
     async fetchCredentials (filename) {
@@ -557,17 +547,14 @@ export default {
       return {
         ...this.defaultUploaderGalleryCardProps,
 
-        formGeneratorProps: {
-          ...this.defaultUploaderGalleryCardProps.formGeneratorProps,
-          errors: this.transformedFormGeneratorErrors[index]
-        },
-
         currentModelValue: modelValue,
+        errors: this.transformedErrors[index],
         file,
         fileKey: key,
         savedFiles: this.savedFiles,
+
         // eventos
-        onRemove: () => this.removeFile(key, scope, file),
+        onRemove: () => this.removeFile(key, scope, file, index),
         onUpdateModel: value => this.updateModelValue({ index, payload: value })
       }
     },
@@ -588,7 +575,23 @@ export default {
       return this.addButtonFn ? this.addButtonFn(scope) : this.$refs.hiddenInput.click()
     },
 
-    removeFile (key, scope, file) {
+    removeFile (key, scope, file, index) {
+      /**
+       * Remove o erro referente ao arquivo removido para não correr o risco
+       * de manter erros de arquivos que já foram removidos ao adicionar novos arquivos.
+       */
+      if (this.transformedErrors[index]) {
+        const errors = this.isErrorArray ? [...this.transformedErrors] : { ...this.transformedErrors }
+
+        if (this.isErrorArray) {
+          errors.splice(index, 1)
+        } else {
+          delete errors[index]
+        }
+
+        this.$emit('update:errors', errors)
+      }
+
       if (file.isUploaded) {
         scope.removeFile(scope.files[file.indexToDelete])
       }
@@ -837,73 +840,6 @@ export default {
           ? 'Não conseguimos selecionar 1 arquivo, este tipo não é permitido. Por favor, escolha um arquivo válido.'
           : `Não conseguimos selecionar ${errorsSize.accept} arquivos, estes tipos não são permitidos. Por favor, escolha arquivos válidos.`
       )
-    },
-
-    /**
-     * Verifica se o PDF está encriptado.
-     *
-     * @param {File} file
-     */
-    async isPDFEncrypted (file) {
-      return new Promise(resolve => {
-        const reader = new FileReader()
-
-        reader.onload = function (e) {
-          const arrayBuffer = e.target.result
-          const decoder = new TextDecoder('utf-8')
-          const text = decoder.decode(arrayBuffer)
-
-          const isEncrypted = text.includes('/Encrypt')
-
-          resolve(isEncrypted) // PDF encriptado
-        }
-
-        reader.readAsArrayBuffer(file)
-      })
-    },
-
-    /**
-     * TODO-ISSUE: Manter validação até issue #1419 ser resolvida.
-     *
-     * Valida se o PDF está encriptado:
-     * - se a prop useEncryptedPdf for false.
-     * - se o tipo do arquivo for PDF.
-     * - se o PDF for encriptado.
-     *
-     * @param {File} file
-     */
-    async validateEncryptedPDF (file) {
-      /**
-       * O callback "factory" é chamado sempre que um arquivo é adicionado, porém caso tenha algum arquivo já tenha dado erro
-       * ele tenta adicionar novamente o arquivo, exemplo:
-       * 1 - Enviei um arquivo PDF encriptado, deu erro.
-       * 2 - Tentei enviar um novo arquivo que não é encriptado, porém o arquivo encriptado anterior tenta ser adicionado novamente, chamando o factory 2x ao enviar 1 arquivo.
-       * 3 - Para evitar esse erro, é criada uma flag no arquivo para identificar que ele já foi validado como encriptado.
-       */
-      if (file.__isEncryptedPDF) {
-        const error = { byPass: true }
-
-        this.uploader.removeFile(file)
-
-        throw error
-      }
-
-      /**
-       * Se a prop useValidateEncryptedPdf for true e o tipo do arquivo for PDF, faz a validação.
-       */
-      if (this.useValidateEncryptedPdf && file.type === 'application/pdf' && await this.isPDFEncrypted(file)) {
-        this.amountFilesRejected += 1 // arquivo rejeitado por estar encriptado
-
-        // remove o arquivo do uploader para ser semelhante ao comportamento do "onRejected".
-        this.uploader.removeFile(file)
-
-        const error = { customMessage: 'Não é possível selecionar PDFs protegidos por senha.' }
-
-        // marca o arquivo como encriptado para não validar novamente.
-        file.__isEncryptedPDF = true
-
-        throw error
-      }
     }
   }
 }

@@ -7,7 +7,7 @@ Componente para criação de tabela dinâmica usando o `QTable` do Quasar.
 <doc-api file="table-generator/QasTableGenerator" name="QasTableGenerator" />
 
 :::info
-##### QasBtn com padrões alterados via provide
+##### QasBtn e `QasTextTruncate`` com padrões alterados via provide
 Quando utilizar o QasBtn nos slots, eles terão seus padrões alterados internamente, isto significa que não é recomendado passar props `variant` e principalmente `size` diretamente no componente.
 
 **Definição interna**
@@ -19,6 +19,13 @@ provide () {
      */
     btnPropsDefaults: {
       size: 'md'
+    },
+
+    /**
+     * @see QasTextTruncate.vue - Injetando os valores padrões para o QasTextTruncate.
+     */
+    textTruncatePropsDefaults: {
+      typography: 'body2'
     }
   }
 }
@@ -87,6 +94,7 @@ fieldsProps: {
 ```
 :::
 <doc-example file="QasTableGenerator/WithFieldsProps" title="Com componentes por props e ação na ultima coluna" />
+<doc-example file="QasTableGenerator/Skeleton" title="Skeleton" />
 <doc-example file="QasTableGenerator/WithHeader" title="Com header" />
 <doc-example file="QasTableGenerator/HeaderSlot" title="Acessando slot do header" />
 <doc-example file="QasTableGenerator/NoBox" title="Sem box" />

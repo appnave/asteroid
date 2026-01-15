@@ -98,7 +98,7 @@ const isEmptyList = computed(() => !listLength.value && !isFetching.value)
 const hasNoResults = computed(() => isEmptyList.value && hasMadeFirstFetch.value)
 
 const containerStyle = computed(() => ({
-  ...(props.maxHeight && { maxHeight: props.maxHeight, overflow: 'auto' })
+  ...(props.maxHeight && { maxHeight: props.maxHeight, overflow: hasNoResults.value ? 'initial' : 'auto' })
 }))
 
 async function onLoad (_, done) {

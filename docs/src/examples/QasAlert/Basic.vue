@@ -9,6 +9,10 @@
     </div>
 
     <div>
+      <qas-alert status="success" :text />
+    </div>
+
+    <div>
       <qas-alert :text use-close-button />
     </div>
 

@@ -79,6 +79,11 @@ props:
     model: true
     examples: ["['uuid1', 'uuid2']"]
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   use-box:
     desc: Controla se o componente vai usar QasBox ou div.
     default: true
@@ -97,6 +102,11 @@ props:
   use-scroll-on-grab:
     desc: Adiciona scroll pelo mouse ao arrastar tabela em todas as telas (Celular, Desktop).
     default: true
+    type: Boolean
+
+  use-multiline:
+    desc: Usado para permitir que o conteúdo da célula quebre linha (não permite scroll na tabela a partir de tablet).
+    default: false
     type: Boolean
 
   use-object-selected-model:

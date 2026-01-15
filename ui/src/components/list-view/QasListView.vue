@@ -1,5 +1,5 @@
 <template>
-  <div :class="mx_componentClass">
+  <qas-container :use-boundary>
     <q-pull-to-refresh :disable="!useRefresh" @refresh="refresh">
       <header v-if="hasHeaderSlot">
         <slot name="header" />
@@ -13,7 +13,7 @@
         <div v-if="showResults">
           <slot />
 
-          <q-inner-loading :showing="mx_isFetching">
+          <q-inner-loading :showing="mx_isFetching && useLoading">
             <q-spinner color="grey" size="3em" />
           </q-inner-loading>
         </div>
@@ -37,15 +37,17 @@
     </q-pull-to-refresh>
 
     <slot name="footer" />
-  </div>
+  </qas-container>
 </template>
 
 <script>
+import QasContainer from '../container/QasContainer.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasFilters from '../filters/QasFilters.vue'
 import QasPagination from '../pagination/QasPagination.vue'
 
 import { viewMixin, contextMixin } from '../../mixins'
+import { useOverlayNavigation } from '../../composables'
 
 import { decamelize } from 'humps'
 import debug from 'debug'
@@ -57,6 +59,7 @@ const log = debug('asteroid-ui:qas-list-view')
 
 export default {
   components: {
+    QasContainer,
     QasEmptyResultText,
     QasFilters,
     QasPagination
@@ -105,6 +108,11 @@ export default {
       type: Boolean
     },
 
+    useLoading: {
+      type: Boolean,
+      default: true
+    },
+
     usePagination: {
       default: true,
       type: Boolean
@@ -133,12 +141,15 @@ export default {
   ],
 
   data () {
+    const { isBackgroundOverlay } = useOverlayNavigation()
+
     return {
       page: 1,
       count: null,
       resultsQuantity: 0,
       resultsList: [],
-      isFetchListSucceeded: false
+      isFetchListSucceeded: false,
+      isBackgroundOverlay
     }
   },
 
@@ -183,7 +194,7 @@ export default {
     },
 
     showResults () {
-      return this.hasResults || this.useResultsAreaOnly
+      return this.hasResults || this.useResultsAreaOnly || !this.useLoading
     },
 
     paginationClasses () {
@@ -193,6 +204,8 @@ export default {
 
   watch: {
     $route (to, from) {
+      if (this.isBackgroundOverlay) return
+
       if (to.name === from.name) {
         this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
         this.setCurrentPage()

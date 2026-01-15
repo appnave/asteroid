@@ -6,6 +6,12 @@ module.exports = [
   },
 
   {
+    icon: 'sym_r_arrow_menu_open',
+    name: 'Navegação em overlay (drawer)',
+    path: '/overlay-navigation'
+  },
+
+  {
     icon: 'sym_r_flight_takeoff',
     name: 'Começando',
     children: [
@@ -114,6 +120,10 @@ module.exports = [
       {
         name: 'Checkbox',
         path: '/components/checkbox'
+      },
+      {
+        name: 'Container',
+        path: '/components/container'
       },
       {
         name: 'Date',
@@ -326,6 +336,10 @@ module.exports = [
       {
         name: 'StepperFormView',
         path: '/components/stepper-form-view'
+      },
+      {
+        name: 'Skeleton ',
+        path: '/components/skeleton'
       },
       {
         name: 'TableGenerator',
@@ -598,6 +612,10 @@ module.exports = [
       {
         name: 'useNotifications',
         path: '/composables/use-notifications'
+      },
+      {
+        name: 'useOverlayNavigation',
+        path: '/composables/use-overlay-navigation'
       },
       {
         name: 'useQueryCache',

@@ -20,10 +20,17 @@
     </div>
 
     <slot />
+
+    <qas-tooltip v-if="hasTooltip" :text="tooltipText" />
+
+    <qas-skeleton v-if="props.skeleton" type="react" use-contrast use-overlay />
   </q-btn>
 </template>
 
 <script setup>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
+import QasTooltip from '../tooltip/QasTooltip.vue'
+
 import { useScreen } from '../../composables'
 
 import { computed, useAttrs, useSlots, inject, isRef } from 'vue'
@@ -42,6 +49,11 @@ const props = defineProps({
 
   disable: {
     type: Boolean
+  },
+
+  disabledTooltip: {
+    type: String,
+    default: ''
   },
 
   icon: {
@@ -74,6 +86,10 @@ const props = defineProps({
     type: Boolean
   },
 
+  skeleton: {
+    type: Boolean
+  },
+
   variant: {
     default: undefined,
     type: String,
@@ -82,6 +98,11 @@ const props = defineProps({
 
       return variants.includes(value)
     }
+  },
+
+  tooltip: {
+    type: String,
+    default: ''
   },
 
   useEllipsis: {
@@ -96,6 +117,7 @@ const props = defineProps({
 
 // globals
 const injectedDefaults = inject('btnPropsDefaults', {}) // Inject reativo ou não reativo com fallback vazio
+const isInsideBox = inject('isBox', false)
 
 // composables
 const attrs = useAttrs()
@@ -107,14 +129,19 @@ const screen = useScreen()
  * Seta os valores padrões, dando prioridade:
  *  1. Props
  *  2. Injetado (pode ser reativo ou não reativo)
- *  3. Hardcoded (tertiary, md, primary)
+ *  3. Caso esteja dentro do QasBox, seta o size para 'sm' se for primary ou secondary.
+ *  4. Hardcoded (tertiary, md, primary)
  */
 const btnPropsDefaults = computed(() => {
+  const defaultProps = isRef(injectedDefaults) ? injectedDefaults.value : injectedDefaults
+
+  const isSmallVariant = ['primary', 'secondary'].includes(props.variant || defaultProps.variant)
+
   return {
-    size: 'lg',
+    size: isInsideBox && isSmallVariant ? 'sm' : 'lg',
     variant: 'tertiary',
     color: 'primary',
-    ...(isRef(injectedDefaults) ? injectedDefaults.value : injectedDefaults)
+    ...defaultProps
   }
 })
 
@@ -156,6 +183,9 @@ const classes = computed(() => {
       'qas-btn--primary': isPrimary.value,
       'qas-btn--secondary': isSecondary.value,
       'qas-btn--tertiary': isTertiary.value,
+
+      // skeleton
+      'overflow-hidden': props.skeleton,
 
       // color
       [`qas-btn--tertiary-${defaultColor.value}`]: isTertiary.value,
@@ -219,4 +249,9 @@ const nonDefaultSlots = computed(() => {
 })
 
 const spinnerSize = computed(() => defaultSize.value === 'sm' ? 'xs' : 'sm')
+
+// tooltips
+const hasDisabledTooltip = computed(() => props.disable && props.disabledTooltip)
+const hasTooltip = computed(() => props.tooltip || hasDisabledTooltip.value)
+const tooltipText = computed(() => hasDisabledTooltip.value ? props.disabledTooltip : props.tooltip)
 </script>

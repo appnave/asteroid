@@ -4,6 +4,9 @@ function installNextUi ({ execaSync, ora, nextVersion, packages, retry = false }
 
   const installSpinner = ora('Instalando "ui" no "app-extension"...').start()
 
+  // limpa o cache do npm para evitar problemas de cache
+  execaSync('npm', ['cache', 'clean', '--force'], { cwd: packages['app-extension'].resolved })
+
   try {
     // recupera o package.json do app-extension
     const { packageData, resolvedPackagePath } = getAppExtensionPackage(packages)
