@@ -1,5 +1,4 @@
 <template>
-  <!-- <div class="qas-box rounded-borders" :class="boxClasses"> -->
   <div class="bg-white qas-box rounded-borders" :class="boxClasses">
     <div ref="content" class="relative-position">
       <slot />

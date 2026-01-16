@@ -134,6 +134,7 @@ export default {
   },
 
   emits: [
+    'fetch-start',
     'fetch-success',
     'fetch-error',
     'update:errors',
@@ -255,6 +256,8 @@ export default {
           url: this.url,
           ...externalPayload
         }
+
+        this.$emit('fetch-start', payload)
 
         const response = await this.handleFetchList(payload)
 

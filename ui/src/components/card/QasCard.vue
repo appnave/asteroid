@@ -25,7 +25,7 @@
             </div>
 
             <div v-if="hasActions">
-              <qas-skeleton v-if="props.skeleton" class="q-ml-sm" type="QasBtn" />
+              <qas-skeleton v-if="props.skeleton" class="q-ml-sm" type="QasBtn" width="24px" />
 
               <qas-actions-menu v-else v-bind="formattedActionsMenuProps" />
             </div>

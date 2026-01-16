@@ -14,6 +14,14 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `QasListView`: adicionado novo evento `fetch-start`.
+- `QasCard`: adicionado nova prop `gradientStatusColor`.
+
+### Corrigido
+- `QasBtn`: Corrigido warning do `QasSkeleton` referente a prop `type`.
+
 ## [3.20.0-beta.6] - 13-01-2026
 ### Adicionado
 - Adicionado novo componente `QasSkeleton`.
