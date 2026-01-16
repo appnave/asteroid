@@ -14,16 +14,18 @@
               <component :is="titleComponent.is" class="ellipsis full-width text-h5 text-no-decoration" v-bind="titleComponent.props">
                 <qas-skeleton v-if="props.skeleton" type="text" use-contrast />
 
-                <slot v-else name="title">
-                  {{ props.title }}
-                </slot>
+                <span v-else>
+                  <slot name="title">
+                    {{ props.title }}
+                  </slot>
 
-                <qas-tooltip v-if="props.tooltip" :text="props.tooltip" />
+                  <qas-tooltip v-if="props.tooltip" :text="props.tooltip" />
+                </span>
               </component>
             </div>
 
             <div v-if="hasActions">
-              <qas-skeleton v-if="props.skeleton" class="q-ml-sm" type="QasBtn" />
+              <qas-skeleton v-if="props.skeleton" class="q-ml-sm" type="QasBtn" width="24px" />
 
               <qas-actions-menu v-else v-bind="formattedActionsMenuProps" />
             </div>
@@ -86,6 +88,11 @@ const props = defineProps({
   falseValue: {
     type: [Boolean, String, Number, Array, Object],
     default: false
+  },
+
+  gradientStatusColor: {
+    type: String,
+    default: ''
   },
 
   skeleton: {
@@ -176,8 +183,14 @@ const style = computed(() => {
 
   const { getPaletteColor } = colors
 
+  const palletColor = getPaletteColor(props.statusColor)
+
   return {
-    borderLeft: `4px solid ${getPaletteColor(props.statusColor)} !important`
+    backgroundImage: props.gradientStatusColor
+      ? `linear-gradient(270deg, ${props.gradientStatusColor} 0%, #FFFFFF 60%) !important`
+      : undefined,
+
+    borderLeft: `4px solid ${palletColor} !important`
   }
 })
 
@@ -204,6 +217,10 @@ const formattedActionsMenuProps = computed(() => {
 .qas-card {
   &__content {
     max-width: 100%;
+  }
+
+  .q-card {
+    background-color: transparent;
   }
 
   &__router {

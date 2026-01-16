@@ -130,6 +130,13 @@ slots:
     desc: 'Slot para acessar o header.'
 
 events:
+  '@fetch-start -> function(value)':
+    desc: Dispara logo antes da action "fetchList".
+    params:
+      value:
+        desc: Retorna o payload enviado para o fetchList, contendo paginação, filtros, search, etc.
+        type: Object
+
   '@fetch-success -> function(value)':
     desc: Dispara quando a action "fetchList" é executada com sucesso.
     params:

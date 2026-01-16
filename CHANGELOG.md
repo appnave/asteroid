@@ -17,6 +17,11 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ## Não publicado
 ### Adicionado
 - `QasLazyLoadingComponent`: adicionado componente responsável por carregar elementos somente quando ficam visíveis na viewport, otimizando performance da página. ([#1339](https://github.com/bildvitta/asteroid/issues/1339))
+- `QasListView`: adicionado novo evento `fetch-start`.
+- `QasCard`: adicionado nova prop `gradientStatusColor`.
+
+### Corrigido
+- `QasBtn`: Corrigido warning do `QasSkeleton` referente a prop `type`.
 
 ## [3.20.0-beta.6] - 13-01-2026
 ### Adicionado
