@@ -94,7 +94,11 @@ let observer = null
 onMounted(handleObserver)
 
 // Observa mudanças no slot para atualizar items
-watch(() => slots.default?.(), handleObserver)
+watch(
+  () => slots.default?.(),
+  handleObserver,
+  { flush: 'post' }
+)
 
 onBeforeUnmount(() => {
   if (!observer) return
