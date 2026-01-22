@@ -221,7 +221,6 @@ watch(columnContainer, setColumnHeightContainer)
 
 // Lifecycles
 onMounted(() => {
-  console.log('onMounted - QasBoardGenerator')
   /**
    * Caso eu use o listView (valor pego por provide), a request é feito pelo watch quando se ocorre o sucesso do `fetchList`
    */
