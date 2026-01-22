@@ -18,6 +18,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Adicionado
 - `QasBoardGenerator`: adicionado o uso do componente `QasLazyLoadingComponents` para que melhore a performance do board.
 
+### Modificado
+- `QasFormView`: modificado lógica quando `useStore: false`, era obrigatório passar entity quando é passado customURL.
+
 ## [3.20.0-beta.7] - 16-01-2026
 ### Adicionado
 - `QasLazyLoadingComponent`: adicionado componente responsável por carregar elementos somente quando ficam visíveis na viewport, otimizando performance da página. ([#1339](https://github.com/bildvitta/asteroid/issues/1339))
