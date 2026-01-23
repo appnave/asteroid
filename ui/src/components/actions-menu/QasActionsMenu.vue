@@ -49,8 +49,6 @@ const SPLIT_SIZE = 2
 
 defineOptions({ name: 'QasActionsMenu' })
 
-const qas = inject('qas')
-
 const props = defineProps({
   buttonProps: {
     default: () => ({}),
@@ -104,6 +102,10 @@ const props = defineProps({
   }
 })
 
+// globals
+const qas = inject('qas')
+const isInsideTableGenerator = inject('isTableGenerator', false)
+
 // refs
 const menuModel = ref(false)
 
@@ -156,7 +158,8 @@ const primaryKey = computed(() => {
 const defaultButtonPropsList = computed(() => {
   const defaultButtonPropsList = {
     useHoverOnWhiteColor: true,
-    useLabelOnSmallScreen: false
+    // se estiver dentro do QasTableGenerator, sempre mostra o label.
+    useLabelOnSmallScreen: isInsideTableGenerator
   }
 
   const normalizedButtonPropsList = {}

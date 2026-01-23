@@ -90,6 +90,8 @@ export default {
 
   provide () {
     return {
+      isTableGenerator: true,
+
       /**
        * @see QasBtn.vue - Injetando os valores padrões para o QasBtn.
        */
