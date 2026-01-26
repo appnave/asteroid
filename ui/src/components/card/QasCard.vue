@@ -14,16 +14,18 @@
               <component :is="titleComponent.is" class="ellipsis full-width text-h5 text-no-decoration" v-bind="titleComponent.props">
                 <qas-skeleton v-if="props.skeleton" type="text" use-contrast />
 
-                <slot v-else name="title">
-                  {{ props.title }}
-                </slot>
+                <span v-else>
+                  <slot name="title">
+                    {{ props.title }}
+                  </slot>
 
-                <qas-tooltip v-if="props.tooltip" :text="props.tooltip" />
+                  <qas-tooltip v-if="props.tooltip" :text="props.tooltip" />
+                </span>
               </component>
             </div>
 
             <div v-if="hasActions">
-              <qas-skeleton v-if="props.skeleton" class="q-ml-sm" type="QasBtn" />
+              <qas-skeleton v-if="props.skeleton" class="q-ml-sm" type="QasBtn" width="24px" />
 
               <qas-actions-menu v-else v-bind="formattedActionsMenuProps" />
             </div>
@@ -36,21 +38,25 @@
           <slot name="default" />
         </div>
 
-        <div class="q-mt-auto">
-          <q-separator v-if="hasFooter" class="q-mb-sm" />
+        <div class="full-width q-mt-auto">
+          <q-separator v-if="hasFooter" />
 
-          <div v-if="hasExpansion" class="div">
-            <div v-if="props.skeleton" class="flex justify-between">
+          <div v-if="hasExpansion">
+            <div v-if="props.skeleton" class="flex justify-between q-mt-sm">
               <qas-skeleton type="text" use-contrast width="150px" />
 
               <qas-skeleton size="24px" type="QasBtn" />
             </div>
 
             <slot v-else name="footer">
-              <q-expansion-item v-if="hasExpansion" class="full-width" dense expand-icon-class="text-primary" header-class="q-pa-none text-primary" :label="props.expansionProps.label">
-                <slot name="expansion-content">
-                  {{ props.expansionProps.content }}
-                </slot>
+              <q-expansion-item v-if="hasExpansion" class="full-width" dense expand-icon-class="text-grey-10" header-class="qas-card__expansion-header q-mt-sm q-pa-none" :label="props.expansionProps.label">
+                <div class="q-mt-xs">
+                  <q-separator vertical />
+
+                  <slot name="expansion-content">
+                    {{ props.expansionProps.content }}
+                  </slot>
+                </div>
               </q-expansion-item>
             </slot>
           </div>
@@ -86,6 +92,11 @@ const props = defineProps({
   falseValue: {
     type: [Boolean, String, Number, Array, Object],
     default: false
+  },
+
+  gradientStatusColor: {
+    type: String,
+    default: ''
   },
 
   skeleton: {
@@ -176,8 +187,14 @@ const style = computed(() => {
 
   const { getPaletteColor } = colors
 
+  const palletColor = getPaletteColor(props.statusColor)
+
   return {
-    borderLeft: `4px solid ${getPaletteColor(props.statusColor)} !important`
+    backgroundImage: props.gradientStatusColor
+      ? `linear-gradient(270deg, ${props.gradientStatusColor} 0%, #FFFFFF 60%) !important`
+      : undefined,
+
+    borderLeft: `4px solid ${palletColor} !important`
   }
 })
 
@@ -202,13 +219,44 @@ const formattedActionsMenuProps = computed(() => {
 
 <style lang="scss">
 .qas-card {
+  // $
+
   &__content {
     max-width: 100%;
+  }
+
+  .q-card {
+    background-color: transparent;
   }
 
   &__router {
     &:hover {
       color: $primary;
+    }
+  }
+
+  &__expansion-header {
+    transition: color var(--qas-generic-transition);
+
+    &.q-item {
+      min-height: auto !important;
+    }
+
+    // pega apenas o primeiro .q-item__label
+    .q-item__label:first-of-type {
+      @include set-typography($h6);
+    }
+
+    .q-expansion-item__toggle-icon {
+      font-size: 20px;
+    }
+
+    &:hover {
+      color: $primary;
+
+      .q-expansion-item__toggle-icon {
+        color: $primary;
+      }
     }
   }
 }

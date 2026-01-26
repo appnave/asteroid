@@ -15,8 +15,27 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Adicionado
+- `QasTableGenerator`: adicionado `inject`: `isTableGenerator`.
+
 ### Corrigido
-- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`. 
+- `QasCard`: Corrigido slot do conteúdo que quando tinha texto grande quebrava e sumia com o ícone de expandido.
+- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
+
+### Modificado
+- `QasCard`:
+  - Modificado tipografia do label do expansivo para `text-h6`.
+  - Modificado tamanho do ícone do expansivo.
+- `QasActionsMenu`: alterado default da prop `useLabelOnSmallScreen` para sempre mostrar label quando estiver dentro do `QasTableGenerator`.
+
+## [3.20.0-beta.7] - 16-01-2026
+### Adicionado
+- `QasLazyLoadingComponent`: adicionado componente responsável por carregar elementos somente quando ficam visíveis na viewport, otimizando performance da página. ([#1339](https://github.com/bildvitta/asteroid/issues/1339))
+- `QasListView`: adicionado novo evento `fetch-start`.
+- `QasCard`: adicionado nova prop `gradientStatusColor`.
+
+### Corrigido
+- `QasBtn`: Corrigido warning do `QasSkeleton` referente a prop `type`.
 
 ## [3.20.0-beta.6] - 13-01-2026
 ### Adicionado
@@ -4852,3 +4871,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.4]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.3...v3.20.0-beta.4?expand=1
 [3.20.0-beta.5]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.0...v3.20.0-beta.5?expand=1
 [3.20.0-beta.6]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.1...v3.20.0-beta.6?expand=1
+[3.20.0-beta.7]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.2...v3.20.0-beta.7?expand=1

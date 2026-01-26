@@ -1,0 +1,24 @@
+type: component
+
+meta:
+  desc: Componente para carregar elementos do slot somente quando ficam visíveis na viewport, otimizando performance da página.
+
+props:
+  threshold:
+    desc: Threshold do IntersectionObserver (0 = aparece um pouco, 1 = totalmente visível)
+    default: 0.1
+    type: Number
+  
+  root-margin:
+    desc: Margem extra ao redor do viewport para pré-carregamento
+    default: '0px'
+    type: String
+
+  placeholder-height:
+    desc: Altura do placeholder exibido enquanto o elemento não está visível
+    default: '500px'
+    type: String
+
+slots:
+  default:
+    desc: Elementos/componentes que serão carregados conforme ficam visíveis, onde cada elemento irmão dentro do slot será tratado individualmente para o lazy loading.

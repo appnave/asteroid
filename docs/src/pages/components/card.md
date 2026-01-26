@@ -10,6 +10,7 @@ Componente de card.
 
 <doc-example file="QasCard/Basic" title="Básico" />
 <doc-example file="QasCard/Selection" title="Selecionável" />
+<doc-example file="QasCard/Gradient" title="Gradiente" />
 <doc-example file="QasCard/Skeleton" title="Skeleton" />
 <doc-example file="QasCard/NoHeader" title="Sem header" />
 <doc-example file="QasCard/Box" title="Dentro de box" />

@@ -22,6 +22,8 @@ Componente wrapper do `QasBtnDropdown` que implementa regras de negocio.
 - Propriedade `buttonProps` é usada para quando o botão esta no modo "Opções" (não existe a prop `splitName`) ou o botão está no mobile.
 
 - A prop `deleteProps` ativa o plugin `Delete.js`, quando é passada o `QasActionsMenu` adiciona a opção de deletar o item como padrão, caso não seja passado, o plugin `Delete.js` não é adicionado por padrão.
+
+- O padrão da prop `useLabelOnSmallScreen` é `false` exceto quando o componente esta dentro do componente `QasTableGenerator`, neste caso o label é exibido sempre.
 :::
 
 :::info
