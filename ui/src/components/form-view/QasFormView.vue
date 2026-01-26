@@ -163,11 +163,6 @@ export default {
     useStore: {
       type: Boolean,
       default: true
-    },
-
-    entity: {
-      type: String,
-      default: ''
     }
   },
 
