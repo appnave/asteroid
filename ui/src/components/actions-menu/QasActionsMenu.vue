@@ -158,6 +158,7 @@ const primaryKey = computed(() => {
 const defaultButtonPropsList = computed(() => {
   const defaultButtonPropsList = {
     useHoverOnWhiteColor: true,
+
     // se estiver dentro do QasTableGenerator, sempre mostra o label.
     useLabelOnSmallScreen: isInsideTableGenerator
   }
