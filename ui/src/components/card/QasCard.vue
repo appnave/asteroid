@@ -42,14 +42,14 @@
           <q-separator v-if="hasFooter" />
 
           <div v-if="hasExpansion">
-            <div v-if="props.skeleton" class="flex justify-between">
+            <div v-if="props.skeleton" class="flex justify-between q-mt-sm">
               <qas-skeleton type="text" use-contrast width="150px" />
 
               <qas-skeleton size="24px" type="QasBtn" />
             </div>
 
             <slot v-else name="footer">
-              <q-expansion-item v-if="hasExpansion" class="full-width text-h1" dense expand-icon-class="text-grey-10" header-class="qas-card__expansion-header q-mt-sm q-pa-none text-primary" :label="props.expansionProps.label">
+              <q-expansion-item v-if="hasExpansion" class="full-width" dense expand-icon-class="text-grey-10" header-class="qas-card__expansion-header q-mt-sm q-pa-none" :label="props.expansionProps.label">
                 <div class="q-mt-xs">
                   <q-separator vertical />
 
@@ -238,10 +238,11 @@ const formattedActionsMenuProps = computed(() => {
   &__expansion-header {
     transition: color var(--qas-generic-transition);
 
-    // pega apenas o primeiro .q-item__label
     &.q-item {
       min-height: auto !important;
     }
+
+    // pega apenas o primeiro .q-item__label
     .q-item__label:first-of-type {
       @include set-typography($h6);
     }

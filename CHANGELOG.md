@@ -22,7 +22,10 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasCard`: Corrigido slot do conteúdo que quando tinha texto grande quebrava e sumia com o ícone de expandido.
 
 ### Modificado
-- `QasCard`
+- `QasCard`:
+  - Modificado tipografia do label do expansivo para `text-h6`.
+  - Modificado tamanho do ícone do expansivo.
+- `QasActionsMenu`: alterado default da prop `useLabelOnSmallScreen` para sempre mostrar label quando estiver dentro do `QasTableGenerator`.
 
 ## [3.20.0-beta.7] - 16-01-2026
 ### Adicionado
