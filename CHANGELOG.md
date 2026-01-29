@@ -15,6 +15,7 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Corrigido
 - `QasFormView`: Corrigido o payload do submit que não era sobrescrito ao passar um payload customizado no `beforeSubmit`.
 
 ## [3.20.0-beta.8] - 26-01-2026
