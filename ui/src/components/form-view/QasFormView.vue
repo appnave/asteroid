@@ -560,10 +560,12 @@ export default {
       // Formata a url com base em mode, entity, url via props, etc
       const url = this.getFormattedURL({ payload, isSubmit: true })
 
+      const { payload: dataPayload } = payload
+
       return this.$axios({
         method: methods[this.mode],
         url,
-        data: this.modelValue
+        data: dataPayload
       })
     },
 
