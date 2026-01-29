@@ -16,15 +16,20 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Adicionado
-- `QasTableGenerator`: adicionado `inject`: `isTableGenerator`.
 - `QasHeader`: 
   - Adicionado `inject`: `isHeader`;
   - Adicionado tip ao lado do título (label), controlado pela prop `tipProps`. 
 - `QasSelectListDialog`: Adicionado novo slot `container-header` para personalizar o header do componente.
 
 ### Corrigido
-- `QasCard`: Corrigido slot do conteúdo que quando tinha texto grande quebrava e sumia com o ícone de expandido.
 - `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
+
+## [3.20.0-beta.8] - 26-01-2026
+### Adicionado
+- `QasTableGenerator`: adicionado `inject`: `isTableGenerator`.
+
+### Corrigido
+- `QasCard`: Corrigido slot do conteúdo que quando tinha texto grande quebrava e sumia com o ícone de expandido.
 
 ### Modificado
 - `QasCard`:
@@ -4876,3 +4881,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.5]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.0...v3.20.0-beta.5?expand=1
 [3.20.0-beta.6]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.1...v3.20.0-beta.6?expand=1
 [3.20.0-beta.7]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.2...v3.20.0-beta.7?expand=1
+[3.20.0-beta.8]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.7...v3.20.0-beta.8?expand=1
