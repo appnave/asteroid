@@ -17,9 +17,11 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ## [3.20.0-beta.8] - 26-01-2026
 ### Adicionado
 - `QasTableGenerator`: adicionado `inject`: `isTableGenerator`.
+- `QasHeader`: adicionado `inject`: `isHeader`.
 
 ### Corrigido
 - `QasCard`: Corrigido slot do conteúdo que quando tinha texto grande quebrava e sumia com o ícone de expandido.
+- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
 
 ### Modificado
 - `QasCard`:

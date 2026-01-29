@@ -57,7 +57,7 @@ import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import { Spacing } from '../../enums/Spacing'
 import { gutterValidator } from '../../helpers/private/gutter-validator'
 
-import { computed, useSlots } from 'vue'
+import { computed, useSlots, provide } from 'vue'
 
 defineOptions({ name: 'QasHeader' })
 
@@ -106,6 +106,9 @@ const props = defineProps({
     type: Boolean
   }
 })
+
+// globals
+provide('isHeader', true)
 
 const slots = useSlots()
 
