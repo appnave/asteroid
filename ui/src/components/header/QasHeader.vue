@@ -7,7 +7,7 @@
         </div>
 
         <slot v-else name="label">
-          <div class="items-center q-gutter-x-sm row">
+          <div v-if="hasLabel" class="items-center q-gutter-x-sm row">
             <qas-label v-if="hasLabel" v-bind="defaultLabelProps" />
 
             <qas-tip v-if="hasTip" v-bind="defaultTipProps" />
