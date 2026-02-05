@@ -2,7 +2,7 @@
   <qas-btn-dropdown v-bind="btnDropdownProps">
     <!-- Seção do botão de filtrar -->
     <template v-if="props.useFilterButton" #btn-content-filtersButton>
-      <q-menu ref="filtersButtonMenu" anchor="center right" class="full-width" max-width="270px" no-refocus self="top right" @hide="emit('hide-filters-menu')">
+      <q-menu ref="filtersButtonMenu" anchor="center right" class="full-width" max-height="600px" max-width="270px" no-refocus self="top right" @hide="emit('hide-filters-menu')">
         <div v-if="props.filtersButtonProps.loading" class="q-pa-xl text-center">
           <q-spinner color="grey" size="2em" />
         </div>
@@ -11,21 +11,34 @@
           <q-icon color="negative" name="sym_r_warning" size="2em" />
         </div>
 
-        <q-form v-else class="q-gutter-y-md q-pa-md" @submit.prevent="emit('filter')">
-          <div v-for="(field, index) in props.filtersButtonProps.fields" :key="index">
-            <qas-field v-model="filtersButtonModel[field.name]" :data-cy="`filters-${field.name}-field`" :field="field" v-bind="props.filtersButtonProps.fieldsProps[field.name]" />
-          </div>
+        <div v-else class="pv-filter-actions q-pa-md">
+          <q-form class="q-gutter-y-md" @submit.prevent="emit('filter')">
+            <div class="pv-filter-actions__content">
+              <div v-for="(field, index) in props.filtersButtonProps.fields" :key="index">
+                <qas-field v-model="filtersButtonModel[field.name]" :data-cy="`filters-${field.name}-field`" :field="field" v-bind="props.filtersButtonProps.fieldsProps[field.name]" />
+              </div>
 
-          <qas-actions gutter="sm" use-equal-width>
-            <template #primary>
-              <qas-btn class="full-width" data-cy="filters-submit-btn" label="Filtrar" size="sm" type="submit" variant="primary" />
-            </template>
+              <!-- TODO: Remover -->
+              <div v-for="(field, index) in props.filtersButtonProps.fields" :key="index" class="q-mt-md">
+                <qas-field v-model="filtersButtonModel[field.name]" :data-cy="`filters-${field.name}-field`" :field="field" v-bind="props.filtersButtonProps.fieldsProps[field.name]" />
+              </div>
 
-            <template #secondary>
-              <qas-btn class="full-width" data-cy="filters-clear-btn" label="Limpar" size="sm" variant="secondary" @click="emit('clear-filters')" />
-            </template>
-          </qas-actions>
-        </q-form>
+              <div v-for="(field, index) in props.filtersButtonProps.fields" :key="index" class="q-mt-md">
+                <qas-field v-model="filtersButtonModel[field.name]" :data-cy="`filters-${field.name}-field`" :field="field" v-bind="props.filtersButtonProps.fieldsProps[field.name]" />
+              </div>
+            </div>
+
+            <qas-actions gutter="sm" use-equal-width>
+              <template #primary>
+                <qas-btn class="full-width" data-cy="filters-submit-btn" label="Filtrar" size="sm" type="submit" variant="primary" />
+              </template>
+
+              <template #secondary>
+                <qas-btn class="full-width" data-cy="filters-clear-btn" label="Limpar" size="sm" variant="secondary" @click="emit('clear-filters')" />
+              </template>
+            </qas-actions>
+          </q-form>
+        </div>
       </q-menu>
     </template>
 
@@ -136,3 +149,12 @@ function hideFiltersMenu () {
   filtersButtonMenu.value?.hide()
 }
 </script>
+
+<style lang="scss">
+.pv-filter-actions {
+  &__content {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+}
+</style>

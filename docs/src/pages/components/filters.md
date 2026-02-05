@@ -28,24 +28,24 @@ Este componente serve para lidar com **filtros dinâmicos**, e normalmente utili
 
 ## Uso
 <doc-example file="QasFilters/Basic" title="Básico" />
-<doc-example file="QasFilters/OrderBy" title="Com ordenação" />
-<doc-example file="QasFilters/ExNoUseSearchOnType" title="Sem pesquisa automática ao digitar" />
+<!-- <doc-example file="QasFilters/OrderBy" title="Com ordenação" />
+<doc-example file="QasFilters/ExNoUseSearchOnType" title="Sem pesquisa automática ao digitar" /> -->
 
 Normalmente este componente é utilizando junto ao `QasListView` para filtrar os dados.
-
+<!--
 <doc-example file="QasFilters/CommonUsage" title="Normalmente utilizado" />
 
-<doc-example file="QasFilters/NoSearch" title="Sem o campo de busca" />
+<doc-example file="QasFilters/NoSearch" title="Sem o campo de busca" /> -->
 
 :::warning
 Ao utilizar a propriedade `:use-update-route="false"`, a leitura dos filtros assim como a escrita na rota não acontecerá.
 :::
 
-<doc-example file="QasFilters/NoRouteUpdate" title="Não realizando a atualização padrão da rota" />
+<!-- <doc-example file="QasFilters/NoRouteUpdate" title="Não realizando a atualização padrão da rota" />
 
 <doc-example file="QasFilters/CustomFilter" title="Usando slot default com funções 'filter' e 'removeFilter'" />
 
-<doc-example file="QasFilters/CustomFilterButton" title="Usando slot filter-button com a função 'filter'" />
+<doc-example file="QasFilters/CustomFilterButton" title="Usando slot filter-button com a função 'filter'" /> -->
 
 :::warning
 Utilize a prop `useFullContent` quando precisar adicionar o componente em um grid.
