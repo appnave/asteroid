@@ -20,6 +20,15 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Modificado
 - `QasFormView`: modificado lógica quando `useStore: false`, era obrigatório passar entity quando é passado customURL.
+- `QasHeader`: 
+  - Adicionado `inject`: `isHeader`;
+  - Adicionado tip ao lado do título (label), controlado pela prop `tipProps`. 
+- `QasSelectListDialog`: Adicionado novo slot `container-header` para personalizar o header do componente.
+
+### Corrigido
+- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
+- `QasTableGenerator`: corrigido validação da função `rowRouteFn` pra conseguirmos validar por linha da tabela qual terá click.
+- `QasFormView`: Corrigido o payload do submit que não era sobrescrito ao passar um payload customizado no `beforeSubmit`.
 
 ## [3.20.0-beta.8] - 26-01-2026
 ### Adicionado

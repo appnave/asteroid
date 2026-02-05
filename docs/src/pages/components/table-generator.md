@@ -124,6 +124,10 @@ rowExternalRouteFn () {
 ```
 :::
 
+:::info
+Ao utilizar o "rowRouteFn", é possível tratar linha a linha qual vai ser clicável, fazendo o tratamento no retorno da fn.
+:::
+
 <doc-example file="QasTableGenerator/TableLink" title="Tabela com links" />
 
 Funcionalidade que permite que o cabeçalho da tabela permaneça visível na parte superior enquanto o usuário faz rolagem do conteúdo da tabela. Para utilizar atribua a prop `use-sticky-header`.

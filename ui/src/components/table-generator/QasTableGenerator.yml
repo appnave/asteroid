@@ -70,7 +70,7 @@ props:
   row-route-fn:
     desc: Usado quando há a necessidade de alteração de rota ao clicar em um item da tabela(a linha passa ser um <a> habilitando a opção de abrir em uma nova aba).
     type: Function
-    examples: ["(row) => ({ path: 'table-generator', params: { id: row.uuid } })"]
+    examples: ["row => ({ path: 'table-generator', params: { id: row.uuid } })", "row => undefined", "row => {}"]
 
   selected:
     desc: Usado como model das linhas selecionadas.

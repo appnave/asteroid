@@ -7,7 +7,11 @@
         </div>
 
         <slot v-else name="label">
-          <qas-label v-if="hasLabel" v-bind="defaultLabelProps" />
+          <div v-if="hasLabel" class="items-center q-gutter-x-sm row">
+            <qas-label v-if="hasLabel" v-bind="defaultLabelProps" />
+
+            <qas-tip v-if="hasTip" v-bind="defaultTipProps" />
+          </div>
         </slot>
 
         <div v-if="hasBadges" class="col-auto items-center q-col-gutter-sm row">
@@ -53,11 +57,12 @@ import QasBtn from '../btn/QasBtn.vue'
 import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasFilters from '../filters/QasFilters.vue'
 import QasSkeleton from '../skeleton/QasSkeleton.vue'
+import QasTip from '../tip/QasTip.vue'
 
 import { Spacing } from '../../enums/Spacing'
 import { gutterValidator } from '../../helpers/private/gutter-validator'
 
-import { computed, useSlots } from 'vue'
+import { computed, useSlots, provide } from 'vue'
 
 defineOptions({ name: 'QasHeader' })
 
@@ -102,10 +107,18 @@ const props = defineProps({
     validator: gutterValidator
   },
 
+  tipProps: {
+    type: Object,
+    default: () => ({})
+  },
+
   useEllipsis: {
     type: Boolean
   }
 })
+
+// globals
+provide('isHeader', true)
 
 const slots = useSlots()
 
@@ -144,6 +157,15 @@ const defaultLabelProps = computed(() => {
 
     margin: 'none',
     ...props.labelProps
+  }
+})
+
+const hasTip = computed(() => !!Object.keys(props.tipProps).length)
+
+const defaultTipProps = computed(() => {
+  return {
+    size: '20px',
+    ...props.tipProps
   }
 })
 
