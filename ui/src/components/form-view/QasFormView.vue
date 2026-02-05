@@ -503,6 +503,9 @@ export default {
 
     getFormattedURL ({ payload, isSubmit = false } = {}) {
       const { url: customURL } = payload
+
+      if (customURL) return customURL
+
       const decamelizedEntity = decamelize(this.entity, { separator: '-' })
 
       // Utiliza a URL passada via prop, ou monta a URL baseada na entity e id.
@@ -512,9 +515,7 @@ export default {
        * Utiliza a customURL que pode vir via payload, no caso de um beforeSubmit por exemplo
        * Caso for uma ação de submit, retorna a customURL ou a baseURL (sem o mode new ou edit).
        */
-      if (isSubmit) {
-        return customURL || baseURL
-      }
+      if (isSubmit) return baseURL
 
       const mode = this.isCreateMode ? 'new' : 'edit'
 
@@ -522,7 +523,7 @@ export default {
        * Utiliza a customURL que pode vir via payload, no caso de um beforeFetch por exemplo,
        * ou então concatena a baseURL com o mode (new ou edit).
        */
-      return customURL || `${baseURL}/${mode}`
+      return `${baseURL}/${mode}`
     },
 
     handleFetchAction (payload) {

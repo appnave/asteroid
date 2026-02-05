@@ -7,9 +7,11 @@
         </qas-box>
 
         <div ref="columnContainer" class="qas-board-generator__column secondary-scroll" :data-header-key="getKeyByHeader(header)" :style="containerStyle">
-          <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
-            <slot :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
-          </div>
+          <qas-lazy-loading-components :threshold="0">
+            <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
+              <slot :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
+            </div>
+          </qas-lazy-loading-components>
 
           <div class="full-width justify-center row">
             <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" label="Ver mais" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header)" />
@@ -32,6 +34,7 @@ import QasBtn from '../btn/QasBtn.vue'
 import QasDialog from '../dialog/QasDialog.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasGrabbable from '../grabbable/QasGrabbable.vue'
+import QasLazyLoadingComponents from '../lazy-loading-components/QasLazyLoadingComponents.vue'
 
 import { ref, watch, computed, onUnmounted, markRaw, inject, onMounted } from 'vue'
 import promiseHandler from '../../helpers/promise-handler'

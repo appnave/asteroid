@@ -16,6 +16,10 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Adicionado
+- `QasBoardGenerator`: adicionado o uso do componente `QasLazyLoadingComponents` para que melhore a performance do board.
+
+### Modificado
+- `QasFormView`: modificado lógica quando `useStore: false`, era obrigatório passar entity quando é passado customURL.
 - `QasHeader`: 
   - Adicionado `inject`: `isHeader`;
   - Adicionado tip ao lado do título (label), controlado pela prop `tipProps`. 
