@@ -82,6 +82,13 @@ slots:
   dialog-header:
     desc: Slot para substituir cabeçalho do dialog.
 
+  container-header:
+    desc: Slot para personalizar o header do componente dentro do box.
+    scope:
+      toggle-dialog:
+        desc: Função para abertura/fechamento do dialog do select list.
+        type: Function
+
   selected-content:
     desc: Slot para personalizar o conteúdo dos itens adicionados.
 

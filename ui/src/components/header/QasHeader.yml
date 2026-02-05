@@ -44,6 +44,11 @@ props:
     type: String
     examples: [none, xs, sm, md, lg, xl, '2xl', '3xl', '4xl', '5xl']
 
+  tip-props:
+    desc: Propriedades repassadas para o componente do QasTip ficando ao lado do título (label).
+    type: Object
+    default: {}
+
   use-ellipsis:
     desc: Adiciona ellipsis ao título (label).
     type: Boolean
