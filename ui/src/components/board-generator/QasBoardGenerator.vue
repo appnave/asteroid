@@ -220,7 +220,6 @@ watch(columnContainer, setColumnHeightContainer)
 
 // Lifecycles
 onMounted(() => {
-  console.log('to linkado')
   /**
    * Caso eu use o listView (valor pego por provide), a request é feito pelo watch quando se ocorre o sucesso do `fetchList`
    */
