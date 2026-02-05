@@ -45,7 +45,7 @@
         <q-td :class="getTdClasses(context.row)">
           <qas-skeleton v-if="skeleton" v-bind="getTgSkeletonProps(fieldName, context.row)" />
 
-          <component :is="tdChildComponent" v-else class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
+          <component :is="tdChildComponent(context.row)" v-else class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
             <slot :name="`body-cell-${fieldName}`" v-bind="context || {}">
               <pv-table-generator-td v-if="getFieldsProps(context.row, context.rowIndex)[fieldName]" :component-data="getFieldsProps(context.row, context.rowIndex)[fieldName]" :label="normalizedFields[fieldName]?.label" :name="fieldName" :row="context.row" />
 
@@ -260,12 +260,6 @@ export default {
       }
 
       return this.results
-    },
-
-    tdChildComponent () {
-      if (this.useExternalLink) return 'a'
-
-      return this.rowRouteFn ? 'router-link' : 'span'
     },
 
     bodyCellNameSlots () {
@@ -576,18 +570,28 @@ export default {
       this.resizeObserver.unobserve(this.elementToObserve)
     },
 
-    getTdClasses (row) {
+    /**
+     * Valida se o valor retornado para a row é um route.
+     *
+     * @param {Object} row - Objeto referente ao row da tabela.
+     *
+     * @returns {boolean}
+     */
+    hasRowRoute (row) {
       const routePayload = this.rowRouteFn?.(row)
       const isRoutePayloadObject = typeof routePayload === 'object'
-      const hasRoutePayload = isRoutePayloadObject ? !!Object.keys(routePayload).length : !!routePayload
 
+      return isRoutePayloadObject ? !!Object.keys(routePayload).length : !!routePayload
+    },
+
+    getTdClasses (row) {
       return {
-        'qas-table-generator__td--has-action': this.hasRowClick || hasRoutePayload
+        'qas-table-generator__td--has-action': this.hasRowRoute(row)
       }
     },
 
     getTdChildComponentProps (row) {
-      if (!this.rowRouteFn || this.skeleton) return
+      if (!this.hasRowRoute(row) || this.skeleton) return
 
       return {
         class: [
@@ -608,6 +612,12 @@ export default {
       if (this.skeleton) return
 
       this.$attrs.onRowClick(...arguments)
+    },
+
+    tdChildComponent (row) {
+      if (this.useExternalLink) return 'a'
+
+      return this.hasRowRoute(row) ? 'router-link' : 'span'
     },
 
     getFieldsProps (row, index) {
