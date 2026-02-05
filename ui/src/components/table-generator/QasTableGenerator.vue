@@ -570,6 +570,13 @@ export default {
       this.resizeObserver.unobserve(this.elementToObserve)
     },
 
+    /**
+     * Valida se o valor retornado para a row é um route.
+     *
+     * @param {Object} row - Objeto referente ao row da tabela.
+     *
+     * @returns {boolean}
+     */
     hasRowRoute (row) {
       const routePayload = this.rowRouteFn?.(row)
       const isRoutePayloadObject = typeof routePayload === 'object'
