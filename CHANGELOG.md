@@ -14,14 +14,22 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `QasHeader`: 
+  - Adicionado `inject`: `isHeader`;
+  - Adicionado tip ao lado do título (label), controlado pela prop `tipProps`. 
+- `QasSelectListDialog`: Adicionado novo slot `container-header` para personalizar o header do componente.
+
+### Corrigido
+- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
+
 ## [3.20.0-beta.8] - 26-01-2026
 ### Adicionado
 - `QasTableGenerator`: adicionado `inject`: `isTableGenerator`.
-- `QasHeader`: adicionado `inject`: `isHeader`.
 
 ### Corrigido
 - `QasCard`: Corrigido slot do conteúdo que quando tinha texto grande quebrava e sumia com o ícone de expandido.
-- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
 
 ### Modificado
 - `QasCard`:
