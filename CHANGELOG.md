@@ -25,14 +25,28 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - Alterado largura de 270px para 300px.
   - Agora os botões de ações (limpar/filtrar) são sempre fixo e visíveis.
 
+## [3.20.0-beta.9] - 05-02-2026
+### Adicionado
+- `QasBoardGenerator`: adicionado o uso do componente `QasLazyLoadingComponents` para que melhore a performance do board.
+
+### Modificado
+- `QasFormView`: modificado lógica quando `useStore: false`, era obrigatório passar entity quando é passado customURL.
+- `QasHeader`: 
+  - Adicionado `inject`: `isHeader`;
+  - Adicionado tip ao lado do título (label), controlado pela prop `tipProps`. 
+- `QasSelectListDialog`: Adicionado novo slot `container-header` para personalizar o header do componente.
+
+### Corrigido
+- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
+- `QasTableGenerator`: corrigido validação da função `rowRouteFn` pra conseguirmos validar por linha da tabela qual terá click.
+- `QasFormView`: Corrigido o payload do submit que não era sobrescrito ao passar um payload customizado no `beforeSubmit`.
+
 ## [3.20.0-beta.8] - 26-01-2026
 ### Adicionado
 - `QasTableGenerator`: adicionado `inject`: `isTableGenerator`.
-- `QasHeader`: adicionado `inject`: `isHeader`.
 
 ### Corrigido
 - `QasCard`: Corrigido slot do conteúdo que quando tinha texto grande quebrava e sumia com o ícone de expandido.
-- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
 
 ### Modificado
 - `QasCard`:
@@ -4885,3 +4899,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.6]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.1...v3.20.0-beta.6?expand=1
 [3.20.0-beta.7]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.2...v3.20.0-beta.7?expand=1
 [3.20.0-beta.8]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.7...v3.20.0-beta.8?expand=1
+[3.20.0-beta.9]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.8...v3.20.0-beta.9?expand=1

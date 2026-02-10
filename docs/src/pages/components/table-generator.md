@@ -94,7 +94,12 @@ fieldsProps: {
 ```
 :::
 <doc-example file="QasTableGenerator/WithFieldsProps" title="Com componentes por props e ação na ultima coluna" />
+
+:::warning
+É necessário passar a prop "columns" no uso da prop skeleton, pois o componente replica as colunas que serão usadas pra simular os dados.
+:::
 <doc-example file="QasTableGenerator/Skeleton" title="Skeleton" />
+
 <doc-example file="QasTableGenerator/WithHeader" title="Com header" />
 <doc-example file="QasTableGenerator/HeaderSlot" title="Acessando slot do header" />
 <doc-example file="QasTableGenerator/NoBox" title="Sem box" />
@@ -122,6 +127,10 @@ rowExternalRouteFn () {
   return 'https://asteroid.nave.dev/'
 }
 ```
+:::
+
+:::info
+Ao utilizar o "rowRouteFn", é possível tratar linha a linha qual vai ser clicável, fazendo o tratamento no retorno da fn.
 :::
 
 <doc-example file="QasTableGenerator/TableLink" title="Tabela com links" />
