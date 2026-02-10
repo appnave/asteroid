@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mt-sm" :class="classes">
+  <div :class="classes">
     <div v-if="hasTertiaryButton" :class="columnClasses">
       <slot name="tertiary">
         <qas-btn v-bind="formattedButtonsProps.tertiary" class="full-width" />
@@ -24,6 +24,7 @@
 import useScreen from '../../composables/use-screen'
 import { FlexAlign } from '../../enums/Align'
 import { Spacing } from '../../enums/Spacing'
+import { gutterValidator } from '../../helpers/private/gutter-validator'
 
 import QasBtn from '../btn/QasBtn.vue'
 
@@ -41,7 +42,7 @@ const props = defineProps({
   gutter: {
     default: '',
     type: String,
-    validator: value => !value || Object.values(Spacing).includes(value)
+    validator: value => !value || gutterValidator(value)
   },
 
   primaryButtonProps: {
@@ -52,6 +53,12 @@ const props = defineProps({
   secondaryButtonProps: {
     type: Object,
     default: () => ({})
+  },
+
+  spacingTop: {
+    type: String,
+    default: Spacing.Sm,
+    validator: value => Object.values(Spacing).includes(value)
   },
 
   tertiaryButtonProps: {
@@ -80,6 +87,9 @@ const classes = computed(() => {
 
   return [
     !screen.isSmall && 'items-center',
+
+    // espaçamento superior
+    `q-pt-${props.spacingTop}`,
 
     // alinhamento
     `justify-${props.align}`,

@@ -14,6 +14,17 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `helpers/set-scroll-gradient`:
+  - Adicionado nova opção `config.style.gradientLevel` com default `3` para configurar o nível de intensidade do gradiente.
+  - Adicionado animação ao aparecer o gradiente para não ficar "seco".
+
+### Modificado
+- `QasFilters`:
+  - Alterado largura de 270px para 300px.
+  - Agora os botões de ações (limpar/filtrar) são sempre fixo e visíveis.
+
 ## [3.20.0-beta.8] - 26-01-2026
 ### Adicionado
 - `QasTableGenerator`: adicionado `inject`: `isTableGenerator`.
