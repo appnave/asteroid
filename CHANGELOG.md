@@ -14,7 +14,7 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## [3.20.0-beta.10] - 10-02-2026
 ### Adicionado
 - `helpers/set-scroll-gradient`:
   - Adicionado nova opção `config.style.gradientLevel` com default `3` para configurar o nível de intensidade do gradiente.
@@ -4900,3 +4900,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.7]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.2...v3.20.0-beta.7?expand=1
 [3.20.0-beta.8]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.7...v3.20.0-beta.8?expand=1
 [3.20.0-beta.9]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.8...v3.20.0-beta.9?expand=1
+[3.20.0-beta.10]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.9...v3.20.0-beta.10?expand=1
