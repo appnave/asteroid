@@ -71,7 +71,7 @@ const qas = inject('qas')
 // composables
 const route = useRoute()
 
-const { isBackgroundOverlay } = useOverlayNavigation()
+const { isBackgroundOverlay, route: overlayRoute } = useOverlayNavigation()
 
 const {
   // state
@@ -96,7 +96,7 @@ const {
 defineExpose({ fetchSingle, fetchHandler })
 
 // computed
-const id = computed(() => props.customId || route.params.id)
+const id = computed(() => props.customId || overlayRoute.value.params.id)
 
 const resultModel = computed(() => {
   if (props.useStore) return qas.getGetter({ entity: props.entity, key: 'byId' })(id.value) || {}
@@ -108,6 +108,7 @@ const hasResult = computed(() => !!resultModel.value)
 
 // watch
 watch(() => route, (to, from) => {
+  console.log('🚀 ~ isBackgroundOverlay.value:', isBackgroundOverlay.value)
   if (isBackgroundOverlay.value) return
 
   if (to.name === from.name) {

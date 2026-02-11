@@ -53,14 +53,27 @@ async function onBeforeEach (to, from, next, router) {
     const backgroundResult = await getBackgroundComponent()
 
     if (backgroundResult) {
-      const { component: backgroundComponent, resolvedRoute } = backgroundResult
+      const { resolvedRoute } = backgroundResult
 
       const { name, params = {}, fullPath, path, query = {} } = resolvedRoute || {}
 
       to.meta.backgroundRoute = { name, params, fullPath, path, query }
 
+      /**
+       * Resolve todos os componentes lazy da rota de background e armazena a rota
+       * resolvida em `to.meta.overlayBackgroundResolvedRoute`.
+       *
+       * O QasLayout usa essa rota via `<router-view :route="..." />` para renderizar
+       * o background com sua hierarquia completa (parent layout + children),
+       * enquanto o overlay continua usando a rota atual normalmente.
+       */
+      await resolveRouteComponents(resolvedRoute)
+
+      to.meta.overlayBackgroundResolvedRoute = resolvedRoute
+
+      // Apenas adicionar o overlay, sem alterar o default
       to.matched[matchedIndex].components = {
-        default: backgroundComponent,
+        ...to.matched[matchedIndex].components,
         overlay: overlayComponent
       }
     }
@@ -73,6 +86,21 @@ async function onBeforeEach (to, from, next, router) {
   next()
 
   // functions
+
+  /**
+   * Resolve todos os componentes lazy (ex: () => import(...)) de uma rota.
+   * Necessário porque router.resolve() não resolve lazy components automaticamente.
+   *
+   * @param {import('vue-router').RouteLocationNormalized} route
+   */
+  async function resolveRouteComponents (route) {
+    for (const matched of route.matched) {
+      for (const [viewName, comp] of Object.entries(matched.components || {})) {
+        matched.components[viewName] = await getResolvedComponent(comp)
+      }
+    }
+  }
+
   function getComponentByRoute (route) {
     const lastIndex = route.matched.length - 1
     const matched = route.matched[lastIndex]
