@@ -27,6 +27,7 @@ import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasFilters from '../filters/QasFilters.vue'
 import QasHeader from '../header/QasHeader.vue'
 
+import { useAbortController } from '../../composables/private'
 import { useOverlayNavigation } from '../../composables'
 
 // Importações do chart.js
@@ -166,6 +167,7 @@ export default {
 
   data () {
     const { isBackgroundOverlay } = useOverlayNavigation()
+    const { createAbortSignal, isCurrentRequest } = useAbortController()
 
     return {
       cancelBeforeFetch: false,
@@ -173,7 +175,11 @@ export default {
       filters: {},
       isFetched: false,
       isFetching: false,
-      isBackgroundOverlay
+      isBackgroundOverlay,
+
+      // Métodos do composable useAbortController
+      createAbortSignal,
+      isCurrentRequest
     }
   },
 
@@ -409,13 +415,17 @@ export default {
     },
 
     async fetchData (payload = {}) {
+      // Cria um novo signal e cancela automaticamente a requisição anterior
+      const { signal, controller } = this.createAbortSignal()
+
       try {
         this.isFetching = true
 
         const response = await getAction.call(this, {
           entity: this.entity,
           key: 'fetchList',
-          payload
+          ...payload,
+          signal
         })
 
         const { results } = response.data
@@ -423,11 +433,15 @@ export default {
 
         this.$emit('fetch-success', response)
       } catch (error) {
+        // Se foi cancelamento, não processa o erro
+        if (this.$axios.isCancel(error)) return
+
         this.$qas.error('Ops… Não conseguimos acessar as informações. Por favor, tente novamente em alguns minutos.')
 
         this.$emit('fetch-error', error)
       } finally {
-        this.isFetching = false
+        // Só altera mx_isFetching se esta ainda for a requisição mais recente
+        this.isFetching = !this.isCurrentRequest(controller)
         this.isFetched = true
       }
     },

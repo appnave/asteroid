@@ -594,6 +594,10 @@ module.exports = [
     name: 'Composição',
     children: [
       {
+        name: 'useAxios',
+        path: '/composables/use-axios'
+      },
+      {
         name: 'useContext',
         path: '/composables/use-context'
       },
@@ -655,10 +659,6 @@ module.exports = [
     icon: 'sym_r_play_circle',
     name: 'Boot',
     children: [
-      {
-        name: 'debug',
-        path: '/boot/debug'
-      },
       {
         name: 'queryCache',
         path: '/boot/query-cache'
