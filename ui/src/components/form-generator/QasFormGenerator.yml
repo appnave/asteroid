@@ -120,6 +120,11 @@ slots:
   'legend-bottom[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
     desc: Acessa o slot da seção abaixo do conteúdo do form de um subset específico.
 
+provide:
+  is-form-generator:
+    desc: Identificador booleano que indica quando um componente está dentro do contexto de um QasFormGenerator.
+    type: Boolean
+
 events:
   '@update:model-value -> function(value)':
     desc: Dispara quando o model-value altera, também usado para v-model.
