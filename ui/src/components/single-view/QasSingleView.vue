@@ -108,7 +108,6 @@ const hasResult = computed(() => !!resultModel.value)
 
 // watch
 watch(() => route, (to, from) => {
-  console.log('🚀 ~ isBackgroundOverlay.value:', isBackgroundOverlay.value)
   if (isBackgroundOverlay.value) return
 
   if (to.name === from.name) {
