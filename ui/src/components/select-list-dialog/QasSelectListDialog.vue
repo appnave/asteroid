@@ -1,6 +1,8 @@
 <template>
   <div class="app-select-list-dialog full-width">
-    <qas-header v-bind="headerProps" />
+    <slot name="container-header" :toggle-dialog>
+      <qas-header v-bind="headerProps" />
+    </slot>
 
     <component
       :is="containerListComponent"

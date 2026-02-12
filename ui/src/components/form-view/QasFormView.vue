@@ -12,7 +12,7 @@
       <slot v-if="useActions" name="actions">
         <qas-actions>
           <template v-if="useSubmitButton" #primary>
-            <qas-btn class="qas-form-view__btn" :data-cy="`form-view-submit-btn-${entity}`" :disable="disable" :label="submitButtonLabel" :loading="isSubmitting" type="submit" variant="primary" />
+            <qas-btn class="qas-form-view__btn" :data-cy="`form-view-submit-btn-${entity}`" :disable="disable" :label="submitButtonLabel" :loading="isSubmitting" :skeleton="mx_isFetching" type="submit" variant="primary" />
           </template>
 
           <template v-if="hasCancelButton" #secondary>
@@ -28,7 +28,7 @@
 
     <qas-dialog v-model="showDialog" v-bind="defaultDialogProps" />
 
-    <q-inner-loading :showing="mx_isFetching">
+    <q-inner-loading :showing="mx_isFetching && useLoading">
       <q-spinner color="grey" size="3em" />
     </q-inner-loading>
   </qas-container>
@@ -146,6 +146,11 @@ export default {
     },
 
     useNotifySuccess: {
+      type: Boolean,
+      default: true
+    },
+
+    useLoading: {
       type: Boolean,
       default: true
     },
@@ -496,6 +501,9 @@ export default {
 
     getFormattedURL ({ payload, isSubmit = false } = {}) {
       const { url: customURL } = payload
+
+      if (customURL) return customURL
+
       const decamelizedEntity = decamelize(this.entity, { separator: '-' })
 
       // Utiliza a URL passada via prop, ou monta a URL baseada na entity e id.
@@ -505,9 +513,7 @@ export default {
        * Utiliza a customURL que pode vir via payload, no caso de um beforeSubmit por exemplo
        * Caso for uma ação de submit, retorna a customURL ou a baseURL (sem o mode new ou edit).
        */
-      if (isSubmit) {
-        return customURL || baseURL
-      }
+      if (isSubmit) return baseURL
 
       const mode = this.isCreateMode ? 'new' : 'edit'
 
@@ -515,7 +521,7 @@ export default {
        * Utiliza a customURL que pode vir via payload, no caso de um beforeFetch por exemplo,
        * ou então concatena a baseURL com o mode (new ou edit).
        */
-      return customURL || `${baseURL}/${mode}`
+      return `${baseURL}/${mode}`
     },
 
     handleFetchAction (payload) {
@@ -553,10 +559,12 @@ export default {
       // Formata a url com base em mode, entity, url via props, etc
       const url = this.getFormattedURL({ payload, isSubmit: true })
 
+      const { payload: dataPayload } = payload
+
       return this.$axios({
         method: methods[this.mode],
         url,
-        data: this.modelValue
+        data: dataPayload
       })
     },
 

@@ -57,7 +57,8 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
   // https://animate.style/
   const animations = [
     'slideInDown',
-    'rubberBand'
+    'rubberBand',
+    'fadeIn'
   ]
 
   animations.forEach(animation => quasar.animations.push(animation))

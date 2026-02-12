@@ -1,5 +1,7 @@
 <template>
-  <qas-table-generator :columns :fields :results />
+  <qas-container>
+    <qas-table-generator :columns :fields loading :results use-multiline />
+  </qas-container>
 </template>
 
 <script setup>
@@ -8,7 +10,7 @@ import { fields, results } from 'src/mocks/users'
 defineOptions({ name: 'Basic' })
 
 const columns = [
-  { sortable: false, name: 'isActive' },
+  { tooltip: 'Tooltip de exemplo', name: 'isActive' },
   'name',
   'createdAt',
   'date'

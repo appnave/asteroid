@@ -13,7 +13,7 @@
         <div v-if="showResults">
           <slot />
 
-          <q-inner-loading :showing="mx_isFetching">
+          <q-inner-loading :showing="mx_isFetching && useLoading">
             <q-spinner color="grey" size="3em" />
           </q-inner-loading>
         </div>
@@ -108,6 +108,11 @@ export default {
       type: Boolean
     },
 
+    useLoading: {
+      type: Boolean,
+      default: true
+    },
+
     usePagination: {
       default: true,
       type: Boolean
@@ -129,6 +134,7 @@ export default {
   },
 
   emits: [
+    'fetch-start',
     'fetch-success',
     'fetch-error',
     'update:errors',
@@ -189,7 +195,7 @@ export default {
     },
 
     showResults () {
-      return this.hasResults || this.useResultsAreaOnly
+      return this.hasResults || this.useResultsAreaOnly || !this.useLoading
     },
 
     paginationClasses () {
@@ -250,6 +256,8 @@ export default {
           url: this.url,
           ...externalPayload
         }
+
+        this.$emit('fetch-start', payload)
 
         const response = await this.handleFetchList(payload)
 

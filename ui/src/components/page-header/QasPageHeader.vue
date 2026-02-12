@@ -3,13 +3,23 @@
     <q-toolbar class="justify-between q-mb-md q-px-none qas-page-header">
       <div class="ellipsis">
         <q-toolbar-title v-if="props.title" class="text-h3">
-          {{ props.title }}
+          <qas-skeleton v-if="props.skeleton" max-width="300px" type="text" use-contrast />
+
+          <template v-else>
+            {{ props.title }}
+          </template>
         </q-toolbar-title>
 
         <q-breadcrumbs v-if="hasBreadcrumbs" class="text-caption" gutter="xs" separator-color="grey-8">
           <q-breadcrumbs-el v-if="props.useHomeIcon" class="qas-page-header__breadcrumbs-el text-grey-8" icon="sym_r_home" :to="homeRoute" />
 
-          <q-breadcrumbs-el v-for="(item, index) in normalizedBreadcrumbs" :key="index" class="ellipsis inline-block qas-page-header__breadcrumbs-el" :label="item.label" :to="item.route" />
+          <q-breadcrumbs-el v-for="(item, index) in normalizedBreadcrumbs" :key="index" class="ellipsis inline-block qas-page-header__breadcrumbs-el" tag="div" :to="item.route">
+            <qas-skeleton v-if="props.skeleton" v-bind="getBreadcrumbSkeletonProps(item)" />
+
+            <template v-else>
+              {{ item.label }}
+            </template>
+          </q-breadcrumbs-el>
         </q-breadcrumbs>
       </div>
 
@@ -25,6 +35,7 @@
 </template>
 
 <script setup>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasHeader from '../header/QasHeader.vue'
 
 import { useOverlayNavigation } from '../../composables'
@@ -52,6 +63,10 @@ const props = defineProps({
     type: [Object, String]
   },
 
+  skeleton: {
+    type: Boolean
+  },
+
   title: {
     default: '',
     type: String
@@ -77,6 +92,7 @@ useMeta(() => ({ title: props.title }))
 
 // computed
 const hasBreadcrumbs = computed(() => props.useBreadcrumbs && !isOverlay)
+
 const transformedBreadcrumbs = computed(() => {
   const list = [...castArray(props.breadcrumbs || props.title)]
 
@@ -95,7 +111,7 @@ const transformedBreadcrumbs = computed(() => {
   })
 })
 
-const normalizedBreadcrumbs = computed(() => {
+const truncatedBreadcrumbs = computed(() => {
   const breadcrumbsSize = transformedBreadcrumbs.value.length
 
   if (breadcrumbsSize < 5) return transformedBreadcrumbs.value
@@ -116,9 +132,39 @@ const normalizedBreadcrumbs = computed(() => {
   ]
 })
 
+/**
+ * Caso a prop skeleton esteja ativa, retorna um array com 3 elementos vazios para renderizar
+ * os esqueletos dos breadcrumbs. Caso contrário, retorna os breadcrumbs truncados.
+ */
+const normalizedBreadcrumbs = computed(() => {
+  if (props.skeleton) {
+    return Array.from({ length: 3 }).map(() => ({ label: '', route: null }))
+  }
+
+  return truncatedBreadcrumbs.value
+})
+
 const hasHeader = computed(() => !!Object.keys(props.headerProps).length)
 
 const homeRoute = computed(() => router.hasRoute('Root') ? { name: 'Root' } : '/')
+
+// functions
+/**
+ * Retorna propriedades para o componente QasSkeleton usado nos breadcrumbs
+ */
+function getBreadcrumbSkeletonProps () {
+  const min = 60
+  const max = 160
+
+  // Gera uma largura aleatória entre min e max entre 60 e 160 pixels
+  const width = Math.floor(Math.random() * (max - min + 1)) + min
+
+  return {
+    type: 'text',
+    useContrast: true,
+    width: `${width}px`
+  }
+}
 </script>
 
 <style lang="scss">

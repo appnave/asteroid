@@ -50,7 +50,7 @@ Ao utilizar a propriedade `:use-update-route="false"`, a leitura dos filtros ass
 :::warning
 Utilize a prop `useFullContent` quando precisar adicionar o componente em um grid.
 :::
-<!-- <doc-example file="QasFilters/WithGrid" title="Usando o qas-filters em um grid" /> -->
+<doc-example file="QasFilters/WithGrid" title="Usando o qas-filters em um grid" />
 
 #### Filtros com campos lazy loading
 Para utilizar campos de select lazy loading (que carregam os dados somente quando o campo é aberto), é necessário que o campo lazy loading siga os requisitos descritos na documentação do [QasSelect](/components/select) (procure pela seção "Lazy Loading") e também que o back-end retorne as opções selecionadas de acordo com a query passada no endpoint GET `:entity/filters`.

@@ -6,22 +6,38 @@ import { convertToRgb } from './colors'
  */
 
 /**
+ * Níveis de opacidade do gradiente.
+ * Nível 1: mais suave
+ * Nível 2: médio
+ * Nível 3: mais forte (padrão)
+ */
+const GRADIENT_LEVELS = {
+  1: { mid: 0.3, end: 0.5 },
+  2: { mid: 0.6, end: 0.8 },
+  3: { mid: 0.9, end: 1 }
+}
+
+/**
  * Helper para adicionar um gradiente de scroll em um elemento.
  *
  * @param {object} config
  * @param {object} config.styles
  * @param {string} config.styles.color - precisa ser uma cor RGB|HEX|RGBA
  * @param {string} config.styles.size - tamanho do gradient (mudar somente quando for necessário)
+ * @param {1|2|3} config.styles.gradientLevel - nível de intensidade do gradiente (1: suave, 2: médio, 3: forte). Default: 3
  * @param {'y'|'x'} config.orientation - direção do scroll (vertical ou horizontal)
  */
 export default function setScrollGradient (config = {}) {
   const { styles, orientation = 'y' } = config
-  const { color = '#FFFFFF', size = '40px' } = styles || {}
+  const { color = '#FFFFFF', size = '40px', gradientLevel = 3 } = styles || {}
 
   const { r, g, b } = convertToRgb(color) || {}
   const rgbParam = `${r}, ${g}, ${b}`
 
   const isVertical = orientation === 'y'
+
+  // obtém os valores de opacidade baseado no nível
+  const level = GRADIENT_LEVELS[gradientLevel] || GRADIENT_LEVELS[3]
 
   let uuid = ''
   let resizeObserver = null
@@ -77,7 +93,7 @@ export default function setScrollGradient (config = {}) {
   }
 
   /**
-   * mostra ou esconde o span do gradient.
+   * mostra ou esconde o span do gradient com animação.
    *
    * @param {Direction} direction
    * @param {boolean} show
@@ -87,7 +103,8 @@ export default function setScrollGradient (config = {}) {
 
     if (!span) return
 
-    span.style.display = show ? 'block' : 'none'
+    span.style.opacity = show ? '1' : '0'
+    span.style.visibility = show ? 'visible' : 'hidden'
   }
 
   /**
@@ -112,16 +129,19 @@ export default function setScrollGradient (config = {}) {
     Object.assign(span.style, {
       pointerEvents: 'none',
       height: isVertical ? size : '100%',
-      display: 'none',
+      display: 'block',
       position: 'absolute',
       width: isVertical ? '100%' : size,
       zIndex: 1,
+      opacity: '0',
+      visibility: 'hidden',
+      transition: 'opacity 0.3s ease-in-out, visibility 0.3s ease-in-out',
       backgroundImage: (
         `linear-gradient(
           to ${getDirection(direction)},
           rgba(${rgbParam}, 0) 0%,
-          rgba(${rgbParam}, 0.9) 51%,
-          rgb(${rgbParam}) 75%)`
+          rgba(${rgbParam}, ${level.mid}) 51%,
+          rgba(${rgbParam}, ${level.end}) 75%)`
       )
     })
 

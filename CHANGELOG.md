@@ -26,7 +26,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - QasDrawer -> prop `dialogProps` (prop `persistent` saiu do `dialogProps` e agora é passado diretamente para o QasDrawer).
 - `QasDrawer`: adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`.
 - `QasDialog`:
-  - removido prop `card` em favor de suar as props `title` e `description`.
+  - removido prop `card` em favor de usar as props `title` e `description`.
   - removido slot `actions` em favor de fazer os controles somente por `ok`, `cancel` e `tertiary`.
   - removido prop `persistent`, agora é feito sempre de forma automática.
   - removido prop `actionsProps`.
@@ -61,11 +61,135 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Removido
 - `QasDialog`:
-  - removido prop `card` em favor de suar as props `title` e `description`.
+  - removido prop `card` em favor de usar as props `title` e `description`.
   - removido slot `actions` em favor de fazer os controles somente por `ok`, `cancel` e `tertiary`.
   - removido prop `persistent`, agora é feito sempre de forma automática.
   - removido prop `actionsProps`.
   - removido props `useFullMaxWidth`, `maxWidth`, `minWidth` em favor de utilizar a prop `size`.
+
+## [3.20.0-beta.10] - 10-02-2026
+### Adicionado
+- `helpers/set-scroll-gradient`:
+  - Adicionado nova opção `config.style.gradientLevel` com default `3` para configurar o nível de intensidade do gradiente.
+  - Adicionado animação ao aparecer o gradiente para não ficar "seco".
+
+### Modificado
+- `QasFilters`:
+  - Alterado largura de 270px para 300px.
+  - Agora os botões de ações (limpar/filtrar) são sempre fixo e visíveis.
+
+## [3.20.0-beta.9] - 05-02-2026
+### Adicionado
+- `QasBoardGenerator`: adicionado o uso do componente `QasLazyLoadingComponents` para que melhore a performance do board.
+
+### Modificado
+- `QasFormView`: modificado lógica quando `useStore: false`, era obrigatório passar entity quando é passado customURL.
+- `QasHeader`: 
+  - Adicionado `inject`: `isHeader`;
+  - Adicionado tip ao lado do título (label), controlado pela prop `tipProps`. 
+- `QasSelectListDialog`: Adicionado novo slot `container-header` para personalizar o header do componente.
+
+### Corrigido
+- `QasBtn`: Corrigido tamanho do botão no quando utilizado dentro de um `QasHeader`, devendo ser sempre `lg`.
+- `QasTableGenerator`: corrigido validação da função `rowRouteFn` pra conseguirmos validar por linha da tabela qual terá click.
+- `QasFormView`: Corrigido o payload do submit que não era sobrescrito ao passar um payload customizado no `beforeSubmit`.
+
+## [3.20.0-beta.8] - 26-01-2026
+### Adicionado
+- `QasTableGenerator`: adicionado `inject`: `isTableGenerator`.
+
+### Corrigido
+- `QasCard`: Corrigido slot do conteúdo que quando tinha texto grande quebrava e sumia com o ícone de expandido.
+
+### Modificado
+- `QasCard`:
+  - Modificado tipografia do label do expansivo para `text-h6`.
+  - Modificado tamanho do ícone do expansivo.
+- `QasActionsMenu`: alterado default da prop `useLabelOnSmallScreen` para sempre mostrar label quando estiver dentro do `QasTableGenerator`.
+
+## [3.20.0-beta.7] - 16-01-2026
+### Adicionado
+- `QasLazyLoadingComponent`: adicionado componente responsável por carregar elementos somente quando ficam visíveis na viewport, otimizando performance da página. ([#1339](https://github.com/bildvitta/asteroid/issues/1339))
+- `QasListView`: adicionado novo evento `fetch-start`.
+- `QasCard`: adicionado nova prop `gradientStatusColor`.
+
+### Corrigido
+- `QasBtn`: Corrigido warning do `QasSkeleton` referente a prop `type`.
+
+## [3.20.0-beta.6] - 13-01-2026
+### Adicionado
+- Adicionado novo componente `QasSkeleton`.
+- Adicionado prop `skeleton` nos components:
+  - QasBox
+  - QasCard
+  - QasCardImage
+  - QasTableGenerator
+  - QasTabsGenerator
+  - QasFormGenerator
+  - QasBtn
+  - QasHeader
+  - QasActionsMenu
+  - QasBtnDropdown
+  - QasChartView
+  - QasFilters
+  - QasPageHeader
+- Adicionado prop `useLoading`nos componentes:
+  - QasListView
+  - QasFormView
+
+## [3.20.0-beta.5] - 23-12-2025
+### Adicionado
+- `QasAlert`: Adicionado possiblidade de dar destaque nos textos (bold) passando eles dentro de `**asteriscos**`. [[#1410](https://github.com/bildvitta/asteroid/issues/1410)]
+- `QasTextTruncate`:
+  - Adicionado prop `useAlwaysSeeMore` para sempre exibir o botão de "Ver mais", mesmo quando não está truncado.
+  - Adicionado possibilidade de passar descrição personalizada para o dialog, podendo ser texto comum ou componente personalizado.
+
+### Corrigido
+- `QasBtnDropdown`: corrigido validação da prop `disable`, onde ao passar a prop no `buttonsPropsList` não funcionava.
+
+## [3.20.0-beta.4] - 12-12-2025
+### Corrigido
+- `helpers/set-scroll-on-grab`: corrigido seletor de classe para só adicionar quando passado `cancelMouseDownTarget`.
+
+## [3.20.0-beta.3] - 08-12-2025
+### Adicionado
+- `QasTextTruncate`:
+  - adicionado recurso para configurar prop `typography` default dinamicamente via provide/inject semelhante ao `QasBtn`.
+  - adicionado `items-center` para alinhamento correto agora que o line-height na tabela foi alterado e estava desalinhado.
+
+### Modificado
+- `QasToggleVisibility`: adicionado data `data-no-grab` para não arrastar conteúdo ao clicar nele, resolvendo problema de miss click.
+- `helpers/set-scroll-on-grab`: adicionado nativamente elemento de `button` para ser ignorado e um novo data `data-no-grab` para resolver problemas de miss click em ações.
+- `QasTableGenerator`:
+  - modificado line-height para tabela ser sempre `100%`ao invés de seguir tipografia das fontes.
+  - modificado tipografia padrão do `QasTextTruncate` via provide `textTruncatePropsDefaults` para `body2`.
+
+### Corrigido
+- `QasBtn`: corrigido tamanho dos ícones para seriem 18px no sm. <!-- N/A -->
+
+## [3.20.0-beta.2] - 05-12-2025
+## BREAKING CHANGES
+- Validar todos locais que usam o `QasTableGenerator` pois tiveram bastante mudanças visuais.
+
+### Adicionado
+- `QasTableGenerator`:
+  - adicionado nova propriedade `useMultiline`.
+  - adicionado `QasTip`usado via prop `columns`.
+  - adicionado label "Ações" na coluna de ação.
+- `QasActionsMenu`: adicionado nova propriedade `useDropdownAlways`.
+- `QasTooltip`: adicionado o componente `QasBreakline`para ser usado na prop `text`, agora é possível quebrar textos usando `\n`.
+- `QasToggleVisibility`: adicionado propriedade `visibleTooltip` e `hiddenTooltip`.
+
+### Modificado
+- `QasTooltip`: modificado tamanho de largura máxima para `300px`.
+- `QasBtn`: modificado tamanho do botão para `18px` quando o `size` ser `sm`.
+- `helpers/filters/formatDocument`: adicionado validação para parâmetro vazio.
+- `QasTableGenerator`:
+  - adicionado borda abaixo do titulo das colunas.
+  - modificado tipografia de `body1` para `body2`.
+  - modificado tamanho padrão do `QasBtn` de `md` para `sm`.
+  - modificado validação do `mappedResults`, quando usado type `object` ele não passa pelo `humanize` e não adicionado na chave `default` visando performance.
+  - coluna de ação agora tem o conteúdo alinhado á esquerda igual aos demais. 
 
 ## [3.20.0-beta.1] - 25-11-2025
 ### Adicionado
@@ -4821,3 +4945,12 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.19.0]: https://github.com/bildvitta/asteroid/compare/v3.18.2...v3.19.0?expand=1
 [3.20.0-beta.0]: https://github.com/bildvitta/asteroid/compare/v3.19.0...v3.20.0-beta.0?expand=1
 [3.20.0-beta.1]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.0...v3.20.0-beta.1?expand=1
+[3.20.0-beta.2]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.1...v3.20.0-beta.2?expand=1
+[3.20.0-beta.3]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.2...v3.20.0-beta.3?expand=1
+[3.20.0-beta.4]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.3...v3.20.0-beta.4?expand=1
+[3.20.0-beta.5]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.0...v3.20.0-beta.5?expand=1
+[3.20.0-beta.6]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.1...v3.20.0-beta.6?expand=1
+[3.20.0-beta.7]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.5-alpha.2...v3.20.0-beta.7?expand=1
+[3.20.0-beta.8]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.7...v3.20.0-beta.8?expand=1
+[3.20.0-beta.9]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.8...v3.20.0-beta.9?expand=1
+[3.20.0-beta.10]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.9...v3.20.0-beta.10?expand=1

@@ -86,6 +86,11 @@ props:
     default: true
     type: Boolean
 
+  use-loading:
+    desc: Controla se o componente vai exibir um loading quando estiver fazendo fetch dos dados.
+    default: true
+    type: Boolean
+
   use-pagination:
     desc: Controla se vai ter ou não paginação.
     default: true
@@ -125,6 +130,13 @@ slots:
     desc: 'Slot para acessar o header.'
 
 events:
+  '@fetch-start -> function(value)':
+    desc: Dispara logo antes da action "fetchList".
+    params:
+      value:
+        desc: Retorna o payload enviado para o fetchList, contendo paginação, filtros, search, etc.
+        type: Object
+
   '@fetch-success -> function(value)':
     desc: Dispara quando a action "fetchList" é executada com sucesso.
     params:

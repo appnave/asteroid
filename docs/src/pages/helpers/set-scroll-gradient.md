@@ -25,7 +25,8 @@ import { setScrollGradient } from 'asteroid'
 const scrollAreaRef = useTemplateRef('scrollArea')
 
 const { initializeScrollGradient, removeScrollGradient } = setScrollGradient({
-  style: {
+  styles: {
+    gradientLevel: 3, // default (nível de intensidade do gradiente, indo de 1 a 3)
     size: '40px', // default
     color: '#FFFFFF' // default (precisa ser um rgb|rgba|hexadecimal)
   },

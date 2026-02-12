@@ -19,6 +19,11 @@ props:
     default: false
     type: [Boolean, String, Number, Array, Object]
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   route:
     desc: Rota que será utilizada ao clicar no título.
     default: {}

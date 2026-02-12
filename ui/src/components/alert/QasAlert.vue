@@ -133,83 +133,108 @@ const component = computed(() => {
 })
 
 const textComponent = computed(() => {
-  // Regex para encontrar caracteres que estiverem dentro de [].
-  const regex = /\[.*?\]/g
+  // Configuração dos tokens suportados
+  const tokens = [
+    {
+      type: 'LINK',
+      regex: /\[(.*?)\]/g,
+      extractContent: match => match.replace(/\[(.*?)\]/, '$1'),
+      render: (content, index) => {
+        const isButtonPropsArray = Array.isArray(props.buttonProps)
+        const isRouterPropsArray = Array.isArray(props.routerLinkProps)
 
-  const matches = props.text.match(regex) || []
+        const buttonPropsForIndex = isButtonPropsArray
+          ? props.buttonProps[index]
+          : props.buttonProps
 
-  if (!matches.length) return h('span', props.text)
+        const routerLinkPropsForIndex = isRouterPropsArray
+          ? props.routerLinkProps[index]
+          : props.routerLinkProps
+
+        const hasButtonProps = buttonPropsForIndex && !!Object.keys(buttonPropsForIndex).length
+
+        if (hasButtonProps) {
+          return h(QasBtn, {
+            variant: 'tertiary',
+            label: content,
+            ...buttonPropsForIndex
+          })
+        }
+
+        return h(RouterLink, {
+          ...routerLinkPropsForIndex,
+          class: 'text-primary text-subtitle1 qas-alert__link'
+        }, {
+          default: () => content
+        })
+      }
+    },
+    {
+      type: 'BOLD',
+      regex: /\*\*(.*?)\*\*/g,
+      extractContent: match => match.replace(/\*\*(.*?)\*\*/, '$1'),
+      render: content => h('strong', { class: 'text-weight-bold' }, content)
+    }
+  ]
+
+  // Encontra todos os matches de todos os tipos de token
+  const allMatches = []
+
+  tokens.forEach(token => {
+    const matches = props.text.match(token.regex) || []
+
+    matches.forEach(match => {
+      allMatches.push({
+        type: token.type,
+        match,
+        content: token.extractContent(match),
+        render: token.render
+      })
+    })
+  })
+
+  // Se não há matches, retorna texto simples
+  if (!allMatches.length) {
+    return h('span', props.text)
+  }
 
   let processedText = props.text
 
-  /**
-   * Substitui cada match por um placeholder único na ordem correta
-   * Exemplo: "Clique [aqui] para [ver mais]" vira "Clique $0 para $1"
-   */
-  matches.forEach((match, index) => {
-    processedText = processedText.replace(match, `$${index}`)
+  // Substitui cada match por um placeholder único
+  allMatches.forEach((matchData, index) => {
+    processedText = processedText.replace(matchData.match, `$${matchData.type}_${index}`)
   })
 
-  // Divide o texto pelos placeholders
-  const parts = processedText.split(/\$\d+/)
-
-  const placeholders = processedText.match(/\$\d+/g) || []
-
+  // Separa o texto em partes
+  const parts = processedText.split(/(\$\w+_\d+)/)
   const result = []
 
-  parts.forEach((part, index) => {
-    if (part) result.push(part)
-
-    if (index < placeholders.length) {
-      // Pega o índice do placeholder para encontrar o match correto
-      const placeholderIndex = parseInt(placeholders[index].replace('$', ''))
-
-      // Pega o texto original do match. Ex: '[Clique aqui]'
-      const match = matches[placeholderIndex]
-
-      // Remove os colchetes do match. Ex: [Clique aqui] para Clique aqui
-      const routerLabel = match.replaceAll(/[[\]]/g, '')
-
-      // Determina as props do botão/link baseado no índice
-      const isButtonPropsArray = Array.isArray(props.buttonProps)
-      const isRouterPropsArray = Array.isArray(props.routerLinkProps)
-
-      const buttonPropsForIndex = isButtonPropsArray
-        ? props.buttonProps[placeholderIndex]
-        : props.buttonProps
-
-      const routerLinkPropsForIndex = isRouterPropsArray
-        ? props.routerLinkProps[placeholderIndex]
-        : props.routerLinkProps
-
-      const hasButtonProps = buttonPropsForIndex && !!Object.keys(buttonPropsForIndex).length
-
-      const getRouterLinkRender = () => {
-        return h(
-          RouterLink,
-          {
-            ...routerLinkPropsForIndex,
-            class: 'text-primary text-subtitle1 qas-alert__link'
-          },
-          {
-            default: () => routerLabel
-          }
-        )
-      }
-
-      const getQasBtnRender = () => {
-        return h(
-          QasBtn,
-          {
-            variant: 'tertiary',
-            label: routerLabel,
-            ...buttonPropsForIndex
-          }
-        )
-      }
-
-      result.push(hasButtonProps ? getQasBtnRender() : getRouterLinkRender())
+  parts.forEach(part => {
+    // Se a parte é texto normal, adiciona como string
+    if (!part.startsWith('$')) {
+      if (part) result.push(part)
+      return
     }
+
+    // Se é um placeholder, encontra o match correspondente
+    const placeholderMatch = part.match(/\$(\w+)_(\d+)/)
+    if (!placeholderMatch) return
+
+    const [, type, indexStr] = placeholderMatch
+    const index = parseInt(indexStr)
+
+    // Encontra o match data correspondente
+    const matchData = allMatches[index]
+    if (!matchData || matchData.type !== type) return
+
+    // Conta quantos matches do mesmo tipo vieram antes (para o índice das props)
+    const typeIndex = allMatches
+      .slice(0, index)
+      .filter(m => m.type === type)
+      .length
+
+    // Renderiza o componente
+    result.push(matchData.render(matchData.content, typeIndex))
   })
 
   return h('span', result)

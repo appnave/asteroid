@@ -6,10 +6,16 @@
           <slot :item="tab" :name="`tab-after-${tab.value}`">
             <q-icon v-if="tab.icon" :name="tab.icon" size="sm" />
 
-            <qas-status v-if="tab.status" :color="tab.status" />
+            <div v-if="tab.status">
+              <qas-status :color="tab.status" />
+            </div>
 
-            <div class="q-ml-xs">
-              {{ getFormattedLabel(tab) }}
+            <div class="flex items-center no-wrap q-ml-xs">
+              <span>
+                {{ getFormattedLabel(tab) }}
+              </span>
+
+              <qas-skeleton v-if="props.skeleton && !tab.counter" class="q-ml-sm" height="22px" type="text" width="25px" />
             </div>
           </slot>
         </component>
@@ -20,6 +26,7 @@
 
 <script setup>
 import QasStatus from '../status/QasStatus.vue'
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 
 import { decimal } from '../../helpers'
 
@@ -33,6 +40,10 @@ const props = defineProps({
   counters: {
     default: () => ({}),
     type: Object
+  },
+
+  skeleton: {
+    type: Boolean
   },
 
   modelValue: {

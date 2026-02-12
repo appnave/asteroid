@@ -222,6 +222,10 @@ module.exports = [
         path: '/components/layout'
       },
       {
+        name: 'LazyLoadingComponents',
+        path: '/components/lazy-loading-components'
+      },
+      {
         name: 'ListItems',
         path: '/components/list-items'
       },
@@ -332,6 +336,10 @@ module.exports = [
       {
         name: 'StepperFormView',
         path: '/components/stepper-form-view'
+      },
+      {
+        name: 'Skeleton ',
+        path: '/components/skeleton'
       },
       {
         name: 'TableGenerator',

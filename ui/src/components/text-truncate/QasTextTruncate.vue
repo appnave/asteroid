@@ -1,6 +1,6 @@
 <template>
   <div ref="parent" :class="classes">
-    <div class="no-wrap row text-no-wrap">
+    <div class="items-center no-wrap row text-no-wrap">
       <!-- "data-table-hover" habilita o hover no texto dentro do QasTableGenerator -->
       <div ref="truncate" class="ellipsis" data-table-hover>
         <slot>
@@ -19,8 +19,8 @@
       <qas-btn v-if="hasButton" class="q-ml-xs" :label="buttonLabel" @click.stop.prevent="toggle" />
     </div>
 
-    <qas-dialog v-model="show" v-bind="defaultProps" aria-label="Diálogo de texto completo" size="md">
-      <template v-if="isCounterMode" #description>
+    <qas-dialog v-model="show" v-bind="defaultProps" aria-label="Diálogo de texto completo" role="dialog" size="md">
+      <template v-if="showDescriptionSlot" #description>
         <component :is="dialogComponent.is" v-bind="dialogComponent.props" v-model:results="searchModel">
           <q-list separator>
             <q-item v-for="(item, index) in dialogComponent.list" :key="index" class="q-px-none">
@@ -51,6 +51,8 @@ import {
   onMounted,
   onUnmounted,
   ref,
+  inject,
+  isRef,
   watch
 } from 'vue'
 
@@ -100,12 +102,16 @@ const props = defineProps({
 
   typography: {
     type: String,
-    default: 'body1'
+    default: undefined
   },
 
   list: {
     type: Array,
     default: () => []
+  },
+
+  useAlwaysSeeMore: {
+    type: Boolean
   },
 
   useBadge: {
@@ -120,6 +126,9 @@ const props = defineProps({
     type: Boolean
   }
 })
+
+// globals
+const injectedDefaults = inject('textTruncatePropsDefaults', {}) // Inject reativo ou não reativo com fallback vazio
 
 // template refs
 const truncate = ref(null)
@@ -142,6 +151,7 @@ const {
 const {
   defaultProps,
   dialogComponent,
+  hasDialogDescription,
   show,
   searchModel,
   toggle
@@ -158,9 +168,33 @@ const {
 useMutationObserver({ truncate, callbackFn: truncateText })
 
 // computeds
-const classes = computed(() => [`text-${props.color}`, `text-${props.typography}`])
+/**
+ * Seta os valores padrões, dando prioridade:
+ *  1. Props
+ *  2. Injetado (pode ser reativo ou não reativo)
+ *  3. Caso esteja dentro do QasBox, seta o size para 'sm' se for primary ou secondary.
+ *  4. Hardcoded (tertiary, md, primary)
+ */
+const textTruncatePropsDefaults = computed(() => {
+  const defaultProps = isRef(injectedDefaults) ? injectedDefaults.value : injectedDefaults
+
+  return {
+    typography: 'body1',
+    ...defaultProps
+  }
+})
+
+const defaultTypography = computed(() => props.typography || textTruncatePropsDefaults.value.typography)
+
+const classes = computed(() => [`text-${props.color}`, `text-${defaultTypography.value}`])
 
 const formattedText = computed(() => props.list.length || props.text ? displayText.value : props.emptyText)
+
+/**
+ * Se estiver em modo contador (list prop preenchida) e não houver descrição
+ * personalizada no diálogo, então mostra o slot de descrição.
+ */
+const showDescriptionSlot = computed(() => isCounterMode.value && !hasDialogDescription?.value)
 
 // composable functions
 function useDialog ({ props, textContent }) {
@@ -168,13 +202,26 @@ function useDialog ({ props, textContent }) {
   const show = ref(false)
   const searchModel = ref([])
 
-  // computed
-  const description = computed(() => props.text || textContent.value)
+  // computeds
+  const hasDialogDescription = computed(() => !!props.dialogProps?.description)
+
+  const description = computed(() => {
+    // Se dialogProps.description estiver setado, usa ele
+    if (hasDialogDescription.value) {
+      return props.dialogProps.description
+    }
+
+    // Senão, usa o comportamento padrão
+    return props.text || textContent.value
+  })
 
   const defaultProps = computed(() => {
     return {
       cancel: false,
       ok: false,
+
+      useFullMaxWidth: true,
+      maxWidth: '500px',
 
       ...props.dialogProps,
 
@@ -216,6 +263,7 @@ function useDialog ({ props, textContent }) {
   return {
     defaultProps,
     dialogComponent,
+    hasDialogDescription,
 
     show,
     searchModel,
@@ -296,6 +344,9 @@ function useTemplate () {
   const isCounterMode = computed(() => !!props.list.length)
 
   const hasButton = computed(() => {
+    // Caso a propriedade useAlwaysSeeMore esteja ativa, sempre exibe o botão
+    if (props.useAlwaysSeeMore) return true
+
     return isCounterMode.value ? normalizedList.value.length > props.maxVisibleItem : isTruncated.value
   })
 
@@ -304,7 +355,7 @@ function useTemplate () {
   })
 
   const buttonLabel = computed(() => {
-    return isCounterMode.value ? counterLabel.value : props.seeMoreLabel
+    return isCounterMode.value && !props.useAlwaysSeeMore ? counterLabel.value : props.seeMoreLabel
   })
 
   return {
