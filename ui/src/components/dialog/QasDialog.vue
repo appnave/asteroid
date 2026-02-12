@@ -222,6 +222,7 @@ const defaultActionsProps = computed(() => {
       'data-cy': 'dialog-tertiary-btn'
     },
 
+    spacingTop: 'lg',
     gutter: 'md'
   }
 })
