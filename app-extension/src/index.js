@@ -11,11 +11,11 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
   // Arquivos de boot
   // https://quasar.dev/quasar-cli-vite/boot-files#introduction
   quasar.boot.push(...resolve(
+    'boot/register.js',
     'boot/api.js',
     'boot/debug.js',
     'boot/error-pages.js',
     'boot/font-face.js',
-    'boot/register.js',
     'boot/loading.js',
     'boot/query-cache.js',
     'boot/store-adapter',
