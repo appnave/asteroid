@@ -77,7 +77,7 @@ export default async function (api) {
   api.compatibleWith('date-fns', '^2.3.0')
 
   const asteroid = 'node_modules/@bildvitta/quasar-ui-asteroid/src/asteroid.js'
-  const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'
+  // const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'
   const asteroidConfig = 'node_modules/@bildvitta/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
   const vueRouter = 'node_modules/vue-router/dist/vue-router.esm-bundler.js'
   const quasar = 'node_modules/quasar'
@@ -91,10 +91,23 @@ export default async function (api) {
   const { default: asteroidConfigFile } = await import(pathToFileURL(asteroidConfigPath).href)
 
   const unpluginVueComponentsConfig = {
-    dirs: [api.resolve.app(asteroidComponents)], // ajusta o path para a lib
     extensions: ['vue'],
     deep: true,
-    dts: false // desativa geração de types
+    dts: false, // desativa geração de types
+    resolvers: [
+      // Resolver customizado para evitar conflitos circulares
+      componentName => {
+        if (componentName.startsWith('Qas')) {
+          return {
+            name: componentName,
+            from: 'asteroid',
+            sideEffects: false
+          }
+        }
+      }
+    ],
+    include: [/\.vue$/, /\.vue\?vue/],
+    exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/]
   }
 
   const alias = {
