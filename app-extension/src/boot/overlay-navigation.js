@@ -1,4 +1,4 @@
-import useOverlayNavigation from '@bildvitta/quasar-ui-asteroid/src/composables/use-overlay-navigation.js'
+import { useOverlayNavigation } from 'asteroid'
 
 /**
  * @param {import('vue-router').Router} router
