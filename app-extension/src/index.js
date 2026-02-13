@@ -19,7 +19,7 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
     'boot/loading.js',
     'boot/query-cache.js',
     'boot/store-adapter',
-    'boot/overlay-navigation.js',
+    // 'boot/overlay-navigation.js',
     'boot/before-each.js'
   ))
 
