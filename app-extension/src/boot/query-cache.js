@@ -1,4 +1,5 @@
-import { useQueryCache, useHistory } from 'asteroid'
+import useQueryCache from '@bildvitta/quasar-ui-asteroid/src/composables/use-query-cache.js'
+import useHistory from '@bildvitta/quasar-ui-asteroid/src/composables/use-history.js'
 
 const { addMany, findAll, clearAll } = useQueryCache()
 
