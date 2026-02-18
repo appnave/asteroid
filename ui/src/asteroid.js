@@ -15,7 +15,9 @@ export const QasAppMenu = defineAsyncComponent(() => import('./components/app-me
 export const QasAppUser = defineAsyncComponent(() => import('./components/app-user/QasAppUser.vue'))
 export const QasAvatar = defineAsyncComponent(() => import('./components/avatar/QasAvatar.vue'))
 export const QasBadge = defineAsyncComponent(() => import('./components/badge/QasBadge.vue'))
-export const QasBoardGenerator = defineAsyncComponent(() => import('./components/board-generator/QasBoardGenerator.vue'))
+
+export { default as QasBoardGenerator } from './components/board-generator/QasBoardGenerator.vue'
+
 export const QasBox = defineAsyncComponent(() => import('./components/box/QasBox.vue'))
 export const QasBreakline = defineAsyncComponent(() => import('./components/breakline/QasBreakline.vue'))
 export const QasBtn = defineAsyncComponent(() => import('./components/btn/QasBtn.vue'))
