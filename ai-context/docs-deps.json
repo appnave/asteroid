@@ -1,0 +1,336 @@
+{
+  "../ui/src/assets/big-shoes-hero.svg": [],
+  "../ui/src/assets/big-shoes-sitting-on-rock.svg": [],
+  "../ui/src/assets/big-shoes-walking-the-dog.svg": [],
+  "../ui/src/assets/sounds/nave-notification.mp3": [],
+  "../ui/src/components/actions/QasActions.vue": [
+    "../ui/src/components/btn/QasBtn.vue",
+    "../ui/src/composables/use-screen.js",
+    "../ui/src/enums/Align.js",
+    "../ui/src/enums/Spacing.js",
+    "../ui/src/helpers/private/gutter-validator.js"
+  ],
+  "../ui/src/components/breakline/QasBreakline.vue": [
+    "../ui/src/helpers/index.js"
+  ],
+  "../ui/src/components/btn/QasBtn.vue": [
+    "../ui/src/components/skeleton/QasSkeleton.vue",
+    "../ui/src/components/tooltip/QasTooltip.vue",
+    "../ui/src/composables/index.js"
+  ],
+  "../ui/src/components/dialog/QasDialog.vue": [
+    "../ui/src/components/actions/QasActions.vue",
+    "../ui/src/components/btn/QasBtn.vue",
+    "../ui/src/components/dialog/composables/use-cancel.js",
+    "../ui/src/components/dialog/composables/use-dynamic-components.js",
+    "../ui/src/components/dialog/composables/use-ok.js",
+    "../ui/src/components/label/QasLabel.vue",
+    "../ui/src/composables/index.js"
+  ],
+  "../ui/src/components/dialog/composables/use-cancel.js": [],
+  "../ui/src/components/dialog/composables/use-dynamic-components.js": [],
+  "../ui/src/components/dialog/composables/use-ok.js": [],
+  "../ui/src/components/label/QasLabel.vue": [
+    "../ui/src/enums/Spacing.js",
+    "../ui/src/helpers/index.js"
+  ],
+  "../ui/src/components/skeleton/QasSkeleton.vue": [],
+  "../ui/src/components/tooltip/QasTooltip.vue": [
+    "../ui/src/components/breakline/QasBreakline.vue"
+  ],
+  "../ui/src/composables/index.js": [
+    "../ui/src/composables/use-context.js",
+    "../ui/src/composables/use-default-filters.js",
+    "../ui/src/composables/use-form.js",
+    "../ui/src/composables/use-history.js",
+    "../ui/src/composables/use-notifications.js",
+    "../ui/src/composables/use-overlay-navigation.js",
+    "../ui/src/composables/use-query-cache.js",
+    "../ui/src/composables/use-screen.js"
+  ],
+  "../ui/src/composables/use-context.js": [
+    "../ui/src/composables/use-overlay-navigation.js"
+  ],
+  "../ui/src/composables/use-default-filters.js": [],
+  "../ui/src/composables/use-form.js": [],
+  "../ui/src/composables/use-history.js": [],
+  "../ui/src/composables/use-notifications.js": [
+    "../ui/src/assets/sounds/nave-notification.mp3",
+    "../ui/src/helpers/private/has-parent-by-class-name.js"
+  ],
+  "../ui/src/composables/use-overlay-navigation.js": [],
+  "../ui/src/composables/use-query-cache.js": [
+    "../ui/src/helpers/index.js"
+  ],
+  "../ui/src/composables/use-screen.js": [],
+  "../ui/src/css/base/font-face.scss": [],
+  "../ui/src/css/base/index.scss": [
+    "../ui/src/css/base/font-face.scss"
+  ],
+  "../ui/src/css/components/base.scss": [],
+  "../ui/src/css/components/button.scss": [],
+  "../ui/src/css/components/editor.scss": [],
+  "../ui/src/css/components/field.scss": [],
+  "../ui/src/css/components/index.scss": [
+    "../ui/src/css/components/base.scss",
+    "../ui/src/css/components/button.scss",
+    "../ui/src/css/components/editor.scss",
+    "../ui/src/css/components/field.scss",
+    "../ui/src/css/components/item.scss",
+    "../ui/src/css/components/menu.scss",
+    "../ui/src/css/components/scrollbar.scss",
+    "../ui/src/css/components/tabs.scss"
+  ],
+  "../ui/src/css/components/item.scss": [],
+  "../ui/src/css/components/menu.scss": [],
+  "../ui/src/css/components/scrollbar.scss": [],
+  "../ui/src/css/components/tabs.scss": [],
+  "../ui/src/css/mixins/index.scss": [
+    "../ui/src/css/mixins/set-brand.scss",
+    "../ui/src/css/mixins/set-button.scss",
+    "../ui/src/css/mixins/set-error-message.scss",
+    "../ui/src/css/mixins/set-typography.scss"
+  ],
+  "../ui/src/css/mixins/set-brand.scss": [],
+  "../ui/src/css/mixins/set-button.scss": [],
+  "../ui/src/css/mixins/set-error-message.scss": [
+    "../ui/src/css/variables/typography.scss"
+  ],
+  "../ui/src/css/mixins/set-typography.scss": [],
+  "../ui/src/css/plugins/index.scss": [
+    "../ui/src/css/plugins/loading.scss",
+    "../ui/src/css/plugins/notify.scss"
+  ],
+  "../ui/src/css/plugins/loading.scss": [],
+  "../ui/src/css/plugins/notify.scss": [],
+  "../ui/src/css/utils/background.scss": [],
+  "../ui/src/css/utils/border-radius.scss": [],
+  "../ui/src/css/utils/border.scss": [],
+  "../ui/src/css/utils/container.scss": [],
+  "../ui/src/css/utils/fonts.scss": [],
+  "../ui/src/css/utils/index.scss": [
+    "../ui/src/css/utils/background.scss",
+    "../ui/src/css/utils/border-radius.scss",
+    "../ui/src/css/utils/border.scss",
+    "../ui/src/css/utils/container.scss",
+    "../ui/src/css/utils/fonts.scss",
+    "../ui/src/css/utils/line-height.scss",
+    "../ui/src/css/utils/opacity.scss",
+    "../ui/src/css/utils/scroll.scss",
+    "../ui/src/css/utils/text.scss",
+    "../ui/src/css/utils/unset.scss"
+  ],
+  "../ui/src/css/utils/line-height.scss": [],
+  "../ui/src/css/utils/opacity.scss": [],
+  "../ui/src/css/utils/scroll.scss": [],
+  "../ui/src/css/utils/text.scss": [],
+  "../ui/src/css/utils/unset.scss": [],
+  "../ui/src/css/variables/button.scss": [],
+  "../ui/src/css/variables/index.scss": [
+    "../ui/src/css/variables/button.scss",
+    "../ui/src/css/variables/scrollbar.scss",
+    "../ui/src/css/variables/separator.scss",
+    "../ui/src/css/variables/shadow.scss",
+    "../ui/src/css/variables/spacing.scss",
+    "../ui/src/css/variables/typography.scss"
+  ],
+  "../ui/src/css/variables/scrollbar.scss": [],
+  "../ui/src/css/variables/separator.scss": [],
+  "../ui/src/css/variables/shadow.scss": [],
+  "../ui/src/css/variables/spacing.scss": [],
+  "../ui/src/css/variables/typography.scss": [],
+  "../ui/src/enums/Align.js": [],
+  "../ui/src/enums/Spacing.js": [],
+  "../ui/src/helpers/add-counter-suffix.js": [],
+  "../ui/src/helpers/base-64-to-blob.js": [],
+  "../ui/src/helpers/camelize-fields-name.js": [],
+  "../ui/src/helpers/colors.js": [],
+  "../ui/src/helpers/construct-object.js": [],
+  "../ui/src/helpers/copy-to-clipboard.js": [
+    "../ui/src/plugins/index.js"
+  ],
+  "../ui/src/helpers/destroy-nested-children-by-key.js": [],
+  "../ui/src/helpers/download-file.js": [],
+  "../ui/src/helpers/filter-list-by-handle.js": [],
+  "../ui/src/helpers/filter-object-to-array.js": [],
+  "../ui/src/helpers/filter-object.js": [],
+  "../ui/src/helpers/filters.js": [],
+  "../ui/src/helpers/find-children-by-key.js": [],
+  "../ui/src/helpers/get-greatest-common-divisor.js": [],
+  "../ui/src/helpers/get-normalized-options.js": [],
+  "../ui/src/helpers/get-placeholder.js": [],
+  "../ui/src/helpers/get-required-label.js": [],
+  "../ui/src/helpers/get-slot-children-text.js": [],
+  "../ui/src/helpers/handle-process.js": [],
+  "../ui/src/helpers/images.js": [],
+  "../ui/src/helpers/index.js": [
+    "../ui/src/helpers/add-counter-suffix.js",
+    "../ui/src/helpers/base-64-to-blob.js",
+    "../ui/src/helpers/camelize-fields-name.js",
+    "../ui/src/helpers/construct-object.js",
+    "../ui/src/helpers/copy-to-clipboard.js",
+    "../ui/src/helpers/destroy-nested-children-by-key.js",
+    "../ui/src/helpers/download-file.js",
+    "../ui/src/helpers/filter-list-by-handle.js",
+    "../ui/src/helpers/filter-object-to-array.js",
+    "../ui/src/helpers/filter-object.js",
+    "../ui/src/helpers/filters.js",
+    "../ui/src/helpers/find-children-by-key.js",
+    "../ui/src/helpers/get-greatest-common-divisor.js",
+    "../ui/src/helpers/get-normalized-options.js",
+    "../ui/src/helpers/get-placeholder.js",
+    "../ui/src/helpers/get-required-label.js",
+    "../ui/src/helpers/get-slot-children-text.js",
+    "../ui/src/helpers/handle-process.js",
+    "../ui/src/helpers/images.js",
+    "../ui/src/helpers/is-empty.js",
+    "../ui/src/helpers/is-local-development.js",
+    "../ui/src/helpers/promise-handler.js",
+    "../ui/src/helpers/rules.js",
+    "../ui/src/helpers/set-scroll-gradient.js",
+    "../ui/src/helpers/set-scroll-on-grab.js"
+  ],
+  "../ui/src/helpers/is-empty.js": [],
+  "../ui/src/helpers/is-local-development.js": [],
+  "../ui/src/helpers/private/gutter-validator.js": [
+    "../ui/src/enums/Spacing.js"
+  ],
+  "../ui/src/helpers/private/has-parent-by-class-name.js": [],
+  "../ui/src/helpers/promise-handler.js": [
+    "../ui/src/plugins/index.js"
+  ],
+  "../ui/src/helpers/rules.js": [],
+  "../ui/src/helpers/set-scroll-gradient.js": [
+    "../ui/src/helpers/colors.js"
+  ],
+  "../ui/src/helpers/set-scroll-on-grab.js": [],
+  "../ui/src/index.scss": [
+    "../ui/src/css/base/index.scss",
+    "../ui/src/css/components/index.scss",
+    "../ui/src/css/mixins/index.scss",
+    "../ui/src/css/plugins/index.scss",
+    "../ui/src/css/utils/index.scss",
+    "../ui/src/css/variables/index.scss"
+  ],
+  "../ui/src/pages/ErrorComponent.vue": [
+    "../ui/src/components/breakline/QasBreakline.vue",
+    "../ui/src/components/btn/QasBtn.vue"
+  ],
+  "../ui/src/pages/Forbidden.vue": [
+    "../ui/src/assets/big-shoes-walking-the-dog.svg",
+    "../ui/src/pages/ErrorComponent.vue"
+  ],
+  "../ui/src/pages/NotFound.vue": [
+    "../ui/src/assets/big-shoes-hero.svg",
+    "../ui/src/pages/ErrorComponent.vue"
+  ],
+  "../ui/src/pages/ServerError.vue": [
+    "../ui/src/assets/big-shoes-sitting-on-rock.svg",
+    "../ui/src/pages/ErrorComponent.vue"
+  ],
+  "../ui/src/pages/Unauthorized.vue": [
+    "../ui/src/assets/big-shoes-walking-the-dog.svg",
+    "../ui/src/pages/ErrorComponent.vue"
+  ],
+  "../ui/src/plugins/delete/Delete.js": [
+    "../ui/src/composables/index.js"
+  ],
+  "../ui/src/plugins/dialog/Dialog.js": [
+    "../ui/src/components/dialog/QasDialog.vue"
+  ],
+  "../ui/src/plugins/index.js": [
+    "../ui/src/plugins/delete/Delete.js",
+    "../ui/src/plugins/dialog/Dialog.js",
+    "../ui/src/plugins/notify-error/NotifyError.js",
+    "../ui/src/plugins/notify-success/NotifySuccess.js",
+    "../ui/src/plugins/screen/Screen.js"
+  ],
+  "../ui/src/plugins/notify-error/NotifyError.js": [
+    "../ui/src/shared/notify-config.js"
+  ],
+  "../ui/src/plugins/notify-success/NotifySuccess.js": [
+    "../ui/src/shared/notify-config.js"
+  ],
+  "../ui/src/plugins/screen/Screen.js": [],
+  "../ui/src/shared/notify-config.js": [],
+  ".postcssrc.js": [],
+  ".quasar/app.js": [],
+  ".quasar/client-entry.js": [
+    ".quasar/app.js",
+    ".quasar/quasar-user-options.js",
+    "src/css/app.scss",
+    "src/css/lib/doc-search.scss"
+  ],
+  ".quasar/client-prefetch.js": [],
+  ".quasar/quasar-user-options.js": [],
+  "asteroid.config.js": [],
+  "babel.config.js": [],
+  "build/markdown-plugin-code.js": [],
+  "build/markdown-plugin-container.js": [],
+  "build/markdown-plugin-heading.js": [],
+  "build/markdown-plugin-table.js": [],
+  "build/markdown.js": [
+    "build/markdown-plugin-code.js",
+    "build/markdown-plugin-container.js",
+    "build/markdown-plugin-heading.js",
+    "build/markdown-plugin-table.js"
+  ],
+  "quasar.conf.js": [
+    "build/markdown.js"
+  ],
+  "src-pwa/custom-service-worker.js": [],
+  "src-pwa/register-service-worker.js": [],
+  "src/assets/menu.js": [],
+  "src/boot/asteroid.js": [],
+  "src/boot/components.js": [],
+  "src/boot/redirect.js": [],
+  "src/boot/vitals.js": [],
+  "src/css/app.scss": [
+    "../ui/src/css/mixins/set-brand.scss",
+    "../ui/src/index.scss",
+    "src/css/quasar.variables.scss"
+  ],
+  "src/css/lib/doc-search.scss": [],
+  "src/css/quasar.variables.scss": [
+    "../ui/src/index.scss"
+  ],
+  "src/layouts/DocLayout.vue": [],
+  "src/mocks/users.js": [],
+  "src/router/index.js": [
+    "src/router/routes.js"
+  ],
+  "src/router/pages.js": [],
+  "src/router/routes.js": [
+    "../ui/src/pages/Forbidden.vue",
+    "../ui/src/pages/NotFound.vue",
+    "../ui/src/pages/ServerError.vue",
+    "../ui/src/pages/Unauthorized.vue",
+    "src/layouts/DocLayout.vue",
+    "src/router/pages.js"
+  ],
+  "src/store/index.js": [
+    "src/store/mocks/charts-multiple-results.json",
+    "src/store/mocks/charts.json",
+    "src/store/mocks/users.json",
+    "src/store/modules/index.js"
+  ],
+  "src/store/mocks/charts-multiple-results.json": [],
+  "src/store/mocks/charts.json": [],
+  "src/store/mocks/users.json": [],
+  "src/store/modules/charts-multiple-results.js": [
+    "src/store/schemas/chart.js"
+  ],
+  "src/store/modules/charts.js": [
+    "src/store/schemas/chart.js"
+  ],
+  "src/store/modules/index.js": [
+    "src/store/modules/charts-multiple-results.js",
+    "src/store/modules/charts.js",
+    "src/store/modules/users.js"
+  ],
+  "src/store/modules/users.js": [
+    "src/store/schemas/user.js"
+  ],
+  "src/store/schemas/chart.js": [],
+  "src/store/schemas/user.js": []
+}

@@ -1,0 +1,38 @@
+{
+  "../package.json": [],
+  "api.js": [],
+  "build.js": [
+    "../package.json",
+    "release/changelog-handler.js",
+    "release/create-github-release-from-browser.js",
+    "release/create-github-release.js",
+    "release/get-latest-versions.js",
+    "release/git-handler.js",
+    "release/notify-discord-chat.js",
+    "release/release-app-extension.js",
+    "release/release-ui.js"
+  ],
+  "release/changelog-handler.js": [
+    "release/get-version-link-compare.js"
+  ],
+  "release/create-github-release-from-browser.js": [],
+  "release/create-github-release.js": [],
+  "release/get-app-extension-package.js": [],
+  "release/get-latest-versions.js": [
+    "release/get-nearest-version.js",
+    "release/get-normalized-versions.js"
+  ],
+  "release/get-nearest-version.js": [],
+  "release/get-normalized-versions.js": [],
+  "release/get-version-link-compare.js": [],
+  "release/git-handler.js": [],
+  "release/install-next-ui.js": [
+    "release/get-app-extension-package.js"
+  ],
+  "release/notify-discord-chat.js": [],
+  "release/release-app-extension.js": [
+    "release/install-next-ui.js"
+  ],
+  "release/release-ui.js": [],
+  "vetur.js": []
+}

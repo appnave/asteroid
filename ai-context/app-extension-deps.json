@@ -1,0 +1,31 @@
+{
+  "src/boot/api.js": [],
+  "src/boot/before-each.js": [],
+  "src/boot/debug.js": [],
+  "src/boot/error-pages.js": [],
+  "src/boot/font-face.js": [],
+  "src/boot/loading.js": [],
+  "src/boot/notifications.js": [
+    "src/helpers/laravel-echo.js",
+    "src/helpers/notifications-channels.js",
+    "src/helpers/on-leader-election-channel.js"
+  ],
+  "src/boot/overlay-navigation.js": [],
+  "src/boot/query-cache.js": [],
+  "src/boot/register.js": [],
+  "src/boot/store-adapter.js": [],
+  "src/defaults/default-asteroid-config.js": [
+    "src/templates/js/asteroid.config.js"
+  ],
+  "src/helpers/asteroid-config-handler.js": [],
+  "src/helpers/laravel-echo.js": [],
+  "src/helpers/notifications-channels.js": [],
+  "src/helpers/on-leader-election-channel.js": [],
+  "src/index.js": [
+    "src/helpers/asteroid-config-handler.js"
+  ],
+  "src/install.js": [],
+  "src/prompts.js": [],
+  "src/templates/js/asteroid.config.js": [],
+  "src/uninstall.js": []
+}
