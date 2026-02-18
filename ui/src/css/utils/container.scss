@@ -36,9 +36,10 @@
 }
 
 /**
- * Adiciona padding no container para evitar que o botão do Gleap fique sobreposto ao conteúdo da página.
- * O Gleap é exibido em todas as páginas, então aplicamos o padding sempre que ele estiver presente.
+ * - Adiciona padding no ultimo container da pagina e no ultimo elemento do overlay para evitar que o botão do Gleap
+ * fique sobreposto ao conteúdo da página.
  */
-body:has(.bb-feedback-button) .container {
+body:has(.bb-feedback-button) > .container:last-child,
+body:has(.bb-feedback-button) .pv-layout-overlay-drawer__content > :last-child {
   padding-bottom: 80px;
 }
