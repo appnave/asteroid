@@ -1,3 +1,5 @@
+import { defineAsyncComponent } from 'vue'
+
 export * from './helpers'
 export * from './mixins'
 export * from './vue-plugin'
@@ -5,90 +7,88 @@ export * from './composables'
 export * from './plugins'
 
 // components
-export { default as QasActions } from './components/actions/QasActions.vue'
-export { default as QasActionsMenu } from './components/actions-menu/QasActionsMenu.vue'
-export { default as QasAlert } from './components/alert/QasAlert.vue'
-export { default as QasAppBar } from './components/app-bar/QasAppBar.vue'
-export { default as QasAppMenu } from './components/app-menu/QasAppMenu.vue'
-export { default as QasAppUser } from './components/app-user/QasAppUser.vue'
-export { default as QasAvatar } from './components/avatar/QasAvatar.vue'
-export { default as QasBadge } from './components/badge/QasBadge.vue'
-
-export { default as QasBoardGenerator } from './components/board-generator/QasBoardGenerator.vue'
-
-export { default as QasBox } from './components/box/QasBox.vue'
-export { default as QasBreakline } from './components/breakline/QasBreakline.vue'
-export { default as QasBtn } from './components/btn/QasBtn.vue'
-export { default as QasBtnDropdown } from './components/btn-dropdown/QasBtnDropdown.vue'
-export { default as QasCard } from './components/card/QasCard.vue'
-export { default as QasCardImage } from './components/card-image/QasCardImage.vue'
-export { default as QasCheckbox } from './components/checkbox/QasCheckbox.vue'
-export { default as QasContainer } from './components/container/QasContainer.vue'
-export { default as QasCopy } from './components/copy/QasCopy.vue'
-export { default as QasDate } from './components/date/QasDate.vue'
-export { default as QasDateTimeInput } from './components/date-time-input/QasDateTimeInput.vue'
-export { default as QasDebugger } from './components/debugger/QasDebugger.vue'
-export { default as QasDelete } from './components/delete/QasDelete.vue'
-export { default as QasSelectFilter } from './components/select-filter/QasSelectFilter.vue'
-export { default as QasDialog } from './components/dialog/QasDialog.vue'
-export { default as QasDialogRouter } from './components/dialog-router/QasDialogRouter.vue'
-export { default as QasDrawer } from './components/drawer/QasDrawer.vue'
-export { default as QasEmptyResultText } from './components/empty-result-text/QasEmptyResultText.vue'
-export { default as QasErrorMessage } from './components/error-message/QasErrorMessage.vue'
-export { default as QasExpansionItem } from './components/expansion-item/QasExpansionItem.vue'
-export { default as QasField } from './components/field/QasField.vue'
-export { default as QasFilters } from './components/filters/QasFilters.vue'
-export { default as QasFormGenerator } from './components/form-generator/QasFormGenerator.vue'
-export { default as QasFormView } from './components/form-view/QasFormView.vue'
-export { default as QasGallery } from './components/gallery/QasGallery.vue'
-export { default as QasGalleryCard } from './components/gallery-card/QasGalleryCard.vue'
-export { default as QasGrabbable } from './components/grabbable/QasGrabbable.vue'
-export { default as QasGridGenerator } from './components/grid-generator/QasGridGenerator.vue'
-export { default as QasGridItem } from './components/grid-item/QasGridItem.vue'
-export { default as QasHeader } from './components/header/QasHeader.vue'
-export { default as QasInfiniteScroll } from './components/infinite-scroll/QasInfiniteScroll.vue'
-export { default as QasInput } from './components/input/QasInput.vue'
-export { default as QasLabel } from './components/label/QasLabel.vue'
-export { default as QasLayout } from './components/layout/QasLayout.vue'
-export { default as QasListItems } from './components/list-items/QasListItems.vue'
-export { default as QasListView } from './components/list-view/QasListView.vue'
-export { default as QasNestedFields } from './components/nested-fields/QasNestedFields.vue'
-export { default as QasNumericInput } from './components/numeric-input/QasNumericInput.vue'
-export { default as QasOptionGroup } from './components/option-group/QasOptionGroup.vue'
-export { default as QasPageHeader } from './components/page-header/QasPageHeader.vue'
-export { default as QasPagination } from './components/pagination/QasPagination.vue'
-export { default as QasPasswordInput } from './components/password-input/QasPasswordInput.vue'
-export { default as QasPasswordStrengthChecker } from './components/password-strength-checker/QasPasswordStrengthChecker.vue'
-export { default as QasPdfViewer } from './components/pdf-viewer/QasPdfViewer.vue'
-export { default as QasProfile } from './components/profile/QasProfile.vue'
-export { default as QasResizer } from './components/resizer/QasResizer.vue'
-export { default as QasRadio } from './components/radio/QasRadio.vue'
-export { default as QasSearchBox } from './components/search-box/QasSearchBox.vue'
-export { default as QasSearchInput } from './components/search-input/QasSearchInput.vue'
-export { default as QasSelect } from './components/select/QasSelect.vue'
-export { default as QasSelectList } from './components/select-list/QasSelectList.vue'
-export { default as QasSelectListDialog } from './components/select-list-dialog/QasSelectListDialog.vue'
-export { default as QasSignaturePad } from './components/signature-pad/QasSignaturePad.vue'
-export { default as QasSignatureUploader } from './components/signature-uploader/QasSignatureUploader.vue'
-export { default as QasSingleView } from './components/single-view/QasSingleView.vue'
-export { default as QasSortable } from './components/sortable/QasSortable.vue'
-export { default as QasSkeleton } from './components/skeleton/QasSkeleton.vue'
-export { default as QasStatus } from './components/status/QasStatus.vue'
-export { default as QasStepper } from './components/stepper/QasStepper.vue'
-export { default as QasStepperFormView } from './components/stepper-form-view/QasStepperFormView.vue'
-export { default as QasTableGenerator } from './components/table-generator/QasTableGenerator.vue'
-export { default as QasTabsGenerator } from './components/tabs-generator/QasTabsGenerator.vue'
-export { default as QasTextTruncate } from './components/text-truncate/QasTextTruncate.vue'
-export { default as QasTimeline } from './components/timeline/QasTimeline.vue'
-export { default as QasTip } from './components/tip/QasTip.vue'
-export { default as QasToggle } from './components/toggle/QasToggle.vue'
-export { default as QasToggleVisibility } from './components/toggle-visibility/QasToggleVisibility.vue'
-export { default as QasTooltip } from './components/tooltip/QasTooltip.vue'
-export { default as QasTransfer } from './components/transfer/QasTransfer.vue'
-export { default as QasTreeGenerator } from './components/tree-generator/QasTreeGenerator.vue'
-export { default as QasUploader } from './components/uploader/QasUploader.vue'
-export { default as QasWelcome } from './components/welcome/QasWelcome.vue'
-export { default as QasWhatsappLink } from './components/whatsapp-link/QasWhatsappLink.vue'
-export { default as QasReportsFilters } from './components/reports-filters/QasReportsFilters.vue'
-export { default as QasMap } from './components/map/QasMap.vue'
-export { default as QasChartView } from './components/chart-view/QasChartView.vue'
+export const QasActions = defineAsyncComponent(() => import('./components/actions/QasActions.vue'))
+export const QasActionsMenu = defineAsyncComponent(() => import('./components/actions-menu/QasActionsMenu.vue'))
+export const QasAlert = defineAsyncComponent(() => import('./components/alert/QasAlert.vue'))
+export const QasAppBar = defineAsyncComponent(() => import('./components/app-bar/QasAppBar.vue'))
+export const QasAppMenu = defineAsyncComponent(() => import('./components/app-menu/QasAppMenu.vue'))
+export const QasAppUser = defineAsyncComponent(() => import('./components/app-user/QasAppUser.vue'))
+export const QasAvatar = defineAsyncComponent(() => import('./components/avatar/QasAvatar.vue'))
+export const QasBadge = defineAsyncComponent(() => import('./components/badge/QasBadge.vue'))
+export const QasBoardGenerator = defineAsyncComponent(() => import('./components/board-generator/QasBoardGenerator.vue'))
+export const QasBox = defineAsyncComponent(() => import('./components/box/QasBox.vue'))
+export const QasBreakline = defineAsyncComponent(() => import('./components/breakline/QasBreakline.vue'))
+export const QasBtn = defineAsyncComponent(() => import('./components/btn/QasBtn.vue'))
+export const QasBtnDropdown = defineAsyncComponent(() => import('./components/btn-dropdown/QasBtnDropdown.vue'))
+export const QasCard = defineAsyncComponent(() => import('./components/card/QasCard.vue'))
+export const QasCardImage = defineAsyncComponent(() => import('./components/card-image/QasCardImage.vue'))
+export const QasCheckbox = defineAsyncComponent(() => import('./components/checkbox/QasCheckbox.vue'))
+export const QasContainer = defineAsyncComponent(() => import('./components/container/QasContainer.vue'))
+export const QasCopy = defineAsyncComponent(() => import('./components/copy/QasCopy.vue'))
+export const QasDate = defineAsyncComponent(() => import('./components/date/QasDate.vue'))
+export const QasDateTimeInput = defineAsyncComponent(() => import('./components/date-time-input/QasDateTimeInput.vue'))
+export const QasDebugger = defineAsyncComponent(() => import('./components/debugger/QasDebugger.vue'))
+export const QasDelete = defineAsyncComponent(() => import('./components/delete/QasDelete.vue'))
+export const QasSelectFilter = defineAsyncComponent(() => import('./components/select-filter/QasSelectFilter.vue'))
+export const QasDialog = defineAsyncComponent(() => import('./components/dialog/QasDialog.vue'))
+export const QasDialogRouter = defineAsyncComponent(() => import('./components/dialog-router/QasDialogRouter.vue'))
+export const QasDrawer = defineAsyncComponent(() => import('./components/drawer/QasDrawer.vue'))
+export const QasEmptyResultText = defineAsyncComponent(() => import('./components/empty-result-text/QasEmptyResultText.vue'))
+export const QasErrorMessage = defineAsyncComponent(() => import('./components/error-message/QasErrorMessage.vue'))
+export const QasExpansionItem = defineAsyncComponent(() => import('./components/expansion-item/QasExpansionItem.vue'))
+export const QasField = defineAsyncComponent(() => import('./components/field/QasField.vue'))
+export const QasFilters = defineAsyncComponent(() => import('./components/filters/QasFilters.vue'))
+export const QasFormGenerator = defineAsyncComponent(() => import('./components/form-generator/QasFormGenerator.vue'))
+export const QasFormView = defineAsyncComponent(() => import('./components/form-view/QasFormView.vue'))
+export const QasGallery = defineAsyncComponent(() => import('./components/gallery/QasGallery.vue'))
+export const QasGalleryCard = defineAsyncComponent(() => import('./components/gallery-card/QasGalleryCard.vue'))
+export const QasGrabbable = defineAsyncComponent(() => import('./components/grabbable/QasGrabbable.vue'))
+export const QasGridGenerator = defineAsyncComponent(() => import('./components/grid-generator/QasGridGenerator.vue'))
+export const QasGridItem = defineAsyncComponent(() => import('./components/grid-item/QasGridItem.vue'))
+export const QasHeader = defineAsyncComponent(() => import('./components/header/QasHeader.vue'))
+export const QasInfiniteScroll = defineAsyncComponent(() => import('./components/infinite-scroll/QasInfiniteScroll.vue'))
+export const QasInput = defineAsyncComponent(() => import('./components/input/QasInput.vue'))
+export const QasLabel = defineAsyncComponent(() => import('./components/label/QasLabel.vue'))
+export const QasLayout = defineAsyncComponent(() => import('./components/layout/QasLayout.vue'))
+export const QasListItems = defineAsyncComponent(() => import('./components/list-items/QasListItems.vue'))
+export const QasListView = defineAsyncComponent(() => import('./components/list-view/QasListView.vue'))
+export const QasNestedFields = defineAsyncComponent(() => import('./components/nested-fields/QasNestedFields.vue'))
+export const QasNumericInput = defineAsyncComponent(() => import('./components/numeric-input/QasNumericInput.vue'))
+export const QasOptionGroup = defineAsyncComponent(() => import('./components/option-group/QasOptionGroup.vue'))
+export const QasPageHeader = defineAsyncComponent(() => import('./components/page-header/QasPageHeader.vue'))
+export const QasPagination = defineAsyncComponent(() => import('./components/pagination/QasPagination.vue'))
+export const QasPasswordInput = defineAsyncComponent(() => import('./components/password-input/QasPasswordInput.vue'))
+export const QasPasswordStrengthChecker = defineAsyncComponent(() => import('./components/password-strength-checker/QasPasswordStrengthChecker.vue'))
+export const QasPdfViewer = defineAsyncComponent(() => import('./components/pdf-viewer/QasPdfViewer.vue'))
+export const QasProfile = defineAsyncComponent(() => import('./components/profile/QasProfile.vue'))
+export const QasResizer = defineAsyncComponent(() => import('./components/resizer/QasResizer.vue'))
+export const QasRadio = defineAsyncComponent(() => import('./components/radio/QasRadio.vue'))
+export const QasSearchBox = defineAsyncComponent(() => import('./components/search-box/QasSearchBox.vue'))
+export const QasSearchInput = defineAsyncComponent(() => import('./components/search-input/QasSearchInput.vue'))
+export const QasSelect = defineAsyncComponent(() => import('./components/select/QasSelect.vue'))
+export const QasSelectList = defineAsyncComponent(() => import('./components/select-list/QasSelectList.vue'))
+export const QasSelectListDialog = defineAsyncComponent(() => import('./components/select-list-dialog/QasSelectListDialog.vue'))
+export const QasSignaturePad = defineAsyncComponent(() => import('./components/signature-pad/QasSignaturePad.vue'))
+export const QasSignatureUploader = defineAsyncComponent(() => import('./components/signature-uploader/QasSignatureUploader.vue'))
+export const QasSingleView = defineAsyncComponent(() => import('./components/single-view/QasSingleView.vue'))
+export const QasSortable = defineAsyncComponent(() => import('./components/sortable/QasSortable.vue'))
+export const QasSkeleton = defineAsyncComponent(() => import('./components/skeleton/QasSkeleton.vue'))
+export const QasStatus = defineAsyncComponent(() => import('./components/status/QasStatus.vue'))
+export const QasStepper = defineAsyncComponent(() => import('./components/stepper/QasStepper.vue'))
+export const QasStepperFormView = defineAsyncComponent(() => import('./components/stepper-form-view/QasStepperFormView.vue'))
+export const QasTableGenerator = defineAsyncComponent(() => import('./components/table-generator/QasTableGenerator.vue'))
+export const QasTabsGenerator = defineAsyncComponent(() => import('./components/tabs-generator/QasTabsGenerator.vue'))
+export const QasTextTruncate = defineAsyncComponent(() => import('./components/text-truncate/QasTextTruncate.vue'))
+export const QasTimeline = defineAsyncComponent(() => import('./components/timeline/QasTimeline.vue'))
+export const QasTip = defineAsyncComponent(() => import('./components/tip/QasTip.vue'))
+export const QasToggle = defineAsyncComponent(() => import('./components/toggle/QasToggle.vue'))
+export const QasToggleVisibility = defineAsyncComponent(() => import('./components/toggle-visibility/QasToggleVisibility.vue'))
+export const QasTooltip = defineAsyncComponent(() => import('./components/tooltip/QasTooltip.vue'))
+export const QasTransfer = defineAsyncComponent(() => import('./components/transfer/QasTransfer.vue'))
+export const QasTreeGenerator = defineAsyncComponent(() => import('./components/tree-generator/QasTreeGenerator.vue'))
+export const QasUploader = defineAsyncComponent(() => import('./components/uploader/QasUploader.vue'))
+export const QasWelcome = defineAsyncComponent(() => import('./components/welcome/QasWelcome.vue'))
+export const QasWhatsappLink = defineAsyncComponent(() => import('./components/whatsapp-link/QasWhatsappLink.vue'))
+export const QasReportsFilters = defineAsyncComponent(() => import('./components/reports-filters/QasReportsFilters.vue'))
+export const QasMap = defineAsyncComponent(() => import('./components/map/QasMap.vue'))
+export const QasChartView = defineAsyncComponent(() => import('./components/chart-view/QasChartView.vue'))
