@@ -11,7 +11,7 @@
     <slot>
       <q-page-container>
         <q-page>
-          <router-view />
+          <router-view :route="overlayBackgroundRoute" />
         </q-page>
       </q-page-container>
     </slot>
@@ -34,6 +34,7 @@ import useScreen from '../../composables/use-screen'
 import useNotifications from '../../composables/use-notifications'
 
 import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 defineOptions({ name: 'QasLayout' })
 
@@ -68,10 +69,24 @@ const screen = useScreen()
 
 const { isNotificationsEnabled, setUnreadNotificationsCount } = useNotifications()
 
+const route = useRoute()
+
 const menuDrawer = ref(false)
 const notificationsDrawer = ref(false)
 
 // computed
+
+/**
+ * Sempre fornece uma rota para o <router-view>. Quando o overlay está ativo,
+ * usa a rota resolvida do background; sem overlay, usa a rota atual.
+ * Isso evita alternância entre `undefined` e objeto de rota, reduzindo remounts.
+ */
+const overlayBackgroundRoute = computed(() => {
+  return route.query?.overlay === 'true'
+    ? route.meta.overlayBackgroundResolvedRoute
+    : route
+})
+
 const defaultAppMenuProps = computed(() => {
   return {
     ...props.appBarProps,

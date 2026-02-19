@@ -21,8 +21,10 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - custom asteroid
 
 ### Corrigido
+- `Navegação em overlay`: corrigido problema com background route que quando a rota de background era nested (tinha layout) ela não renderizava corretamente.
+- `QasSingleView`: corrigido parâmero da url id que pegava via route do vue-router e agora pega route do overlay.
 - Corrigido problema de `circular dependency` com vite:
-  - `ui/`: corrigido todos imports de plugins para importe direto.
+  - `ui/`: corrigido todos imports de plugins para importar diretamente os arquivos.
 - `QasActions`: Corrigido espaçamento no topo para ser `margin` ao invés de `padding`.
 - Corrigido espaçamento do `gleap` que aplicava padding em todos container, e não funcionava no Overlay, agora aplica apenas no ultimo container da pagina e funciona para o overlay.
 

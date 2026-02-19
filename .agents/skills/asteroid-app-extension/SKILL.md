@@ -50,7 +50,6 @@ app-extension/
 - **Webpack** (`@quasar/app >= v3 || v4`): `extendWebpack` + `transpileDependencies`
 
 ## Boot Files
-
 Todos em `app-extension/src/boot/`. Registrados automaticamente pelo `index.js`.
 
 ### `api.js` — Configuração Axios
