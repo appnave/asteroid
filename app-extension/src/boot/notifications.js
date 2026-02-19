@@ -3,7 +3,7 @@
  * "asteroidConfig.framework.featureToggle.useNotifications" esteja ativada.
  */
 
-import isLocalDevelopment from '@bildvitta/quasar-ui-asteroid/src/helpers/is-local-development.js'
+import { isLocalDevelopment } from 'asteroid'
 
 import onLeaderElectionChannel from '../helpers/on-leader-election-channel.js'
 import { setLaravelEcho, setLaravelEchoListener } from '../helpers/laravel-echo.js'
