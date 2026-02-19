@@ -1,5 +1,9 @@
 dist
 
+# Agent
+.agent/
+.claude/
+
 # OS
 .DS_Store
 .thumbs.db
