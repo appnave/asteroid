@@ -52,7 +52,7 @@ import { getImageSize, getResizeDimensions } from '../../helpers/images.js'
 import { constructObject } from '../../helpers'
 
 import { uid, extend } from 'quasar'
-import { NotifyError } from '../../plugins'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
 
 import Pica from 'pica'
 

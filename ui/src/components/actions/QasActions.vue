@@ -89,7 +89,7 @@ const classes = computed(() => {
     !screen.isSmall && 'items-center',
 
     // espaçamento superior
-    `q-pt-${props.spacingTop}`,
+    `q-mt-${props.spacingTop}`,
 
     // alinhamento
     `justify-${props.align}`,

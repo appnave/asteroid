@@ -40,7 +40,8 @@ import QasBtn from '../btn/QasBtn.vue'
 import QasContainer from '../container/QasContainer.vue'
 import QasDialog from '../dialog/QasDialog.vue'
 
-import { NotifyError, NotifySuccess } from '../../plugins'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
+import NotifySuccess from '../../plugins/notify-success/NotifySuccess.js'
 import { useHistory, useOverlayNavigation } from '../../composables'
 import { viewMixin } from '../../mixins'
 
