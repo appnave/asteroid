@@ -14,7 +14,8 @@
     "setup:app-extension": "cd app-extension && npm i && cd ..",
     "setup:docs": "cd docs && npm i && cd ..",
     "setup:ui": "cd ui && npm i && cd ..",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "setup:agent-links": "node scripts/setup-links.js"
   },
   "devDependencies": {
     "@bildvitta/quasar-ui-asteroid": "file:ui",
