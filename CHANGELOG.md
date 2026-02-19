@@ -14,6 +14,19 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- Adicionado skills:
+  - vue-best-practice
+  - custom asteroid
+
+### Corrigido
+- Corrigido problema de `circular dependency` com vite:
+  - `ui/`: corrigido todos imports de plugins para importe direto.
+  - `app-extension`: corrigido import para usar `@bildvitta/quasar-ui-asteroid` ao invés do alias.
+- `QasActions`: Corrigido espaçamento no topo para ser `margin` ao invés de `padding`.
+- Corrigido espaçamento do `gleap` que aplicava padding em todos container, e não funcionava no Overlay, agora aplica apenas no ultimo container da pagina e funciona para o overlay.
+
 ## [3.20.0-beta.10] - 10-02-2026
 ### Adicionado
 - `helpers/set-scroll-gradient`:
