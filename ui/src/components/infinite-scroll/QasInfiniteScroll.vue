@@ -25,7 +25,7 @@
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 
 import { ref, computed, inject, nextTick } from 'vue'
-import { NotifyError } from '../../plugins'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
 
 defineOptions({ name: 'QasInfiniteScroll' })
 

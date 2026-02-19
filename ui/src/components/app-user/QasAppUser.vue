@@ -76,7 +76,8 @@ import useNotifications from '../../composables/use-notifications'
 import useQueryCache from '../../composables/use-query-cache'
 import useScreen from '../../composables/use-screen'
 
-import { NotifySuccess, NotifyError } from '../../plugins'
+import NotifySuccess from '../../plugins/notify-success/NotifySuccess.js'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
 
 import { ref, computed, watch, inject } from 'vue'
 import { useRouter } from 'vue-router'
