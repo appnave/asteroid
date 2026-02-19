@@ -14,6 +14,11 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Corrigido
+- `Navegação em overlay`: corrigido problema com background route que quando a rota de background era nested (tinha layout) ela não renderizava corretamente.
+- `QasSingleView`: corrigido parâmero da url id que pegava via route do vue-router e agora pega route do overlay.
+
 ## [3.20.0-beta.10] - 10-02-2026
 ### Adicionado
 - `helpers/set-scroll-gradient`:
