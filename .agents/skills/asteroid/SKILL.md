@@ -21,3 +21,6 @@ Asteroid Design System — instruções práticas para tarefas de desenvolviment
 ### Manutenção
 - Escrevendo entradas no CHANGELOG.md → See [changelog-format](reference/changelog-format.md)
 - Criando ou atualizando testes unitários → See [testing](reference/testing.md)
+
+### Geral
+- Precisa de mais contexto sobre o projeto ou arquitetura -> See [project-overview](../../../.ai-context/project-overview.md)

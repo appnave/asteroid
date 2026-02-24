@@ -10,7 +10,7 @@ Asteroid é um **Design System** criado pela **Bild & Vitta**, implementado como
 - **Documentação:** https://asteroid-v3.vercel.app/
 - **Repositório:** https://github.com/bildvitta/asteroid
 
-## Dev environment tips
+## Dev environment
 
 - Rode `npm run setup` na raiz para instalar dependências de todos os módulos (`ui/`, `app-extension/`, `docs/`).
 - Para instalar dependências de um módulo específico: `cd <modulo> && npm i && cd ..`
@@ -20,6 +20,10 @@ Asteroid é um **Design System** criado pela **Bild & Vitta**, implementado como
 - Use `cd docs && npm run dev:pwa` para rodar a documentação local.
 - O alias `asteroid` aponta para `ui/src/asteroid.js` — configurado tanto no `vitest.config.ts` quanto no `app-extension/src/index.js`.
 - Componentes Quasar (`q-*`) são auto-importados. Componentes Asteroid (`Qas*`) são importados explicitamente dentro do `ui/`, mas auto-importados nos projetos host via `unplugin-vue-components`.
+- No prompt responda sempre em pt-br.
+- Caso exista algum conflito de skills/rules no arquivo `.agents/` considere sempre as skills/rules do `asteroid` como prioridade e sobrescreva as demais.
+- Use sempre javascript ao invés de TS.
+- Use sempre scss ao invés de css.
 
 ## Testing instructions
 

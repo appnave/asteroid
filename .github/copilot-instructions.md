@@ -1,74 +1,91 @@
-# Asteroid — Regras de Código
+# Asteroid — Copilot Instructions
 
-Estas regras são **sempre carregadas** e devem ser seguidas em todo código do projeto.
+Design System da **Bild & Vitta** implementado como Quasar App Extension para Vue 3.
 
-## Idioma
+## Arquitetura
 
-- **Código:** Inglês (variáveis, funções, componentes, nomes de arquivo).
-- **Documentação (YML, Markdown, CHANGELOG):** Português brasileiro (pt-BR).
-- **Formatação padrão:** pt-BR (datas dd/MM/yyyy, moeda BRL, separador decimal vírgula).
+Monorepo com módulos interdependentes:
+- **`ui/`** — Componentes (`Qas*`), helpers, composables, plugins, CSS. Exporta tudo via [asteroid.js](ui/src/asteroid.js).
+- **`app-extension/`** — Quasar App Extension que instala `ui/` em apps host via boots, aliases e auto-import.
+- **`docs/`** — Documentação PWA, consome `ui/` diretamente (`"file:../ui"`).
+- **`build/`** — Scripts de release e publicação NPM.
+- **`eslint/`** — Plugin ESLint customizado (`eslint-plugin-asteroid`).
+
+### Fluxo de dados com API
+**Sempre** usar `@bildvitta/store-adapter` — nunca Axios diretamente:
+```js
+import { getAction, getState } from '@bildvitta/store-adapter'
+await getAction('users/fetchList')  // GET /users (snake_case automático)
+const users = getState('users/list') // Response convertida para camelCase
+```
+
+## Comandos Essenciais
+
+```bash
+npm run setup          # Instala dependências em todos os módulos
+npm run test           # Vitest (helpers, componentes em ui/src/)
+npm run lint           # ESLint em .js/.vue
+cd docs && npm run dev:pwa  # Rodar documentação local
+npm run build          # Release interativo (build/build.js)
+```
 
 ## Nomenclatura
 
-### Componentes
-- Nome: `Qas` + PascalCase → `QasFormView`
-- Pasta: kebab-case → `form-view/`
-- Sub-componentes privados: `Pv` + PascalCase → `PvTableGeneratorTd`
-- Template: kebab-case → `<qas-form-view>`
+| Tipo | Arquivo | Export/Nome |
+|------|---------|-------------|
+| **Componente** | `form-view/QasFormView.vue` | `QasFormView` → `<qas-form-view>` |
+| **Sub-componente** | `PvTableGeneratorTd.vue` | Prefixo `Pv` (privado) |
+| **Composable** | `use-form.js` | `useForm` |
+| **Helper** | `is-empty.js` | `isEmpty` |
+| **Enum** | `Align.js` | `Align` (PascalCase) |
+| **CSS** | — | `.qas-btn--primary`, `--qas-*`, `$var` |
 
-### Composables
-- Arquivo: `use-<nome>.js` (kebab-case)
-- Export: `use<Nome>` (camelCase)
-
-### Helpers
-- Arquivo: kebab-case → `is-empty.js`
-- Export: camelCase → `isEmpty`
-
-### Mixins (legado)
-- Export: `<nome>Mixin` → `viewMixin`
-- Props internas: prefixo `mx_` → `mx_isFetching`
-
-### CSS
-- Classes: BEM-like com `qas-` → `qas-btn--primary`
-- Variáveis CSS: `--qas-<nome>`
-- Variáveis Sass: `$<nome>`
-
-### Enums
-- Arquivo: PascalCase → `Align.js`
-- Export: Objeto PascalCase → `Align`
-
-## Convenções de Código
+## Padrões de Código
 
 ### Vue
-- **Novos componentes:** Sempre usar Composition API com `<script setup>`.
-- **Componentes existentes (Options API):** Manter, a menos que haja migração planejada.
-- **Dentro do `ui/`:** Imports de `Qas*` são explícitos (sem auto-import).
-- **Componentes Quasar (`q-*`):** Usados diretamente (auto-importados).
+- **Novos componentes:** Composition API com `<script setup>`.
+- **Legado (Options API):** Manter, migrar somente se planejado.
+- **Dentro do `ui/`:** Imports explícitos de `Qas*` (sem auto-import).
+- **Componentes Quasar (`q-*`):** Auto-importados.
 
-### API
-- **Nunca chamar APIs diretamente.** Sempre usar `@bildvitta/store-adapter` (`getAction`, `getState`).
-- Request: camelCase → snake_case (automático via `decamelizeKeys`).
-- Response: snake_case → camelCase (automático via `camelizeKeys`).
-
-### Testes
-- `data-cy` obrigatório em elementos interagíveis para E2E.
-- Adicione ou atualize testes unitários para código alterado.
+### Novo componente obrigatoriamente inclui:
+1. `ui/src/components/<nome>/<Nome>.vue`
+2. `ui/src/components/<nome>/<Nome>.yml` (documentação de API)
+3. Export em [asteroid.js](ui/src/asteroid.js) usando `defineAsyncComponent`
 
 ### Debug
-- Usar módulo `debug` com namespace `asteroid-ui:qas-<nome>`.
+```js
+import createDebug from 'debug'
+const debug = createDebug('asteroid-ui:qas-form-view')
+```
+
+## Idioma
+- **Código:** Inglês.
+- **Documentação (YML, MD, CHANGELOG):** Português (pt-BR).
+- **Formatação:** pt-BR (datas dd/MM/yyyy, moeda BRL).
 
 ## Restrições
 
-- **Não** registrar componentes globalmente dentro do `ui/`. Usar import local.
-- **Não** usar `this.$axios` ou instanciar Axios diretamente. Usar store-adapter.
-- **Não** usar registro de estado global sem padrão singleton documentado.
-- **Não** esquecer o arquivo `.yml` de documentação ao criar novo componente.
-- **Não** commitar sem rodar `npm run lint` e `npm run test`.
+- **Não** registrar componentes globalmente no `ui/` — usar import local.
+- **Não** usar `this.$axios` ou Axios direto — usar store-adapter.
+- **Não** criar componente sem `.yml` de documentação.
+- **Não** commitar sem `npm run lint && npm run test`.
+- Elementos interagíveis precisam de `data-cy` para testes E2E.
+- No prompt responda sempre em pt-br.
+- Caso exista algum conflito de skills/rules no arquivo `.agents/` considere sempre as skills/rules do `asteroid` como prioridade e sobrescreva as demais.
+- Use sempre javascript ao invés de TS.
+- Use sempre scss ao invés de css.
 
-## Git Flow
+## Git Flow e CHANGELOG
 
 | Branch | Release | Tag NPM |
 |--------|---------|---------|
-| `main` | Stable (ex: 3.20.0) | `latest` |
-| `develop` | Beta (ex: 3.20.0-beta.1) | `beta` |
-| `feature/*` | Alpha (ex: 3.20.0-alpha.1) | `alpha` |
+| `main` | Stable (3.20.0) | `latest` |
+| `develop` | Beta (3.20.0-beta.1) | `beta` |
+| `feature/*` | Alpha (3.20.0-alpha.1) | `alpha` |
+
+Antes de PR: atualizar CHANGELOG.md na seção `## Não publicado`:
+```md
+### Modificado
+- `QasFormView`: Descrição da mudança.
+```
