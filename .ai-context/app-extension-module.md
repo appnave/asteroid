@@ -50,6 +50,7 @@ app-extension/
 - **Webpack** (`@quasar/app >= v3 || v4`): `extendWebpack` + `transpileDependencies`
 
 ## Boot Files
+
 Todos em `app-extension/src/boot/`. Registrados automaticamente pelo `index.js`.
 
 ### `api.js` — Configuração Axios
@@ -76,7 +77,7 @@ Todos em `app-extension/src/boot/`. Registrados automaticamente pelo `index.js`.
 
 ### `font-face.js` — Carregamento de Fontes
 - Usa `FontFaceObserver` para detectar carregamento da fonte `Material Symbols Rounded`
-- Adiciona classe `icons-is-loading` no body enquanto carrega (exibe loader animado)
+- Adiciona classe `icons-is-loading` no body enquanto carrega
 - Opcionalmente aguarda autenticação do usuário via `postMessage` (`waitForUserAuthenticate`)
 
 ### `loading.js` — Loading Padrão
@@ -87,7 +88,7 @@ Todos em `app-extension/src/boot/`. Registrados automaticamente pelo `index.js`.
 - **Condicional:** Só é adicionado se `asteroidConfig.framework.featureToggle.useNotifications === true`
 - Usa `Laravel Echo` + `Pusher` para WebSocket
 - `BroadcastChannel` para comunicação entre abas
-- **Leader Election:** Apenas a aba "líder" mantém conexão WebSocket; outras abas recebem via `BroadcastChannel`
+- **Leader Election:** Apenas a aba "líder" mantém conexão WebSocket
 
 ### `overlay-navigation.js` — Navegação em Overlay
 - Intercepta rotas com `meta.useOverlay`
@@ -97,7 +98,6 @@ Todos em `app-extension/src/boot/`. Registrados automaticamente pelo `index.js`.
 ### `query-cache.js` — Cache de Query Params
 - Salva query params de rotas de listagem
 - Restaura ao retornar para a mesma rota sem queries
-- Exclui `page` e params configurados
 
 ### `register.js` — Registro do Plugin Vue
 - `app.use({ install })` — instala o plugin Vue do Asteroid
@@ -127,14 +127,6 @@ export default {
 }
 ```
 
-O merge é feito no `defaults/default-asteroid-config.js`:
-```js
-export default {
-  ...defaultAsteroidConfig,   // Config padrão do Asteroid
-  ...asteroidConfigApp         // Config do projeto host (sobrescreve)
-}
-```
-
 ## Instalação (`install.js`)
 
 Ao rodar `quasar ext add`, copia para o projeto host:
@@ -149,7 +141,7 @@ Ao rodar `quasar ext add`, copia para o projeto host:
 
 ### `laravel-echo.js`
 - `setLaravelEcho(userToken)` — Inicializa conexão Laravel Echo com Pusher
-- `setLaravelEchoListener({ user, channel })` — Escuta canal de notificações do usuário
+- `setLaravelEchoListener({ user, channel })` — Escuta canal de notificações
 
 ### `notifications-channels.js`
 - `setNotificationsChannelListener()` — Escuta `BroadcastChannel` para notificações cross-tab
@@ -158,4 +150,3 @@ Ao rodar `quasar ext add`, copia para o projeto host:
 ### `on-leader-election-channel.js`
 - Implementa leader election entre abas do navegador
 - Apenas a aba líder mantém a conexão WebSocket
-e

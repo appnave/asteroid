@@ -1,8 +1,8 @@
 dist
 
 # Agent
-.agent/
-.claude/
+.agent
+.claude
 
 # OS
 .DS_Store
