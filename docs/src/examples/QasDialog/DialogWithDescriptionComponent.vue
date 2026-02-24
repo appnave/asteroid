@@ -16,6 +16,7 @@ defineOptions({ name: 'DialogWithDescriptionComponent' })
 const isDialogOpened = ref(false)
 
 const dialogProps = {
+  title: 'Título do dialog',
   description: DescriptionComponent
 }
 

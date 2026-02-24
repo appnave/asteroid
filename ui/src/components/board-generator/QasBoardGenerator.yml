@@ -115,6 +115,10 @@ props:
     default: "{ animation: 500, swapThreshold: 1, delay: 50, delayOnTouchOnly: true, emptyInsertThreshold: 0 }"
     debugger: true
 
+  use-confirm-dialog:
+    desc: Controla se o dialog de confirmação para o drag and drop será utilizado. Caso seja "true", o dialog é aberto utilizando as props passadas em "confirm-dialog-props" e as ações de confirmar e cancelar são feitas por padrão no componente. Caso seja "false", o drag and drop é realizado sem confirmação.
+    type: Boolean
+
   use-drag-and-drop-x:
     desc: Controla se irá ter drag and drop no eixo X (entre colunas).
     type: Boolean

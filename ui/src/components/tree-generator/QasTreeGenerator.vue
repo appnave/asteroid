@@ -186,9 +186,9 @@ export default {
 
     destroyDialogConfig () {
       return {
-        card: {
-          description: 'Todas as informações serão perdidas. Deseja realmente continuar?'
-        },
+        title: 'Excluir',
+        description: 'Todas as informações serão perdidas. Deseja realmente continuar?',
+        size: 'md',
         ok: {
           label: 'Excluir',
           onClick: this.destroy

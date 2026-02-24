@@ -52,7 +52,7 @@
 
       <template #description>
         <slot name="dialog-description">
-          <div v-if="dialogDescription" class="q-mb-xl text-center">
+          <div v-if="dialogDescription" class="q-mb-md">
             {{ dialogDescription }}
           </div>
 
@@ -326,6 +326,7 @@ function useSelectDialog () {
   const defaultDialogProps = computed(() => {
     return {
       size: 'md',
+      title: 'Adicionar itens',
       ...props.dialogProps,
 
       onBeforeShow: event => {

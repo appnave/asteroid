@@ -24,7 +24,7 @@
       </div>
     </div>
 
-    <qas-dialog v-model="showConfirmDialog" v-bind="defaultConfirmDialogProps" />
+    <qas-dialog v-if="props.useConfirmDialog" v-model="showConfirmDialog" v-bind="defaultConfirmDialogProps" />
   </qas-grabbable>
 </template>
 
@@ -107,6 +107,10 @@ const props = defineProps({
   sortableConfig: {
     type: Object,
     default: () => ({})
+  },
+
+  useConfirmDialog: {
+    type: Boolean
   },
 
   useMarkRaw: {
@@ -244,8 +248,6 @@ const columnsResultsModel = computed({
 const hasColumnsLength = computed(() => !!Object.keys(columnsResultsModel.value).length)
 
 const containerStyle = computed(() => `width: ${props.columnWidth};`)
-
-const hasConfirmDialogProps = computed(() => !!Object.keys(props.confirmDialogProps).length)
 
 const defaultConfirmDialogProps = computed(() => {
   const defaultProps = {
@@ -572,7 +574,7 @@ function onDropCard (event) {
     return
   }
 
-  hasConfirmDialogProps.value
+  props.useConfirmDialog
     ? openConfirmDialog()
     : confirmDrop(event)
 }
@@ -614,7 +616,7 @@ function cancelDrop (event) {
     event.from.insertBefore(event.item, insertBeforeElement)
   }
 
-  if (hasConfirmDialogProps.value) closeConfirmDialog()
+  if (props.useConfirmDialog) closeConfirmDialog()
 
   toggleIsDragging()
 }

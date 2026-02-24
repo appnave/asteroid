@@ -71,6 +71,7 @@ props:
   title:
     desc: Título do dialog.
     type: String
+    required: true
 
 slots:
   description:

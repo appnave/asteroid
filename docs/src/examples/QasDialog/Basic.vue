@@ -17,7 +17,8 @@ const isDialogOpened = ref(false)
 const dialogProps = {
   title: 'Título do dialog',
   description: 'Cerca elétrica perto do corrimão risco iminente de choque. Código da ordem de serviço: 159488 CRM ID: 1179512',
-  useForm: true
+  useForm: false,
+  useAutoCloseOnOk: false
 }
 
 // functions

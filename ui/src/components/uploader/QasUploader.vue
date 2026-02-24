@@ -318,8 +318,14 @@ export default {
 
       return {
         dialogProps: {
-          ...dialogProps,
-          size: 'md'
+          title: 'Editar arquivo',
+
+          ok: {
+            label: 'Salvar',
+            ...dialogProps.ok
+          },
+
+          ...dialogProps
         },
 
         fields,

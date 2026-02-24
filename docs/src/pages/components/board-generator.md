@@ -8,6 +8,10 @@ Componente usado para board de colunas.
 
 ## Uso
 
+:::info
+- Necessário passar a prop `title` para a `confirmDialogProps` porque `title` é obrigatório no `QasDialog`.
+:::
+
 :::warning
 ##### beforeUpdatePosition
 - Utilize a propriedade `beforeUpdatePosition` apenas em casos necessários, como validar um card antes de salvar a posição.

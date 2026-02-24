@@ -28,6 +28,7 @@ export default function useDelete ({ props, destroyFn, emit }) {
 
   const defaultDialogProps = computed(() => {
     return {
+      title: 'Excluir',
       description: 'Tem certeza que deseja excluir este item?',
 
       ok: {

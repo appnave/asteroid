@@ -23,14 +23,10 @@ export default function (config = {}) {
   const defaultDialogProps = {
     useForm: true,
 
+    title: 'Excluir',
+    description: 'Tem certeza que deseja excluir este item?',
+
     ...dialogProps,
-
-    card: {
-      title: 'Excluir',
-      description: 'Tem certeza que deseja excluir este item?',
-
-      ...dialogProps.card
-    },
 
     ok: {
       label: 'Excluir',

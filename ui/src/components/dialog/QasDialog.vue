@@ -66,7 +66,7 @@ const props = defineProps({
 
   title: {
     type: String,
-    default: ''
+    required: true
   },
 
   tertiary: {
@@ -83,6 +83,16 @@ const props = defineProps({
   },
 
   useAutoCloseOnActions: {
+    type: Boolean,
+    default: true
+  },
+
+  useAutoCloseOnCancel: {
+    type: Boolean,
+    default: true
+  },
+
+  useAutoCloseOnOk: {
     type: Boolean,
     default: true
   },
@@ -256,7 +266,7 @@ function useOk () {
 
   // functions
   function onOk () {
-    if (!props.useForm && props.useAutoCloseOnActions) {
+    if (!props.useForm && props.useAutoCloseOnActions && props.useAutoCloseOnOk) {
       updateModelValue(false)
     }
 
@@ -291,7 +301,7 @@ function useCancel () {
   function onCancel () {
     props.cancel.onClick?.()
 
-    if (props.useAutoCloseOnActions) {
+    if (props.useAutoCloseOnAction || props.useAutoCloseOnCancel) {
       updateModelValue(false)
     }
 
