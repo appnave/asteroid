@@ -3,23 +3,30 @@ import { defineConfig } from 'vitest/config'
 import Vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  plugins: [Vue({
-    script: {
-      defineModel: true,
-      propsDestructure: true
-    },
-    template: {
-      compilerOptions: {
-        isCustomElement: tag => tag.startsWith('q-')
+  plugins: [
+    Vue({
+      script: {
+        defineModel: true,
+        propsDestructure: true
+      },
+      template: {
+        compilerOptions: {
+          isCustomElement: tag => {
+            // q-btn e q-input usam v-for + #[name] (dynamic slots),
+            // que requerem tratamento de componente — não podem ser custom elements
+            const componentWithDynamicSlots = new Set(['q-btn', 'q-input'])
+            return tag.startsWith('q-') && !componentWithDynamicSlots.has(tag)
+          }
+        }
       }
-    }
-  })],
+    })
+  ],
 
   resolve: {
     alias: {
       asteroid: path.resolve(__dirname, 'ui/src/asteroid.js'),
       'asteroid-config': path.resolve(__dirname, 'docs/asteroid.config.js'),
-      'vue-router': path.resolve(__dirname, 'docs/node_modules/vue-loader'),
+      '@test-utils': path.resolve(__dirname, 'ui/src/test-utils'),
       quasar: 'quasar/dist/quasar.client.js'
     },
     dedupe: ['vue', '@vue/runtime-core']
@@ -28,6 +35,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    setupFiles: ['./ui/src/test-utils/setup.js'],
     includeSource: [
       'ui/src/helpers/**/*.{js,ts}',
       'ui/src/components/**/*.{js,ts}'
