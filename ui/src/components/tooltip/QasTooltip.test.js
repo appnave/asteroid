@@ -26,15 +26,12 @@ describe('QasTooltip', () => {
 
     it('deve passar a prop text para QasBreakline', () => {
       const wrapper = mountComponent(QasTooltip, {
-        props: { text: 'Texto do tooltip' },
-        global: {
-          stubs: { QasBreakline: { template: '<div class="breakline-stub" :text="text" />', props: ['text'] } }
-        }
+        props: { text: 'Texto do tooltip' }
       })
 
-      const breaklineStub = wrapper.find('.breakline-stub')
-      expect(breaklineStub.exists()).toBeTruthy()
-      expect(breaklineStub.attributes('text')).toBe('Texto do tooltip')
+      const breakline = wrapper.findComponent({ name: 'QasBreakline' })
+      expect(breakline.exists()).toBeTruthy()
+      expect(breakline.props('text')).toBe('Texto do tooltip')
     })
   })
 })

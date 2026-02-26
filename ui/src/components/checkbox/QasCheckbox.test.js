@@ -66,7 +66,7 @@ describe('QasCheckbox', () => {
         props: { label: 'Selecione', options, modelValue: [] }
       })
 
-      expect(wrapper.find('.qas-label-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasLabel' }).exists()).toBeTruthy()
     })
   })
 
@@ -82,7 +82,7 @@ describe('QasCheckbox', () => {
       })
 
       // A label formatada é passada para o qas-label-stub
-      const label = wrapper.find('.qas-label-stub')
+      const label = wrapper.findComponent({ name: 'QasLabel' })
       expect(label.exists()).toBeTruthy()
     })
   })
@@ -98,7 +98,7 @@ describe('QasCheckbox', () => {
         }
       })
 
-      expect(wrapper.find('.qas-error-message-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasErrorMessage' }).exists()).toBeTruthy()
     })
 
     it('deve aplicar "qas-checkbox--error" no modo single com error', () => {

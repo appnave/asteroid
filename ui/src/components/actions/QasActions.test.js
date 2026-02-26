@@ -17,7 +17,7 @@ describe('QasActions', () => {
     it('não deve renderizar botões quando nenhuma prop de botão é fornecida', () => {
       const wrapper = mountActions()
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeFalsy()
     })
   })
 
@@ -71,7 +71,7 @@ describe('QasActions', () => {
     it('não deve renderizar o botão primário por padrão', () => {
       const wrapper = mountActions()
 
-      expect(wrapper.findAll('.qas-btn-stub').length).toBe(0)
+      expect(wrapper.findAllComponents({ name: 'QasBtn' }).length).toBe(0)
     })
 
     it('deve renderizar o botão primário quando primaryButtonProps tem propriedades', () => {
@@ -79,7 +79,7 @@ describe('QasActions', () => {
         props: { primaryButtonProps: { label: 'Salvar' } }
       })
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -89,7 +89,7 @@ describe('QasActions', () => {
         props: { secondaryButtonProps: { label: 'Cancelar' } }
       })
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -99,7 +99,7 @@ describe('QasActions', () => {
         props: { tertiaryButtonProps: { label: 'Voltar' } }
       })
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -113,7 +113,7 @@ describe('QasActions', () => {
         }
       })
 
-      expect(wrapper.findAll('.qas-btn-stub').length).toBe(3)
+      expect(wrapper.findAllComponents({ name: 'QasBtn' }).length).toBe(3)
     })
 
     it('deve renderizar dois botões quando dois props de botão são fornecidos', () => {
@@ -124,7 +124,7 @@ describe('QasActions', () => {
         }
       })
 
-      expect(wrapper.findAll('.qas-btn-stub').length).toBe(2)
+      expect(wrapper.findAllComponents({ name: 'QasBtn' }).length).toBe(2)
     })
   })
 
@@ -154,10 +154,7 @@ describe('QasActions', () => {
       })
 
       // O container do botão deve ter col-12 e col-sm-6
-      const btnWrapper = wrapper.find('.qas-btn-stub').element.parentElement
-
-      expect(btnWrapper.classList).toContain('col-12')
-      expect(btnWrapper.classList).toContain('col-sm-6')
+      expect(wrapper.find('.col-12.col-sm-6').exists()).toBeTruthy()
     })
   })
 
@@ -199,8 +196,7 @@ describe('QasActions', () => {
       })
 
       expect(wrapper.find('.slot-btn').exists()).toBeTruthy()
-      // O slot substitui o qas-btn-stub
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeFalsy()
     })
   })
 })

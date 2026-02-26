@@ -8,14 +8,7 @@ import QasBtn from './QasBtn.vue'
 // seu atributo estático.  O stub explícito para QBtn garante que attrs
 // (classe, data-*) sejam repassados ao elemento raiz do stub via inheritAttrs.
 function mountBtn (options = {}) {
-  return mountComponent(QasBtn, {
-    global: {
-      stubs: {
-        QBtn: { template: '<div><slot /></div>' }
-      }
-    },
-    ...options
-  })
+  return mountComponent(QasBtn, options)
 }
 
 /** Retorna o wrapper do elemento raiz real do QasBtn (elemento com classe qas-btn) */
@@ -122,13 +115,13 @@ describe('QasBtn', () => {
     it('não deve renderizar o skeleton por padrão', () => {
       const wrapper = mountBtn()
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeFalsy()
     })
 
     it('deve renderizar o skeleton quando skeleton é true', () => {
       const wrapper = mountBtn({ props: { skeleton: true } })
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeTruthy()
     })
   })
 
@@ -136,13 +129,13 @@ describe('QasBtn', () => {
     it('não deve renderizar o tooltip por padrão', () => {
       const wrapper = mountBtn()
 
-      expect(wrapper.find('.qas-tooltip-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasTooltip' }).exists()).toBeFalsy()
     })
 
     it('deve renderizar o tooltip quando tooltip é fornecido', () => {
       const wrapper = mountBtn({ props: { tooltip: 'Dica do botão' } })
 
-      expect(wrapper.find('.qas-tooltip-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasTooltip' }).exists()).toBeTruthy()
     })
   })
 
@@ -152,7 +145,7 @@ describe('QasBtn', () => {
         props: { disable: true, disabledTooltip: 'Desabilitado' }
       })
 
-      expect(wrapper.find('.qas-tooltip-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasTooltip' }).exists()).toBeTruthy()
     })
 
     it('não deve renderizar tooltip de desabilitado quando disable é false', () => {
@@ -160,7 +153,7 @@ describe('QasBtn', () => {
         props: { disable: false, disabledTooltip: 'Desabilitado' }
       })
 
-      expect(wrapper.find('.qas-tooltip-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasTooltip' }).exists()).toBeFalsy()
     })
   })
 

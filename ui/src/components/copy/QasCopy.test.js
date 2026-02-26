@@ -25,7 +25,7 @@ describe('QasCopy', () => {
       const wrapper = mountComponent(QasCopy, {
         props: { text: 'Texto para copiar' }
       })
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -51,7 +51,7 @@ describe('QasCopy', () => {
       const wrapper = mountComponent(QasCopy, {
         props: { text: 'Copiar este texto' }
       })
-      await wrapper.find('.qas-btn-stub').trigger('click')
+      await wrapper.findComponent({ name: 'QasBtn' }).vm.$emit('click', new MouseEvent('click'))
       expect(copyToClipboard).toHaveBeenCalledWith('Copiar este texto', expect.any(Function))
     })
   })
@@ -62,7 +62,7 @@ describe('QasCopy', () => {
       const wrapper = mountComponent(QasCopy, {
         props: { text: 'Texto visível', rawText: 'Texto sem formatação' }
       })
-      await wrapper.find('.qas-btn-stub').trigger('click')
+      await wrapper.findComponent({ name: 'QasBtn' }).vm.$emit('click', new MouseEvent('click'))
       expect(copyToClipboard).toHaveBeenCalledWith('Texto sem formatação', expect.any(Function))
     })
 
@@ -71,30 +71,24 @@ describe('QasCopy', () => {
       const wrapper = mountComponent(QasCopy, {
         props: { text: 'Texto principal', rawText: '' }
       })
-      await wrapper.find('.qas-btn-stub').trigger('click')
+      await wrapper.findComponent({ name: 'QasBtn' }).vm.$emit('click', new MouseEvent('click'))
       expect(copyToClipboard).toHaveBeenCalledWith('Texto principal', expect.any(Function))
     })
   })
 
   describe('prop icon', () => {
-    const iconStub = {
-      QasBtn: { template: '<button class="qas-btn-stub" :data-icon="icon"><slot /></button>', props: ['icon', 'variant', 'color', 'loading'] }
-    }
-
     it('deve passar o icon padrão sym_r_file_copy para o botão', () => {
       const wrapper = mountComponent(QasCopy, {
-        props: { text: 'Texto' },
-        global: { stubs: iconStub }
+        props: { text: 'Texto' }
       })
-      expect(wrapper.find('.qas-btn-stub').attributes('data-icon')).toBe('sym_r_file_copy')
+      expect(wrapper.findComponent({ name: 'QasBtn' }).props('icon')).toBe('sym_r_file_copy')
     })
 
     it('deve passar o icon customizado para o botão quando definido', () => {
       const wrapper = mountComponent(QasCopy, {
-        props: { text: 'Texto', icon: 'sym_r_content_copy' },
-        global: { stubs: iconStub }
+        props: { text: 'Texto', icon: 'sym_r_content_copy' }
       })
-      expect(wrapper.find('.qas-btn-stub').attributes('data-icon')).toBe('sym_r_content_copy')
+      expect(wrapper.findComponent({ name: 'QasBtn' }).props('icon')).toBe('sym_r_content_copy')
     })
   })
 })

@@ -2,17 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasPasswordStrengthChecker from './QasPasswordStrengthChecker.vue'
 
-const QLinearProgressStub = { template: '<div class="q-linear-progress-stub" />' }
-
 function mountChecker (options = {}) {
   return mountComponent(QasPasswordStrengthChecker, {
     ...options,
     global: {
-      ...(options.global || {}),
-      stubs: {
-        QLinearProgress: QLinearProgressStub,
-        ...((options.global || {}).stubs || {})
-      }
+      ...(options.global || {})
     }
   })
 }

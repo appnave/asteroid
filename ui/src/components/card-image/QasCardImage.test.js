@@ -3,23 +3,10 @@ import { mountComponent } from '@test-utils'
 
 import QasCardImage from './QasCardImage.vue'
 
-/** Stubs para componentes Quasar não registrados globalmente nos testes */
-const baseStubs = {
-  QCard: { template: '<div class="q-card-stub"><slot /></div>' },
-  QCardSection: { template: '<div class="q-card-section-stub"><slot /></div>' },
-  QCarousel: { template: '<div class="q-carousel-stub"><slot /></div>' },
-  QCarouselSlide: { template: '<div class="q-carousel-slide-stub" />', props: ['name', 'imgSrc'] },
-  'q-card': { template: '<div class="q-card-stub"><slot /></div>' },
-  'q-card-section': { template: '<div class="q-card-section-stub"><slot /></div>' },
-  'q-carousel': { template: '<div class="q-carousel-stub"><slot /></div>' },
-  'q-carousel-slide': { template: '<div class="q-carousel-slide-stub" />', props: ['name', 'img-src'] }
-}
-
 function mount (props = {}, slots = {}) {
   return mountComponent(QasCardImage, {
     props,
-    slots,
-    global: { stubs: baseStubs }
+    slots
   })
 }
 
@@ -92,32 +79,34 @@ describe('QasCardImage', () => {
   describe('prop images', () => {
     it('deve renderizar no máximo 3 slides mesmo que images tenha mais de 3 itens', () => {
       const wrapper = mount({ useHeader: true, images: ['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg'] })
-      expect(wrapper.findAll('q-carousel-slide').length).toBe(3)
+      // o QCarousel pode renderizar apenas o slide ativo; contar botões de navegação
+      const navButtons = wrapper.findAll('.q-carousel__navigation-inner button')
+      expect(navButtons.length).toBe(3)
     })
 
     it('deve renderizar corretamente quando images tem menos de 3 itens', () => {
       const wrapper = mount({ useHeader: true, images: ['a.jpg', 'b.jpg'] })
-      expect(wrapper.findAll('q-carousel-slide').length).toBe(2)
+      const navButtons = wrapper.findAll('.q-carousel__navigation-inner button')
+      expect(navButtons.length).toBe(2)
     })
   })
 
   describe('prop skeleton', () => {
     it('deve renderizar QasSkeleton quando skeleton é true', () => {
       const wrapper = mount({ skeleton: true })
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeTruthy()
     })
 
     it('não deve renderizar QasSkeleton quando skeleton é false (padrão)', () => {
       const wrapper = mount()
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeFalsy()
     })
   })
 
   describe('slot default', () => {
     it('deve renderizar conteúdo do slot default', () => {
       const wrapper = mountComponent(QasCardImage, {
-        slots: { default: '<p class="card-content">Conteúdo do card</p>' },
-        global: { stubs: baseStubs }
+        slots: { default: '<p class="card-content">Conteúdo do card</p>' }
       })
       expect(wrapper.find('.card-content').exists()).toBeTruthy()
       expect(wrapper.text()).toContain('Conteúdo do card')
@@ -127,8 +116,7 @@ describe('QasCardImage', () => {
   describe('slot actions', () => {
     it('deve renderizar a seção de actions quando o slot actions é fornecido', () => {
       const wrapper = mountComponent(QasCardImage, {
-        slots: { actions: '<button class="action-btn">Ação</button>' },
-        global: { stubs: baseStubs }
+        slots: { actions: '<button class="action-btn">Ação</button>' }
       })
       expect(wrapper.find('.action-btn').exists()).toBeTruthy()
     })

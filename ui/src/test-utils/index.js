@@ -1,2 +1,2 @@
-export { mountComponent, defaultProvide, defaultStubs } from './mount-helper'
+export { mountComponent, defaultProvide } from './mount-helper'
 export { createRouteStub, createRouterStub, createStoreActionStub, createAxiosStub } from './factories'

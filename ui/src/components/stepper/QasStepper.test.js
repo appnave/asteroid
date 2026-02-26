@@ -2,48 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasStepper from './QasStepper.vue'
 
-const nextMock = vi.fn()
-const previousMock = vi.fn()
-const goToMock = vi.fn()
-
-const QStepperStub = {
-  name: 'QStepper',
-  template: '<div class="q-stepper-stub"><slot /></div>',
-  props: [
-    'modelValue',
-    'vertical',
-    'flat',
-    'animated',
-    'contracted',
-    'doneColor',
-    'activeColor',
-    'headerClass',
-    'headerNav',
-    'inactiveColor',
-    'keepAlive',
-    'activeIcon',
-    'doneIcon',
-    'errorIcon',
-    'errorColor'
-  ],
-  emits: ['update:modelValue'],
-  methods: {
-    next: nextMock,
-    previous: previousMock,
-    goTo: goToMock
-  }
-}
-
-function createWrapper (props = {}, stubs = {}) {
-  return mountComponent(QasStepper, {
-    props,
-    global: {
-      stubs: {
-        QStepper: QStepperStub,
-        ...stubs
-      }
-    }
-  })
+function createWrapper (props = {}) {
+  return mountComponent(QasStepper, { props })
 }
 
 describe('QasStepper', () => {
@@ -63,7 +23,7 @@ describe('QasStepper', () => {
     it('deve renderizar o q-stepper interno', () => {
       const wrapper = createWrapper()
 
-      expect(wrapper.find('.q-stepper-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QStepper' }).exists()).toBeTruthy()
     })
   })
 
@@ -84,14 +44,14 @@ describe('QasStepper', () => {
   describe('prop useVertical', () => {
     it('deve passar a prop "vertical" ao q-stepper quando useVertical é true', () => {
       const wrapper = createWrapper({ useVertical: true })
-      const qStepper = wrapper.findComponent(QStepperStub)
+      const qStepper = wrapper.findComponent({ name: 'QStepper' })
 
       expect(qStepper.props('vertical')).toBe(true)
     })
 
     it('não deve passar "vertical=true" ao q-stepper quando useVertical é false', () => {
       const wrapper = createWrapper({ useVertical: false })
-      const qStepper = wrapper.findComponent(QStepperStub)
+      const qStepper = wrapper.findComponent({ name: 'QStepper' })
 
       expect(qStepper.props('vertical')).toBeFalsy()
     })
@@ -119,52 +79,52 @@ describe('QasStepper', () => {
 
   describe('método next() com disable', () => {
     it('não deve chamar stepper.next() quando disable é true', () => {
-      nextMock.mockClear()
-
       const wrapper = createWrapper({ disable: true })
+      const spy = vi.spyOn(wrapper.findComponent({ name: 'QStepper' }).vm, 'next').mockImplementation(() => {})
+
       wrapper.vm.next()
 
-      expect(nextMock).not.toHaveBeenCalled()
+      expect(spy).not.toHaveBeenCalled()
     })
 
     it('deve chamar stepper.next() quando disable é false', () => {
-      nextMock.mockClear()
-
       const wrapper = createWrapper({ disable: false })
+      const spy = vi.spyOn(wrapper.findComponent({ name: 'QStepper' }).vm, 'next').mockImplementation(() => {})
+
       wrapper.vm.next()
 
-      expect(nextMock).toHaveBeenCalledOnce()
+      expect(spy).toHaveBeenCalledOnce()
     })
   })
 
   describe('método previous() com disable', () => {
     it('não deve chamar stepper.previous() quando disable é true', () => {
-      previousMock.mockClear()
-
       const wrapper = createWrapper({ disable: true })
+      const spy = vi.spyOn(wrapper.findComponent({ name: 'QStepper' }).vm, 'previous').mockImplementation(() => {})
+
       wrapper.vm.previous()
 
-      expect(previousMock).not.toHaveBeenCalled()
+      expect(spy).not.toHaveBeenCalled()
     })
 
     it('deve chamar stepper.previous() quando disable é false', () => {
-      previousMock.mockClear()
-
       const wrapper = createWrapper({ disable: false })
+      const spy = vi.spyOn(wrapper.findComponent({ name: 'QStepper' }).vm, 'previous').mockImplementation(() => {})
+
       wrapper.vm.previous()
 
-      expect(previousMock).toHaveBeenCalledOnce()
+      expect(spy).toHaveBeenCalledOnce()
     })
   })
 
   describe('método goTo()', () => {
     it('deve chamar stepper.goTo() com o passo correto', () => {
-      goToMock.mockClear()
-
       const wrapper = createWrapper()
+      const spy = vi.spyOn(wrapper.findComponent({ name: 'QStepper' }).vm, 'goTo').mockImplementation(() => {})
+
       wrapper.vm.goTo(3)
 
-      expect(goToMock).toHaveBeenCalledWith(3)
+      expect(spy).toHaveBeenCalledWith(3)
     })
   })
 })

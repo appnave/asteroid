@@ -23,7 +23,7 @@ describe('QasBtnDropdown', () => {
     it('não deve renderizar botões quando buttonsPropsList está vazio', () => {
       const wrapper = mountDropdown()
 
-      expect(wrapper.findAll('.qas-btn-stub').length).toBe(0)
+      expect(wrapper.findAllComponents({ name: 'QasBtn' }).length).toBe(0)
     })
   })
 
@@ -38,7 +38,7 @@ describe('QasBtnDropdown', () => {
         }
       })
 
-      expect(wrapper.findAll('.qas-btn-stub').length).toBe(2)
+      expect(wrapper.findAllComponents({ name: 'QasBtn' }).length).toBe(2)
     })
 
     it('deve renderizar apenas um botão quando buttonsPropsList tem uma entrada', () => {
@@ -50,7 +50,7 @@ describe('QasBtnDropdown', () => {
         }
       })
 
-      expect(wrapper.findAll('.qas-btn-stub').length).toBe(1)
+      expect(wrapper.findAllComponents({ name: 'QasBtn' }).length).toBe(1)
     })
 
     it('deve renderizar três botões quando buttonsPropsList tem três entradas', () => {
@@ -64,7 +64,7 @@ describe('QasBtnDropdown', () => {
         }
       })
 
-      expect(wrapper.findAll('.qas-btn-stub').length).toBe(3)
+      expect(wrapper.findAllComponents({ name: 'QasBtn' }).length).toBe(3)
     })
   })
 
@@ -76,7 +76,7 @@ describe('QasBtnDropdown', () => {
         }
       })
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeFalsy()
     })
 
     it('deve propagar skeleton para os botões quando skeleton é true', () => {
@@ -89,7 +89,7 @@ describe('QasBtnDropdown', () => {
         }
       })
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -100,14 +100,14 @@ describe('QasBtnDropdown', () => {
       })
 
       // O botão split é renderizado separadamente
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
 
     it('não deve renderizar o botão split por padrão', () => {
       const wrapper = mountDropdown()
 
       // Sem buttons e sem split, não há botões
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeFalsy()
     })
   })
 
@@ -120,7 +120,7 @@ describe('QasBtnDropdown', () => {
         }
       })
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
 
     it('deve renderizar os botões mesmo quando disable é true', () => {
@@ -131,7 +131,7 @@ describe('QasBtnDropdown', () => {
         }
       })
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -173,7 +173,7 @@ describe('QasBtnDropdown', () => {
         }
       })
 
-      await wrapper.find('.qas-btn-stub').trigger('click')
+      await wrapper.findComponent({ name: 'QasBtn' }).vm.$emit('click')
 
       expect(wrapper.emitted('click')).toBeTruthy()
     })

@@ -93,7 +93,7 @@ describe('QasToggleVisibility', () => {
         props: { hiddenTooltip: 'Mostrar conteúdo' }
       })
 
-      const tooltip = wrapper.find('.qas-tooltip-stub')
+      const tooltip = wrapper.findComponent({ name: 'QasTooltip' })
 
       expect(tooltip.exists()).toBeTruthy()
     })

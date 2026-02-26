@@ -21,6 +21,7 @@ export default defineConfig({
               'q-input',
               'q-infinite-scroll',
               'q-carousel',
+              'q-carousel-slide',
               'q-expansion-item',
               'q-stepper',
               'q-img'

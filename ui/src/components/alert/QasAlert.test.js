@@ -55,14 +55,14 @@ describe('QasAlert', () => {
   describe('prop useCloseButton', () => {
     it('não deve mostrar botão de fechar por padrão', () => {
       const wrapper = mountComponent(QasAlert)
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeFalsy()
     })
 
     it('deve mostrar botão de fechar quando useCloseButton é true', () => {
       const wrapper = mountComponent(QasAlert, {
         props: { useCloseButton: true }
       })
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -95,26 +95,16 @@ describe('QasAlert', () => {
   describe('prop useBox', () => {
     it('deve renderizar dentro de QasBox quando useBox é true', () => {
       const wrapper = mountComponent(QasAlert, {
-        props: { useBox: true },
-        global: {
-          stubs: {
-            QasBox: { template: '<div class="qas-box-stub"><slot /></div>' }
-          }
-        }
+        props: { useBox: true }
       })
-      expect(wrapper.find('.qas-box-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBox' }).exists()).toBeTruthy()
     })
 
     it('não deve renderizar QasBox quando useBox é false', () => {
       const wrapper = mountComponent(QasAlert, {
-        props: { useBox: false },
-        global: {
-          stubs: {
-            QasBox: { template: '<div class="qas-box-stub"><slot /></div>' }
-          }
-        }
+        props: { useBox: false }
       })
-      expect(wrapper.find('.qas-box-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasBox' }).exists()).toBeFalsy()
     })
   })
 
@@ -123,7 +113,7 @@ describe('QasAlert', () => {
       const wrapper = mountComponent(QasAlert, {
         props: { useCloseButton: true, modelValue: true }
       })
-      await wrapper.find('.qas-btn-stub').trigger('click')
+      await wrapper.findComponent({ name: 'QasBtn' }).vm.$emit('click')
       expect(wrapper.emitted('update:modelValue')).toBeTruthy()
       expect(wrapper.emitted('update:modelValue')[0]).toEqual([false])
     })
@@ -140,7 +130,7 @@ describe('QasAlert', () => {
           usePersistentModelOnClose: true
         }
       })
-      await wrapper.find('.qas-btn-stub').trigger('click')
+      await wrapper.findComponent({ name: 'QasBtn' }).vm.$emit('click')
       expect(LocalStorage.set).toHaveBeenCalled()
       expect(wrapper.emitted('update:modelValue')).toBeTruthy()
     })
@@ -150,7 +140,7 @@ describe('QasAlert', () => {
       const wrapper = mountComponent(QasAlert, {
         props: { useCloseButton: true, modelValue: true }
       })
-      await wrapper.find('.qas-btn-stub').trigger('click')
+      await wrapper.findComponent({ name: 'QasBtn' }).vm.$emit('click')
       expect(LocalStorage.set).not.toHaveBeenCalled()
     })
   })

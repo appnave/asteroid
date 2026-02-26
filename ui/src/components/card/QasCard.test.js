@@ -2,22 +2,13 @@ import { describe, it, expect } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasCard from './QasCard.vue'
 
-const cardStubs = {
-  QasActionsMenu: { template: '<div class="qas-actions-menu-stub" />' },
-  QasCheckbox: { template: '<div class="qas-checkbox-stub" />' }
-}
-
 function mountCard (options = {}) {
   const { global: globalOpts = {}, ...rest } = options
 
   return mountComponent(QasCard, {
     ...rest,
     global: {
-      ...globalOpts,
-      stubs: {
-        ...cardStubs,
-        ...(globalOpts.stubs || {})
-      }
+      ...globalOpts
     }
   })
 }
@@ -61,7 +52,7 @@ describe('QasCard', () => {
     it('não deve exibir skeleton por padrão', () => {
       const wrapper = mountCard()
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeFalsy()
     })
 
     it('deve exibir skeleton quando skeleton é true', () => {
@@ -69,7 +60,7 @@ describe('QasCard', () => {
         props: { skeleton: true, title: 'Card' }
       })
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeTruthy()
     })
   })
 
@@ -77,7 +68,7 @@ describe('QasCard', () => {
     it('não deve renderizar QasActionsMenu por padrão', () => {
       const wrapper = mountCard({ props: { title: 'Card' } })
 
-      expect(wrapper.find('.qas-actions-menu-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasActionsMenu' }).exists()).toBeFalsy()
     })
 
     it('deve renderizar QasActionsMenu quando actionsMenuProps tem propriedades', () => {
@@ -88,7 +79,7 @@ describe('QasCard', () => {
         }
       })
 
-      expect(wrapper.find('.qas-actions-menu-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasActionsMenu' }).exists()).toBeTruthy()
     })
   })
 
@@ -96,7 +87,7 @@ describe('QasCard', () => {
     it('não deve exibir o checkbox por padrão', () => {
       const wrapper = mountCard({ props: { title: 'Card' } })
 
-      expect(wrapper.find('.qas-checkbox-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasCheckbox' }).exists()).toBeFalsy()
     })
 
     it('deve exibir o checkbox quando useSelection é true', () => {
@@ -104,7 +95,7 @@ describe('QasCard', () => {
         props: { title: 'Card', useSelection: true }
       })
 
-      expect(wrapper.find('.qas-checkbox-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasCheckbox' }).exists()).toBeTruthy()
     })
 
     it('não deve exibir o checkbox quando skeleton é true (exibe skeleton no lugar)', () => {
@@ -112,7 +103,7 @@ describe('QasCard', () => {
         props: { title: 'Card', useSelection: true, skeleton: true }
       })
 
-      expect(wrapper.find('.qas-checkbox-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasCheckbox' }).exists()).toBeFalsy()
     })
   })
 
@@ -173,8 +164,7 @@ describe('QasCard', () => {
       const wrapper = mountCard({
         props: { title: 'Card' },
         global: {
-          provide: { isBox: true },
-          stubs: cardStubs
+          provide: { isBox: true }
         }
       })
 
@@ -187,8 +177,7 @@ describe('QasCard', () => {
       const wrapper = mountCard({
         props: { title: 'Card' },
         global: {
-          provide: { isDialog: true },
-          stubs: cardStubs
+          provide: { isDialog: true }
         }
       })
 

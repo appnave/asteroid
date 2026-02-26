@@ -2,22 +2,6 @@ import { describe, it, expect } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasListItems from './QasListItems.vue'
 
-const QasBoxStub = {
-  name: 'QasBox',
-  template: '<div class="qas-box-stub"><slot /></div>'
-}
-
-const defaultGlobal = {
-  stubs: {
-    QasBox: QasBoxStub,
-    QasLabel: {
-      name: 'QasLabel',
-      template: '<div class="qas-label-stub">{{ label }}</div>',
-      props: ['label', 'margin', 'typography']
-    }
-  }
-}
-
 const sampleList = [
   { label: 'Item 1', description: 'Descrição 1' },
   { label: 'Item 2', description: 'Descrição 2' }
@@ -27,8 +11,7 @@ describe('QasListItems', () => {
   describe('renderização básica', () => {
     it('deve renderizar corretamente com uma lista de itens', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList },
-        global: defaultGlobal
+        props: { list: sampleList }
       })
 
       expect(wrapper.exists()).toBeTruthy()
@@ -36,8 +19,7 @@ describe('QasListItems', () => {
 
     it('deve ter a classe "qas-list-items"', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList },
-        global: defaultGlobal
+        props: { list: sampleList }
       })
 
       expect(wrapper.classes()).toContain('qas-list-items')
@@ -47,8 +29,7 @@ describe('QasListItems', () => {
   describe('prop list', () => {
     it('deve renderizar o número correto de q-item para a lista fornecida', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList },
-        global: defaultGlobal
+        props: { list: sampleList }
       })
 
       const items = wrapper.findAll('q-item')
@@ -62,8 +43,7 @@ describe('QasListItems', () => {
       const list = [{ name: 'Produto A' }, { name: 'Produto B' }]
 
       const wrapper = mountComponent(QasListItems, {
-        props: { list, labelKey: 'name' },
-        global: defaultGlobal
+        props: { list, labelKey: 'name' }
       })
 
       expect(wrapper.text()).toContain('Produto A')
@@ -76,8 +56,7 @@ describe('QasListItems', () => {
       const list = [{ label: 'Item', text: 'Texto descritivo' }]
 
       const wrapper = mountComponent(QasListItems, {
-        props: { list, descriptionKey: 'text' },
-        global: defaultGlobal
+        props: { list, descriptionKey: 'text' }
       })
 
       expect(wrapper.text()).toContain('Texto descritivo')
@@ -87,30 +66,27 @@ describe('QasListItems', () => {
   describe('prop useSectionActions', () => {
     it('deve exibir o botão de ação por item quando useSectionActions é true (padrão)', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList },
-        global: defaultGlobal
+        props: { list: sampleList }
       })
 
-      const actionButtons = wrapper.findAll('.qas-btn-stub')
+      const actionButtons = wrapper.findAllComponents({ name: 'QasBtn' })
 
       expect(actionButtons).toHaveLength(sampleList.length)
     })
 
     it('não deve exibir botão de ação quando useSectionActions é false', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList, useSectionActions: false },
-        global: defaultGlobal
+        props: { list: sampleList, useSectionActions: false }
       })
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeFalsy()
     })
   })
 
   describe('prop useClickableItem', () => {
     it('deve tornar o q-item clicável quando useClickableItem é true', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList, useClickableItem: true },
-        global: defaultGlobal
+        props: { list: sampleList, useClickableItem: true }
       })
 
       const items = wrapper.findAllComponents({ name: 'QItem' })
@@ -122,8 +98,7 @@ describe('QasListItems', () => {
 
     it('não deve ter q-item clicável por padrão', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList },
-        global: defaultGlobal
+        props: { list: sampleList }
       })
 
       const items = wrapper.findAllComponents({ name: 'QItem' })
@@ -137,22 +112,20 @@ describe('QasListItems', () => {
   describe('emissão do evento click-item', () => {
     it('deve emitir "click-item" ao clicar no botão de ação (useClickableItem false)', async () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList },
-        global: defaultGlobal
+        props: { list: sampleList }
       })
 
-      await wrapper.findAll('.qas-btn-stub')[0].trigger('click')
+      await wrapper.findAllComponents({ name: 'QasBtn' })[0].vm.$emit('click')
 
       expect(wrapper.emitted('click-item')).toBeTruthy()
     })
 
     it('deve emitir "click-item" com item e index corretos ao clicar no botão de ação', async () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList },
-        global: defaultGlobal
+        props: { list: sampleList }
       })
 
-      await wrapper.findAll('.qas-btn-stub')[1].trigger('click')
+      await wrapper.findAllComponents({ name: 'QasBtn' })[1].vm.$emit('click')
 
       const emitted = wrapper.emitted('click-item')
 
@@ -161,8 +134,7 @@ describe('QasListItems', () => {
 
     it('deve emitir "click-item" ao clicar no q-item quando useClickableItem é true', async () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList, useClickableItem: true },
-        global: defaultGlobal
+        props: { list: sampleList, useClickableItem: true }
       })
 
       await wrapper.findAll('q-item')[0].trigger('click')
@@ -172,8 +144,7 @@ describe('QasListItems', () => {
 
     it('não deve emitir "click-item" ao clicar no q-item quando useClickableItem é false', async () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList, useClickableItem: false },
-        global: defaultGlobal
+        props: { list: sampleList, useClickableItem: false }
       })
 
       await wrapper.findAll('q-item')[0].trigger('click')
@@ -185,20 +156,18 @@ describe('QasListItems', () => {
   describe('prop useBox', () => {
     it('deve renderizar dentro do qas-box-stub por padrão (useBox true)', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList },
-        global: defaultGlobal
+        props: { list: sampleList }
       })
 
-      expect(wrapper.find('.qas-box-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBox' }).exists()).toBeTruthy()
     })
 
     it('deve renderizar como div simples quando useBox é false', () => {
       const wrapper = mountComponent(QasListItems, {
-        props: { list: sampleList, useBox: false },
-        global: defaultGlobal
+        props: { list: sampleList, useBox: false }
       })
 
-      expect(wrapper.find('.qas-box-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasBox' }).exists()).toBeFalsy()
       expect(wrapper.element.tagName.toLowerCase()).toBe('div')
     })
   })
@@ -207,8 +176,7 @@ describe('QasListItems', () => {
     it('deve renderizar conteúdo customizado no slot item', () => {
       const wrapper = mountComponent(QasListItems, {
         props: { list: [{ label: 'Item 1' }] },
-        slots: { item: '<div class="custom-item">Customizado</div>' },
-        global: defaultGlobal
+        slots: { item: '<div class="custom-item">Customizado</div>' }
       })
 
       expect(wrapper.find('.custom-item').exists()).toBeTruthy()

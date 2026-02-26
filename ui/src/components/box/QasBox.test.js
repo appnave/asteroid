@@ -58,7 +58,7 @@ describe('QasBox', () => {
     it('não deve mostrar o skeleton por padrão', () => {
       const wrapper = mountComponent(QasBox)
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeFalsy()
     })
 
     it('deve mostrar o skeleton quando skeleton é true', () => {
@@ -66,7 +66,7 @@ describe('QasBox', () => {
         props: { skeleton: true }
       })
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeTruthy()
     })
   })
 

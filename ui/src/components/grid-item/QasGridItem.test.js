@@ -2,40 +2,25 @@ import { describe, it, expect } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasGridItem from './QasGridItem.vue'
 
-const QasTipStub = {
-  name: 'QasTip',
-  template: '<div class="qas-tip-stub" />',
-  props: ['text']
-}
-
-const defaultGlobal = {
-  stubs: { QasTip: QasTipStub }
-}
-
 describe('QasGridItem', () => {
   describe('renderização básica', () => {
     it('deve renderizar corretamente sem props', () => {
-      const wrapper = mountComponent(QasGridItem, {
-        global: defaultGlobal
-      })
+      const wrapper = mountComponent(QasGridItem)
 
       expect(wrapper.exists()).toBeTruthy()
     })
 
     it('não deve exibir qas-tip quando tip não é fornecido', () => {
-      const wrapper = mountComponent(QasGridItem, {
-        global: defaultGlobal
-      })
+      const wrapper = mountComponent(QasGridItem)
 
-      expect(wrapper.find('.qas-tip-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasTip' }).exists()).toBeFalsy()
     })
   })
 
   describe('prop label', () => {
     it('deve exibir o texto do label', () => {
       const wrapper = mountComponent(QasGridItem, {
-        props: { label: 'Nome' },
-        global: defaultGlobal
+        props: { label: 'Nome' }
       })
 
       expect(wrapper.text()).toContain('Nome')
@@ -45,8 +30,7 @@ describe('QasGridItem', () => {
   describe('prop value', () => {
     it('deve exibir o texto do value', () => {
       const wrapper = mountComponent(QasGridItem, {
-        props: { value: 'João' },
-        global: defaultGlobal
+        props: { value: 'João' }
       })
 
       expect(wrapper.text()).toContain('João')
@@ -56,17 +40,15 @@ describe('QasGridItem', () => {
   describe('prop tip', () => {
     it('deve renderizar o qas-tip quando tip é fornecido', () => {
       const wrapper = mountComponent(QasGridItem, {
-        props: { tip: 'Dica importante' },
-        global: defaultGlobal
+        props: { tip: 'Dica importante' }
       })
 
-      expect(wrapper.find('.qas-tip-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasTip' }).exists()).toBeTruthy()
     })
 
     it('deve repassar o texto ao qas-tip', () => {
       const wrapper = mountComponent(QasGridItem, {
-        props: { tip: 'Dica importante' },
-        global: defaultGlobal
+        props: { tip: 'Dica importante' }
       })
 
       expect(wrapper.findComponent({ name: 'QasTip' }).props('text')).toBe('Dica importante')
@@ -76,8 +58,7 @@ describe('QasGridItem', () => {
   describe('prop useInline', () => {
     it('deve aplicar classe de layout flex no container quando useInline é true', () => {
       const wrapper = mountComponent(QasGridItem, {
-        props: { useInline: true },
-        global: defaultGlobal
+        props: { useInline: true }
       })
 
       expect(wrapper.classes()).toContain('flex')
@@ -86,8 +67,7 @@ describe('QasGridItem', () => {
 
     it('não deve aplicar classe flex no container quando useInline é false', () => {
       const wrapper = mountComponent(QasGridItem, {
-        props: { useInline: false },
-        global: defaultGlobal
+        props: { useInline: false }
       })
 
       expect(wrapper.classes()).not.toContain('flex')
@@ -95,17 +75,14 @@ describe('QasGridItem', () => {
 
     it('deve aplicar classe "text-body1" no header quando useInline é true', () => {
       const wrapper = mountComponent(QasGridItem, {
-        props: { useInline: true },
-        global: defaultGlobal
+        props: { useInline: true }
       })
 
       expect(wrapper.find('header').classes()).toContain('text-body1')
     })
 
     it('deve aplicar classe "text-caption" no header quando useInline é false (padrão)', () => {
-      const wrapper = mountComponent(QasGridItem, {
-        global: defaultGlobal
-      })
+      const wrapper = mountComponent(QasGridItem)
 
       expect(wrapper.find('header').classes()).toContain('text-caption')
     })
@@ -113,9 +90,7 @@ describe('QasGridItem', () => {
 
   describe('prop useEllipsis', () => {
     it('deve aplicar a classe "ellipsis" no conteúdo com useEllipsis true por padrão (desktop)', () => {
-      const wrapper = mountComponent(QasGridItem, {
-        global: defaultGlobal
-      })
+      const wrapper = mountComponent(QasGridItem)
 
       const content = wrapper.find('[class*="text-grey-10"]')
 
@@ -124,8 +99,7 @@ describe('QasGridItem', () => {
 
     it('não deve aplicar a classe "ellipsis" quando useEllipsis é false', () => {
       const wrapper = mountComponent(QasGridItem, {
-        props: { useEllipsis: false },
-        global: defaultGlobal
+        props: { useEllipsis: false }
       })
 
       const content = wrapper.find('[class*="text-grey-10"]')
@@ -137,8 +111,7 @@ describe('QasGridItem', () => {
   describe('slot header', () => {
     it('deve renderizar conteúdo customizado no slot header', () => {
       const wrapper = mountComponent(QasGridItem, {
-        slots: { header: '<div class="custom-header">Header Customizado</div>' },
-        global: defaultGlobal
+        slots: { header: '<div class="custom-header">Header Customizado</div>' }
       })
 
       expect(wrapper.find('.custom-header').exists()).toBeTruthy()
@@ -149,8 +122,7 @@ describe('QasGridItem', () => {
   describe('slot content', () => {
     it('deve renderizar conteúdo customizado no slot content', () => {
       const wrapper = mountComponent(QasGridItem, {
-        slots: { content: '<span class="custom-content">Conteúdo</span>' },
-        global: defaultGlobal
+        slots: { content: '<span class="custom-content">Conteúdo</span>' }
       })
 
       expect(wrapper.find('.custom-content').exists()).toBeTruthy()

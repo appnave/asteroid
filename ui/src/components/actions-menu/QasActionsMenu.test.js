@@ -2,12 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasActionsMenu from './QasActionsMenu.vue'
 
-const BtnDropdownStub = {
-  name: 'QasBtnDropdown',
-  template: '<div class="qas-btn-dropdown-stub" />',
-  props: ['buttonsPropsList', 'disable', 'skeleton', 'useSplit', 'useAutoClose']
-}
-
 const defaultList = {
   edit: { label: 'Editar', icon: 'sym_r_edit', action: vi.fn() }
 }
@@ -22,8 +16,7 @@ describe('QasActionsMenu', () => {
   describe('renderização básica', () => {
     it('deve renderizar corretamente com uma lista', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: defaultList },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: defaultList }
       })
 
       expect(wrapper.exists()).toBeTruthy()
@@ -31,8 +24,7 @@ describe('QasActionsMenu', () => {
 
     it('não deve renderizar quando a lista está vazia', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: {} },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: {} }
       })
 
       expect(wrapper.find('[data-cy="actions-menu"]').exists()).toBeFalsy()
@@ -42,8 +34,7 @@ describe('QasActionsMenu', () => {
   describe('atributo data-cy', () => {
     it('deve ter o atributo data-cy="actions-menu" quando há itens na lista', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: defaultList },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: defaultList }
       })
 
       expect(wrapper.find('[data-cy="actions-menu"]').exists()).toBeTruthy()
@@ -53,41 +44,37 @@ describe('QasActionsMenu', () => {
   describe('prop list', () => {
     it('deve renderizar QasBtnDropdown quando há itens na lista', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: defaultList },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: defaultList }
       })
 
-      expect(wrapper.findComponent(BtnDropdownStub).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtnDropdown' }).exists()).toBeTruthy()
     })
 
     it('deve renderizar QasBtnDropdown com lista de 3 itens', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: multiList },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: multiList }
       })
 
-      expect(wrapper.findComponent(BtnDropdownStub).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtnDropdown' }).exists()).toBeTruthy()
     })
   })
 
   describe('prop disable', () => {
     it('deve passar disable=true para QasBtnDropdown', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: defaultList, disable: true },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: defaultList, disable: true }
       })
 
-      const stub = wrapper.findComponent(BtnDropdownStub)
+      const stub = wrapper.findComponent({ name: 'QasBtnDropdown' })
       expect(stub.props('disable')).toBe(true)
     })
 
     it('deve passar disable=false para QasBtnDropdown quando prop não está definida', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: defaultList },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: defaultList }
       })
 
-      const stub = wrapper.findComponent(BtnDropdownStub)
+      const stub = wrapper.findComponent({ name: 'QasBtnDropdown' })
       expect(stub.props('disable')).toBeFalsy()
     })
   })
@@ -95,21 +82,19 @@ describe('QasActionsMenu', () => {
   describe('prop skeleton', () => {
     it('deve passar skeleton=true para QasBtnDropdown', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: defaultList, skeleton: true },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: defaultList, skeleton: true }
       })
 
-      const stub = wrapper.findComponent(BtnDropdownStub)
+      const stub = wrapper.findComponent({ name: 'QasBtnDropdown' })
       expect(stub.props('skeleton')).toBe(true)
     })
 
     it('deve passar skeleton=false para QasBtnDropdown por padrão', () => {
       const wrapper = mountComponent(QasActionsMenu, {
-        props: { list: defaultList },
-        global: { stubs: { QasBtnDropdown: BtnDropdownStub } }
+        props: { list: defaultList }
       })
 
-      const stub = wrapper.findComponent(BtnDropdownStub)
+      const stub = wrapper.findComponent({ name: 'QasBtnDropdown' })
       expect(stub.props('skeleton')).toBeFalsy()
     })
   })

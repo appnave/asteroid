@@ -11,19 +11,6 @@ const qasScreenMock = {
   }
 }
 
-const QasAvatarStub = {
-  template: '<div class="qas-avatar-stub" />',
-  props: ['image', 'size', 'title']
-}
-
-const QasGridGeneratorStub = {
-  template: '<div class="qas-grid-generator-stub" />'
-}
-
-const QasBoxStub = {
-  template: '<div class="qas-box-stub"><slot /></div>'
-}
-
 function mountProfile (options = {}) {
   return mountComponent(QasProfile, {
     ...options,
@@ -32,12 +19,6 @@ function mountProfile (options = {}) {
       mocks: {
         ...qasScreenMock,
         ...((options.global || {}).mocks || {})
-      },
-      stubs: {
-        QasAvatar: QasAvatarStub,
-        QasGridGenerator: QasGridGeneratorStub,
-        QasBox: QasBoxStub,
-        ...((options.global || {}).stubs || {})
       }
     }
   })
@@ -80,7 +61,7 @@ describe('QasProfile', () => {
           result: { image: 'https://example.com/avatar.jpg' }
         }
       })
-      const avatar = wrapper.find('.qas-avatar-stub')
+      const avatar = wrapper.findComponent({ name: 'QasAvatar' })
       expect(avatar.exists()).toBeTruthy()
     })
   })
@@ -88,7 +69,7 @@ describe('QasProfile', () => {
   describe('prop tag', () => {
     it('deve renderizar o componente dentro de qas-box-stub quando tag é "qas-box" (padrão)', () => {
       const wrapper = mountProfile({ props: { title: 'João Silva' } })
-      expect(wrapper.find('.qas-box-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBox' }).exists()).toBeTruthy()
     })
 
     it('deve renderizar como div quando tag é "div"', () => {
@@ -120,7 +101,7 @@ describe('QasProfile', () => {
         }
       })
       expect(wrapper.find('.custom-grid').exists()).toBeTruthy()
-      expect(wrapper.find('.qas-grid-generator-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasGridGenerator' }).exists()).toBeFalsy()
     })
   })
 })

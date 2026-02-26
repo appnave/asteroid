@@ -3,24 +3,10 @@ import { mountComponent } from '@test-utils'
 import { useRouter } from 'vue-router'
 import QasDialogRouter from './QasDialogRouter.vue'
 
-const QDialogStub = {
-  name: 'QDialog',
-  template: '<div class="q-dialog-stub"><slot /></div>',
-  emits: ['hide'],
-  methods: {
-    show: vi.fn(),
-    hide: vi.fn()
-  }
-}
-
-const stubs = { QDialog: QDialogStub }
-
 describe('QasDialogRouter', () => {
   describe('renderização básica', () => {
     it('deve renderizar corretamente', () => {
-      const wrapper = mountComponent(QasDialogRouter, {
-        global: { stubs }
-      })
+      const wrapper = mountComponent(QasDialogRouter)
 
       expect(wrapper.exists()).toBeTruthy()
     })
@@ -28,17 +14,13 @@ describe('QasDialogRouter', () => {
 
   describe('métodos expostos', () => {
     it('deve expor o método show()', () => {
-      const wrapper = mountComponent(QasDialogRouter, {
-        global: { stubs }
-      })
+      const wrapper = mountComponent(QasDialogRouter)
 
       expect(typeof wrapper.vm.show).toBe('function')
     })
 
     it('deve expor o método hide()', () => {
-      const wrapper = mountComponent(QasDialogRouter, {
-        global: { stubs }
-      })
+      const wrapper = mountComponent(QasDialogRouter)
 
       expect(typeof wrapper.vm.hide).toBe('function')
     })
@@ -46,9 +28,7 @@ describe('QasDialogRouter', () => {
 
   describe('evento hide', () => {
     it('deve emitir "hide" quando o q-dialog emite o evento hide', async () => {
-      const wrapper = mountComponent(QasDialogRouter, {
-        global: { stubs }
-      })
+      const wrapper = mountComponent(QasDialogRouter)
 
       const dialog = wrapper.find('q-dialog')
       await dialog.trigger('hide')
@@ -71,9 +51,7 @@ describe('QasDialogRouter', () => {
         }))
       })
 
-      const wrapper = mountComponent(QasDialogRouter, {
-        global: { stubs }
-      })
+      const wrapper = mountComponent(QasDialogRouter)
 
       await wrapper.vm.show('/fake-route')
 
@@ -95,9 +73,7 @@ describe('QasDialogRouter', () => {
         }))
       })
 
-      const wrapper = mountComponent(QasDialogRouter, {
-        global: { stubs }
-      })
+      const wrapper = mountComponent(QasDialogRouter)
 
       await wrapper.vm.show('/rota')
 
@@ -107,9 +83,7 @@ describe('QasDialogRouter', () => {
 
   describe('limpeza após hide', () => {
     it('deve emitir "hide" a cada vez que onDialogHide é acionado', async () => {
-      const wrapper = mountComponent(QasDialogRouter, {
-        global: { stubs }
-      })
+      const wrapper = mountComponent(QasDialogRouter)
 
       const dialog = wrapper.find('q-dialog')
       await dialog.trigger('hide')

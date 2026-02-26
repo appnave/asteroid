@@ -2,25 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasGalleryCard from './QasGalleryCard.vue'
 
-const additionalStubs = {
-  QasBox: { template: '<div class="qas-box-stub"><slot /></div>' },
-  QasHeader: { template: '<div class="qas-header-stub" />' },
-  QasGridGenerator: { template: '<div class="qas-grid-generator-stub" />' },
-  QVideo: { template: '<div class="q-video-stub" />' },
-  'q-video': { template: '<div class="q-video-stub" />' },
-  QImg: { template: '<div class="q-img-stub" />', props: ['src', 'height'] },
-  'q-img': { template: '<div class="q-img-stub" />', props: ['src', 'height'] }
-}
-
 function mountGalleryCard (options = {}) {
   return mountComponent(QasGalleryCard, {
     ...options,
     global: {
-      ...(options.global || {}),
-      stubs: {
-        ...additionalStubs,
-        ...(options.global?.stubs || {})
-      }
+      ...(options.global || {})
     }
   })
 }
@@ -36,7 +22,7 @@ describe('QasGalleryCard', () => {
     it('deve renderizar o QasBox como contêiner raiz', () => {
       const wrapper = mountGalleryCard()
 
-      expect(wrapper.find('.qas-box-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBox' }).exists()).toBeTruthy()
     })
   })
 
@@ -48,7 +34,7 @@ describe('QasGalleryCard', () => {
         props: { url }
       })
 
-      expect(wrapper.find('.q-img-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QImg' }).exists()).toBeTruthy()
     })
   })
 
@@ -58,13 +44,13 @@ describe('QasGalleryCard', () => {
         props: { disable: true }
       })
 
-      expect(wrapper.find('.qas-box-stub').classes()).toContain('text-grey-6')
+      expect(wrapper.findComponent({ name: 'QasBox' }).classes()).toContain('text-grey-6')
     })
 
     it('não deve aplicar classe text-grey-6 quando disable não é fornecido', () => {
       const wrapper = mountGalleryCard()
 
-      expect(wrapper.find('.qas-box-stub').classes()).not.toContain('text-grey-6')
+      expect(wrapper.findComponent({ name: 'QasBox' }).classes()).not.toContain('text-grey-6')
     })
   })
 
@@ -83,7 +69,7 @@ describe('QasGalleryCard', () => {
         props: { useVideo: false }
       })
 
-      expect(wrapper.find('.q-video-stub').exists()).toBeFalsy()
+      expect(wrapper.find('q-video').exists()).toBeFalsy()
     })
 
     it('deve renderizar a imagem quando useVideo não é fornecido', () => {
@@ -91,7 +77,7 @@ describe('QasGalleryCard', () => {
         props: { url: 'https://example.com/img.png' }
       })
 
-      expect(wrapper.find('.q-img-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QImg' }).exists()).toBeTruthy()
     })
   })
 
@@ -101,13 +87,13 @@ describe('QasGalleryCard', () => {
         props: { headerProps: { labelProps: { label: 'Título do card' } } }
       })
 
-      expect(wrapper.find('.qas-header-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasHeader' }).exists()).toBeTruthy()
     })
 
     it('não deve renderizar QasHeader quando headerProps está vazio', () => {
       const wrapper = mountGalleryCard()
 
-      expect(wrapper.find('.qas-header-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasHeader' }).exists()).toBeFalsy()
     })
   })
 
@@ -129,7 +115,7 @@ describe('QasGalleryCard', () => {
       })
 
       expect(wrapper.find('.custom-video').exists()).toBeTruthy()
-      expect(wrapper.find('.q-video-stub').exists()).toBeFalsy()
+      expect(wrapper.find('q-video').exists()).toBeFalsy()
     })
   })
 })

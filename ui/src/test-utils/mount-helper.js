@@ -19,19 +19,7 @@ export const defaultProvide = {
 }
 
 /**
- * Stubs padrão para componentes que não devemos montar recursivamente
- */
-export const defaultStubs = {
-  QasSkeleton: { template: '<div class="qas-skeleton-stub" />' },
-  QasTooltip: { template: '<div class="qas-tooltip-stub" />' },
-  QasBreakline: { template: '<span class="qas-breakline-stub">{{ text }}</span>', props: ['text', 'split'] },
-  QasBtn: { template: '<button class="qas-btn-stub"><slot /></button>' },
-  QasLabel: { template: '<div class="qas-label-stub"><slot /></div>' },
-  QasErrorMessage: { template: '<div class="qas-error-message-stub" />' }
-}
-
-/**
- * Monta um componente com defaults de provide e stubs configurados
+ * Monta um componente com defaults de provide configurados
  *
  * @param {object} component - Componente Vue a montar
  * @param {object} options - Opções adicionais do mount (serão mescladas com os defaults)
@@ -58,7 +46,6 @@ export function mountComponent (component, options = {}) {
         ...customProvide
       },
       stubs: {
-        ...defaultStubs,
         ...customStubs
       }
     }

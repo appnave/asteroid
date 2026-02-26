@@ -11,19 +11,11 @@ vi.mock('../../composables', async importOriginal => {
   }
 })
 
-const additionalStubs = {
-  QasHeader: { template: '<div class="qas-header-stub" />' }
-}
-
 function mountPageHeader (options = {}) {
   return mountComponent(QasPageHeader, {
     ...options,
     global: {
-      ...(options.global || {}),
-      stubs: {
-        ...additionalStubs,
-        ...(options.global?.stubs || {})
-      }
+      ...(options.global || {})
     }
   })
 }
@@ -134,7 +126,7 @@ describe('QasPageHeader', () => {
         props: { skeleton: true, title: 'Carregando...' }
       })
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeTruthy()
     })
   })
 
@@ -144,7 +136,7 @@ describe('QasPageHeader', () => {
         props: { headerProps: { labelProps: { label: 'Cabeçalho' } } }
       })
 
-      expect(wrapper.find('.qas-header-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasHeader' }).exists()).toBeTruthy()
     })
 
     it('não deve renderizar QasHeader quando headerProps está vazio', () => {
@@ -152,7 +144,7 @@ describe('QasPageHeader', () => {
         props: { headerProps: {} }
       })
 
-      expect(wrapper.find('.qas-header-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasHeader' }).exists()).toBeFalsy()
     })
   })
 

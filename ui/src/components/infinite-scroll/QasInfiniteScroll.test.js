@@ -2,25 +2,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasInfiniteScroll from './QasInfiniteScroll.vue'
 
-const stopMock = vi.fn()
-const resumeMock = vi.fn()
-const resetMock = vi.fn()
-
-const QInfiniteScrollStub = {
-  name: 'QInfiniteScroll',
-  template: '<div class="q-infinite-scroll-stub"><slot /><slot name="loading" /></div>',
-  emits: ['load'],
-  methods: {
-    stop: stopMock,
-    resume: resumeMock,
-    reset: resetMock
-  }
-}
-
-const QasEmptyResultTextStub = {
-  template: '<div class="qas-empty-result-text-stub" />'
-}
-
 function createWrapper (props = {}, options = {}) {
   const { global: globalOptions = {}, ...restOptions } = options
 
@@ -28,11 +9,6 @@ function createWrapper (props = {}, options = {}) {
     props: { url: '/api/items', ...props },
     ...restOptions,
     global: {
-      stubs: {
-        QInfiniteScroll: QInfiniteScrollStub,
-        QasEmptyResultText: QasEmptyResultTextStub,
-        ...globalOptions.stubs
-      },
       ...globalOptions
     }
   })
@@ -55,7 +31,7 @@ describe('QasInfiniteScroll', () => {
     it('deve renderizar o q-infinite-scroll interno', () => {
       const wrapper = createWrapper()
 
-      expect(wrapper.find('.q-infinite-scroll-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QInfiniteScroll' }).exists()).toBeTruthy()
     })
   })
 
@@ -123,10 +99,6 @@ describe('QasInfiniteScroll', () => {
       const wrapper = mountComponent(QasInfiniteScroll, {
         props: { url: '/api/items', limitPerPage: 5 },
         global: {
-          stubs: {
-            QInfiniteScroll: QInfiniteScrollStub,
-            QasEmptyResultText: QasEmptyResultTextStub
-          },
           provide: {
             axios: mockAxios
           }
@@ -153,10 +125,6 @@ describe('QasInfiniteScroll', () => {
       const wrapper = mountComponent(QasInfiniteScroll, {
         props: { url: '/api/items' },
         global: {
-          stubs: {
-            QInfiniteScroll: QInfiniteScrollStub,
-            QasEmptyResultText: QasEmptyResultTextStub
-          },
           provide: {
             axios: mockAxios
           }

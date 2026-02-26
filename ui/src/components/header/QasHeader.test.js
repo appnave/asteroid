@@ -2,22 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasHeader from './QasHeader.vue'
 
-const additionalStubs = {
-  QasActionsMenu: { template: '<div class="qas-actions-menu-stub" />' },
-  QasBadge: { template: '<div class="qas-badge-stub" />' },
-  QasTip: { template: '<div class="qas-tip-stub" />' },
-  QasFilters: { template: '<div class="qas-filters-stub" />' }
-}
-
 function mountHeader (options = {}) {
   return mountComponent(QasHeader, {
     ...options,
     global: {
-      ...(options.global || {}),
-      stubs: {
-        ...additionalStubs,
-        ...(options.global?.stubs || {})
-      }
+      ...(options.global || {})
     }
   })
 }
@@ -37,7 +26,7 @@ describe('QasHeader', () => {
         props: { labelProps: { label: 'Título' } }
       })
 
-      expect(wrapper.find('.qas-label-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasLabel' }).exists()).toBeTruthy()
     })
   })
 
@@ -57,7 +46,7 @@ describe('QasHeader', () => {
         props: { skeleton: true, labelProps: { label: 'Título' } }
       })
 
-      expect(wrapper.find('.qas-skeleton-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasSkeleton' }).exists()).toBeTruthy()
     })
   })
 
@@ -93,7 +82,7 @@ describe('QasHeader', () => {
         props: { buttonProps: { label: 'Salvar' } }
       })
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -103,7 +92,7 @@ describe('QasHeader', () => {
         props: { actionsMenuProps: { list: { edit: { label: 'Editar' } } } }
       })
 
-      expect(wrapper.find('.qas-actions-menu-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasActionsMenu' }).exists()).toBeTruthy()
     })
   })
 

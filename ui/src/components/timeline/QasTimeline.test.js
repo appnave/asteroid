@@ -17,7 +17,7 @@ describe('QasTimeline', () => {
   describe('prop list', () => {
     it('não deve renderizar entradas quando a lista está vazia', () => {
       const wrapper = mountTimeline({ props: { list: [] } })
-      expect(wrapper.findAll('.q-timeline-entry-stub')).toHaveLength(0)
+      expect(wrapper.findAll('q-timeline-entry')).toHaveLength(0)
     })
 
     it('deve renderizar o texto de descrição de um item', () => {

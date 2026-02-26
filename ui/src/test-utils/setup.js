@@ -121,6 +121,7 @@ import { config } from '@vue/test-utils'
 import {
   Quasar,
   QCheckbox,
+  QCarousel,
   QChip,
   QOptionGroup,
   QBtn,
@@ -156,7 +157,10 @@ import {
   QSpinner,
   QIcon,
   QExpansionItem,
+  QCarouselSlide,
   QImg,
+  QInfiniteScroll,
+
   ClosePopup
 } from 'quasar'
 
@@ -169,6 +173,9 @@ config.global.directives = {
 config.global.plugins.push(Quasar)
 config.global.components = {
   QIcon,
+  QInfiniteScroll,
+  QCarousel,
+  QCarouselSlide,
   QCheckbox,
   QBadge,
   QChip,

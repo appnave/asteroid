@@ -50,7 +50,7 @@ describe('QasRadio', () => {
       })
 
       // sem options, não exibe qas-label
-      expect(wrapper.find('.qas-label-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasLabel' }).exists()).toBeFalsy()
     })
   })
 
@@ -75,7 +75,7 @@ describe('QasRadio', () => {
         attrs: { options }
       })
 
-      expect(wrapper.find('.qas-label-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasLabel' }).exists()).toBeTruthy()
     })
 
     it('não deve exibir a label quando há options mas sem label', () => {
@@ -83,7 +83,7 @@ describe('QasRadio', () => {
         attrs: { options }
       })
 
-      expect(wrapper.find('.qas-label-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasLabel' }).exists()).toBeFalsy()
     })
   })
 
@@ -93,13 +93,13 @@ describe('QasRadio', () => {
         props: { errorMessage: 'Campo inválido', error: true }
       })
 
-      expect(wrapper.find('.qas-error-message-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasErrorMessage' }).exists()).toBeTruthy()
     })
 
     it('não deve renderizar qas-error-message quando errorMessage está vazia', () => {
       const wrapper = mountComponent(QasRadio)
 
-      expect(wrapper.find('.qas-error-message-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QasErrorMessage' }).exists()).toBeFalsy()
     })
   })
 })
