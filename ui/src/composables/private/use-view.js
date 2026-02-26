@@ -1,4 +1,4 @@
-import { NotifyError } from '../../plugins'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
 import { camelizeFieldsName } from '../../helpers'
 
 import { useView as useViewComposable } from '@bildvitta/composables'

@@ -23,6 +23,20 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - Corrigido cor da linha quando da step anterior quando uma outra step é finalizada. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
   - Corrigido tamanho das linhas centrais setando proporções na primeira e última linha. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
 
+## [3.20.0-beta.13] - 19-02-2026
+### Adicionado
+- Adicionado skills:
+  - vue-best-practice
+  - custom asteroid
+
+### Corrigido
+- `Navegação em overlay`: corrigido problema com background route que quando a rota de background era nested (tinha layout) ela não renderizava corretamente.
+- `QasSingleView`: corrigido parâmero da url id que pegava via route do vue-router e agora pega route do overlay.
+- Corrigido problema de `circular dependency` com vite:
+  - `ui/`: corrigido todos imports de plugins para importar diretamente os arquivos.
+- `QasActions`: Corrigido espaçamento no topo para ser `margin` ao invés de `padding`.
+- Corrigido espaçamento do `gleap` que aplicava padding em todos container, e não funcionava no Overlay, agora aplica apenas no ultimo container da pagina e funciona para o overlay.
+
 ## [3.20.0-beta.10] - 10-02-2026
 ### Adicionado
 - `helpers/set-scroll-gradient`:
@@ -4910,3 +4924,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.8]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.7...v3.20.0-beta.8?expand=1
 [3.20.0-beta.9]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.8...v3.20.0-beta.9?expand=1
 [3.20.0-beta.10]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.9...v3.20.0-beta.10?expand=1
+[3.20.0-beta.13]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.10-alpha.15...v3.20.0-beta.13?expand=1

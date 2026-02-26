@@ -1,4 +1,6 @@
-import { Dialog, NotifySuccess, NotifyError } from 'asteroid'
+import Dialog from '../dialog/Dialog.js'
+import NotifySuccess from '../notify-success/NotifySuccess.js'
+import NotifyError from '../notify-error/NotifyError.js'
 import { getAction } from '@bildvitta/store-adapter'
 import { useHistory } from '../../composables'
 

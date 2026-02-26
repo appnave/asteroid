@@ -22,7 +22,7 @@ import QasUploader from '../uploader/QasUploader.vue'
 import QasSignaturePad from '../signature-pad/QasSignaturePad.vue'
 
 import { base64ToBlob } from '../../helpers'
-import { NotifyError } from '../../plugins'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
 
 export default {
   name: 'QasSignatureUploader',

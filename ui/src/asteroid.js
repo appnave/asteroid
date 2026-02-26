@@ -4,7 +4,13 @@ export * from './helpers'
 export * from './mixins'
 export * from './vue-plugin'
 export * from './composables'
-export * from './plugins'
+
+// plugins
+export { default as Delete } from './plugins/delete/Delete.js'
+export { default as Dialog } from './plugins/dialog/Dialog.js'
+export { default as NotifyError } from './plugins/notify-error/NotifyError.js'
+export { default as NotifySuccess } from './plugins/notify-success/NotifySuccess.js'
+export { default as Screen } from './plugins/screen/Screen.js'
 
 // components
 export const QasActions = defineAsyncComponent(() => import('./components/actions/QasActions.vue'))
