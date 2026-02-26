@@ -24,7 +24,21 @@ export default defineConfig({
               'q-carousel-slide',
               'q-expansion-item',
               'q-stepper',
-              'q-img'
+              'q-img',
+              // Adicionados na fase 3 para suporte a componentes complexos
+              'q-table',
+              'q-tree',
+              'q-step',
+              'q-uploader',
+              'q-tabs',
+              'q-tab',
+              'q-form',
+              'q-pull-to-refresh',
+              'q-layout',
+              'q-header',
+              'q-page-container',
+              'q-drawer',
+              'q-virtual-scroll'
             ])
             return tag.startsWith('q-') && !componentWithDynamicSlots.has(tag)
           }

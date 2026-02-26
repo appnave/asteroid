@@ -27,6 +27,33 @@ vi.mock('@bildvitta/store-adapter', () => ({
   getState: vi.fn()
 }))
 
+// Mock AutoNumeric
+vi.mock('autonumeric', () => {
+  const AutoNumericMock = vi.fn(() => ({
+    set: vi.fn(),
+    getValue: vi.fn(() => '0'),
+    getNumber: vi.fn(() => 0),
+    destroy: vi.fn(),
+    remove: vi.fn(),
+    update: vi.fn()
+  }))
+  AutoNumericMock.multiple = vi.fn()
+  return { default: AutoNumericMock }
+})
+
+// Mock sortablejs
+vi.mock('sortablejs', () => {
+  const SortableMock = vi.fn(() => ({
+    destroy: vi.fn(),
+    option: vi.fn()
+  }))
+  SortableMock.create = vi.fn(() => ({
+    destroy: vi.fn(),
+    option: vi.fn()
+  }))
+  return { default: SortableMock }
+})
+
 // Mock quasar utilities
 vi.mock('quasar', async importOriginal => {
   const { ref } = await import('vue')
@@ -148,6 +175,15 @@ import {
   QTabPanels,
   QStepper,
   QStep,
+  QTree,
+  QForm,
+  QPullToRefresh,
+  QLayout,
+  QHeader,
+  QPageContainer,
+  QDrawer,
+  QVirtualScroll,
+  QRouteTab,
   QDialog,
   QMenu,
   QPopupEdit,
@@ -211,5 +247,14 @@ config.global.components = {
   QBreadcrumbsEl,
   QSpinner,
   QExpansionItem,
-  QImg
+  QImg,
+  QTree,
+  QForm,
+  QPullToRefresh,
+  QLayout,
+  QHeader,
+  QPageContainer,
+  QDrawer,
+  QVirtualScroll,
+  QRouteTab
 }
