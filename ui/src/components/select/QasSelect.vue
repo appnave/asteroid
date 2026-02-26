@@ -1,5 +1,5 @@
 <template>
-  <q-select v-model="model" v-bind="attributes" class="qas-select" :class="componentClasses" no-error-icon>
+  <q-select ref="select" v-model="model" v-bind="attributes" class="qas-select" :class="componentClasses" no-error-icon>
     <template v-if="hasIcon" #prepend>
       <q-icon :name="defaultIcon" />
     </template>
@@ -409,6 +409,12 @@ export default {
 
     onPopupHide () {
       this.isPopupContentOpen = false
+
+      /**
+       * necessário limpar o campo de input ao fechar o popup, para evitar que o valor da busca permaneça no campo
+       * quando abrir novamente e também o texto não sobreponha os itens selecionados ao apertar a tecla tab.
+       */
+      this.$refs.select.updateInputValue('', true)
       this.$emit('popup-hide')
     },
 
