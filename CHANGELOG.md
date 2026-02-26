@@ -16,7 +16,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Adicionado
-- `Screen (Plugin) | use-screen`: Adicionado novos tokens de tamanhos para validaçào de telas maiores.
+- `Screen (Plugin) | use-screen`: Adicionado novos tokens de tamanhos para validaçào de telas maiores. ([#1351](https://github.com/bildvitta/asteroid/issues/1351))
 
 ### Corrigido
 - `QasStepper`:
