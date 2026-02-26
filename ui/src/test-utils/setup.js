@@ -213,7 +213,7 @@ config.global.mocks = {
     success: vi.fn(),
     dialog: vi.fn(),
     delete: vi.fn(),
-    screen: {}
+    screen: { isSmall: false }
   },
   $axios: {
     get: vi.fn(() => Promise.resolve({ data: {} })),
@@ -221,6 +221,21 @@ config.global.mocks = {
     put: vi.fn(() => Promise.resolve({ data: {} })),
     patch: vi.fn(() => Promise.resolve({ data: {} })),
     delete: vi.fn(() => Promise.resolve({ data: {} }))
+  },
+  $route: {
+    name: 'home',
+    params: {},
+    query: {},
+    meta: {},
+    path: '/'
+  },
+  $router: {
+    push: vi.fn(),
+    replace: vi.fn(),
+    go: vi.fn(),
+    back: vi.fn(),
+    resolve: vi.fn(path => ({ path })),
+    currentRoute: { value: { name: 'home', params: {}, query: {}, meta: {}, path: '/' } }
   }
 }
 config.global.components = {
