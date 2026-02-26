@@ -14,7 +14,17 @@ export default defineConfig({
           isCustomElement: tag => {
             // q-btn e q-input usam v-for + #[name] (dynamic slots),
             // que requerem tratamento de componente — não podem ser custom elements
-            const componentWithDynamicSlots = new Set(['q-btn', 'q-input'])
+            // q-date usa template ref ($el) e precisa ser stubbável nos testes
+            const componentWithDynamicSlots = new Set([
+              'q-btn',
+              'q-date',
+              'q-input',
+              'q-infinite-scroll',
+              'q-carousel',
+              'q-expansion-item',
+              'q-stepper',
+              'q-img'
+            ])
             return tag.startsWith('q-') && !componentWithDynamicSlots.has(tag)
           }
         }

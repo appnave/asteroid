@@ -1,21 +1,6 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mountComponent } from '@test-utils'
-
-// vi.mock('../btn/QasBtn.vue', () => ({
-//   default: {
-//     name: 'QasBtn',
-//     template: '<button class="qas-btn-stub"><slot /></button>',
-//     props: ['icon', 'flat', 'round', 'dense', 'color', 'label']
-//   }
-// }))
-
-// vi.mock('../box/QasBox.vue', () => ({
-//   default: {
-//     name: 'QasBox',
-//     template: '<div class="qas-box-stub"><slot /></div>',
-//     props: ['outlined', 'unelevated', 'useSpacing']
-//   }
-// }))
+import { LocalStorage } from 'quasar'
 
 import QasAlert from './QasAlert.vue'
 
@@ -29,13 +14,6 @@ describe('QasAlert', () => {
     it('deve ter a classe "qas-alert"', () => {
       const wrapper = mountComponent(QasAlert)
       expect(wrapper.find('.qas-alert').exists()).toBeTruthy()
-    })
-
-    it('deve renderizar o slot default', () => {
-      const wrapper = mountComponent(QasAlert, {
-        slots: { default: 'Mensagem de alerta' }
-      })
-      expect(wrapper.text()).toContain('Mensagem de alerta')
     })
 
     it('deve renderizar um q-icon', () => {
@@ -101,6 +79,90 @@ describe('QasAlert', () => {
         props: { modelValue: false }
       })
       expect(wrapper.find('.qas-alert').exists()).toBeFalsy()
+    })
+  })
+
+  describe('slot default', () => {
+    it('deve renderizar conteúdo do slot no lugar do texto da prop', () => {
+      const wrapper = mountComponent(QasAlert, {
+        slots: { default: '<span class="slot-content">Conteúdo personalizado</span>' }
+      })
+      expect(wrapper.find('.slot-content').exists()).toBeTruthy()
+      expect(wrapper.text()).toContain('Conteúdo personalizado')
+    })
+  })
+
+  describe('prop useBox', () => {
+    it('deve renderizar dentro de QasBox quando useBox é true', () => {
+      const wrapper = mountComponent(QasAlert, {
+        props: { useBox: true },
+        global: {
+          stubs: {
+            QasBox: { template: '<div class="qas-box-stub"><slot /></div>' }
+          }
+        }
+      })
+      expect(wrapper.find('.qas-box-stub').exists()).toBeTruthy()
+    })
+
+    it('não deve renderizar QasBox quando useBox é false', () => {
+      const wrapper = mountComponent(QasAlert, {
+        props: { useBox: false },
+        global: {
+          stubs: {
+            QasBox: { template: '<div class="qas-box-stub"><slot /></div>' }
+          }
+        }
+      })
+      expect(wrapper.find('.qas-box-stub').exists()).toBeFalsy()
+    })
+  })
+
+  describe('fechamento via botão de fechar', () => {
+    it('deve emitir update:modelValue com false ao clicar no botão de fechar', async () => {
+      const wrapper = mountComponent(QasAlert, {
+        props: { useCloseButton: true, modelValue: true }
+      })
+      await wrapper.find('.qas-btn-stub').trigger('click')
+      expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+      expect(wrapper.emitted('update:modelValue')[0]).toEqual([false])
+    })
+  })
+
+  describe('prop storageKey + usePersistentModelOnClose', () => {
+    it('deve chamar LocalStorage.set e emitir update:modelValue ao fechar com usePersistentModelOnClose', async () => {
+      LocalStorage.set = vi.fn()
+      const wrapper = mountComponent(QasAlert, {
+        props: {
+          useCloseButton: true,
+          modelValue: true,
+          storageKey: 'minha-chave',
+          usePersistentModelOnClose: true
+        }
+      })
+      await wrapper.find('.qas-btn-stub').trigger('click')
+      expect(LocalStorage.set).toHaveBeenCalled()
+      expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+    })
+
+    it('não deve chamar LocalStorage.set ao fechar sem usePersistentModelOnClose', async () => {
+      LocalStorage.set = vi.fn()
+      const wrapper = mountComponent(QasAlert, {
+        props: { useCloseButton: true, modelValue: true }
+      })
+      await wrapper.find('.qas-btn-stub').trigger('click')
+      expect(LocalStorage.set).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('inject isDialog', () => {
+    it('deve renderizar corretamente quando isDialog é true', () => {
+      const wrapper = mountComponent(QasAlert, {
+        global: {
+          provide: { isDialog: true }
+        }
+      })
+      expect(wrapper.find('.qas-alert').exists()).toBeTruthy()
     })
   })
 })

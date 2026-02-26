@@ -29,9 +29,16 @@ vi.mock('@bildvitta/store-adapter', () => ({
 
 // Mock quasar utilities
 vi.mock('quasar', async importOriginal => {
+  const { ref } = await import('vue')
   const actual = await importOriginal()
   return {
     ...actual,
+    useDialogPluginComponent: Object.assign(vi.fn(() => ({
+      dialogRef: ref(null),
+      onDialogHide: vi.fn(),
+      onDialogOK: vi.fn(),
+      onDialogCancel: vi.fn()
+    })), { emits: [] }),
     LocalStorage: {
       getItem: vi.fn(),
       setItem: vi.fn(),
@@ -114,6 +121,57 @@ import { config } from '@vue/test-utils'
 import {
   Quasar,
   QCheckbox,
+  QChip,
+  QOptionGroup,
+  QBtn,
+  QBadge,
+  QInput,
+  QSelect,
+  QField,
+  QToggle,
+  QRadio,
+  QDate,
+  QTime,
+  QUploader,
+  QEditor,
+  QTable,
+  QTh,
+  QTd,
+  QTr,
+  QCard,
+  QItem,
+  QList,
+  QTab,
+  QTabs,
+  QTabPanel,
+  QTabPanels,
+  QStepper,
+  QStep,
+  QDialog,
+  QMenu,
+  QPopupEdit,
+  QPagination,
+  QBreadcrumbs,
+  QBreadcrumbsEl,
+  QSpinner,
+  QIcon,
+  QExpansionItem,
+  QImg,
+  ClosePopup
+} from 'quasar'
+
+// import { RouterLink } from 'vue-router'
+
+config.global.directives = {
+  'close-popup': ClosePopup
+}
+
+config.global.plugins.push(Quasar)
+config.global.components = {
+  QIcon,
+  QCheckbox,
+  QBadge,
+  QChip,
   QOptionGroup,
   QBtn,
   QInput,
@@ -145,44 +203,6 @@ import {
   QBreadcrumbs,
   QBreadcrumbsEl,
   QSpinner,
-  QIcon
-} from 'quasar'
-
-// import { RouterLink } from 'vue-router'
-
-config.global.plugins.push(Quasar)
-config.global.components = {
-  QIcon,
-  QCheckbox,
-  QOptionGroup,
-  QBtn,
-  QInput,
-  QSelect,
-  QField,
-  QToggle,
-  QRadio,
-  QDate,
-  QTime,
-  QUploader,
-  QEditor,
-  QTable,
-  QTh,
-  QTd,
-  QTr,
-  QCard,
-  QItem,
-  QList,
-  QTab,
-  QTabs,
-  QTabPanel,
-  QTabPanels,
-  QStepper,
-  QStep,
-  QDialog,
-  QMenu,
-  QPopupEdit,
-  QPagination,
-  QBreadcrumbs,
-  QBreadcrumbsEl,
-  QSpinner
+  QExpansionItem,
+  QImg
 }

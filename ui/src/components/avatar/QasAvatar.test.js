@@ -78,8 +78,12 @@ describe('QasAvatar', () => {
         props: { image: 'https://example.com/avatar.png' }
       })
 
-      expect(wrapper.find('q-img').exists()).toBeTruthy()
-      expect(wrapper.find('q-img').attributes('src')).toBe('https://example.com/avatar.png')
+      const qimg = wrapper.findComponent({ name: 'QImg' })
+      expect(qimg.exists()).toBeTruthy()
+      // check native img tag inside component
+      const nativeImg = wrapper.find('img')
+      expect(nativeImg.exists()).toBeTruthy()
+      expect(nativeImg.attributes('src')).toBe('https://example.com/avatar.png')
       expect(wrapper.find('q-icon').exists()).toBeFalsy()
     })
 
@@ -90,8 +94,8 @@ describe('QasAvatar', () => {
           image: 'https://example.com/avatar.png'
         }
       })
-
-      expect(wrapper.find('q-img').exists()).toBeTruthy()
+      const nativeImg = wrapper.find('img')
+      expect(nativeImg.exists()).toBeTruthy()
       expect(wrapper.find('q-icon').exists()).toBeFalsy()
     })
 
@@ -103,7 +107,8 @@ describe('QasAvatar', () => {
         }
       })
 
-      expect(wrapper.find('q-img').attributes('alt')).toBe('John Doe')
+      const nativeImg = wrapper.find('img')
+      expect(nativeImg.attributes('alt')).toBe('John Doe')
     })
 
     it('deve exibir o ícone quando a imagem falha ao carregar', async () => {
@@ -111,11 +116,12 @@ describe('QasAvatar', () => {
         props: { image: 'https://example.com/broken.png' }
       })
 
-      expect(wrapper.find('q-img').exists()).toBeTruthy()
+      const nativeImg = wrapper.find('img')
+      expect(nativeImg.exists()).toBeTruthy()
 
-      await wrapper.find('q-img').trigger('error')
+      await nativeImg.trigger('error')
 
-      expect(wrapper.find('q-img').exists()).toBeFalsy()
+      expect(wrapper.find('img').exists()).toBeFalsy()
       expect(wrapper.find('q-icon').exists()).toBeTruthy()
     })
 
@@ -124,12 +130,13 @@ describe('QasAvatar', () => {
         props: { image: 'https://example.com/broken.png' }
       })
 
-      await wrapper.find('q-img').trigger('error')
-      expect(wrapper.find('q-img').exists()).toBeFalsy()
+      const nativeImg = wrapper.find('img')
+      await nativeImg.trigger('error')
+      expect(wrapper.find('img').exists()).toBeFalsy()
 
       await wrapper.setProps({ image: 'https://example.com/new.png' })
 
-      expect(wrapper.find('q-img').exists()).toBeTruthy()
+      expect(wrapper.find('img').exists()).toBeTruthy()
     })
   })
 
