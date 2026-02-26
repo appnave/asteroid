@@ -207,6 +207,22 @@ config.global.directives = {
 }
 
 config.global.plugins.push(Quasar)
+config.global.mocks = {
+  $qas: {
+    error: vi.fn(),
+    success: vi.fn(),
+    dialog: vi.fn(),
+    delete: vi.fn(),
+    screen: {}
+  },
+  $axios: {
+    get: vi.fn(() => Promise.resolve({ data: {} })),
+    post: vi.fn(() => Promise.resolve({ data: {} })),
+    put: vi.fn(() => Promise.resolve({ data: {} })),
+    patch: vi.fn(() => Promise.resolve({ data: {} })),
+    delete: vi.fn(() => Promise.resolve({ data: {} }))
+  }
+}
 config.global.components = {
   QIcon,
   QInfiniteScroll,
