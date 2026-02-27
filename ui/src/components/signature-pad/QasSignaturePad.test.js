@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { mountComponent } from '../../test-utils/mount-helper.js'
 import QasSignaturePad from './QasSignaturePad.vue'
 
@@ -35,17 +35,23 @@ describe('QasSignaturePad', () => {
   beforeEach(() => {
     vi.clearAllMocks()
 
-    // Mock getElementById para retornar um elemento canvas falso
-    document.getElementById = vi.fn(() => ({
+    // Usa spyOn para permitir restauração correta após cada teste
+    vi.spyOn(document, 'getElementById').mockReturnValue({
       getContext: vi.fn(() => null),
       setAttribute: vi.fn(),
       offsetWidth: 300,
       clientWidth: 285
-    }))
+    })
 
     wrapper = mountComponent(QasSignaturePad, {
       attachTo: document.body
     })
+  })
+
+  afterEach(() => {
+    wrapper.unmount()
+    vi.restoreAllMocks()
+    document.body.innerHTML = ''
   })
 
   describe('Renderização', () => {

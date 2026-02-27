@@ -1,14 +1,18 @@
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest'
 import { mountComponent } from '@test-utils'
 import QasGrabbable from './QasGrabbable.vue'
 
 beforeAll(() => {
-  global.ResizeObserver = class ResizeObserver {
+  vi.stubGlobal('ResizeObserver', class ResizeObserver {
     constructor (cb) { this.cb = cb }
     observe () {}
     unobserve () {}
     disconnect () {}
-  }
+  })
+})
+
+afterAll(() => {
+  vi.unstubAllGlobals()
 })
 
 describe('QasGrabbable', () => {

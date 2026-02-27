@@ -1,9 +1,34 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mountComponent } from '@test-utils'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import QasDialogRouter from './QasDialogRouter.vue'
 
+vi.mock('vue-router', () => ({
+  useRouter: vi.fn(),
+  useRoute: vi.fn()
+}))
+
 describe('QasDialogRouter', () => {
+  beforeEach(() => {
+    vi.mocked(useRoute).mockReturnValue({
+      name: 'home',
+      params: {},
+      query: {},
+      meta: {},
+      fullPath: '/',
+      path: '/'
+    })
+
+    vi.mocked(useRouter).mockReturnValue({
+      push: vi.fn(),
+      replace: vi.fn(),
+      go: vi.fn(),
+      back: vi.fn(),
+      currentRoute: { value: { name: 'home', params: {}, query: {}, meta: {}, fullPath: '/' } },
+      resolve: vi.fn(() => ({ fullPath: '/', matched: [] }))
+    })
+  })
+
   describe('renderização básica', () => {
     it('deve renderizar corretamente', () => {
       const wrapper = mountComponent(QasDialogRouter)
@@ -39,7 +64,7 @@ describe('QasDialogRouter', () => {
 
   describe('método show() — erro interno', () => {
     it('deve emitir "error" quando show() encontra erro dentro do try-catch', async () => {
-      useRouter.mockReturnValueOnce({
+      vi.mocked(useRouter).mockReturnValueOnce({
         push: vi.fn(),
         replace: vi.fn(),
         go: vi.fn(),
@@ -61,7 +86,7 @@ describe('QasDialogRouter', () => {
 
   describe('método show() — rota inválida antes do try', () => {
     it('deve lidar com erro de rota sem travar a aplicação', async () => {
-      useRouter.mockReturnValueOnce({
+      vi.mocked(useRouter).mockReturnValueOnce({
         push: vi.fn(),
         replace: vi.fn(),
         go: vi.fn(),

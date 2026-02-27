@@ -38,11 +38,11 @@ describe('QasBreakline', () => {
 
     it('deve renderizar uma linha quando text é string vazia', () => {
       const wrapper = mountComponent(QasBreakline, {
-        props: { text: 'texto' }
+        props: { text: '' }
       })
 
-      // split('') gera array de caracteres, mas split('\n') de '' gera ['']
-      expect(wrapper.findAll('div').length).toBeGreaterThanOrEqual(1)
+      // split('\n') de '' gera [''], resultando em exatamente 1 div
+      expect(wrapper.findAll('div').length).toBe(1)
     })
   })
 

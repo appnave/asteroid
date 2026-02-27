@@ -43,15 +43,21 @@ describe('QasSearchBox', () => {
       const wrapper = factory({ fuseOptions: { keys: ['label', 'value'] } })
       await flushPromises()
       wrapper.vm.filterOptionsByFuse('apple')
-      // Com Fuse e keys configuradas, deve retornar ao menos um resultado
-      expect(wrapper.vm.mx_filteredOptions.length).toBeGreaterThanOrEqual(1)
+      await flushPromises()
+      // Verifica o que o componente expõe publicamente via evento
+      const emitted = wrapper.emitted('update:results')
+      const lastEmit = emitted[emitted.length - 1][0]
+      expect(lastEmit.length).toBeGreaterThanOrEqual(1)
     })
 
     it('retorna todos os itens quando busca está vazia', async () => {
       const wrapper = factory()
       await flushPromises()
       wrapper.vm.filterOptionsByFuse('')
-      expect(wrapper.vm.mx_filteredOptions.length).toBe(3)
+      await flushPromises()
+      const emitted = wrapper.emitted('update:results')
+      const lastEmit = emitted[emitted.length - 1][0]
+      expect(lastEmit.length).toBe(3)
     })
   })
 

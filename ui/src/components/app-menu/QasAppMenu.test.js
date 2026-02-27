@@ -33,7 +33,10 @@ const defaultProps = {
   miniBrand: '/logo-mini.svg'
 }
 
-// Stub do q-drawer que renderiza o slot diretamente (sem portal/teleport)
+// QDrawer usa teleport/portal do Quasar e precisa de stub em JSDOM para
+// renderizar os slots corretamente. Esta é uma exceção justificada à regra
+// "Não usar stubs em testes" do AGENTS.md: stubs são permitidos apenas
+// para componentes externos/Quasar que dependem de mecanismos de teleport.
 const QDrawerStub = {
   name: 'QDrawer',
   template: '<div class="q-drawer-stub"><slot /></div>',

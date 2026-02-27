@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mountComponent } from '@test-utils'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import QasPageHeader from './QasPageHeader.vue'
+
+vi.mock('vue-router', () => ({
+  useRouter: vi.fn(),
+  useRoute: vi.fn()
+}))
 
 function mountPageHeader (options = {}) {
   return mountComponent(QasPageHeader, {
@@ -13,6 +18,15 @@ function mountPageHeader (options = {}) {
 }
 
 beforeEach(() => {
+  vi.mocked(useRoute).mockReturnValue({
+    name: 'home',
+    params: {},
+    query: {},
+    meta: {},
+    fullPath: '/',
+    path: '/'
+  })
+
   vi.mocked(useRouter).mockReturnValue({
     push: vi.fn(),
     replace: vi.fn(),
