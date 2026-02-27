@@ -1,36 +1,18 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { mountComponent } from '@test-utils'
-
-// QRadio e QOptionGroup do Quasar precisam do plugin instalado - fazemos mock
-vi.mock('quasar', async importOriginal => {
-  const actual = await importOriginal()
-  return {
-    ...actual,
-    QRadio: {
-      name: 'QRadio',
-      template: '<div class="q-radio-stub"><slot /></div>',
-      props: ['modelValue', 'val', 'label', 'dense', 'disable']
-    },
-    QOptionGroup: {
-      name: 'QOptionGroup',
-      template: '<div class="q-option-group-stub"><slot /></div>',
-      props: ['modelValue', 'options', 'type', 'inline', 'dense', 'disable', 'class']
-    }
-  }
-})
 
 import QasRadio from './QasRadio.vue'
 
 describe('QasRadio', () => {
   describe('renderização básica', () => {
     it('deve renderizar corretamente', () => {
-      const wrapper = mountComponent(QasRadio)
+      const wrapper = mountComponent(QasRadio, { props: { modelValue: null, val: 'test' } })
 
       expect(wrapper.exists()).toBeTruthy()
     })
 
     it('deve ter a classe "qas-radio"', () => {
-      const wrapper = mountComponent(QasRadio)
+      const wrapper = mountComponent(QasRadio, { props: { modelValue: null, val: 'test' } })
 
       expect(wrapper.classes()).toContain('qas-radio')
     })
@@ -38,15 +20,15 @@ describe('QasRadio', () => {
 
   describe('modo QRadio (sem options)', () => {
     it('deve renderizar q-radio quando não há options', () => {
-      const wrapper = mountComponent(QasRadio)
+      const wrapper = mountComponent(QasRadio, { props: { modelValue: null, val: 'test' } })
 
-      expect(wrapper.find('.q-radio-stub').exists()).toBeTruthy()
-      expect(wrapper.find('.q-option-group-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QRadio' }).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QOptionGroup' }).exists()).toBeFalsy()
     })
 
     it('não deve exibir a label quando sem options (label fica vazia)', () => {
       const wrapper = mountComponent(QasRadio, {
-        props: { label: 'Opção' }
+        props: { modelValue: null, val: 'test', label: 'Opção' }
       })
 
       // sem options, não exibe qas-label
@@ -62,17 +44,16 @@ describe('QasRadio', () => {
 
     it('deve renderizar q-option-group quando options são fornecidas', () => {
       const wrapper = mountComponent(QasRadio, {
-        attrs: { options }
+        props: { modelValue: null, val: 'test', options }
       })
 
-      expect(wrapper.find('.q-option-group-stub').exists()).toBeTruthy()
-      expect(wrapper.find('.q-radio-stub').exists()).toBeFalsy()
+      expect(wrapper.findComponent({ name: 'QOptionGroup' }).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QRadio' }).exists()).toBeFalsy()
     })
 
     it('deve exibir a label quando há options e label fornecida', () => {
       const wrapper = mountComponent(QasRadio, {
-        props: { label: 'Escolha:' },
-        attrs: { options }
+        props: { modelValue: null, val: 'test', label: 'Escolha:', options }
       })
 
       expect(wrapper.findComponent({ name: 'QasLabel' }).exists()).toBeTruthy()
@@ -80,7 +61,7 @@ describe('QasRadio', () => {
 
     it('não deve exibir a label quando há options mas sem label', () => {
       const wrapper = mountComponent(QasRadio, {
-        attrs: { options }
+        props: { modelValue: null, val: 'test', options }
       })
 
       expect(wrapper.findComponent({ name: 'QasLabel' }).exists()).toBeFalsy()
@@ -90,14 +71,14 @@ describe('QasRadio', () => {
   describe('prop error e errorMessage', () => {
     it('deve renderizar qas-error-message quando errorMessage é fornecida', () => {
       const wrapper = mountComponent(QasRadio, {
-        props: { errorMessage: 'Campo inválido', error: true }
+        props: { modelValue: null, val: 'test', errorMessage: 'Campo inválido', error: true }
       })
 
       expect(wrapper.findComponent({ name: 'QasErrorMessage' }).exists()).toBeTruthy()
     })
 
     it('não deve renderizar qas-error-message quando errorMessage está vazia', () => {
-      const wrapper = mountComponent(QasRadio)
+      const wrapper = mountComponent(QasRadio, { props: { modelValue: null, val: 'test' } })
 
       expect(wrapper.findComponent({ name: 'QasErrorMessage' }).exists()).toBeFalsy()
     })

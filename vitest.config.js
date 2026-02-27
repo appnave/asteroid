@@ -30,6 +30,7 @@ export default defineConfig({
               'q-tree',
               'q-step',
               'q-uploader',
+              'q-radio',
               'q-tabs',
               'q-tab',
               'q-form',
@@ -38,7 +39,10 @@ export default defineConfig({
               'q-header',
               'q-page-container',
               'q-drawer',
-              'q-virtual-scroll'
+              'q-virtual-scroll',
+              'q-select',
+              'q-field',
+              'q-option-group'
             ])
             return tag.startsWith('q-') && !componentWithDynamicSlots.has(tag)
           }

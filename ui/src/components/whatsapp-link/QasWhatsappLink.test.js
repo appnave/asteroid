@@ -1,14 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { mountComponent } from '@test-utils'
-
-vi.mock('../btn/QasBtn.vue', () => ({
-  default: {
-    name: 'QasBtn',
-    template: '<a class="qas-btn-stub" :href="href" :target="target"><slot /></a>',
-    props: ['href', 'icon', 'target', 'flat', 'color', 'label']
-  }
-}))
-
 import QasWhatsappLink from './QasWhatsappLink.vue'
 
 describe('QasWhatsappLink', () => {
@@ -22,7 +13,7 @@ describe('QasWhatsappLink', () => {
     it('deve renderizar o componente QasBtn', () => {
       const wrapper = mountComponent(QasWhatsappLink)
 
-      expect(wrapper.find('.qas-btn-stub').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QasBtn' }).exists()).toBeTruthy()
     })
   })
 
@@ -32,7 +23,7 @@ describe('QasWhatsappLink', () => {
         props: { phone: '11999999999' }
       })
 
-      expect(wrapper.find('.qas-btn-stub').attributes('href')).toContain('wa.me/5511999999999')
+      expect(wrapper.vm.whatsappLink).toContain('wa.me/5511999999999')
     })
 
     it('deve usar callingCode 55 (Brasil) por padrão', () => {
@@ -40,7 +31,7 @@ describe('QasWhatsappLink', () => {
         props: { phone: '11912345678' }
       })
 
-      expect(wrapper.find('.qas-btn-stub').attributes('href')).toContain('wa.me/5511912345678')
+      expect(wrapper.vm.whatsappLink).toContain('wa.me/5511912345678')
     })
 
     it('deve usar callingCode customizado', () => {
@@ -48,7 +39,7 @@ describe('QasWhatsappLink', () => {
         props: { phone: '912345678', callingCode: 351 }
       })
 
-      expect(wrapper.find('.qas-btn-stub').attributes('href')).toContain('wa.me/351912345678')
+      expect(wrapper.vm.whatsappLink).toContain('wa.me/351912345678')
     })
 
     it('deve remover caracteres especiais do telefone', () => {
@@ -56,7 +47,7 @@ describe('QasWhatsappLink', () => {
         props: { phone: '(11) 9 9999-9999' }
       })
 
-      expect(wrapper.find('.qas-btn-stub').attributes('href')).toContain('wa.me/5511999999999')
+      expect(wrapper.vm.whatsappLink).toContain('wa.me/5511999999999')
     })
 
     it('deve gerar link sem text quando text está vazio', () => {
@@ -64,7 +55,7 @@ describe('QasWhatsappLink', () => {
         props: { phone: '11999999999', text: '' }
       })
 
-      expect(wrapper.find('.qas-btn-stub').attributes('href')).toBe('https://wa.me/5511999999999?text=')
+      expect(wrapper.vm.whatsappLink).toBe('https://wa.me/5511999999999?text=')
     })
   })
 
@@ -72,7 +63,7 @@ describe('QasWhatsappLink', () => {
     it('deve ter target="_blank"', () => {
       const wrapper = mountComponent(QasWhatsappLink)
 
-      expect(wrapper.find('.qas-btn-stub').attributes('target')).toBe('_blank')
+      expect(wrapper.findComponent({ name: 'QasBtn' }).vm.$attrs.target).toBe('_blank')
     })
   })
 })

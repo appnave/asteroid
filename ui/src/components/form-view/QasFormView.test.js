@@ -68,7 +68,9 @@ describe('QasFormView', () => {
 
     it('chama getAction com payload contendo id da rota quando mode="update"', async () => {
       factory({ mode: 'update', route: { name: 'edit', params: { id: '42' }, query: {}, meta: {}, path: '/users/42' } })
+
       await flushPromises()
+
       expect(getAction).toHaveBeenCalledWith(
         expect.objectContaining({
           entity: defaultEntity,
@@ -80,7 +82,9 @@ describe('QasFormView', () => {
 
     it('usa customId quando fornecido ao invés de route.params.id', async () => {
       factory({ customId: 'custom-99' })
+
       await flushPromises()
+
       expect(getAction).toHaveBeenCalledWith(
         expect.objectContaining({
           payload: expect.objectContaining({ id: 'custom-99' })
@@ -90,14 +94,19 @@ describe('QasFormView', () => {
 
     it('emite fetch-success após fetch bem-sucedido', async () => {
       const wrapper = factory()
+
       await flushPromises()
+
       expect(wrapper.emitted('fetch-success')).toBeTruthy()
     })
 
     it('chama beforeFetch quando prop fornecida antes do fetch', async () => {
       const beforeFetch = vi.fn(({ resolve }) => resolve())
+
       factory({ beforeFetch })
+
       await flushPromises()
+
       expect(beforeFetch).toHaveBeenCalled()
     })
   })

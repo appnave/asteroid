@@ -123,7 +123,7 @@ describe('QasCard', () => {
         }
       })
 
-      expect(wrapper.find('router-link').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'RouterLink' }).exists()).toBeTruthy()
     })
   })
 

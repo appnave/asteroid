@@ -1,13 +1,29 @@
 import { vi } from 'vitest'
 
-// Mock vue-router
+// Polyfill ResizeObserver para jsdom
+global.ResizeObserver = class ResizeObserver {
+  observe () {}
+  unobserve () {}
+  disconnect () {}
+}
+
+// Polyfill IntersectionObserver para jsdom
+global.IntersectionObserver = class IntersectionObserver {
+  observe () {}
+  unobserve () {}
+  disconnect () {}
+}
+
+// Mock vue-router (centralizado para todos os testes)
 vi.mock('vue-router', () => ({
   useRouter: vi.fn(() => ({
+    hasRoute: vi.fn(() => true),
+    resolve: vi.fn(({ name }) => ({ path: `/${name}` })),
     push: vi.fn(),
     replace: vi.fn(),
     go: vi.fn(),
     back: vi.fn(),
-    currentRoute: { value: { name: 'home', params: {}, query: {}, meta: {} } }
+    currentRoute: { value: { name: 'home', params: {}, query: {}, meta: {}, path: '/' } }
   })),
 
   useRoute: vi.fn(() => ({
@@ -17,6 +33,8 @@ vi.mock('vue-router', () => ({
     meta: {},
     path: '/'
   })),
+
+  RouterLink: { template: '<a><slot /></a>' },
 
   onBeforeRouteLeave: vi.fn()
 }))
@@ -29,28 +47,36 @@ vi.mock('@bildvitta/store-adapter', () => ({
 
 // Mock AutoNumeric
 vi.mock('autonumeric', () => {
-  const AutoNumericMock = vi.fn(() => ({
-    set: vi.fn(),
-    getValue: vi.fn(() => '0'),
-    getNumber: vi.fn(() => 0),
-    destroy: vi.fn(),
-    remove: vi.fn(),
-    update: vi.fn()
-  }))
+  const autonumericPresets = {
+    commaDecimalCharDotSeparator: { decimalCharacter: ',', digitGroupSeparator: '.', decimalPlaces: 2 },
+    Brazilian: { currencySymbol: 'R$ ', decimalCharacter: ',', digitGroupSeparator: '.', decimalPlaces: 2 },
+    percentageEU2dec: { suffixText: '%', decimalPlaces: 2 },
+    integer: { decimalPlaces: 0 }
+  }
+  function AutoNumericMock () {
+    this.set = vi.fn()
+    this.getValue = vi.fn(() => '0')
+    this.getNumber = vi.fn(() => 0)
+    this.destroy = vi.fn()
+    this.remove = vi.fn()
+    this.update = vi.fn()
+    this.historyTable = [{ value: '0' }]
+    this.historyTableIndex = 0
+  }
   AutoNumericMock.multiple = vi.fn()
+  AutoNumericMock.getPredefinedOptions = vi.fn(() => autonumericPresets)
   return { default: AutoNumericMock }
 })
 
 // Mock sortablejs
 vi.mock('sortablejs', () => {
-  const SortableMock = vi.fn(() => ({
-    destroy: vi.fn(),
-    option: vi.fn()
-  }))
-  SortableMock.create = vi.fn(() => ({
-    destroy: vi.fn(),
-    option: vi.fn()
-  }))
+  function SortableMock () {
+    this.destroy = vi.fn()
+    this.option = vi.fn()
+  }
+  SortableMock.create = vi.fn(function () {
+    return { destroy: vi.fn(), option: vi.fn() }
+  })
   return { default: SortableMock }
 })
 
@@ -102,49 +128,8 @@ vi.mock('quasar', async importOriginal => {
   }
 })
 
-// // Registrar stubs globais para componentes Quasar usados nos testes
-// import { config } from '@vue/test-utils'
-
-// config.global.components = {
-//   ...(config.global.components || {}),
-//   'q-checkbox': true,
-//   'q-option-group': true,
-//   'q-icon': true
-// }
-
-// 'q-btn',
-// 'q-input',
-// 'q-select',
-// 'q-field',
-// 'q-checkbox',
-// 'q-toggle',
-// 'q-radio',
-// 'q-option-group',
-// 'q-date',
-// 'q-time',
-// 'q-uploader',
-// 'q-editor',
-// 'q-table',
-// 'q-th',
-// 'q-td',
-// 'q-tr',
-// 'q-card',
-// 'q-item',
-// 'q-list',
-// 'q-tab',
-// 'q-tabs',
-// 'q-tab-panel',
-// 'q-tab-panels',
-// 'q-stepper',
-// 'q-step',
-// 'q-dialog',
-// 'q-menu',
-// 'q-popup-edit',
-// 'q-pagination',
-// 'q-breadcrumbs',
-// 'q-breadcrumbs-el'
-
 import { config } from '@vue/test-utils'
+import { markRaw } from 'vue'
 import {
   Quasar,
   QCheckbox,
@@ -203,7 +188,8 @@ import {
 // import { RouterLink } from 'vue-router'
 
 config.global.directives = {
-  'close-popup': ClosePopup
+  'close-popup': ClosePopup,
+  ripple: { mounted () {}, updated () {} }
 }
 
 config.global.plugins.push(Quasar)
@@ -238,7 +224,14 @@ config.global.mocks = {
     currentRoute: { value: { name: 'home', params: {}, query: {}, meta: {}, path: '/' } }
   }
 }
+
 config.global.components = {
+  RouterLink: markRaw({ name: 'RouterLink', template: '<a><slot /></a>', props: ['to', 'custom'] }),
+  RouterView: markRaw({ name: 'RouterView', template: '<div />' }),
+  // Stub para evitar warning "QHeader needs to be child of QLayout" do Quasar
+  QHeader,
+  // Stub para evitar warning "QStep needs to be a child of QStepper" do Quasar
+  QStep,
   QIcon,
   QInfiniteScroll,
   QCarousel,
@@ -269,7 +262,6 @@ config.global.components = {
   QTabPanel,
   QTabPanels,
   QStepper,
-  QStep,
   QDialog,
   QMenu,
   QPopupEdit,
@@ -283,7 +275,6 @@ config.global.components = {
   QForm,
   QPullToRefresh,
   QLayout,
-  QHeader,
   QPageContainer,
   QDrawer,
   QVirtualScroll,

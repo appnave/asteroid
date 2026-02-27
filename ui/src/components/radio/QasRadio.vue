@@ -26,6 +26,11 @@ defineOptions({
 const props = defineProps({
   ...baseErrorProps,
 
+  options: {
+    default: () => [],
+    type: Array
+  },
+
   label: {
     default: '',
     type: String
@@ -40,7 +45,7 @@ const { color } = useErrorMessage(props)
 const screen = useScreen()
 
 // computeds
-const isOptionGroup = computed(() => !!attrs.options?.length)
+const isOptionGroup = computed(() => !!props.options?.length)
 
 /**
  * Só mostra a label caso for q-option-group e tenha label vindo nas props

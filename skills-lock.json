@@ -5,6 +5,16 @@
       "source": "obra/superpowers",
       "sourceType": "github",
       "computedHash": "534432f7d0af6f567ec505ef251e6bbf0a8f2d12a34d9da9517fb131dd9c8646"
+    },
+    "executing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "7311ed85870f37e9af1e8354c500e7c4161893d845031eed43dd1d55157da83a"
+    },
+    "writing-plans": {
+      "source": "obra/superpowers",
+      "sourceType": "github",
+      "computedHash": "8c536ae03ef3ab1fa974c0e50a65d803acddf5d4ee7cac68ab25a39b9e338611"
     }
   }
 }

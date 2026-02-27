@@ -57,7 +57,7 @@ describe('QasCheckbox', () => {
         props: { options, modelValue: [] }
       })
 
-      expect(wrapper.find('q-option-group').exists()).toBeTruthy()
+      expect(wrapper.findComponent({ name: 'QOptionGroup' }).exists()).toBeTruthy()
       expect(wrapper.find('q-checkbox').exists()).toBeFalsy()
     })
 

@@ -52,3 +52,4 @@ alias: {
 - Adicione ou atualize testes para qualquer código alterado.
 - Foco atual: helpers e componentes simples.
 - Rode `npm run test` antes de commitar para garantir que tudo passa.
+- Nunca use stubs  nos testes.

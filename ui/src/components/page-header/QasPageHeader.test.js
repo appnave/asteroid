@@ -3,14 +3,6 @@ import { mountComponent } from '@test-utils'
 import { useRouter } from 'vue-router'
 import QasPageHeader from './QasPageHeader.vue'
 
-vi.mock('../../composables', async importOriginal => {
-  const actual = await importOriginal()
-  return {
-    ...actual,
-    useOverlayNavigation: () => ({ isOverlay: false })
-  }
-})
-
 function mountPageHeader (options = {}) {
   return mountComponent(QasPageHeader, {
     ...options,
