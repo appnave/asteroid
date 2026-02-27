@@ -216,7 +216,7 @@ function getDefaultTimeByMask () {
  * Faz o tratamento de setar o horário default ao preencher a data via input,
  * quando a configuração for para data e hora.
  *
- * @param value - Valor a ser normalizado, que pode ser uma data, hora ou data e hora dependendo da configuração.
+ * @param {string} value - Valor a ser normalizado, que pode ser data, hora ou data e hora dependendo da configuração.
  */
 function normalizeDateTimeValue (value = '') {
   if (props.useDateOnly || props.useTimeOnly || !value) return value
