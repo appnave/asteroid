@@ -98,7 +98,7 @@ export default {
 
         this.mx_cachedOptions = []
 
-        this.mx_filterOptionsByStore('')
+        if (!this.disable) this.mx_filterOptionsByStore('')
 
         setTimeout(() => this.$emit('update:modelValue', undefined))
       }

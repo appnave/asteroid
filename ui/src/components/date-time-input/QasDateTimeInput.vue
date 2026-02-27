@@ -207,12 +207,29 @@ function toMask (value) {
   )
 }
 
+function getDefaultTimeByMask () {
+  return props.timeMask.replace(/[A-Za-z]/g, '0')
+}
+
+function normalizeDateTimeValue (value = '') {
+  if (props.useDateOnly || props.useTimeOnly || !value) return value
+
+  const [typedDate, typedTime] = value.split(' ')
+  const hasFullDate = typedDate?.length === props.dateMask.length
+
+  if (!hasFullDate || typedTime) return value
+
+  return `${typedDate} ${getDefaultTimeByMask()}`
+}
+
 function updateModelValue (value) {
-  currentValue.value = value
+  const normalizedValue = normalizeDateTimeValue(value)
 
-  const valueLength = value?.replace?.(/_/g, '')?.length
+  currentValue.value = normalizedValue
 
-  error.value = validateDateAndTime(value)
+  const valueLength = normalizedValue?.replace?.(/_/g, '')?.length
+
+  error.value = validateDateAndTime(normalizedValue)
 
   if (error.value) {
     hasInvalidDate.value = true
@@ -222,8 +239,8 @@ function updateModelValue (value) {
 
   hasInvalidDate.value = false
 
-  if (value === '' || valueLength === mask.value.length) {
-    lastValue.value = props.useTimeOnly ? value : toISOString(value)
+  if (normalizedValue === '' || valueLength === mask.value.length) {
+    lastValue.value = props.useTimeOnly ? normalizedValue : toISOString(normalizedValue)
     emit('update:modelValue', lastValue.value)
   }
 
