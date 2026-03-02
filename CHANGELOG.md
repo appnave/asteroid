@@ -33,10 +33,11 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - removido prop `actionsProps`.
   - removido props `useFullMaxWidth`, `maxWidth`, `minWidth` em favor de utilizar a prop `size`.
   - agora todos dialogs tem a propriedade `title` sendo obrigatória.
+  - **Recomendação**: Lugares que usam a prop `useForm` sem ter formulário só para desativar o auto close no botão `ok` modificar pela prop `useAutoCloseOnOk`.
 - `QasBoardGenerator`:
   - necessário passar a prop `useConfirmDialog` caso queria dialog de confirmação.
   - necessário repassar `title` na propriedade `confirmDialogProps` pois é obrigatória no `QasDialog` caso esteja usando a prop `useConfirmDialog`.
-- `QasDrawer`: adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`.
+- `QasDrawer`: adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`
 
 ### Adicionado
 - `QasDialog/Dialog.js`:
@@ -44,7 +45,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - adicionado propriedades `title` com `required: true` e `description` para ser usado no lugar da prop `card`.
   - adicionada propriedade `disableCloseButton` para desabilitar botão de fechar (x).
   - adicionada propriedade `tertiary`.
-  - adicionada propriedade `useAutoCloseOnActions` ([#1360](https://github.com/bildvitta/asteroid/issues/1360))([#1121](https://github.com/bildvitta/asteroid/issues/1121))
+  - adicionada propriedade `useAutoCloseOnOk` e `useAutoCloseOnCancel` ([#1360](https://github.com/bildvitta/asteroid/issues/1360))([#1121](https://github.com/bildvitta/asteroid/issues/1121))
   - adicionada propriedade `useCloseButton` para remover botão de fechar (x).
   - adicionada propriedade `useHtmlDescription`.
 - `QasDrawer`: adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`.

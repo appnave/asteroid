@@ -42,8 +42,13 @@ props:
     default: 'md'
     options: ['xs', 'sm', 'md', 'lg', 'xl']
 
-  use-auto-close-on-actions:
-    desc: Define se o dialog vai fechar automaticamente ao clicar nos botões de ação (ok ou cancelar).
+  use-auto-close-on-cancel:
+    desc: Define se o dialog vai fechar automaticamente ao clicar no botão de cancelar.
+    type: Boolean
+    default: true
+
+  use-auto-close-on-ok:
+    desc: Define se o dialog vai fechar automaticamente ao clicar no botão de confirmar (ok).
     type: Boolean
     default: true
 

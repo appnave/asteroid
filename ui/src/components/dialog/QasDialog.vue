@@ -82,11 +82,6 @@ const props = defineProps({
     type: Boolean
   },
 
-  useAutoCloseOnActions: {
-    type: Boolean,
-    default: true
-  },
-
   useAutoCloseOnCancel: {
     type: Boolean,
     default: true
@@ -266,7 +261,7 @@ function useOk () {
 
   // functions
   function onOk () {
-    if (!props.useForm && props.useAutoCloseOnActions && props.useAutoCloseOnOk) {
+    if (!props.useForm && props.useAutoCloseOnOk) {
       updateModelValue(false)
     }
 
