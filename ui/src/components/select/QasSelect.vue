@@ -411,10 +411,11 @@ export default {
       this.isPopupContentOpen = false
 
       /**
-       * necessário limpar o campo de input ao fechar o popup, para evitar que o valor da busca permaneça no campo
-       * quando abrir novamente e também o texto não sobreponha os itens selecionados ao apertar a tecla tab.
+       * necessário limpar o campo de input de pesquisa ao fechar o popup, para evitar que o valor da busca permaneça
+       * no campo quando abrir novamente e também o texto não sobreponha os itens selecionados ao apertar a tecla tab.
        */
-      this.$refs.select.updateInputValue('', true)
+      if (this.isSearchable) this.$refs.select.updateInputValue('', true)
+
       this.$emit('popup-hide')
     },
 
