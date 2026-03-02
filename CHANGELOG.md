@@ -14,6 +14,10 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Corrigido
+- `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
+
 ## [3.20.0-beta.13] - 19-02-2026
 ### Adicionado
 - Adicionado skills:
