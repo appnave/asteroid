@@ -11,16 +11,16 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
   // Arquivos de boot
   // https://quasar.dev/quasar-cli-vite/boot-files#introduction
   quasar.boot.push(...resolve(
+    'boot/overlay-navigation.js',
+    'boot/api.js',
     'boot/debug.js',
     'boot/error-pages.js',
     'boot/font-face.js',
+    'boot/register.js',
     'boot/loading.js',
-    'boot/register.js', // Movido para depois dos boots básicos
     'boot/query-cache.js',
     'boot/store-adapter',
-    'boot/api.js', // Movido para depois do register
-    'boot/overlay-navigation.js', // Movido para o final
-    'boot/before-each.js' // Mantido no final
+    'boot/before-each.js'
   ))
 
   // controle das notificações
@@ -77,7 +77,7 @@ export default async function (api) {
   api.compatibleWith('date-fns', '^2.3.0')
 
   const asteroid = 'node_modules/@bildvitta/quasar-ui-asteroid/src/asteroid.js'
-  // const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'
+  const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'
   const asteroidConfig = 'node_modules/@bildvitta/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
   const vueRouter = 'node_modules/vue-router/dist/vue-router.esm-bundler.js'
   const quasar = 'node_modules/quasar'
@@ -91,23 +91,10 @@ export default async function (api) {
   const { default: asteroidConfigFile } = await import(pathToFileURL(asteroidConfigPath).href)
 
   const unpluginVueComponentsConfig = {
+    dirs: [api.resolve.app(asteroidComponents)], // ajusta o path para a lib
     extensions: ['vue'],
     deep: true,
-    dts: false, // desativa geração de types
-    resolvers: [
-      // Resolver customizado para evitar conflitos circulares
-      componentName => {
-        if (componentName.startsWith('Qas')) {
-          return {
-            name: componentName,
-            from: 'asteroid',
-            sideEffects: false
-          }
-        }
-      }
-    ],
-    include: [/\.vue$/, /\.vue\?vue/],
-    exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/]
+    dts: false // desativa geração de types
   }
 
   const alias = {

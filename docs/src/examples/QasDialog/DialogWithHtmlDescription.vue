@@ -14,6 +14,7 @@ defineOptions({ name: 'DialogWithHtmlDescription' })
 // refs
 const isDialogOpened = ref(false)
 
+// consts
 const dialogProps = {
   title: 'Título do dialog',
   description: 'Cerca <strong>elétrica</strong> perto do corrimão risco iminente de choque. Código da ordem de serviço: 159488 CRM ID: 1179512',
