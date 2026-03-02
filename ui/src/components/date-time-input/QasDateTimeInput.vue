@@ -221,12 +221,12 @@ function getDefaultTimeByMask () {
 function normalizeDateTimeValue (value = '') {
   if (props.useDateOnly || props.useTimeOnly || !value) return value
 
-  const [typedDate, typedTime] = value.split(' ')
-  const hasFullDate = typedDate?.length === props.dateMask.length
+  const [currentDate, currentTime] = value.split(' ')
+  const hasFullDate = currentDate?.length === props.dateMask.length
 
-  if (!hasFullDate || typedTime) return value
+  if (!hasFullDate || currentTime) return value
 
-  return `${typedDate} ${getDefaultTimeByMask()}`
+  return `${currentDate} ${getDefaultTimeByMask()}`
 }
 
 function updateModelValue (value) {
