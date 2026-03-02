@@ -16,8 +16,7 @@ describe('QasChartView', () => {
     wrapper = mountComponent(QasChartView, {
       props: { entity: 'sales', url: '/api/sales' },
       global: {
-        provide: { qas: mockQas },
-        stubs: { RouterView: true }
+        provide: { qas: mockQas }
       }
     })
   })
