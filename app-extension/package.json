@@ -42,6 +42,6 @@
     "laravel-echo": "^1.15.3",
     "ora": "^8.2.0",
     "pusher-js": "^8.4.0-rc2",
-    "unplugin-vue-components": "^28.5.0"
+    "unplugin-vue-components": "28.5.0"
   }
 }

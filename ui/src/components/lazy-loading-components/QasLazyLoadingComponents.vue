@@ -20,7 +20,6 @@
       <div
         v-else
         :ref="element => setPlaceholderRef(element, index)"
-        :style="{ height: placeholderHeight }"
       />
     </transition>
   </template>
@@ -44,10 +43,23 @@ const props = defineProps({
     default: '0px'
   },
 
-  // Altura dos placeholders antes de carregar
+  // Direção do scroll: 'vertical' (padrão) ou 'horizontal'
+  direction: {
+    type: String,
+    default: 'vertical',
+    validator: value => ['vertical', 'horizontal'].includes(value)
+  },
+
+  // Altura dos placeholders antes de carregar (usado em direction='vertical')
   placeholderHeight: {
     type: String,
     default: '500px'
+  },
+
+  // Largura dos placeholders antes de carregar (usado em direction='horizontal')
+  placeholderWidth: {
+    type: String,
+    default: '300px'
   }
 })
 
@@ -229,10 +241,21 @@ function setPlaceholderRef (element, index) {
 
   placeholderRefs.set(index, element)
 
-  /**
-   * Define a altura do placeholder com base no atributo "data-placeholder-height" caso queira customizar pra
-   * o elemento específico, e não o definido na prop placeholderHeight.
-   */
-  element.style.height = items.value[index].props?.['data-placeholder-height'] || props.placeholderHeight
+  const itemProps = items.value[index].props
+
+  if (props.direction === 'horizontal') {
+    /**
+     * Define a largura do placeholder com base no atributo "data-placeholder-width" caso queira customizar
+     * para o elemento específico, e não o definido na prop placeholderWidth.
+     */
+    element.style.width = itemProps?.['data-placeholder-width'] || props.placeholderWidth
+    element.style.flexShrink = '0'
+  } else {
+    /**
+     * Define a altura do placeholder com base no atributo "data-placeholder-height" caso queira customizar
+     * para o elemento específico, e não o definido na prop placeholderHeight.
+     */
+    element.style.height = itemProps?.['data-placeholder-height'] || props.placeholderHeight
+  }
 }
 </script>

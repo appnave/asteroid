@@ -1,27 +1,31 @@
 <template>
   <qas-grabbable class="qas-board-generator" v-bind="grabbableProps">
-    <div class="no-wrap q-col-gutter-sm q-px-xl row">
-      <div v-for="(header, index) in headers" :key="index" class="q-mr-sm">
-        <qas-box class="q-mb-md" v-bind="headerBoxProps">
-          <slot :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
-        </qas-box>
-
-        <div ref="columnContainer" class="qas-board-generator__column secondary-scroll" :data-header-key="getKeyByHeader(header)" :style="containerStyle">
-          <qas-lazy-loading-components :threshold="0">
-            <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
-              <slot :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
-            </div>
-          </qas-lazy-loading-components>
-
-          <div class="full-width justify-center row">
-            <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" label="Ver mais" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header)" />
-
-            <q-spinner v-if="columnsLoading[getKeyByHeader(header)]" class="q-mb-md" color="grey-4" size="3em" />
+    <div ref="columnsContainer" class="no-wrap q-gutter-md q-px-xl row">
+      <qas-lazy-loading-components direction="horizontal" placeholder-width="350px" :threshold="0">
+        <qas-box v-for="(header, index) in headers" :key="index" :style="containerStyle">
+          <div class="q-mb-md text-grey-10" v-bind="headerBoxProps">
+            <slot :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
           </div>
 
-          <qas-empty-result-text v-if="hasEmptyResultText(header)" />
-        </div>
-      </div>
+          <pv-board-generator-column ref="columnContainer" class="qas-board-generator__column secondary-scroll" :data-header-key="getKeyByHeader(header)">
+            <div>
+              <qas-lazy-loading-components :threshold="0">
+                <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
+                  <slot :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
+                </div>
+              </qas-lazy-loading-components>
+
+              <div class="full-width justify-center row">
+                <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" label="Ver mais" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header)" />
+
+                <q-spinner v-if="columnsLoading[getKeyByHeader(header)]" class="q-mb-md" color="grey-4" size="3em" />
+              </div>
+
+              <qas-empty-result-text v-if="hasEmptyResultText(header)" />
+            </div>
+          </pv-board-generator-column>
+        </qas-box>
+      </qas-lazy-loading-components>
     </div>
 
     <qas-dialog v-model="showConfirmDialog" v-bind="defaultConfirmDialogProps" />
@@ -29,6 +33,8 @@
 </template>
 
 <script setup>
+import PvBoardGeneratorColumn from './private/PvBoardGeneratorColumn.vue'
+
 import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasDialog from '../dialog/QasDialog.vue'
@@ -36,7 +42,7 @@ import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasGrabbable from '../grabbable/QasGrabbable.vue'
 import QasLazyLoadingComponents from '../lazy-loading-components/QasLazyLoadingComponents.vue'
 
-import { ref, watch, computed, onUnmounted, markRaw, inject, onMounted } from 'vue'
+import { ref, watch, computed, onUnmounted, markRaw, inject, onMounted, nextTick } from 'vue'
 import promiseHandler from '../../helpers/promise-handler'
 
 import Sortable from 'sortablejs'
@@ -101,7 +107,7 @@ const props = defineProps({
 
   columnWidth: {
     type: String,
-    default: '300px'
+    default: '350px'
   },
 
   sortableConfig: {
@@ -159,6 +165,7 @@ const isInsideListView = inject('isListView', false)
 
 // Refs
 const columnContainer = ref(null)
+const columnsContainer = ref(null)
 const columnsPagination = ref({})
 const columnsLoading = ref({})
 const columnsFieldsModel = ref({})
@@ -193,6 +200,10 @@ const grabbableProps = {
   })
 }
 
+const columnContainerElements = computed(() => {
+  return columnContainer.value?.map(columnProxy => columnProxy.$el) || []
+})
+
 // Watchers
 watch(
   () => isFetchSuccessHeader.value,
@@ -216,10 +227,12 @@ watch(
   }
 )
 
-watch(columnContainer, setColumnHeightContainer)
+watch(() => columnContainerElements.value, setColumnHeightContainer)
 
 // Lifecycles
 onMounted(() => {
+  window.addEventListener('resize', setColumnHeightContainer)
+
   /**
    * Caso eu use o listView (valor pego por provide), a request é feito pelo watch quando se ocorre o sucesso do `fetchList`
    */
@@ -272,12 +285,46 @@ const defaultConfirmDialogProps = computed(() => {
 * de espaço que ele conseguir considerando a altura do container em relação ao topo.
 */
 function setColumnHeightContainer () {
-  columnContainer.value?.forEach(columnElement => {
-    const heightToTop = columnElement?.getBoundingClientRect()?.top
-    const paddingSpacing = 60
-    const value = heightToTop + paddingSpacing
+  // Primeira etapa: calcula e aplica a altura inicial de cada coluna
+  columnContainerElements.value.forEach(columnElement => {
+    // Pega a posição atual da coluna em relação ao topo da viewport
+    const rect = columnElement.getBoundingClientRect()
+    const heightToTop = rect.top
 
-    columnElement.style.setProperty('height', props.height ? props.height : `calc(100vh - ${value}px)`)
+    // clientHeight dá a altura da viewport SEM incluir as scrollbars
+    const viewportHeight = document.documentElement.clientHeight
+
+    // Padding inferior aplicado no container para dar espaçamento visual
+    const paddingBottom = 8
+
+    // Calcula quanto de espaço temos disponível do topo da coluna até o fim da tela
+    const availableHeight = viewportHeight - heightToTop - paddingBottom
+
+    // Aplica essa altura na coluna
+    columnElement.style.height = `${availableHeight}px`
+  })
+
+  // Segunda etapa: após o DOM atualizar, verifica se algum scroll vertical foi criado
+  nextTick(() => {
+    /**
+     * scrollHeight é a altura total do conteúdo (incluindo o que não está visível)
+     * clientHeight é a altura visível da viewport
+     * Se scrollHeight > clientHeight, significa que há conteúdo "sobrando" e foi criado scroll vertical.
+     */
+    const hasVerticalScroll = document.documentElement.scrollHeight > document.documentElement.clientHeight
+
+    if (hasVerticalScroll) {
+      // Calcula exatamente quantos pixels estão "sobrando" e causando o scroll
+      const adjustment = document.documentElement.scrollHeight - document.documentElement.clientHeight
+
+      // Reduz a altura de todas as colunas pelo valor exato do scroll + 2px de margem de segurança
+      columnContainerElements.value.forEach(columnElement => {
+        const safetyMargin = 2
+
+        const currentHeight = parseInt(columnElement.style.height, 10)
+        columnElement.style.height = `${currentHeight - adjustment - safetyMargin}px`
+      })
+    }
   })
 }
 
@@ -498,8 +545,8 @@ function getFieldsByHeader (header) {
  * Loopa todos os itens da coluna com base no ref para pegar o elemento HTML e setar e instaciar o sortable.
  */
 function handleElementsList () {
-  columnContainer.value.forEach((element, index) => {
-    const sortable = setSortable(element, index)
+  columnContainerElements.value.forEach((columnElement, index) => {
+    const sortable = setSortable(columnElement, index)
 
     sortableInstances.value.push(sortable)
   })
