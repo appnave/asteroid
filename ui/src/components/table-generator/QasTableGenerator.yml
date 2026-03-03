@@ -45,11 +45,29 @@ props:
         desc: Índice da linha da tabela.
         type: Number
 
+    groups:
+      desc: Usado para criar um destaque no header, com intenção de agrupar as informações das colunas.
+      default: {}
+      type: Object
+      examples: ["{ first: { label: 'Primeiro grupo', fields: ['email', 'phone'] } }"]
+
   header-props:
     desc: Propriedades repassadas para o componente `QasHeader`.
     default: {}
     type: Object
     examples: ["{ description: 'Descrição', labelProps: { label: 'Titulo do header'} }"]
+
+  highlights:
+    desc: Função para destacar células da tabela com base em uma condição.
+    default: undefined
+    type: Function
+    params:
+      row:
+        desc: Payload da linha da tabela.
+        type: Object
+      index:
+        desc: Índice da linha da tabela.
+        type: Number
 
   max-height:
     desc: Usado para definir a altura máxima da tabela e exibir o scroll vertical. Somente funciona quando a propriedade "use-sticky-header" ou "use-virtual-scroll" é utilizada.
@@ -121,6 +139,11 @@ props:
 
   use-virtual-scroll:
     desc: Usado para ativar o scroll virtual da tabela.
+    default: false
+    type: Boolean
+
+  use-stick-last-row:
+    desc: Usado para manter a última linha da tabela fixa.
     default: false
     type: Boolean
 

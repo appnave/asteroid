@@ -148,3 +148,5 @@ O virtual scroll renderiza dinamicamente as linhas a serem exibidas na tabela.
 Apenas utilize virtual scroll quando realmente houver comportamentos no qual não se pode ter paginação e tiver muitos dados na tabela.
 :::
 <doc-example file="QasTableGenerator/WithVirtualScroll" title="Com virtual scroll" />
+
+<doc-example file="QasTableGenerator/WithHightlight" title="Com linhas destacadas" />
