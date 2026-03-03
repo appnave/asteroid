@@ -88,7 +88,7 @@
       </template>
 
       <template
-        v-if="useStickLastRow"
+        v-if="useStickyLastRow"
         #bottom-row="context"
       >
         <slot :context="context" name="bottom-row">
@@ -257,7 +257,7 @@ export default {
       type: Boolean
     },
 
-    useStickLastRow: {
+    useStickyLastRow: {
       type: Boolean
     },
 
@@ -321,7 +321,7 @@ export default {
         })
       }
 
-      if (this.useStickLastRow) {
+      if (this.useStickyLastRow) {
         return this.results.slice(0, this.results.length - 1)
       }
 

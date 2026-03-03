@@ -142,7 +142,7 @@ props:
     default: false
     type: Boolean
 
-  use-stick-last-row:
+  use-sticky-last-row:
     desc: Usado para manter a última linha da tabela fixa.
     default: false
     type: Boolean

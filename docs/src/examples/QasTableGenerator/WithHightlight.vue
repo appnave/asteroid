@@ -35,6 +35,6 @@ const tableGeneratorProps = {
     if (index === 3) return true
   },
 
-  useStickLastRow: true
+  useStickyLastRow: true
 }
 </script>
