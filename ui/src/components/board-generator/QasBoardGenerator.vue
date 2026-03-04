@@ -1,7 +1,7 @@
 <template>
   <qas-grabbable class="qas-board-generator" v-bind="grabbableProps">
     <div ref="columnsContainer" class="no-wrap q-gutter-md q-pb-xs q-px-lg row">
-      <qas-lazy-loading-components direction="horizontal" placeholder-width="350px" :threshold="0">
+      <qas-lazy-loading-components v-model:visible-items="visibleItems" direction="horizontal" placeholder-width="350px" :threshold="0">
         <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClass(header)" :style="containerStyle">
           <div class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
             <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
@@ -217,6 +217,12 @@ const isLoadingFromSeeMore = ref(false)
 const columnsWithError = ref({})
 
 /**
+ * Índices das colunas visíveis no viewport
+ * Populado pelo QasLazyLoadingComponents via v-model:visible-items
+ */
+const visibleItems = ref([])
+
+/**
  * Instâncias do sortable, que são utilizadas para realizar o destroy ao sair da página
  */
 const sortableInstances = ref([])
@@ -261,6 +267,7 @@ const columnContainerElements = computed(() => {
 })
 
 const normalizedHeaders = computed(() => {
+  // retorna dados fakes para criar colunas de skeleton, caso a prop skeleton seja true.
   if (props.skeleton) {
     return Array.from({ length: 4 }).map((_, index) => {
       return {
@@ -277,7 +284,7 @@ watch(
   () => isFetchSuccessHeader.value,
   value => {
     /**
-     * isFetchSuccessHeader é uma variavel que pego do listView por inject/provide, no qual caso eu faça request do header e dê sucesso, eu chamo as demais funções.
+     * isFetchSuccessHeader é uma variável que pego do listView por inject/provide, no qual caso eu faça request do header e dê sucesso, eu chamo as demais funções.
      * Valido se não houve sucesso na requisição do header ou se não é uma atualização de posição, para assim não bater novamente nas colunas apenas no header.
      */
     if (!value || isUpdatingPosition.value) return
@@ -300,16 +307,19 @@ watch(() => columnContainerElements.value, () => {
   handleElementsList()
 })
 
-// Lifecycles
-onMounted(() => {
-  window.addEventListener('resize', setColumnHeightContainer)
-
-  /**
-   * Caso eu use o listView (valor pego por provide), a request é feito pelo watch quando se ocorre o sucesso do `fetchList`
-   */
-  if (isInsideListView) return
+/**
+ * Dispara o fetch inicial quando as colunas visíveis são detectadas pela primeira vez.
+ * Usado no fluxo sem listView (onMounted não chama mais fetchColumnsValues diretamente).
+ */
+watch(visibleItems, () => {
+  if (isInsideListView || props.skeleton) return
 
   fetchColumnsValues()
+}, { once: true })
+
+// hooks
+onMounted(() => {
+  window.addEventListener('resize', setColumnHeightContainer)
 })
 
 onUnmounted(destroySortable)
@@ -401,28 +411,37 @@ function setColumnHeightContainer () {
 
 /*
 * Bater API pra cada header
+* Etapa 1: faz as requests das colunas visíveis no carregamento inicial
+* Etapa 2: após finalizar, faz as requests das colunas não visíveis
 */
 async function fetchColumns () {
   if (props.skeleton) return
 
-  const promises = normalizedHeaders.value.map((header, index) => {
-    if (index === 2 || !index) {
-      return fetchColumn(header, false, true)
-    }
+  // Mapeia os índices visíveis para os IDs de coluna correspondentes
+  const visibleKeys = new Set(visibleItems.value.map(i => getKeyByHeader(normalizedHeaders.value[i])))
+  console.log('🚀 ~ fetchColumns ~ visibleKeys:', visibleItems.value)
 
-    return fetchColumn(header, false)
-  })
-  // const promises = normalizedHeaders.value.map(header => fetchColumn(header))
+  const visibleHeaders = visibleKeys.size
+    ? normalizedHeaders.value.filter(header => visibleKeys.has(getKeyByHeader(header)))
+    : normalizedHeaders.value
 
-  const { error } = await promiseHandler(promises, { useLoading: false })
+  const hiddenHeaders = visibleKeys.size
+    ? normalizedHeaders.value.filter(header => !visibleKeys.has(getKeyByHeader(header)))
+    : []
 
-  const allPromises = await Promise.allSettled(promises)
+  // Etapa 1: colunas visíveis (prioridade)
+  const visibleColumns = await Promise.allSettled(visibleHeaders.map(header => fetchColumn(header, false)))
+
+  // Etapa 2: colunas não visíveis (só executa após etapa 1 finalizar, menor prioridade)
+  const hiddenColumns = await Promise.allSettled(hiddenHeaders.map(header => fetchColumn(header, false)))
+
+  const allPromises = [...visibleColumns, ...hiddenColumns]
 
   const hasAllPromisesSucceeded = allPromises.every(promise => promise.status === 'fulfilled')
-  const hasAllPromisesFailed = allPromises.every(promise => promise.status === 'rejected')
+  const hasAllPromisesFailed = allPromises.length > 0 && allPromises.every(promise => promise.status === 'rejected')
 
   if (hasAllPromisesFailed) {
-    emit('fetch-columns-error', error)
+    emit('fetch-columns-error')
 
     NotifyError('Ocorreu um erro ao carregar as colunas. Tente novamente mais tarde.')
 

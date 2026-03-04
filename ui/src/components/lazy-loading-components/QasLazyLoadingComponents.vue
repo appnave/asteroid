@@ -30,6 +30,8 @@ import { ref, onMounted, onBeforeUnmount, useSlots, nextTick, watch } from 'vue'
 
 defineOptions({ name: 'QasLazyLoadingComponents' })
 
+// const emit = defineEmits(['update:visibleItems'])
+
 const props = defineProps({
   // Porcentagem de visibilidade necessária para ativar (0.0 a 1.0)
   threshold: {
@@ -62,6 +64,9 @@ const props = defineProps({
     default: '300px'
   }
 })
+
+// models
+const visibleItemsModel = defineModel('visibleItems', { type: Array, default: () => [] })
 
 // refs
 /**
@@ -152,6 +157,9 @@ function createObserver () {
 
         // Para de observar - componente já foi renderizado
         observer.unobserve(entry.target)
+
+        // Emite os índices atualmente visíveis
+        visibleItemsModel.value = Array.from(visibleItems.value)
       })
     },
     {
