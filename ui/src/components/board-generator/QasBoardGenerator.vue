@@ -1,16 +1,30 @@
 <template>
   <qas-grabbable class="qas-board-generator" v-bind="grabbableProps">
-    <div ref="columnsContainer" class="no-wrap q-gutter-md q-px-xl row">
+    <div ref="columnsContainer" class="no-wrap q-gutter-md q-pb-xs q-px-lg row">
       <qas-lazy-loading-components direction="horizontal" placeholder-width="350px" :threshold="0">
-        <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :style="containerStyle">
+        <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClass(header)" :style="containerStyle">
           <div class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
             <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
-
             <slot v-else :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
           </div>
 
-          <pv-board-generator-column ref="columnContainer" class="qas-board-generator__column secondary-scroll" :data-header-key="getKeyByHeader(header)">
-            <div>
+          <pv-board-generator-cards-container ref="columnContainer" class="qas-board-generator__column secondary-scroll" v-bind="getCardsContainerProps(header)">
+            <!-- COLUNA COM ERRO -->
+            <div v-if="columnsWithError[getKeyByHeader(header)]" class="column full-height items-center justify-center">
+              <div class="text-center">
+                <q-icon color="negative" name="sym_r_error" size="md" />
+
+                <div class="q-mt-sm text-subtitle1">
+                  {{ props.errorColumnText }}
+                </div>
+              </div>
+
+              <div class="text-center">
+                <qas-btn class="q-mt-md" icon="sym_r_refresh" label="Tentar novamente" :loading="columnsLoading[getKeyByHeader(header)]" @click="fetchColumn(header, true)" />
+              </div>
+            </div>
+
+            <template v-else>
               <qas-lazy-loading-components :threshold="0">
                 <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
                   <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
@@ -18,7 +32,7 @@
               </qas-lazy-loading-components>
 
               <div class="full-width justify-center row">
-                <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" label="Ver mais" :loading="columnsLoading[getKeyByHeader(header)]" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header)" />
+                <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" :label="props.seeMoreButtonLabel" :loading="columnsLoading[getKeyByHeader(header)]" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header, true)" />
 
                 <template v-if="hasSkeletonByHeader(header)">
                   <div class="q-col-gutter-y-sm row">
@@ -32,8 +46,8 @@
               </div>
 
               <qas-empty-result-text v-if="hasEmptyResultText(header)" />
-            </div>
-          </pv-board-generator-column>
+            </template>
+          </pv-board-generator-cards-container>
         </qas-box>
       </qas-lazy-loading-components>
     </div>
@@ -43,7 +57,7 @@
 </template>
 
 <script setup>
-import PvBoardGeneratorColumn from './private/PvBoardGeneratorColumn.vue'
+import PvBoardGeneratorCardsContainer from './private/PvBoardGeneratorCardsContainer.vue'
 
 import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasCard from '../card/QasCard.vue'
@@ -56,6 +70,7 @@ import QasLazyLoadingComponents from '../lazy-loading-components/QasLazyLoadingC
 
 import { ref, watch, computed, onUnmounted, markRaw, inject, onMounted, nextTick } from 'vue'
 import promiseHandler from '../../helpers/promise-handler'
+import NotifyError from '../../plugins/notify-error/NotifyError'
 
 import Sortable from 'sortablejs'
 
@@ -102,6 +117,11 @@ const props = defineProps({
     default: () => ({})
   },
 
+  errorColumnText: {
+    type: String,
+    default: 'Não foi possível carregar os itens desta coluna.'
+  },
+
   height: {
     type: String,
     default: ''
@@ -120,6 +140,11 @@ const props = defineProps({
   columnWidth: {
     type: String,
     default: '350px'
+  },
+
+  seeMoreButtonLabel: {
+    type: String,
+    default: 'Ver mais'
   },
 
   sortableConfig: {
@@ -188,6 +213,8 @@ const columnsFieldsModel = ref({})
 const showConfirmDialog = ref(false)
 const isDragging = ref(false)
 const isLoadingUpdatePosition = ref(false)
+const isLoadingFromSeeMore = ref(false)
+const columnsWithError = ref({})
 
 /**
  * Instâncias do sortable, que são utilizadas para realizar o destroy ao sair da página
@@ -224,6 +251,7 @@ const skeletonCards = Array.from({ length: 6 }).map(() => ({
   skeleton: true,
   title: '-',
   expansionProps: { label: '-' },
+  actionsMenuProps: { list: {} },
   useSelection: true
 }))
 
@@ -267,7 +295,10 @@ watch(
   }
 )
 
-watch(() => columnContainerElements.value, setColumnHeightContainer)
+watch(() => columnContainerElements.value, () => {
+  setColumnHeightContainer()
+  handleElementsList()
+})
 
 // Lifecycles
 onMounted(() => {
@@ -286,18 +317,6 @@ onUnmounted(destroySortable)
 // Computeds
 const columnsResultsModel = computed({
   get () {
-    if (props.skeleton) {
-      return normalizedHeaders.value.reduce((acc, header) => {
-        const headerKey = getKeyByHeader(header)
-
-        acc[headerKey] = Array.from({ length: props.limitPerColumn }).map((_, index) => ({
-          [props.itemIdKey]: `${headerKey}-item-${index}`
-        }))
-
-        return acc
-      }, {})
-    }
-
     return props.results
   },
 
@@ -386,17 +405,33 @@ function setColumnHeightContainer () {
 async function fetchColumns () {
   if (props.skeleton) return
 
-  const promises = normalizedHeaders.value.map(header => fetchColumn(header))
+  const promises = normalizedHeaders.value.map((header, index) => {
+    if (index === 2 || !index) {
+      return fetchColumn(header, false, true)
+    }
+
+    return fetchColumn(header, false)
+  })
+  // const promises = normalizedHeaders.value.map(header => fetchColumn(header))
 
   const { error } = await promiseHandler(promises, { useLoading: false })
 
-  if (error) {
+  const allPromises = await Promise.allSettled(promises)
+
+  const hasAllPromisesSucceeded = allPromises.every(promise => promise.status === 'fulfilled')
+  const hasAllPromisesFailed = allPromises.every(promise => promise.status === 'rejected')
+
+  if (hasAllPromisesFailed) {
     emit('fetch-columns-error', error)
+
+    NotifyError('Ocorreu um erro ao carregar as colunas. Tente novamente mais tarde.')
 
     return
   }
 
-  emit('fetch-columns-success')
+  if (hasAllPromisesSucceeded) {
+    emit('fetch-columns-success')
+  }
 
   if (hasDragAndDrop) handleElementsList()
 }
@@ -404,12 +439,14 @@ async function fetchColumns () {
 /*
 * Busca a coluna com base no header recebido.
 */
-async function fetchColumn (header) {
+async function fetchColumn (header, fromSeeMore, setEr) {
   const headerKey = getKeyByHeader(header)
   const { limit, offset } = columnsPagination.value[headerKey] || {}
 
+  isLoadingFromSeeMore.value = fromSeeMore
+
   const { data: response, error } = await promiseHandler(
-    axios.get(`${props.columnUrl}/${headerKey}`, {
+    axios.get(`${props.columnUrl}/${headerKey}/${setEr ? 'setError' : ''}`, {
       params: {
         ...props.columnParams,
         limit,
@@ -420,16 +457,21 @@ async function fetchColumn (header) {
       onLoading: value => {
         columnsLoading.value[headerKey] = value
       },
-      useLoading: false,
-      errorMessage: 'Não conseguimos buscar as colunas do board. Por favor, tente novamente em alguns minutos.'
+      useLoading: false
     }
   )
+
+  isLoadingFromSeeMore.value = false
 
   if (error) {
     emit('fetch-column-error', error)
 
+    columnsWithError.value[headerKey] = true
+
     throw error
   }
+
+  columnsWithError.value[headerKey] = false
 
   const newValues = response.data?.results || []
   const resultsModel = columnsResultsModel.value[headerKey] || []
@@ -602,6 +644,9 @@ function getFieldsByHeader (header) {
  */
 function handleElementsList () {
   columnContainerElements.value.forEach((columnElement, index) => {
+    // não adiciona os elementos com erro para o drag and drop.
+    if (columnElement.dataset.hasError === 'true') return
+
     const sortable = setSortable(columnElement, index)
 
     sortableInstances.value.push(sortable)
@@ -830,7 +875,24 @@ function destroySortable () {
 function hasSkeletonByHeader (header) {
   const headerKey = getKeyByHeader(header)
 
-  return props.skeleton || columnsLoading.value[headerKey]
+  return (props.skeleton || columnsLoading.value[headerKey]) && !isLoadingFromSeeMore.value
+}
+
+function getColumnClass (header) {
+  const headerKey = getKeyByHeader(header)
+
+  return {
+    'qas-board-generator__column-error': columnsWithError.value[headerKey]
+  }
+}
+
+function getCardsContainerProps (header) {
+  const headerKey = getKeyByHeader(header)
+
+  return {
+    'data-header-key': headerKey,
+    'data-has-error': columnsWithError.value[headerKey]
+  }
 }
 </script>
 
@@ -858,6 +920,10 @@ function hasSkeletonByHeader (header) {
   // 60px é o valor do padding definido no container da column.
   &__column-items {
     height: calc(100% - 60px);
+  }
+
+  &__column-error {
+    border: 1px solid $negative;
   }
 }
 </style>

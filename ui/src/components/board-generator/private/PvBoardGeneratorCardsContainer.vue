@@ -10,7 +10,7 @@ import setScrollGradient from '../../../helpers/set-scroll-gradient'
 
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
-defineOptions({ name: 'PvBoardGeneratorColumn' })
+defineOptions({ name: 'PvBoardGeneratorCardsContainer' })
 
 // refs
 const columnContainer = ref(null)
