@@ -2,23 +2,33 @@
   <qas-grabbable class="qas-board-generator" v-bind="grabbableProps">
     <div ref="columnsContainer" class="no-wrap q-gutter-md q-px-xl row">
       <qas-lazy-loading-components direction="horizontal" placeholder-width="350px" :threshold="0">
-        <qas-box v-for="(header, index) in headers" :key="index" :style="containerStyle">
-          <div class="q-mb-md text-grey-10" v-bind="headerBoxProps">
-            <slot :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
+        <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :style="containerStyle">
+          <div class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
+            <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
+
+            <slot v-else :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
           </div>
 
           <pv-board-generator-column ref="columnContainer" class="qas-board-generator__column secondary-scroll" :data-header-key="getKeyByHeader(header)">
             <div>
               <qas-lazy-loading-components :threshold="0">
                 <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
-                  <slot :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
+                  <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
                 </div>
               </qas-lazy-loading-components>
 
               <div class="full-width justify-center row">
-                <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" label="Ver mais" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header)" />
+                <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" label="Ver mais" :loading="columnsLoading[getKeyByHeader(header)]" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header)" />
 
-                <q-spinner v-if="columnsLoading[getKeyByHeader(header)]" class="q-mb-md" color="grey-4" size="3em" />
+                <template v-if="hasSkeletonByHeader(header)">
+                  <div class="q-col-gutter-y-sm row">
+                    <div v-for="item in skeletonCards" :key="item[props.itemIdKey]" class="col-12">
+                      <qas-card v-bind="item">
+                        <template #default />
+                      </qas-card>
+                    </div>
+                  </div>
+                </template>
               </div>
 
               <qas-empty-result-text v-if="hasEmptyResultText(header)" />
@@ -35,6 +45,8 @@
 <script setup>
 import PvBoardGeneratorColumn from './private/PvBoardGeneratorColumn.vue'
 
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
+import QasCard from '../card/QasCard.vue'
 import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasDialog from '../dialog/QasDialog.vue'
@@ -115,6 +127,11 @@ const props = defineProps({
     default: () => ({})
   },
 
+  skeleton: {
+    type: Boolean,
+    default: true
+  },
+
   useMarkRaw: {
     type: Boolean,
     default: true
@@ -165,7 +182,6 @@ const isInsideListView = inject('isListView', false)
 
 // Refs
 const columnContainer = ref(null)
-const columnsContainer = ref(null)
 const columnsPagination = ref({})
 const columnsLoading = ref({})
 const columnsFieldsModel = ref({})
@@ -189,7 +205,7 @@ const onConfirmDrop = ref(() => {})
  */
 const isUpdatingPosition = ref(false)
 
-// Consts
+// consts
 const hasDragAndDrop = !!props.useDragAndDropX || !!props.useDragAndDropY
 
 const grabbableProps = {
@@ -200,8 +216,32 @@ const grabbableProps = {
   })
 }
 
+/**
+ * Gera cards de skeleton para exibir enquanto carrega os itens da coluna, o mesmo é usado para preencher a coluna
+ * quando a prop "skeleton" for true, indicando que é para simular o carregamento.
+ */
+const skeletonCards = Array.from({ length: 6 }).map(() => ({
+  skeleton: true,
+  title: '-',
+  expansionProps: { label: '-' },
+  useSelection: true
+}))
+
+// computeds
 const columnContainerElements = computed(() => {
   return columnContainer.value?.map(columnProxy => columnProxy.$el) || []
+})
+
+const normalizedHeaders = computed(() => {
+  if (props.skeleton) {
+    return Array.from({ length: 4 }).map((_, index) => {
+      return {
+        [props.columnIdKey]: `${props.columnIdKey}-${index}`
+      }
+    })
+  }
+
+  return props.headers
 })
 
 // Watchers
@@ -219,7 +259,7 @@ watch(
 )
 
 watch(
-  () => props.headers,
+  () => normalizedHeaders.value,
   () => {
     if (isUpdatingPosition.value) return
 
@@ -246,6 +286,18 @@ onUnmounted(destroySortable)
 // Computeds
 const columnsResultsModel = computed({
   get () {
+    if (props.skeleton) {
+      return normalizedHeaders.value.reduce((acc, header) => {
+        const headerKey = getKeyByHeader(header)
+
+        acc[headerKey] = Array.from({ length: props.limitPerColumn }).map((_, index) => ({
+          [props.itemIdKey]: `${headerKey}-item-${index}`
+        }))
+
+        return acc
+      }, {})
+    }
+
     return props.results
   },
 
@@ -332,7 +384,9 @@ function setColumnHeightContainer () {
 * Bater API pra cada header
 */
 async function fetchColumns () {
-  const promises = props.headers.map(header => fetchColumn(header))
+  if (props.skeleton) return
+
+  const promises = normalizedHeaders.value.map(header => fetchColumn(header))
 
   const { error } = await promiseHandler(promises, { useLoading: false })
 
@@ -463,7 +517,7 @@ function getColumnItemById (id) {
  * @returns {Object} // { date: '2024-02-15'... }
  */
 function getHeaderById (id) {
-  return props.headers.find(header => String(getKeyByHeader(header)) === String(id))
+  return normalizedHeaders.value.find(header => String(getKeyByHeader(header)) === String(id))
 }
 
 /**
@@ -490,7 +544,7 @@ function setColumnsPagination () {
   columnsPagination.value = {}
   columnsLoading.value = {}
 
-  props.headers.forEach(header => {
+  normalizedHeaders.value.forEach(header => {
     const headerKey = getKeyByHeader(header)
 
     columnsPagination.value[headerKey] = { limit: props.limitPerColumn, offset: 0 }
@@ -515,6 +569,8 @@ function fetchColumnsValues () {
  * @param {Object} header
  */
 function hasEmptyResultText (header) {
+  if (props.skeleton) return false
+
   return !columnsLoading.value[getKeyByHeader(header)] && !getItemsByHeader(header)?.length && !isDragging.value
 }
 
@@ -526,7 +582,7 @@ function hasSeeMore (header) {
   const headerKey = getKeyByHeader(header)
   const hasMorePagination = columnsResultsModel.value[headerKey]?.length < columnsPagination.value[headerKey]?.count
 
-  return hasMorePagination && !columnsLoading.value[headerKey]
+  return hasMorePagination
 }
 
 function reset () {
@@ -769,6 +825,12 @@ function setItemList ({ headerKey, data, index }) {
 
 function destroySortable () {
   sortableInstances.value.forEach(sortable => sortable.destroy())
+}
+
+function hasSkeletonByHeader (header) {
+  const headerKey = getKeyByHeader(header)
+
+  return props.skeleton || columnsLoading.value[headerKey]
 }
 </script>
 

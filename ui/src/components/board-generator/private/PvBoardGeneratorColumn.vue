@@ -15,8 +15,6 @@ defineOptions({ name: 'PvBoardGeneratorColumn' })
 // refs
 const columnContainer = ref(null)
 
-console.log('PvBoardGeneratorColumn rendered')
-
 // consts
 const { initializeScrollGradient, removeScrollGradient } = setScrollGradient({
   styles: { gradientLevel: 2 }

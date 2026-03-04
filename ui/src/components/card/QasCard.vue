@@ -33,9 +33,8 @@
         </header>
 
         <div class="qas-card__content relative-position" :class="contentClasses">
-          <qas-skeleton v-if="props.skeleton" use-overlay />
-
-          <slot name="default" />
+          <qas-skeleton v-if="props.skeleton" height="100px" />
+          <slot v-else name="default" />
         </div>
 
         <div class="full-width q-mt-auto">
