@@ -130,9 +130,9 @@ const attributes = computed(() => {
   const { modelValue, placeholder, ...restAttributes } = attrs
 
   return {
-    error: error.value,
-    errorMessage: errorMessage.value,
     ...restAttributes,
+    error: restAttributes?.error || error.value,
+    errorMessage: restAttributes?.errorMessage || errorMessage.value,
     mask: mask.value,
     readonly: props.readonly,
     disable: props.disable,
@@ -265,17 +265,23 @@ function validateDateTimeOnBlur () {
   // valida se o tamanho digitado é o tamanho que a mascara espera receber
   error.value = !!((valueLength < mask.value.length || error.value) && valueLength)
 
+  /** TODO:
+   * - Sempre que sair do campo e ter uma data válida, mas sem time, deverá setar automaticamente 00:00
+   * - Setei uma data inválida, vai exibir "Data incorreta", mas vai manter o valor exibido (currentValue), e limpar o model.
+   */
+
   if (error.value && !hasInvalidDate.value) {
     errorMessage.value = 'Data incompleta.'
   }
 
-  if (hasInvalidDate.value) {
-    currentValue.value = ''
-  }
+  // if (hasInvalidDate.value) {
+  //   currentValue.value = ''
+  // }
 
-  if (error.value || hasInvalidDate.value) {
-    emit('update:modelValue', '')
-  }
+  // if (error.value || hasInvalidDate.value) {
+  //   currentValue.value = ''
+  //   emit('update:modelValue', '')
+  // }
 }
 
 function resetError () {
