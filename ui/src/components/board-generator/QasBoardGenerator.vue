@@ -1,59 +1,68 @@
 <template>
-  <qas-grabbable class="qas-board-generator" v-bind="grabbableProps">
-    <div ref="columnsContainer" class="no-wrap q-gutter-md q-pb-xs q-px-lg row">
-      <qas-lazy-loading-components v-model:visible-items="visibleItems" direction="horizontal" placeholder-width="350px" :threshold="0">
-        <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClass(header)" :style="containerStyle">
-          <div class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
-            <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
-            <slot v-else :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
-          </div>
-
-          <pv-board-generator-cards-container ref="columnContainer" class="qas-board-generator__column secondary-scroll" v-bind="getCardsContainerProps(header)">
-            <!-- COLUNA COM ERRO -->
-            <div v-if="columnsWithError[getKeyByHeader(header)]" class="column full-height items-center justify-center">
-              <div class="text-center">
-                <q-icon color="negative" name="sym_r_error" size="md" />
-
-                <div class="q-mt-sm text-subtitle1">
-                  {{ props.errorColumnText }}
-                </div>
-              </div>
-
-              <div class="text-center">
-                <qas-btn class="q-mt-md" icon="sym_r_refresh" label="Tentar novamente" :loading="columnsLoading[getKeyByHeader(header)]" @click="fetchColumn(header, true)" />
-              </div>
+  <div>
+    <qas-grabbable class="qas-board-generator" v-bind="grabbableProps">
+      <div ref="columnsContainer" class="no-wrap q-gutter-md q-pb-xs q-px-lg row">
+        <qas-lazy-loading-components v-model:visible-items="visibleItems" direction="horizontal" placeholder-width="350px" :threshold="0">
+          <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClass(header)" :style="containerStyle">
+            <div class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
+              <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
+              <slot v-else :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
             </div>
 
-            <template v-else>
-              <qas-lazy-loading-components :threshold="0">
-                <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
-                  <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
-                </div>
-              </qas-lazy-loading-components>
+            <pv-board-generator-cards-container ref="columnContainer" class="qas-board-generator__column secondary-scroll" v-bind="getCardsContainerProps(header)">
+              <!-- COLUNA COM ERRO -->
+              <div v-if="columnsWithError[getKeyByHeader(header)]" class="column full-height items-center justify-center">
+                <div class="text-center">
+                  <q-icon color="negative" name="sym_r_error" size="md" />
 
-              <div class="full-width justify-center row">
-                <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" :label="props.seeMoreButtonLabel" :loading="columnsLoading[getKeyByHeader(header)]" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header, true)" />
-
-                <template v-if="hasSkeletonByHeader(header)">
-                  <div class="q-col-gutter-y-sm row">
-                    <div v-for="item in skeletonCards" :key="item[props.itemIdKey]" class="col-12">
-                      <qas-card v-bind="item">
-                        <template #default />
-                      </qas-card>
-                    </div>
+                  <div class="q-mt-sm text-subtitle1">
+                    {{ props.errorColumnText }}
                   </div>
-                </template>
+                </div>
+
+                <div class="text-center">
+                  <qas-btn class="q-mt-md" icon="sym_r_refresh" label="Tentar novamente" :loading="columnsLoading[getKeyByHeader(header)]" @click="fetchColumn(header, true)" />
+                </div>
               </div>
 
-              <qas-empty-result-text v-if="hasEmptyResultText(header)" />
-            </template>
-          </pv-board-generator-cards-container>
-        </qas-box>
-      </qas-lazy-loading-components>
-    </div>
+              <template v-else>
+                <qas-lazy-loading-components :threshold="0">
+                  <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
+                    <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
+                  </div>
+                </qas-lazy-loading-components>
 
-    <qas-dialog v-model="showConfirmDialog" v-bind="defaultConfirmDialogProps" />
-  </qas-grabbable>
+                <div class="full-width justify-center row">
+                  <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" :label="props.seeMoreButtonLabel" :loading="columnsLoading[getKeyByHeader(header)]" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header, true)" />
+
+                  <template v-if="hasSkeletonByHeader(header)">
+                    <div class="q-col-gutter-y-sm row">
+                      <div v-for="item in skeletonCards" :key="item[props.itemIdKey]" class="col-12">
+                        <qas-card v-bind="item">
+                          <template #default />
+                        </qas-card>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+
+                <qas-empty-result-text v-if="hasEmptyResultText(header)" />
+              </template>
+            </pv-board-generator-cards-container>
+          </qas-box>
+        </qas-lazy-loading-components>
+      </div>
+
+      <qas-dialog v-model="showConfirmDialog" v-bind="defaultConfirmDialogProps" />
+    </qas-grabbable>
+
+    <q-inner-loading :showing="loading">
+      <q-spinner
+        color="grey"
+        size="3em"
+      />
+    </q-inner-loading>
+  </div>
 </template>
 
 <script setup>
@@ -135,6 +144,10 @@ const props = defineProps({
   limitPerColumn: {
     type: Number,
     default: 12
+  },
+
+  loading: {
+    type: Boolean
   },
 
   columnWidth: {
@@ -419,7 +432,6 @@ async function fetchColumns () {
 
   // Mapeia os índices visíveis para os IDs de coluna correspondentes
   const visibleKeys = new Set(visibleItems.value.map(i => getKeyByHeader(normalizedHeaders.value[i])))
-  console.log('🚀 ~ fetchColumns ~ visibleKeys:', visibleItems.value)
 
   const visibleHeaders = visibleKeys.size
     ? normalizedHeaders.value.filter(header => visibleKeys.has(getKeyByHeader(header)))
