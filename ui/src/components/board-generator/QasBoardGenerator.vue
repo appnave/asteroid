@@ -29,12 +29,12 @@
               <template v-else>
                 <qas-lazy-loading-components :threshold="0">
                   <div v-for="(item) in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
-                    <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" />
-                    <!-- <qas-card v-if="updatingPositionItemKey === item[props.itemIdKey]" v-bind="skeletonCards.at(0)" :key="item[props.itemIdKey]" class="q-mb-sm" :column-index="index">
+                    <!-- <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" /> -->
+                    <qas-card v-if="updatingPositionItemKey === item[props.itemIdKey]" v-bind="skeletonCards.at(0)" :key="item[props.itemIdKey]" class="q-mb-sm" :column-index="index">
                       <template #default />
                     </qas-card>
 
-                    <slot v-else-if="!props.skeleton && updatingPositionItemKey !== item[props.itemIdKey]" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" /> -->
+                    <slot v-else-if="!props.skeleton && updatingPositionItemKey !== item[props.itemIdKey]" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" />
                   </div>
                 </qas-lazy-loading-components>
 
@@ -833,28 +833,28 @@ function confirmDrop (event) {
  *  itemId: string
  * }}
  */
-// function removeItemFromList ({ headerKey, itemId }) {
-//   /**
-//    * Coluna referente ao model de resultado
-//    */
-//   const columnItemList = columnsResultsModel.value[headerKey]
+function removeItemFromList ({ headerKey, itemId }) {
+  /**
+   * Coluna referente ao model de resultado
+   */
+  const columnItemList = columnsResultsModel.value[headerKey]
 
-//   /**
-//    * Busca o item com base em seu ID na lista de itens da coluna
-//    */
-//   const itemIndex = columnItemList.findIndex(itemContent => itemContent[props.itemIdKey] === itemId)
-//   console.log('🚀 ~ removeItemFromList ~ itemIndex:', itemIndex)
+  /**
+   * Busca o item com base em seu ID na lista de itens da coluna
+   */
+  const itemIndex = columnItemList.findIndex(itemContent => itemContent[props.itemIdKey] === itemId)
+  console.log('🚀 ~ removeItemFromList ~ itemIndex:', itemIndex)
 
-//   /**
-//    * Remove o item da listagem com base no index, sendo que preciso subtrair 1 para pegar o index correto
-//    */
-//   columnItemList.splice(itemIndex, 1)
+  /**
+   * Remove o item da listagem com base no index, sendo que preciso subtrair 1 para pegar o index correto
+   */
+  columnItemList.splice(itemIndex, 1)
 
-//   /**
-//    * Remove o item do count da coluna para não mostrar o botão de "Ver mais¨.
-//    */
-//   columnsPagination.value[headerKey].count -= 1
-// }
+  /**
+   * Remove o item do count da coluna para não mostrar o botão de "Ver mais¨.
+   */
+  columnsPagination.value[headerKey].count -= 1
+}
 
 /**
  * Método que realiza a request de update
@@ -906,9 +906,35 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
     return
   }
 
-  // removeItemFromList({ headerKey: oldHeaderKey, itemId })
+  /**
+   * Reverte a mutação de DOM feita pelo SortableJS antes de atualizar os dados reativos.
+   *
+   * O SortableJS move elementos físicos do DOM imediatamente ao soltar o card,
+   * mas o virtual DOM do Vue ainda "pensa" que eles estão na posição original.
+   * Se atualizarmos os dados reativos sem primeiro restaurar o DOM, o Vue irá
+   * patchar os elementos errados (ex: sobrescreve o card movido com os dados do
+   * próximo card da coluna de origem), causando exibição incorreta.
+   *
+   * Ao reverter o DOM para o estado pré-drag, o Vue parte de um estado consistente
+   * e renderiza corretamente a nova ordenação via dados reativos.
+   */
+  if (props.useDragAndDropX) {
+    event.from.insertBefore(event.item, event.from.children[event.oldIndex] || null)
+  }
 
-  // setItemList({ headerKey: newHeaderKey, data: data.data, index: event.newIndex })
+  if (props.useDragAndDropY) {
+    const oldIndex = event.oldIndex
+    const targetIndex = oldIndex === 0 ? oldIndex : oldIndex + 1
+    const insertBeforeElement = targetIndex < event.from.children.length
+      ? event.from.children[targetIndex]
+      : null
+
+    event.from.insertBefore(event.item, insertBeforeElement)
+  }
+
+  removeItemFromList({ headerKey: oldHeaderKey, itemId })
+
+  setItemList({ headerKey: newHeaderKey, data: data.data, index: event.newIndex })
 
   isUpdatingPosition.value = true
 
@@ -919,19 +945,17 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
   emit('update-success', data.data)
 }
 
-// function setItemList ({ headerKey, data, index }) {
-//   console.log('🚀 ~ setItemList ~ { headerKey, data, index }:', { headerKey, data, index })
-//   /**
-//    * Coluna referente ao model de resultado
-//    */
-//   const columnItemList = columnsResultsModel.value[headerKey]
+function setItemList ({ headerKey, data, index }) {
+  /**
+   * Coluna referente ao model de resultado
+   */
+  const columnItemList = columnsResultsModel.value[headerKey]
 
-//   /**
-//    * Adiciona o item na posição do event escolhido.
-//    */
-//   columnItemList.splice(index, 1, data.result)
-//   console.log('🚀 ~ setItemList ~ columnsResultsModel.value[headerKey]:', columnsResultsModel.value[headerKey])
-// }
+  /**
+   * Adiciona o item na posição do event escolhido.
+   */
+  columnItemList.splice(index, 0, data.result)
+}
 
 function destroySortable () {
   sortableInstances.value.forEach(sortable => sortable.destroy())
