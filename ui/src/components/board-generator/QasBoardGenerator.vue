@@ -6,6 +6,7 @@
           <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClass(header)" :style="containerStyle">
             <div class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
               <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
+
               <slot v-else :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
             </div>
 
@@ -27,8 +28,13 @@
 
               <template v-else>
                 <qas-lazy-loading-components :threshold="0">
-                  <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
+                  <div v-for="(item) in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
                     <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" />
+                    <!-- <qas-card v-if="updatingPositionItemKey === item[props.itemIdKey]" v-bind="skeletonCards.at(0)" :key="item[props.itemIdKey]" class="q-mb-sm" :column-index="index">
+                      <template #default />
+                    </qas-card>
+
+                    <slot v-else-if="!props.skeleton && updatingPositionItemKey !== item[props.itemIdKey]" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" /> -->
                   </div>
                 </qas-lazy-loading-components>
 
@@ -184,7 +190,7 @@ const props = defineProps({
   },
 
   updatePositionUrl: {
-    type: String,
+    type: [String, Function],
     default: ''
   },
 
@@ -228,6 +234,7 @@ const isDragging = ref(false)
 const isLoadingUpdatePosition = ref(false)
 const isLoadingFromSeeMore = ref(false)
 const columnsWithError = ref({})
+const updatingPositionItemKey = ref(null)
 
 /**
  * Índices das colunas visíveis no viewport
@@ -826,27 +833,28 @@ function confirmDrop (event) {
  *  itemId: string
  * }}
  */
-function removeItemFromList ({ headerKey, itemId }) {
-  /**
-   * Coluna referente ao model de resultado
-   */
-  const columnItemList = columnsResultsModel.value[headerKey]
+// function removeItemFromList ({ headerKey, itemId }) {
+//   /**
+//    * Coluna referente ao model de resultado
+//    */
+//   const columnItemList = columnsResultsModel.value[headerKey]
 
-  /**
-   * Busca o item com base em seu ID na lista de itens da coluna
-   */
-  const itemIndex = columnItemList.findIndex(itemContent => itemContent[props.itemIdKey] === itemId)
+//   /**
+//    * Busca o item com base em seu ID na lista de itens da coluna
+//    */
+//   const itemIndex = columnItemList.findIndex(itemContent => itemContent[props.itemIdKey] === itemId)
+//   console.log('🚀 ~ removeItemFromList ~ itemIndex:', itemIndex)
 
-  /**
-   * Remove o item da listagem com base no index, sendo que preciso subtrair 1 para pegar o index correto
-   */
-  columnItemList.splice(itemIndex, 1)
+//   /**
+//    * Remove o item da listagem com base no index, sendo que preciso subtrair 1 para pegar o index correto
+//    */
+//   columnItemList.splice(itemIndex, 1)
 
-  /**
-   * Remove o item do count da coluna para não mostrar o botão de "Ver mais¨.
-   */
-  columnsPagination.value[headerKey].count -= 1
-}
+//   /**
+//    * Remove o item do count da coluna para não mostrar o botão de "Ver mais¨.
+//    */
+//   columnsPagination.value[headerKey].count -= 1
+// }
 
 /**
  * Método que realiza a request de update
@@ -865,8 +873,18 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
     ...props.updatePositionParams
   }
 
+  updatingPositionItemKey.value = itemId
+
+  const isFnUpdatePositionUrl = typeof props.updatePositionUrl === 'function'
+
+  isLoadingFromSeeMore.value = true
+
+  const url = isFnUpdatePositionUrl
+    ? props.updatePositionUrl({ newHeaderKey, oldHeaderKey, itemId })
+    : `${props.updatePositionUrl}/${itemId}/update-position`
+
   const { data, error } = await promiseHandler(
-    axios.patch(`${props.updatePositionUrl}/${itemId}/update-position`, params),
+    axios.patch(url, params),
     {
       errorMessage: 'Ocorreu um erro ao atualizar a posição de seu item.',
       useLoading: false,
@@ -878,6 +896,8 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
     }
   )
 
+  updatingPositionItemKey.value = null
+
   if (error) {
     onCancelDrop.value()
 
@@ -886,9 +906,9 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
     return
   }
 
-  removeItemFromList({ headerKey: oldHeaderKey, itemId })
+  // removeItemFromList({ headerKey: oldHeaderKey, itemId })
 
-  setItemList({ headerKey: newHeaderKey, data: data.data, index: event.newIndex })
+  // setItemList({ headerKey: newHeaderKey, data: data.data, index: event.newIndex })
 
   isUpdatingPosition.value = true
 
@@ -899,17 +919,19 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
   emit('update-success', data.data)
 }
 
-function setItemList ({ headerKey, data, index }) {
-  /**
-   * Coluna referente ao model de resultado
-   */
-  const columnItemList = columnsResultsModel.value[headerKey]
+// function setItemList ({ headerKey, data, index }) {
+//   console.log('🚀 ~ setItemList ~ { headerKey, data, index }:', { headerKey, data, index })
+//   /**
+//    * Coluna referente ao model de resultado
+//    */
+//   const columnItemList = columnsResultsModel.value[headerKey]
 
-  /**
-   * Adiciona o item na posição do event escolhido.
-   */
-  columnItemList.splice(index, 0, data.result)
-}
+//   /**
+//    * Adiciona o item na posição do event escolhido.
+//    */
+//   columnItemList.splice(index, 1, data.result)
+//   console.log('🚀 ~ setItemList ~ columnsResultsModel.value[headerKey]:', columnsResultsModel.value[headerKey])
+// }
 
 function destroySortable () {
   sortableInstances.value.forEach(sortable => sortable.destroy())
