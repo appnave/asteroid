@@ -28,7 +28,7 @@
               <template v-else>
                 <qas-lazy-loading-components :threshold="0">
                   <div v-for="item in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
-                    <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :item="item" name="column-item" />
+                    <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" />
                   </div>
                 </qas-lazy-loading-components>
 
@@ -209,7 +209,7 @@ const emit = defineEmits([
   'update-error'
 ])
 
-defineExpose({ fetchColumns, fetchColumn, reset, cancelDrop })
+defineExpose({ fetchColumns, fetchColumn, reset, cancelDrop, refreshColumn })
 
 // Inject
 const axios = inject('axios')
@@ -541,6 +541,15 @@ async function fetchColumn (header, fromSeeMore, setEr) {
   emit('fetch-column-success', { response, header })
 }
 
+function refreshColumn (header) {
+  const headerKey = getKeyByHeader(header)
+
+  columnsResultsModel.value[headerKey] = []
+  columnsPagination.value[headerKey] = { limit: props.limitPerColumn, offset: 0 }
+
+  fetchColumn(header)
+}
+
 /*
 * Mergeia os options antigos com os novos de cada field.
 */
@@ -694,6 +703,9 @@ function handleElementsList () {
 function setSortable (element, index) {
   const defaultSortableConfig = {
     animation: 500,
+    group: 'shared',
+    ghostClass: 'ghost',
+    sort: false,
     swapThreshold: 1,
     delay: 50,
     delayOnTouchOnly: true,
