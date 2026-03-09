@@ -166,7 +166,7 @@ const hasTimePicker = computed(() => !props.useDateOnly && !props.readonly)
 
 watch(() => props.modelValue, (current, original) => {
   /**
-   * No caso de for adicionado uma data incompleta ou inválida, vamos limpar o model,
+   * No caso de ser adicionado uma data incompleta ou inválida, vamos limpar o model,
    * mas não vamos limpar o "currentValue", para não limpar o campo, somente o model.
    */
   if (!current && original && error.value) return
