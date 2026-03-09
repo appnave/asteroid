@@ -165,6 +165,11 @@ const hasDatePicker = computed(() => !props.useTimeOnly && !props.readonly)
 const hasTimePicker = computed(() => !props.useDateOnly && !props.readonly)
 
 watch(() => props.modelValue, (current, original) => {
+  console.log(current, '<-- current')
+  console.log(original, '<-- original')
+
+  if (!current && original && error.value) return
+
   if (!current || props.useTimeOnly) {
     currentValue.value = current
     return
@@ -207,47 +212,26 @@ function toMask (value) {
   )
 }
 
-// Pega o valor default do horário baseado na mascara, substituindo os caracteres por 0.
-function getDefaultTimeByMask () {
-  return props.timeMask.replace(/[A-Za-z]/g, '0')
-}
-
-/**
- * Faz o tratamento de setar o horário default ao preencher a data via input,
- * quando a configuração for para data e hora.
- *
- * @param {string} value - Valor a ser normalizado, que pode ser data, hora ou data e hora dependendo da configuração.
- */
-function normalizeDateTimeValue (value = '') {
-  if (props.useDateOnly || props.useTimeOnly || !value) return value
-
-  const [currentDate, currentTime] = value.split(' ')
-  const hasFullDate = currentDate?.length === props.dateMask.length
-
-  if (!hasFullDate || currentTime) return value
-
-  return `${currentDate} ${getDefaultTimeByMask()}`
-}
-
 function updateModelValue (value) {
-  const normalizedValue = normalizeDateTimeValue(value)
+  currentValue.value = value
 
-  currentValue.value = normalizedValue
+  const valueLength = value?.replace?.(/_/g, '')?.length
 
-  const valueLength = normalizedValue?.replace?.(/_/g, '')?.length
-
-  error.value = validateDateAndTime(normalizedValue)
+  error.value = validateDateAndTime(value)
 
   if (error.value) {
     hasInvalidDate.value = true
     errorMessage.value = 'Data inválida.'
+
+    emit('update:modelValue', '')
+
     return
   }
 
   hasInvalidDate.value = false
 
-  if (normalizedValue === '' || valueLength === mask.value.length) {
-    lastValue.value = props.useTimeOnly ? normalizedValue : toISOString(normalizedValue)
+  if (value === '' || valueLength === mask.value.length) {
+    lastValue.value = props.useTimeOnly ? value : toISOString(value)
     emit('update:modelValue', lastValue.value)
   }
 
@@ -286,18 +270,33 @@ function validateDateAndTime (value) {
 function validateDateTimeOnBlur () {
   const valueLength = currentValue.value?.replace?.(/_/g, '')?.length
 
+  // Caso for datetime
+  if (!props.useDateOnly && !props.useTimeOnly) {
+    const [date, time] = (currentValue.value || '').split(' ') || []
+    const isValidDate = date?.replace?.(/_/g, '')?.length === props.dateMask.length
+
+    /**
+     * Caso tenha preenchido a data, a data seja válida e não tenha preenchido o horário,
+     * preenche o horário com 00:00, ou de acordo com a mask.
+     */
+    if (isValidDate && !validateDateOnly(date) && !time?.length) {
+      // Horario setado deve seguir a mascara.
+      const defaultTimeByMask = props.timeMask.replace(/[HhMmSs]/g, '0')
+      const newValue = `${date} ${defaultTimeByMask}`
+
+      currentValue.value = newValue
+      updateModelValue(newValue)
+
+      return
+    }
+  }
+
   // valida se o tamanho digitado é o tamanho que a mascara espera receber
   error.value = !!((valueLength < mask.value.length || error.value) && valueLength)
 
   if (error.value && !hasInvalidDate.value) {
     errorMessage.value = 'Data incompleta.'
-  }
 
-  if (hasInvalidDate.value) {
-    currentValue.value = ''
-  }
-
-  if (error.value || hasInvalidDate.value) {
     emit('update:modelValue', '')
   }
 }

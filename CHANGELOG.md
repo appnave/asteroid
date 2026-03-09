@@ -21,6 +21,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Modificado
 - `QasTableGenerator`: modificado fields do tipo `hidden`, não serão exibidos na tabela.([#1387](https://github.com/bildvitta/asteroid/issues/1387))
 - `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
+- `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
 
 ## [3.20.0-beta.13] - 19-02-2026
 ### Adicionado
