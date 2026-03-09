@@ -1,6 +1,6 @@
 # Feature Specification: Dark Mode
 
-**Feature Branch**: `001-dark-mode-v1`
+**Feature Branch**: `feature/dark-mode-v1`
 **Created**: 09/03/2026
 **Status**: Draft — Pending Clarifications
 **Input**: Feature geral para adicionar suporte a modo dark no Asteroid UI.
