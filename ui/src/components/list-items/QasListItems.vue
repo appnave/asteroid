@@ -20,7 +20,7 @@
 
           <q-item-section v-if="props.useSectionActions" side>
             <slot :index="index" :item="item" name="item-section-side">
-              <qas-btn color="grey-10" :icon="props.icon" variant="tertiary" @click="onClick({ item, index })" />
+              <qas-btn :color="actionBtnColor" :icon="props.icon" variant="tertiary" @click="onClick({ item, index })" />
             </slot>
           </q-item-section>
         </slot>
@@ -34,9 +34,13 @@ import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasLabel from '../label/QasLabel.vue'
 
+import { useThemeColor } from '../../composables'
+
 import { computed } from 'vue'
 
 defineOptions({ name: 'QasListItems' })
+
+const actionBtnColor = useThemeColor('grey-10')
 
 const props = defineProps({
   descriptionKey: {

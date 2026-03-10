@@ -2,7 +2,7 @@
   <qas-search-box ref="searchBox" v-model:results="results" v-bind="defaultSearchBoxProps" :list="sortedList">
     <template #after-search>
       <div class="q-my-md">
-        <qas-btn color="grey-10" :disable="isClearSelectionDisabled" icon="sym_r_close" label="Limpar seleção" variant="tertiary" @click="clearSelection" />
+        <qas-btn :color="clearBtnColor" :disable="isClearSelectionDisabled" icon="sym_r_close" label="Limpar seleção" variant="tertiary" @click="clearSelection" />
       </div>
     </template>
 
@@ -28,6 +28,8 @@ import sortBy from 'lodash-es/sortBy'
 import QasBtn from '../btn/QasBtn.vue'
 import QasSearchBox from '../search-box/QasSearchBox.vue'
 import PvSelectListCheckbox from './private/PvSelectListCheckbox.vue'
+import DarkColorMap from '../../enums/DarkColorMap.js'
+import { Dark } from 'quasar'
 
 export default {
   name: 'QasSelectList',
@@ -99,6 +101,10 @@ export default {
   },
 
   computed: {
+    clearBtnColor () {
+      return Dark.isActive ? (DarkColorMap['grey-10'] || 'grey-10') : 'grey-10'
+    },
+
     defaultSearchBoxProps () {
       return {
         fuseOptions: { keys: ['label'] },

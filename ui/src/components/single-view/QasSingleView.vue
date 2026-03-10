@@ -19,7 +19,7 @@
     </footer>
 
     <q-inner-loading :showing="viewState.fetching">
-      <q-spinner color="grey" size="3em" />
+      <q-spinner :color="spinnerColor" size="3em" />
     </q-inner-loading>
   </qas-container>
 </template>
@@ -29,7 +29,7 @@ import QasContainer from '../container/QasContainer.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 
 import useView, { baseProps, baseEmits } from '../../composables/private/use-view'
-import { useOverlayNavigation } from '../../composables'
+import { useOverlayNavigation, useThemeColor } from '../../composables'
 
 import debug from 'debug'
 import { decamelize } from 'humps'
@@ -39,6 +39,8 @@ import { useRoute } from 'vue-router'
 const log = debug('asteroid-ui:qas-single-view')
 
 defineOptions({ name: 'QasSingleView' })
+
+const spinnerColor = useThemeColor('grey')
 
 const props = defineProps({
   ...baseProps,

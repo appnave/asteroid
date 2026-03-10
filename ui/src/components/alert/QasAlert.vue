@@ -21,7 +21,7 @@
           </span>
         </div>
 
-        <qas-btn v-if="useCloseButton" class="q-ml-sm" color="grey-10" icon="sym_r_close" variant="tertiary" @click="close" />
+        <qas-btn v-if="useCloseButton" class="q-ml-sm" :color="closeBtnColor" icon="sym_r_close" variant="tertiary" @click="close" />
       </div>
     </component>
   </div>
@@ -32,12 +32,15 @@ import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
 
 import { Status, StatusColor } from '../../enums/Status'
+import { useThemeColor } from '../../composables'
 
 import { LocalStorage } from 'quasar'
 import { RouterLink } from 'vue-router'
 import { h, computed, inject } from 'vue'
 
 defineOptions({ name: 'QasAlert' })
+
+const closeBtnColor = useThemeColor('grey-10')
 
 const props = defineProps({
   buttonProps: {

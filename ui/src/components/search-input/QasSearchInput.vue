@@ -1,13 +1,13 @@
 <template>
   <qas-input ref="input" v-model="model" class="qas-search-input" :class="classes" v-bind="$attrs" data-cy="search-input" :debounce hide-bottom-space input-class="ellipsis text-grey-8" inputmode="search" outlined type="search">
     <template #prepend>
-      <q-icon v-if="useSearchOnType" color="grey-8" name="sym_r_search" />
+      <q-icon v-if="useSearchOnType" :color="iconColor" name="sym_r_search" />
 
-      <qas-btn v-else color="grey-10" icon="sym_r_search" variant="tertiary" @click="$emit('filter')" />
+      <qas-btn v-else :color="btnColor" icon="sym_r_search" variant="tertiary" @click="$emit('filter')" />
     </template>
 
     <template #append>
-      <qas-btn v-if="hasSearch" color="grey-10" icon="sym_r_clear" variant="tertiary" @click="clear" />
+      <qas-btn v-if="hasSearch" :color="btnColor" icon="sym_r_clear" variant="tertiary" @click="clear" />
 
       <slot name="after-clear" />
     </template>
@@ -17,6 +17,8 @@
 <script>
 import QasInput from '../input/QasInput.vue'
 import QasBtn from '../btn/QasBtn.vue'
+import DarkColorMap from '../../enums/DarkColorMap.js'
+import { Dark } from 'quasar'
 
 export default {
   name: 'QasSearchInput',
@@ -57,6 +59,14 @@ export default {
   ],
 
   computed: {
+    btnColor () {
+      return Dark.isActive ? (DarkColorMap['grey-10'] || 'grey-10') : 'grey-10'
+    },
+
+    iconColor () {
+      return Dark.isActive ? (DarkColorMap['grey-8'] || 'grey-8') : 'grey-8'
+    },
+
     classes () {
       const bordered = this.isBox || this.isDialog
 

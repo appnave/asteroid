@@ -37,7 +37,7 @@
 
     <q-inner-loading :showing="isFetchingFilters">
       <q-spinner
-        color="grey"
+        :color="spinnerColor"
         size="3em"
       />
     </q-inner-loading>
@@ -52,13 +52,15 @@ import QasActions from '../actions/QasActions.vue'
 import QasBtn from '../btn/QasBtn.vue'
 
 import { parseValue, promiseHandler, camelizeFieldsName } from '../../helpers'
-import { useContext } from '../../composables'
+import { useContext, useThemeColor } from '../../composables'
 
 import { camelize, decamelizeKeys, decamelize } from 'humps'
 import { computed, onMounted, ref, inject } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 defineOptions({ name: 'QasReportsFilters' })
+
+const spinnerColor = useThemeColor('grey')
 
 const props = defineProps({
   formGeneratorProps: {

@@ -24,7 +24,7 @@
       </slot>
 
       <q-inner-loading :showing="showInnerLoading">
-        <q-spinner color="grey" size="2rem" />
+        <q-spinner :color="spinnerColor" size="2rem" />
       </q-inner-loading>
     </div>
   </div>
@@ -35,10 +35,11 @@ import QasBox from '../box/QasBox.vue'
 import QasSearchInput from '../search-input/QasSearchInput.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 
-import { QInfiniteScroll } from 'quasar'
+import { QInfiniteScroll, Dark } from 'quasar'
 import Fuse from 'fuse.js'
 import fuseConfig from '../../shared/fuse-config'
 import { searchFilterMixin } from '../../mixins'
+import DarkColorMap from '../../enums/DarkColorMap.js'
 
 export default {
   name: 'QasSearchBox',
@@ -118,6 +119,10 @@ export default {
   },
 
   computed: {
+    spinnerColor () {
+      return Dark.isActive ? (DarkColorMap.grey || 'grey') : 'grey'
+    },
+
     attributes () {
       return {
         ref: 'search',

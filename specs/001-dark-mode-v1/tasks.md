@@ -19,7 +19,7 @@
 
 **Propósito**: Preparação inicial do projeto e verificação de estrutura
 
-- [ ] T001 Verificar que a branch `feature/dark-mode-v1` está atualizada com a `main` e sem conflitos
+- [x] T001 Verificar que a branch `feature/dark-mode-v1` está atualizada com a `main` e sem conflitos
 
 ---
 
@@ -29,15 +29,15 @@
 
 **⚠️ CRÍTICO**: Nenhuma task de user story pode começar antes desta fase estar completa.
 
-- [ ] T002 [P] Criar enum `DarkColorMap` com mapeamento light → dark em `ui/src/enums/DarkColorMap.js`
-- [ ] T003 [P] Adicionar CSS custom properties semânticas em `:root` (light) e overrides em `.body--dark` em `ui/src/index.scss`
-- [ ] T004 [P] Criar composable `useDarkMode` com toggle, persistência localStorage e integração `$q.dark` em `ui/src/composables/use-dark-mode.js`
-- [ ] T005 Criar composable `useThemeColor` com resolução de cor via `DarkColorMap` e `$q.dark.isActive` em `ui/src/composables/use-theme-color.js`
-- [ ] T006 Exportar `useDarkMode` e `useThemeColor` em `ui/src/composables/index.js`
-- [ ] T007 Exportar novos composables em `ui/src/asteroid.js`
-- [ ] T008 [P] Adicionar `useDarkMode: false` em `framework.featureToggle` em `app-extension/src/defaults/default-asteroid-config.js`
-- [ ] T009 [P] Criar boot file `dark-mode.js` com inicialização do tema antes do mount em `app-extension/src/boot/dark-mode.js`
-- [ ] T010 Registrar boot `dark-mode` na lista de boots em `app-extension/src/index.js`
+- [x] T002 [P] Criar enum `DarkColorMap` com mapeamento light → dark em `ui/src/enums/DarkColorMap.js`
+- [x] T003 [P] Adicionar CSS custom properties semânticas em `:root` (light) e overrides em `.body--dark` em `ui/src/index.scss`
+- [x] T004 [P] Criar composable `useDarkMode` com toggle, persistência localStorage e integração `$q.dark` em `ui/src/composables/use-dark-mode.js`
+- [x] T005 Criar composable `useThemeColor` com resolução de cor via `DarkColorMap` e `$q.dark.isActive` em `ui/src/composables/use-theme-color.js`
+- [x] T006 Exportar `useDarkMode` e `useThemeColor` em `ui/src/composables/index.js`
+- [x] T007 Exportar novos composables em `ui/src/asteroid.js`
+- [x] T008 [P] Adicionar `useDarkMode: false` em `framework.featureToggle` em `app-extension/src/defaults/default-asteroid-config.js`
+- [x] T009 [P] Criar boot file `dark-mode.js` com inicialização do tema antes do mount em `app-extension/src/boot/dark-mode.js`
+- [x] T010 Registrar boot `dark-mode` na lista de boots em `app-extension/src/index.js`
 
 **Checkpoint**: Infraestrutura completa — composables exportados, CSS custom properties ativas, boot file registrado, config global disponível.
 
@@ -51,44 +51,44 @@
 
 ### Toggle no QasAppBar
 
-- [ ] T011 [US1] Adicionar prop `use-dark-mode` (Boolean, default undefined) e renderizar toggle (ícone sol/lua) com `useDarkMode().toggle()` em `ui/src/components/app-bar/QasAppBar.vue`
-- [ ] T012 [US1] Documentar nova prop `use-dark-mode` com descrição e exemplos em `ui/src/components/app-bar/QasAppBar.yml`
+- [x] T011 [US1] Adicionar prop `use-dark-mode` (Boolean, default undefined) e renderizar toggle (ícone sol/lua) com `useDarkMode().toggle()` em `ui/src/components/app-bar/QasAppBar.vue`
+- [x] T012 [US1] Documentar nova prop `use-dark-mode` com descrição e exemplos em `ui/src/components/app-bar/QasAppBar.yml`
 
 ### Auditoria de Componentes — Categoria A (CSS only, ~11 listados + ~46 restantes)
 
 > Componentes que usam apenas classes utilitárias. O override global em `.body--dark` (T003) resolve automaticamente. Necessária apenas verificação visual.
 
-- [ ] T013 [P] [US1] Auditar e verificar dark mode nos componentes Categoria A: `QasHeader`, `QasTabsGenerator`, `QasTimeline`, `QasSelectListDialog`, `QasEmptyResultText`, `QasAppUser` em `ui/src/components/`
-- [ ] T014 [P] [US1] Auditar e verificar dark mode nos componentes Categoria A: `QasSelect`, `QasListView`, `QasFormView`, `QasDrawer`, `QasFilters` em `ui/src/components/`
-- [ ] T015 [P] [US1] Auditar os ~46 componentes restantes sem cores hardcoded identificadas para verificação visual de dark mode em `ui/src/components/`
+- [x] T013 [P] [US1] Auditar e verificar dark mode nos componentes Categoria A: `QasHeader`, `QasTabsGenerator`, `QasTimeline`, `QasSelectListDialog`, `QasEmptyResultText`, `QasAppUser` em `ui/src/components/`
+- [x] T014 [P] [US1] Auditar e verificar dark mode nos componentes Categoria A: `QasSelect`, `QasListView`, `QasFormView`, `QasDrawer`, `QasFilters` em `ui/src/components/`
+- [x] T015 [P] [US1] Auditar os ~46 componentes restantes sem cores hardcoded identificadas para verificação visual de dark mode em `ui/src/components/`
 
 ### Auditoria de Componentes — Categoria B (useThemeColor, ~15 listados)
 
 > Componentes que passam cores via props para sub-componentes Quasar. Precisam usar `useThemeColor` para resolver cor dinâmica no dark mode.
 
-- [ ] T016 [P] [US1] Adaptar `QasAppMenu` com `useThemeColor` para cores `grey-10`, `grey-8` em `ui/src/components/app-menu/QasAppMenu.vue`
-- [ ] T017 [P] [US1] Adaptar `QasDialog` com `useThemeColor` para cores `grey-10`, `grey-8` em `ui/src/components/dialog/QasDialog.vue`
-- [ ] T018 [P] [US1] Adaptar `QasSearchInput` com `useThemeColor` para cores `grey-10`, `grey-8` em `ui/src/components/search-input/QasSearchInput.vue`
-- [ ] T019 [P] [US1] Adaptar `QasCard` com `useThemeColor` para cores `grey-10`, `grey-8` e `expand-icon-class` em `ui/src/components/card/QasCard.vue`
-- [ ] T020 [P] [US1] Adaptar `QasPageHeader` com `useThemeColor` para `separator-color` e textos em `ui/src/components/page-header/QasPageHeader.vue`
-- [ ] T021 [P] [US1] Adaptar `QasExpansionItem` com `useThemeColor` para cor `grey-10` em `ui/src/components/expansion-item/QasExpansionItem.vue`
-- [ ] T022 [P] [US1] Adaptar `QasAlert` com `useThemeColor` para cores `grey-10`, `grey-8` em `ui/src/components/alert/QasAlert.vue`
-- [ ] T023 [P] [US1] Adaptar `QasGalleryCard` com `useThemeColor` para cores `grey-10`, `grey-6` e backgrounds em `ui/src/components/gallery-card/QasGalleryCard.vue`
-- [ ] T024 [P] [US1] Adaptar `QasSearchBox` com `useThemeColor` para cor `grey` em `ui/src/components/search-box/QasSearchBox.vue`
-- [ ] T025 [P] [US1] Adaptar `QasReportsFilters` com `useThemeColor` para cor `grey` em `ui/src/components/reports-filters/QasReportsFilters.vue`
-- [ ] T026 [P] [US1] Adaptar `QasSingleView` com `useThemeColor` para cor `grey` em `ui/src/components/single-view/QasSingleView.vue`
-- [ ] T027 [P] [US1] Adaptar `QasSelectList` com `useThemeColor` para cor `grey-10` em `ui/src/components/select-list/QasSelectList.vue`
-- [ ] T028 [P] [US1] Adaptar `QasListItems` com `useThemeColor` para cor `grey-10` em `ui/src/components/list-items/QasListItems.vue`
-- [ ] T029 [P] [US1] Adaptar `QasBoardGenerator` com `useThemeColor` para cor `grey-4` em `ui/src/components/board-generator/QasBoardGenerator.vue`
+- [x] T016 [P] [US1] Adaptar `QasAppMenu` com `useThemeColor` para cores `grey-10`, `grey-8` em `ui/src/components/app-menu/QasAppMenu.vue`
+- [x] T017 [P] [US1] Adaptar `QasDialog` com `useThemeColor` para cores `grey-10`, `grey-8` em `ui/src/components/dialog/QasDialog.vue`
+- [x] T018 [P] [US1] Adaptar `QasSearchInput` com `useThemeColor` para cores `grey-10`, `grey-8` em `ui/src/components/search-input/QasSearchInput.vue`
+- [x] T019 [P] [US1] Adaptar `QasCard` com `useThemeColor` para cores `grey-10`, `grey-8` e `expand-icon-class` em `ui/src/components/card/QasCard.vue`
+- [x] T020 [P] [US1] Adaptar `QasPageHeader` com `useThemeColor` para `separator-color` e textos em `ui/src/components/page-header/QasPageHeader.vue`
+- [x] T021 [P] [US1] Adaptar `QasExpansionItem` com `useThemeColor` para cor `grey-10` em `ui/src/components/expansion-item/QasExpansionItem.vue`
+- [x] T022 [P] [US1] Adaptar `QasAlert` com `useThemeColor` para cores `grey-10`, `grey-8` em `ui/src/components/alert/QasAlert.vue`
+- [x] T023 [P] [US1] Adaptar `QasGalleryCard` com `useThemeColor` para cores `grey-10`, `grey-6` e backgrounds em `ui/src/components/gallery-card/QasGalleryCard.vue`
+- [x] T024 [P] [US1] Adaptar `QasSearchBox` com `useThemeColor` para cor `grey` em `ui/src/components/search-box/QasSearchBox.vue`
+- [x] T025 [P] [US1] Adaptar `QasReportsFilters` com `useThemeColor` para cor `grey` em `ui/src/components/reports-filters/QasReportsFilters.vue`
+- [x] T026 [P] [US1] Adaptar `QasSingleView` com `useThemeColor` para cor `grey` em `ui/src/components/single-view/QasSingleView.vue`
+- [x] T027 [P] [US1] Adaptar `QasSelectList` com `useThemeColor` para cor `grey-10` em `ui/src/components/select-list/QasSelectList.vue`
+- [x] T028 [P] [US1] Adaptar `QasListItems` com `useThemeColor` para cor `grey-10` em `ui/src/components/list-items/QasListItems.vue`
+- [x] T029 [P] [US1] Adaptar `QasBoardGenerator` com `useThemeColor` para cor `grey-4` em `ui/src/components/board-generator/QasBoardGenerator.vue`
 
 ### Auditoria de Componentes — Categoria C (estilos scoped, ~4 listados)
 
 > Componentes com estilos SCSS scoped que referenciam cores hardcoded. Precisam de override `.body--dark` no scoped style ou migração para CSS custom properties.
 
-- [ ] T030 [P] [US1] Adaptar `QasTooltip` com override `.body--dark` no scoped style para `text-grey-10` e `bg-grey-10` em `ui/src/components/tooltip/QasTooltip.vue`
-- [ ] T031 [P] [US1] Adaptar `QasPdfViewer` com override `.body--dark` no scoped style para `grey`, `grey-10`, `grey-4` em `ui/src/components/pdf-viewer/QasPdfViewer.vue`
-- [ ] T032 [P] [US1] Adaptar `QasDebugger` com override `.body--dark` no scoped style para `bg-grey-3` em `ui/src/components/debugger/QasDebugger.vue`
-- [ ] T033 [P] [US1] Adaptar `QasResizer` com override `.body--dark` no scoped style para `grey-7`, `bg-grey-2` em `ui/src/components/resizer/QasResizer.vue`
+- [x] T030 [P] [US1] Adaptar `QasTooltip` com override `.body--dark` no scoped style para `text-grey-10` e `bg-grey-10` em `ui/src/components/tooltip/QasTooltip.vue`
+- [x] T031 [P] [US1] Adaptar `QasPdfViewer` com override `.body--dark` no scoped style para `grey`, `grey-10`, `grey-4` em `ui/src/components/pdf-viewer/QasPdfViewer.vue`
+- [x] T032 [P] [US1] Adaptar `QasDebugger` com override `.body--dark` no scoped style para `bg-grey-3` em `ui/src/components/debugger/QasDebugger.vue`
+- [x] T033 [P] [US1] Adaptar `QasResizer` com override `.body--dark` no scoped style para `grey-7`, `bg-grey-2` em `ui/src/components/resizer/QasResizer.vue`
 
 **Checkpoint**: US-001 completa — toggle funcional no QasAppBar, todos os 87 componentes auditados e adaptados. Dark mode visualmente correto em toda a aplicação.
 
@@ -100,11 +100,11 @@
 
 **Teste independente**: Desenvolvedor consegue seguir a documentação para habilitar dark mode, usar `useDarkMode` e `useThemeColor` programaticamente, e aplicar CSS custom properties nos seus componentes.
 
-- [ ] T034 [P] [US2] Criar página de documentação conceitual do dark mode (variáveis CSS, como habilitar, boas práticas) em `docs/src/pages/dark-mode.md`
-- [ ] T035 [P] [US2] Criar exemplos interativos de dark mode (toggle, variáveis CSS, uso programático) em `docs/src/examples/DarkMode/`
-- [ ] T036 [US2] Adicionar entrada "Dark Mode" no menu de navegação da documentação em `docs/src/assets/menu.js`
-- [ ] T037 [P] [US2] Criar documentação do composable `useDarkMode` (API, exemplos, edge cases) em `docs/src/pages/`
-- [ ] T038 [P] [US2] Criar documentação do composable `useThemeColor` (API, exemplos, mapa de cores) em `docs/src/pages/`
+- [x] T034 [P] [US2] Criar página de documentação conceitual do dark mode (variáveis CSS, como habilitar, boas práticas) em `docs/src/pages/dark-mode.md`
+- [x] T035 [P] [US2] Criar exemplos interativos de dark mode (toggle, variáveis CSS, uso programático) em `docs/src/examples/DarkMode/`
+- [x] T036 [US2] Adicionar entrada "Dark Mode" no menu de navegação da documentação em `docs/src/assets/menu.js`
+- [x] T037 [P] [US2] Criar documentação do composable `useDarkMode` (API, exemplos, edge cases) em `docs/src/pages/`
+- [x] T038 [P] [US2] Criar documentação do composable `useThemeColor` (API, exemplos, mapa de cores) em `docs/src/pages/`
 
 **Checkpoint**: US-002 completa — documentação publicada, exemplos interativos funcionais, API dos composables documentada.
 
@@ -114,9 +114,9 @@
 
 **Propósito**: Finalização, validação e registro das mudanças
 
-- [ ] T039 Atualizar `CHANGELOG.md` com todas as mudanças de dark mode em `ui/` e `app-extension/`
-- [ ] T040 Validar cenários do `quickstart.md` contra a implementação real em `specs/001-dark-mode-v1/quickstart.md`
-- [ ] T041 Revisão visual final — verificar zero regressão no modo light (FR-012) em todos os componentes
+- [x] T039 Atualizar `CHANGELOG.md` com todas as mudanças de dark mode em `ui/` e `app-extension/`
+- [x] T040 Validar cenários do `quickstart.md` contra a implementação real em `specs/001-dark-mode-v1/quickstart.md`
+- [x] T041 Revisão visual final — verificar zero regressão no modo light (FR-012) em todos os componentes
 
 ---
 

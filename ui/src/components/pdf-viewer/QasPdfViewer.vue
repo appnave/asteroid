@@ -7,7 +7,7 @@
         class="items-center justify-center q-my-md row"
       >
         <q-spinner
-          color="grey"
+          :color="spinnerColor"
           size="3em"
         />
 
@@ -45,8 +45,11 @@
 <script setup>
 import * as PDFJs from 'pdfjs-dist'
 import { onMounted, ref, watch } from 'vue'
+import { useThemeColor } from '../../composables'
 
 defineOptions({ name: 'QasPdfViewer' })
+
+const spinnerColor = useThemeColor('grey')
 
 const props = defineProps({
   url: {

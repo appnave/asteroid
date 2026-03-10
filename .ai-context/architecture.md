@@ -230,7 +230,7 @@ asteroid-config-app (asteroid.config.js do projeto host)
 ### Lang
 - `pt-BR` (registrado automaticamente)
 
-## Ciclo de Vida do Componente na Aplicação Host
+## Ciclo de Vida na Aplicação Host
 
 ```
 1. quasar ext add @bildvitta/asteroid
@@ -252,24 +252,3 @@ asteroid-config-app (asteroid.config.js do projeto host)
    ├── Router guards ativos
    └── Componentes disponíveis globalmente via auto-import
 ```
-
-## Store-Adapter Pattern
-
-```js
-// NUNCA chamar APIs diretamente. Sempre via store-adapter:
-import { getAction, getState } from '@bildvitta/store-adapter'
-
-// Fetch
-getAction.call(this, { entity: this.entity, action: 'fetchList', payload })
-
-// State
-getState.call(this, { entity: this.entity, key: 'list' })
-```
-
-### Actions disponíveis:
-- `fetchSingle` — Buscar registro único
-- `fetchList` — Buscar lista
-- `create` — Criar registro
-- `update` — Atualizar parcialmente
-- `replace` — Substituir completamente
-- `destroy` — Excluir registro

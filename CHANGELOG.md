@@ -15,6 +15,27 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Adicionado
+- **Dark Mode v1**: suporte nativo a dark mode no Asteroid.
+  - `ui/`:
+    - Adicionado composable `useDarkMode` para gerenciamento do tema (toggle, persistência em localStorage, inicialização).
+    - Adicionado composable `useThemeColor` para resolução dinâmica de cores baseado no tema atual.
+    - Adicionado enum `DarkColorMap` com mapeamento de cores light → dark.
+    - Adicionado CSS custom properties semânticas (`--qas-text-primary`, `--qas-text-secondary`, `--qas-text-disabled`, `--qas-surface-color`, `--qas-surface-variant`) em `:root` com overrides em `.body--dark`.
+    - Adicionado overrides de classes utilitárias do Quasar (`.text-grey-10`, `.text-grey-8`, `.text-grey-6`, `.text-grey`, `.bg-white`, `.bg-grey-2`, `.bg-grey-3`, `.bg-grey-4`) em `.body--dark`.
+    - `QasAppBar`: adicionado prop `use-dark-mode` e botão de toggle de tema.
+    - Adaptados componentes com `useThemeColor` para cores dinâmicas: `QasDialog`, `QasAppMenu`, `QasPageHeader`, `QasExpansionItem`, `QasAlert`, `QasSearchInput`, `QasSearchBox`, `QasReportsFilters`, `QasSingleView`, `QasSelectList`, `QasListItems`, `QasBoardGenerator`, `QasPdfViewer`, `QasResizer`.
+    - Adaptado `QasTooltip` com override `.body--dark` no scoped style.
+  - `app-extension/`:
+    - Adicionado boot file `dark-mode.js` para inicialização do tema antes do mount.
+    - Adicionado `useDarkMode: false` em `framework.featureToggle` no `asteroid.config.js`.
+    - Registrado boot `dark-mode` condicionalmente no `index.js`.
+  - `docs/`:
+    - Adicionado página de documentação conceitual do dark mode.
+    - Adicionado exemplos interativos de dark mode.
+    - Adicionado documentação dos composables `useDarkMode` e `useThemeColor`.
+    - Adicionado entrada "Dark Mode" e composables no menu de navegação.
+
 ### Corrigido
 - `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
 

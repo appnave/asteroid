@@ -24,7 +24,7 @@
               </slot>
             </div>
 
-            <qas-btn class="qas-expansion-item__dropdown" color="grey-10" :disable="isDisabled" icon="sym_r_keyboard_arrow_down" />
+            <qas-btn class="qas-expansion-item__dropdown" :color="dropdownBtnColor" :disable="isDisabled" icon="sym_r_keyboard_arrow_down" />
           </div>
         </template>
 
@@ -49,6 +49,7 @@ import QasGridGenerator from '../grid-generator/QasGridGenerator.vue'
 import QasLabel from '../label/QasLabel.vue'
 
 import { baseErrorProps } from '../../composables/private/use-error-message'
+import { useThemeColor } from '../../composables'
 
 import { computed, provide, inject, ref, useAttrs } from 'vue'
 
@@ -56,6 +57,8 @@ defineOptions({
   name: 'QasExpansionItem',
   inheritAttrs: false
 })
+
+const dropdownBtnColor = useThemeColor('grey-10')
 
 const props = defineProps({
   ...baseErrorProps,

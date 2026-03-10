@@ -52,25 +52,7 @@ O `install()` registra:
 - `provide('qas', { delete, getAction, getGetter })` para Composition API
 - Diretiva `v-test` para seletores de teste
 
-## Componentes (~85 componentes)
-
-### Organização por Pasta
-
-Cada componente segue a estrutura:
-```
-components/
-└── <nome-kebab>/
-    ├── Qas<NomePascal>.vue     # Componente principal
-    ├── Qas<NomePascal>.yml     # Documentação de API (YAML)
-    ├── private/                 # (Opcional) Sub-componentes internos com prefixo Pv
-    └── composables/             # (Opcional) Composables específicos do componente
-```
-
-### Prefixos
-- **`Qas`** — Componentes públicos exportados (ex: `QasBtn`, `QasFormView`)
-- **`Pv`** — Sub-componentes privados, não exportados (ex: `PvTableGeneratorTd`)
-
-### Categorias de Componentes
+## Categorias de Componentes
 
 | Categoria | Componentes |
 |-----------|-------------|
@@ -85,48 +67,19 @@ components/
 | **Display** | `QasCard`, `QasBox`, `QasLabel`, `QasBreakline`, `QasHeader`, `QasPageHeader`, `QasProfile`, `QasTimeline`, `QasTextTruncate`, `QasExpansionItem`, `QasWelcome`, `QasResizer`, `QasGrabbable`, `QasToggleVisibility` |
 | **Páginas** | `NotFound` (404), `Forbidden` (403), `ServerError` (500), `Unauthorized` (401) |
 
-### Componentes-Chave (Core)
+## Componentes-Chave (Core)
 
-#### `QasFormView`
+### `QasFormView`
 Componente de formulário completo integrado com store-adapter. Usa `entity` prop para CRUD automático. Modos: `create`, `replace`, `update`. Suporta `beforeSubmit`, `beforeFetch`, validação automática.
 
-#### `QasListView`
+### `QasListView`
 Listagem paginada com fetch automático via store-adapter. Suporta filtros, busca, ordenação, paginação.
 
-#### `QasTableGenerator`
+### `QasTableGenerator`
 Tabela dinâmica que gera colunas automaticamente a partir dos `fields` retornados pela API.
 
-#### `QasFormGenerator`
+### `QasFormGenerator`
 Gera formulários dinamicamente a partir de uma estrutura de `fields`.
-
-### Arquivos YML (Documentação de API)
-
-Cada componente tem um `.yml` que descreve sua API para documentação e ferramentas:
-
-```yaml
-type: component
-mixins:                          # Herda props de componentes Quasar
-  - quasar/dist/api/QBtn.json
-meta:
-  desc: "Descrição em português"
-props:
-  label:
-    desc: "Label do botão"
-    type: String
-    default: "''"
-  variant:
-    desc: "Variante visual"
-    type: String
-    values: ["primary", "secondary", "tertiary"]
-events:
-  click:
-    desc: "Emitido ao clicar"
-slots:
-  default:
-    desc: "Conteúdo do botão"
-```
-
-Esses YMLs são processados pelo `build/api.js` para gerar JSON e pelo `build/vetur.js` para gerar arquivos de autocomplete IDE.
 
 ## Composables
 
@@ -162,8 +115,6 @@ Esses YMLs são processados pelo `build/api.js` para gerar JSON e pelo `build/ve
 | `setScrollOnGrab` | Scroll via drag |
 | `images.js` | Utilitários de imagem |
 | `colors.js` | Utilitários de cor |
-
-**Padrão:** Cada arquivo exporta uma função default. Pasta `private/` para helpers internos.
 
 ## Mixins (Legado — em migração para Composition API)
 

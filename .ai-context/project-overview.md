@@ -20,7 +20,6 @@ asteroid/
 ├── docs/                # Aplicação Quasar para documentação (PWA, Markdown pages)
 ├── build/               # Scripts de build, release e publicação NPM
 ├── eslint/              # Plugin ESLint customizado para Asteroid (eslint-plugin-asteroid)
-├── ai-context/          # Contextos para agentes de IA
 ├── CHANGELOG.md         # Changelog unificado (formato Keep a Changelog, pt-BR)
 ├── vitest.config.ts     # Configuração de testes unitários
 └── package.json         # Root — scripts de setup, lint e build
@@ -57,12 +56,15 @@ asteroid/
 | `MAPS_API_KEY` | Chave do Google Maps |
 | `ABLY_KEY` | Chave do Ably (notificações real-time) |
 | `ME_VERSION` | Versão do endpoint `/me` |
+| `GITHUB_TOKEN` | Token para criar releases via GitHub API |
+| `DISCORD_WEBHOOK_CHANGELOG` | Webhook do Discord para notificações |
+| `DISCORD_ROLE_ID` | ID do role para mencionar no Discord |
 
 ## Scripts Principais (root)
 
 ```bash
 npm run setup          # Instala dependências em todos os módulos
-npm run build          # Builda a lib (ui/) e prepara release
+npm run build          # CLI interativa de release (build + publish)
 npm run test           # Roda testes unitários via Vitest
 npm run lint           # Lint com ESLint em todos os arquivos .js/.vue
 ```
@@ -89,17 +91,3 @@ eslint/ → Plugin separado para lint de componentes Asteroid
 ```
 
 A `app-extension` registra os boots, CSS, plugins do Quasar e configura aliases. Ela depende do `ui` como dependência NPM. O `ui` é o pacote core que contém toda a lógica de componentes e pode ser usado independentemente.
-
-## Idioma
-
-- **Código:** Inglês (nomes de variáveis, funções, componentes)
-- **Documentação (YML, Markdown, CHANGELOG):** **Português brasileiro (pt-BR)**
-- **Formatação padrão:** pt-BR (datas dd/MM/yyyy, moeda BRL, separador decimal vírgula)
-
-## Git Flow
-
-| Branch | Tipo de release | Tag NPM |
-|--------|----------------|---------|
-| `main` | Stable (ex: 3.20.0) | `latest` |
-| `develop` | Beta (ex: 3.20.0-beta.1) | `beta` |
-| `feature/*` | Alpha (ex: 3.20.0-alpha.1) | `alpha` |

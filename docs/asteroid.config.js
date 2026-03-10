@@ -42,7 +42,8 @@ module.exports = {
      * @type {{ useNotifications: boolean }}
      */
     featureToggle: {
-      useNotifications: false
+      useNotifications: false,
+      useDarkMode: true
     },
 
     /**

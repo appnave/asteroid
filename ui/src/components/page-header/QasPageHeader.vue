@@ -10,7 +10,7 @@
           </template>
         </q-toolbar-title>
 
-        <q-breadcrumbs v-if="hasBreadcrumbs" class="text-caption" gutter="xs" separator-color="grey-8">
+        <q-breadcrumbs v-if="hasBreadcrumbs" class="text-caption" gutter="xs" :separator-color="separatorColor">
           <q-breadcrumbs-el v-if="props.useHomeIcon" class="qas-page-header__breadcrumbs-el text-grey-8" icon="sym_r_home" :to="homeRoute" />
 
           <q-breadcrumbs-el v-for="(item, index) in normalizedBreadcrumbs" :key="index" class="ellipsis inline-block qas-page-header__breadcrumbs-el" tag="div" :to="item.route">
@@ -38,7 +38,7 @@
 import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasHeader from '../header/QasHeader.vue'
 
-import { useOverlayNavigation } from '../../composables'
+import { useOverlayNavigation, useThemeColor } from '../../composables'
 
 import castArray from 'lodash-es/castArray'
 import { computed } from 'vue'
@@ -46,6 +46,8 @@ import { useMeta } from 'quasar'
 import { useRouter } from 'vue-router'
 
 defineOptions({ name: 'QasPageHeader' })
+
+const separatorColor = useThemeColor('grey-8')
 
 const props = defineProps({
   breadcrumbs: {

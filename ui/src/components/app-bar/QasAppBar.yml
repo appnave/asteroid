@@ -24,6 +24,11 @@ props:
     required: true
     type: String
 
+  use-dark-mode:
+    desc: Controla a exibição do toggle de dark mode no AppBar. Quando `true`, exibe o toggle. Quando `false`, oculta o toggle. Quando `undefined` (default), segue a configuração global de `asteroid.config.js → framework.featureToggle.useDarkMode`.
+    default: undefined
+    type: Boolean
+
 slots:
   user:
     desc: Slot para acessar o menu de usuário.

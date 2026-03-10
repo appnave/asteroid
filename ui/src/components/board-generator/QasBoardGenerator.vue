@@ -16,7 +16,7 @@
           <div class="full-width justify-center row">
             <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" label="Ver mais" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header)" />
 
-            <q-spinner v-if="columnsLoading[getKeyByHeader(header)]" class="q-mb-md" color="grey-4" size="3em" />
+            <q-spinner v-if="columnsLoading[getKeyByHeader(header)]" class="q-mb-md" :color="spinnerColor" size="3em" />
           </div>
 
           <qas-empty-result-text v-if="hasEmptyResultText(header)" />
@@ -37,11 +37,14 @@ import QasGrabbable from '../grabbable/QasGrabbable.vue'
 import QasLazyLoadingComponents from '../lazy-loading-components/QasLazyLoadingComponents.vue'
 
 import { ref, watch, computed, onUnmounted, markRaw, inject, onMounted } from 'vue'
+import { useThemeColor } from '../../composables'
 import promiseHandler from '../../helpers/promise-handler'
 
 import Sortable from 'sortablejs'
 
 defineOptions({ name: 'QasBoardGenerator' })
+
+const spinnerColor = useThemeColor('grey-4')
 
 const props = defineProps({
   beforeUpdatePosition: {

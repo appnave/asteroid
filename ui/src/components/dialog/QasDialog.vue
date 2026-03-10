@@ -6,7 +6,7 @@
           <div class="items-center justify-between row">
             <qas-label data-cy="dialog-title" :label="props.card.title" margin="none" />
 
-            <qas-btn v-if="isInfoDialog" v-close-popup color="grey-10" data-cy="dialog-close-btn" icon="sym_r_close" variant="tertiary" />
+            <qas-btn v-if="isInfoDialog" v-close-popup :color="closeBtnColor" data-cy="dialog-close-btn" icon="sym_r_close" variant="tertiary" />
           </div>
         </slot>
       </header>
@@ -44,7 +44,7 @@ import QasLabel from '../label/QasLabel.vue'
 import useCancel from './composables/use-cancel'
 import useDynamicComponents from './composables/use-dynamic-components'
 import useOk from './composables/use-ok'
-import { useScreen } from '../../composables'
+import { useScreen, useThemeColor } from '../../composables'
 
 import { computed, ref, useAttrs, useSlots, provide } from 'vue'
 import { useDialogPluginComponent } from 'quasar'
@@ -126,6 +126,7 @@ provide('isDialog', true)
 const attrs = useAttrs()
 const screen = useScreen()
 const slots = useSlots()
+const closeBtnColor = useThemeColor('grey-10')
 
 // usado para o plugin
 const { dialogRef, onDialogHide } = useDialogPluginComponent()

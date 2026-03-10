@@ -19,7 +19,7 @@ docs/
 └── src/
     ├── App.vue
     ├── assets/
-    │   ├── menu.js           # Estrutura completa do menu lateral (~673 linhas)
+    │   ├── menu.js           # Estrutura completa do menu lateral
     │   ├── images/
     │   └── logo/
     ├── boot/
@@ -32,20 +32,7 @@ docs/
     │   ├── DocExample.vue    # Renderiza exemplos interativos
     │   └── ...
     ├── examples/             # ~90 pastas com exemplos Vue por componente
-    │   ├── QasBtn/
-    │   │   └── Basic.vue
-    │   ├── QasFormView/
-    │   │   └── Basic.vue
-    │   └── ...
     ├── pages/                # Cada .md gera uma página de documentação
-    │   ├── components/       # Uma página .md por componente
-    │   ├── composables/      # Páginas de composables
-    │   ├── helpers/          # Páginas de utilitários
-    │   ├── plugins/          # Páginas de plugins
-    │   ├── start/            # Guias iniciais (usage, develop, structure, upgrade-guide)
-    │   ├── styles/           # Documentação de estilos
-    │   ├── style-guide/      # Guia de estilo de código
-    │   └── boot/             # Documentação dos boots
     ├── layouts/
     ├── router/
     ├── store/

@@ -79,14 +79,6 @@ CLI interativa executada com `npm run build` na raiz do projeto.
     └── Via webhook (se DISCORD_WEBHOOK_CHANGELOG existe)
 ```
 
-### Variáveis de Ambiente do Release
-
-| Variável | Descrição |
-|----------|-----------|
-| `GITHUB_TOKEN` | Token para criar releases via GitHub API |
-| `DISCORD_WEBHOOK_CHANGELOG` | Webhook do Discord para notificações |
-| `DISCORD_ROLE_ID` | ID do role para mencionar no Discord |
-
 ## Build de API (`api.js`)
 
 Converte todos os `.yml`/`.yaml` de `ui/src/components/` para JSON em `ui/dist/api/`:
@@ -146,7 +138,7 @@ eslint/
     ├── index.js        # Auto-exports via requireindex
     ├── configs/
     │   ├── base.js     # Parser vue-eslint-parser, env browser
-    │   └── essential.js # Extends base (regra no-invalid-props comentada)
+    │   └── essential.js # Extends base
     ├── rules/
     │   └── no-invalid-props.js  # Valida props dos componentes Qas*
     └── utils/

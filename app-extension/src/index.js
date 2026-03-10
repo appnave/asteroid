@@ -28,6 +28,11 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
     quasar.boot.push(...resolve('boot/notifications'))
   }
 
+  // controle do dark mode
+  if (asteroidConfigFile.framework.featureToggle.useDarkMode) {
+    quasar.boot.push(...resolve('boot/dark-mode'))
+  }
+
   // Transpilação de arquivos!
   if (api.hasWebpack) {
     const transpileTarget = (

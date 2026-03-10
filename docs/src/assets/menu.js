@@ -12,6 +12,12 @@ module.exports = [
   },
 
   {
+    icon: 'sym_r_dark_mode',
+    name: 'Dark Mode',
+    path: '/dark-mode'
+  },
+
+  {
     icon: 'sym_r_flight_takeoff',
     name: 'Começando',
     children: [
@@ -598,6 +604,10 @@ module.exports = [
         path: '/composables/use-context'
       },
       {
+        name: 'useDarkMode',
+        path: '/composables/use-dark-mode'
+      },
+      {
         name: 'useDefaultFilters',
         path: '/composables/use-default-filters'
       },
@@ -624,6 +634,10 @@ module.exports = [
       {
         name: 'useScreen',
         path: '/composables/use-screen'
+      },
+      {
+        name: 'useThemeColor',
+        path: '/composables/use-theme-color'
       }
     ]
   },

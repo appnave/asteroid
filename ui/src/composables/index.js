@@ -1,10 +1,12 @@
 export { default as useContext } from './use-context.js'
+export { default as useDarkMode } from './use-dark-mode.js'
 export { default as useDefaultFilters } from './use-default-filters.js'
 export { default as useForm } from './use-form.js'
 export { default as useHistory } from './use-history.js'
 export { default as useNotifications } from './use-notifications.js'
 export { default as useQueryCache } from './use-query-cache.js'
 export { default as useScreen } from './use-screen.js'
+export { default as useThemeColor } from './use-theme-color.js'
 export { default as useOverlayNavigation } from './use-overlay-navigation.js'
 
 export * from './use-notifications.js'

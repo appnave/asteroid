@@ -24,7 +24,7 @@
               <q-img v-if="normalizedBrand" :alt="props.title" class="qas-app-menu__brand qas-app-menu__label" fit="contain" height="27px" img-class="qas-app-menu__brand-img" no-spinner :src="props.miniBrand" />
             </div>
 
-            <qas-btn color="grey-10" icon="sym_r_close" variant="tertiary" @click="closeDrawer" />
+            <qas-btn :color="closeBtnColor" icon="sym_r_close" variant="tertiary" @click="closeDrawer" />
           </div>
 
           <!-- Module -->
@@ -119,7 +119,7 @@ import QasBtn from '../btn/QasBtn.vue'
 import useAppMenuDropdown from './composables/use-app-menu-dropdown'
 import useAppUser from './composables/use-app-user'
 import useDevelopmentBadge from './composables/use-development-badge'
-import { useScreen } from '../../composables'
+import { useScreen, useThemeColor } from '../../composables'
 import { useAuthUser } from '../../composables/private'
 
 import { handleProcess, setScrollGradient } from '../../helpers'
@@ -198,6 +198,7 @@ const emit = defineEmits(['sign-out', 'update:modelValue', 'toggle-notifications
 // composables
 const screen = useScreen()
 const router = useRouter()
+const closeBtnColor = useThemeColor('grey-10')
 
 const { toggleChat } = useChatMenu()
 

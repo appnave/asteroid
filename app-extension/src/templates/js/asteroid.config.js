@@ -38,7 +38,8 @@ export default {
      * @type {{ useNotifications: boolean }}
      */
     featureToggle: {
-      useNotifications: false
+      useNotifications: false,
+      useDarkMode: false
     }
   }
 }

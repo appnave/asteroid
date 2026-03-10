@@ -13,6 +13,35 @@ $accent: var(--q-accent);
   --qas-border-grey: #{$grey-4};
   --qas-generic-border-radius: 4px;
   --qas-generic-transition: 300ms;
+
+  // Dark mode — semantic tokens
+  --qas-text-primary: #{$grey-10};
+  --qas-text-secondary: #{$grey-8};
+  --qas-text-disabled: #{$grey-6};
+  --qas-surface-color: #FFFFFF;
+  --qas-surface-variant: #{$grey-2};
+}
+
+// Dark mode overrides
+.body--dark {
+  --qas-background-color: #121212;
+  --qas-border-grey: #{$grey-7};
+  --qas-text-primary: #{$grey-2};
+  --qas-text-secondary: #{$grey-4};
+  --qas-text-disabled: #{$grey-5};
+  --qas-surface-color: #1D1D1D;
+  --qas-surface-variant: #{$grey-9};
+
+  // Overrides de classes utilitárias do Quasar
+  .text-grey-10 { color: $grey-2 !important; }
+  .text-grey-8 { color: $grey-4 !important; }
+  .text-grey-6 { color: $grey-5 !important; }
+  .text-grey { color: $grey-5 !important; }
+
+  .bg-white { background: #1D1D1D !important; }
+  .bg-grey-2 { background: $grey-9 !important; }
+  .bg-grey-3 { background: $grey-8 !important; }
+  .bg-grey-4 { background: $grey-7 !important; }
 }
 
 $background-color: var(--qas-background-color);

@@ -1,5 +1,5 @@
 <template>
-  <q-img :ratio="ratio" spinner-color="grey-7" :src="imageSource">
+  <q-img :ratio="ratio" :spinner-color="spinnerColor" :src="imageSource">
     <template #error>
       <div class="absolute-full bg-grey-2 flex flex-center text-grey">⚠︎</div>
     </template>
@@ -8,6 +8,8 @@
 
 <script>
 import { getGreatestCommonDivisor } from '../../helpers'
+import DarkColorMap from '../../enums/DarkColorMap.js'
+import { Dark } from 'quasar'
 
 const baseURL = 'https://image-resize.nave.dev/'
 
@@ -34,6 +36,10 @@ export default {
   },
 
   computed: {
+    spinnerColor () {
+      return Dark.isActive ? (DarkColorMap['grey-7'] || 'grey-7') : 'grey-7'
+    },
+
     height () {
       return this.$attrs.height || this.imageSize.height
     },
