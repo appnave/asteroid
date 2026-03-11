@@ -2,7 +2,7 @@
   <div>
     <qas-grabbable class="qas-board-generator" v-bind="grabbableProps">
       <div ref="columnsContainer" class="no-wrap q-gutter-md q-pb-xs q-px-lg row">
-        <qas-lazy-loading-components v-model:visible-items="visibleItems" direction="horizontal" placeholder-width="350px" :threshold="0">
+        <qas-lazy-loading-components :key="lazyLoadingKey" v-model:visible-items="visibleItems" direction="horizontal" placeholder-width="350px" :threshold="0">
           <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClass(header)" :style="containerStyle">
             <div class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
               <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
@@ -30,11 +30,11 @@
                 <qas-lazy-loading-components :threshold="0">
                   <div v-for="(item) in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
                     <!-- <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" /> -->
-                    <qas-card v-if="updatingPositionItemKey === item[props.itemIdKey]" v-bind="skeletonCards.at(0)" :key="item[props.itemIdKey]" class="q-mb-sm" :column-index="index">
+                    <!-- <qas-card v-if="updatingPositionItemKey === item[props.itemIdKey]" v-bind="skeletonCards.at(0)" :key="item[props.itemIdKey]" class="q-mb-sm" :column-index="index">
                       <template #default />
-                    </qas-card>
+                    </qas-card> -->
 
-                    <slot v-else-if="!props.skeleton && updatingPositionItemKey !== item[props.itemIdKey]" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" />
+                    <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :is-updating-position="updatingPositionItemKey === item[props.itemIdKey]" :item="item" name="column-item" />
                   </div>
                 </qas-lazy-loading-components>
 
@@ -241,6 +241,13 @@ const updatingPositionItemKey = ref(null)
  * Populado pelo QasLazyLoadingComponents via v-model:visible-items
  */
 const visibleItems = ref([])
+
+/**
+ * Chave reativa para forçar o remount do QasLazyLoadingComponents externo.
+ * Ao incrementar, o componente é destruído e recriado com estado limpo,
+ * evitando render de VNodes obsoletos que causam crash.
+ */
+const lazyLoadingKey = ref(0)
 
 /**
  * Instâncias do sortable, que são utilizadas para realizar o destroy ao sair da página
@@ -642,6 +649,8 @@ function setColumnsPagination () {
 }
 
 function fetchColumnsValues () {
+  lazyLoadingKey.value++
+
   reset()
   setColumnHeightContainer()
   setColumnsPagination()
