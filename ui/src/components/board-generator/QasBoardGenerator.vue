@@ -28,7 +28,7 @@
 
               <template v-else>
                 <qas-lazy-loading-components :threshold="0">
-                  <div v-for="(item) in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item">
+                  <div v-for="(item) in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item" :data-disable-drag="updatingPositionItemKey === item[props.itemIdKey]">
                     <!-- <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" /> -->
                     <!-- <qas-card v-if="updatingPositionItemKey === item[props.itemIdKey]" v-bind="skeletonCards.at(0)" :key="item[props.itemIdKey]" class="q-mb-sm" :column-index="index">
                       <template #default />
@@ -215,7 +215,16 @@ const emit = defineEmits([
   'update-error'
 ])
 
-defineExpose({ fetchColumns, fetchColumn, reset, cancelDrop, refreshColumn })
+defineExpose({
+  fetchColumns,
+  fetchColumn,
+  reset,
+  cancelDrop,
+  refreshColumn,
+  transferItemToColumn,
+  removeItemFromList,
+  refetchColumns: fetchColumnsValues
+})
 
 // Inject
 const axios = inject('axios')
@@ -454,6 +463,17 @@ async function fetchColumns () {
   const hiddenHeaders = visibleKeys.size
     ? normalizedHeaders.value.filter(header => !visibleKeys.has(getKeyByHeader(header)))
     : []
+
+  /**
+   * Isto é necessário para setar o loading das colunas ocultas mesmo antes de elas serem visíveis
+   * e suas requests serem feitas, garantindo que ao entrar no viewport elas já estejam com o estado
+   * de loading correto, evitando bugs visuais.
+   */
+  hiddenHeaders.forEach(header => {
+    const headerKey = getKeyByHeader(header)
+
+    columnsLoading.value[headerKey] = true
+  })
 
   // Etapa 1: colunas visíveis (prioridade)
   const visibleColumns = await Promise.allSettled(visibleHeaders.map(header => fetchColumn(header, false)))
@@ -725,7 +745,8 @@ function setSortable (element, index) {
     swapThreshold: 1,
     delay: 50,
     delayOnTouchOnly: true,
-    emptyInsertThreshold: 0
+    emptyInsertThreshold: 0,
+    filter: '[data-disable-drag="true"]'
   }
 
   /**
@@ -968,6 +989,33 @@ function setItemList ({ headerKey, data, index }) {
 
 function destroySortable () {
   sortableInstances.value.forEach(sortable => sortable.destroy())
+}
+
+/**
+ * Transfere um item de uma coluna para outra localmente, sem realizar nenhuma requisição.
+ * O item é sempre inserido como primeiro elemento na coluna de destino.
+ * Após a transferência, o SortableJS continua funcionando normalmente sobre os elementos
+ * do DOM atualizados pelo Vue, sem necessidade de reinicialização.
+ *
+ * @param {Object} params
+ * @param {string|number} params.itemId       - ID do item a ser movido (valor correspondente à prop `itemIdKey`).
+ * @param {string|number} params.fromColumnId - ID da coluna de origem (valor correspondente à prop `columnIdKey`).
+ * @param {string|number} params.toColumnId   - ID da coluna de destino (valor correspondente à prop `columnIdKey`).
+ * @param {Object}        [params.updatedItem]- Dados atualizados do item. Quando informado, sobrescreve o item original na coluna de destino.
+ * @returns {void}
+ */
+function transferItemToColumn ({ itemId, fromColumnId, toColumnId, updatedItem }) {
+  const sourceColumn = columnsResultsModel.value[fromColumnId]
+  const itemIndex = sourceColumn?.findIndex(item => item[props.itemIdKey] === itemId)
+
+  if (!sourceColumn || itemIndex === -1) return
+
+  const item = updatedItem ?? sourceColumn[itemIndex]
+
+  removeItemFromList({ headerKey: fromColumnId, itemId })
+
+  columnsResultsModel.value[toColumnId].splice(0, 0, item)
+  columnsPagination.value[toColumnId].count += 1
 }
 
 function hasSkeletonByHeader (header) {

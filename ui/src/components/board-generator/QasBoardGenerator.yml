@@ -219,3 +219,26 @@ methods:
 
   'fetchColumn: (header) => void':
     desc: Busca uma coluna específica com base no header fornecido.
+
+  'transferItemToColumn: ({ itemId, fromColumnId, toColumnId, updatedItem? }) => void':
+    desc: |
+      Transfere um item de uma coluna para outra localmente, sem realizar nenhuma requisição.
+      O item é sempre inserido como primeiro elemento na coluna de destino.
+      Após a transferência, o SortableJS continua funcionando normalmente sobre os elementos do DOM atualizados pelo Vue.
+    params:
+      itemId:
+        desc: ID do item a ser movido (valor correspondente à prop `item-id-key`).
+        type: String | Number
+        required: true
+      fromColumnId:
+        desc: ID da coluna de origem (valor correspondente à prop `column-id-key`).
+        type: String | Number
+        required: true
+      toColumnId:
+        desc: ID da coluna de destino (valor correspondente à prop `column-id-key`).
+        type: String | Number
+        required: true
+      updatedItem:
+        desc: Dados atualizados do item. Quando informado, sobrescreve o item original na coluna de destino.
+        type: Object
+        required: false
