@@ -223,6 +223,7 @@ defineExpose({
   refreshColumn,
   transferItemToColumn,
   removeItemFromList,
+  updateItemInList,
   refetchColumns: fetchColumnsValues
 })
 
@@ -873,7 +874,6 @@ function removeItemFromList ({ headerKey, itemId }) {
    * Busca o item com base em seu ID na lista de itens da coluna
    */
   const itemIndex = columnItemList.findIndex(itemContent => itemContent[props.itemIdKey] === itemId)
-  console.log('🚀 ~ removeItemFromList ~ itemIndex:', itemIndex)
 
   /**
    * Remove o item da listagem com base no index, sendo que preciso subtrair 1 para pegar o index correto
@@ -884,6 +884,16 @@ function removeItemFromList ({ headerKey, itemId }) {
    * Remove o item do count da coluna para não mostrar o botão de "Ver mais¨.
    */
   columnsPagination.value[headerKey].count -= 1
+}
+
+function updateItemInList ({ headerKey, itemId, updatedItem }) {
+  const columnItemList = columnsResultsModel.value[headerKey]
+
+  const itemIndex = columnItemList.findIndex(itemContent => itemContent[props.itemIdKey] === itemId)
+
+  if (!~itemIndex) return
+
+  columnItemList.splice(itemIndex, 1, updatedItem)
 }
 
 /**
