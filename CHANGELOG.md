@@ -15,6 +15,11 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Adicionado
+- `QasBtn`: adicionada prop `useMagicAiColor` que aplica gradiente de inteligência artificial (magic AI) ao botão. O comportamento varia por variante: `primary` altera o fundo, `secondary` altera texto e borda, `tertiary` altera apenas o texto. Hover usa `$secondary-contrast`.
+- `QasActionsMenu`: suporte à propriedade `useMagicAiColor` nos itens da prop `list`, que aplica o gradiente de magic AI no ícone e no texto do item no dropdown. Quando o item é renderizado como botão externo (via `splitName`), as cores são aplicadas automaticamente.
+- CSS: adicionadas classes utilitárias `text-magic-ai`, `bg-magic-ai` e `border-magic-ai` para aplicação do gradiente de magic AI em textos, fundos e bordas respectivamente.
+
 ### Corrigido
 - `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
 

@@ -226,4 +226,99 @@
   .q-focus-helper {
     display: none;
   }
+
+  // Magic AI
+  &--magic-ai {
+    // CSS não suporta transição direta de gradient → cor sólida em background/background-clip.
+    // Para primary: usamos ::after com o gradient sobre a cor base, com transição de opacity.
+    // Para secondary/tertiary: transitamos -webkit-text-fill-color de transparent → cor sólida,
+    // deixando o gradient visível por baixo e criando um efeito de cross-fade.
+    &#{$root}--primary:not(:disabled) {
+      background: $deep-purple-6 !important;
+      position: relative;
+
+      .q-btn__content {
+        position: relative;
+        z-index: 1;
+      }
+
+      &::after {
+        background: var(--qas-magic-ai-gradient);
+        border-radius: inherit;
+        content: '';
+        inset: 0;
+        opacity: 1;
+        pointer-events: none;
+        position: absolute;
+        transition: opacity var(--qas-generic-transition);
+        z-index: 0;
+      }
+
+      &:not(:disabled):hover::after {
+        opacity: 0;
+      }
+    }
+
+    &#{$root}--secondary:not(:disabled) {
+      transition: color var(--qas-generic-transition);
+
+      .q-icon,
+      .qas-btn__label {
+        background: var(--qas-magic-ai-gradient) !important;
+        background-clip: text !important;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        border: none !important;
+        transition: -webkit-text-fill-color var(--qas-generic-transition);
+      }
+
+      &::after {
+        background: var(--qas-magic-ai-gradient);
+        border-radius: inherit;
+        content: '';
+        inset: 0;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        padding: 0;
+        pointer-events: none;
+        position: absolute;
+        transition: opacity var(--qas-generic-transition);
+      }
+
+      &:hover {
+        color: $deep-purple-6 !important;
+
+        .q-icon,
+        .qas-btn__label {
+          color: $deep-purple-6 !important;
+          -webkit-text-fill-color: $deep-purple-6 !important;
+        }
+
+        &::after {
+          opacity: 0;
+        }
+      }
+    }
+
+    &#{$root}--tertiary:not(:disabled) {
+      .q-icon,
+      .qas-btn__label {
+        background: var(--qas-magic-ai-gradient);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transition: -webkit-text-fill-color var(--qas-generic-transition);
+      }
+
+      &:hover {
+        .q-icon,
+        .qas-btn__label {
+          color: $deep-purple-6 !important;
+          -webkit-text-fill-color: $deep-purple-6 !important;
+        }
+      }
+    }
+  }
 }

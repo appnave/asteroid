@@ -6,11 +6,11 @@
           <q-item v-bind="getItemProps(item)" :key="key" active-class="primary" clickable data-cy="actions-menu-list-item" @click="setClickHandler(item)">
             <q-item-section avatar>
               <q-spinner v-if="item.loading" size="sm" />
-              <q-icon v-else :name="item.icon" />
+              <q-icon v-else :class="getMagicAiClass(item)" :name="item.icon" />
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>
+              <q-item-label :class="getMagicAiClass(item)">
                 {{ item.label }}
               </q-item-label>
             </q-item-section>
@@ -284,6 +284,10 @@ function getItemProps (item) {
     to,
     ...itemProps
   }
+}
+
+function getMagicAiClass (item) {
+  return { 'text-magic-ai': item.useMagicAiColor }
 }
 
 function handleMenuModel (newValue, oldValue) {
