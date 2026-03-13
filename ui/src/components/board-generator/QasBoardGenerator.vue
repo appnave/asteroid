@@ -275,6 +275,13 @@ const onConfirmDrop = ref(() => {})
  */
 const isUpdatingPosition = ref(false)
 
+/**
+ * Chave da coluna de origem durante um drag and drop confirmado.
+ * Usada para exibir o texto "Não há itens" imediatamente na coluna de origem
+ * antes da requisição de updatePosition ser finalizada.
+ */
+const draggingFromHeaderKey = ref(null)
+
 // consts
 const hasDragAndDrop = !!props.useDragAndDropX || !!props.useDragAndDropY
 
@@ -690,7 +697,17 @@ function fetchColumnsValues () {
 function hasEmptyResultText (header) {
   if (props.skeleton) return false
 
-  return !columnsLoading.value[getKeyByHeader(header)] && !getItemsByHeader(header)?.length && !isDragging.value
+  const headerKey = getKeyByHeader(header)
+  const items = getItemsByHeader(header)
+
+  // Durante drag and drop, exibe o texto imediatamente na coluna de origem
+  // enquanto a requisição de updatePosition ainda está em andamento
+  // (o item ainda está no model, mas já foi movido visualmente pelo SortableJS)
+  if (draggingFromHeaderKey.value === headerKey && items?.length <= 1) {
+    return !columnsLoading.value[headerKey]
+  }
+
+  return !columnsLoading.value[headerKey] && !items?.length && !isDragging.value
 }
 
 /*
@@ -818,6 +835,8 @@ function closeConfirmDialog () {
  * @param {event} event
  */
 function cancelDrop (event) {
+  draggingFromHeaderKey.value = null
+
   /**
    * Insere na posição antiga que pertencia (event.oldIndex) dentro do seu antigo pai (event.from)
    */
@@ -854,6 +873,8 @@ function confirmDrop (event) {
   const { headerKey: newHeaderKey } = to.dataset
   const { headerKey: oldHeaderKey } = from.dataset
 
+  draggingFromHeaderKey.value = oldHeaderKey
+
   updatePosition({ newHeaderKey, oldHeaderKey, itemId, event })
 }
 
@@ -876,9 +897,13 @@ function removeItemFromList ({ headerKey, itemId }) {
   const itemIndex = columnItemList.findIndex(itemContent => itemContent[props.itemIdKey] === itemId)
 
   /**
-   * Remove o item da listagem com base no index, sendo que preciso subtrair 1 para pegar o index correto
+   * Cria uma nova referência de array para garantir que o Vue detecte a mudança de estado,
+   * mesmo quando o array é marcado com markRaw (que não rastreia mutações in-place).
    */
-  columnItemList.splice(itemIndex, 1)
+  const updatedList = [...columnItemList]
+  updatedList.splice(itemIndex, 1)
+
+  columnsResultsModel.value[headerKey] = props.useMarkRaw ? markRaw(updatedList) : updatedList
 
   /**
    * Remove o item do count da coluna para não mostrar o botão de "Ver mais¨.
@@ -981,6 +1006,8 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
   toggleIsDragging()
 
   closeConfirmDialog()
+
+  draggingFromHeaderKey.value = null
 
   emit('update-success', data.data)
 }
