@@ -73,7 +73,6 @@
 
 <script setup>
 import PvBoardGeneratorCardsContainer from './private/PvBoardGeneratorCardsContainer.vue'
-
 import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasCard from '../card/QasCard.vue'
 import QasBox from '../box/QasBox.vue'
@@ -83,9 +82,20 @@ import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasGrabbable from '../grabbable/QasGrabbable.vue'
 import QasLazyLoadingComponents from '../lazy-loading-components/QasLazyLoadingComponents.vue'
 
-import { ref, watch, computed, onUnmounted, onBeforeUnmount, markRaw, inject, onMounted, nextTick } from 'vue'
 import promiseHandler from '../../helpers/promise-handler'
 import NotifyError from '../../plugins/notify-error/NotifyError'
+
+import {
+  ref,
+  watch,
+  computed,
+  onBeforeUnmount,
+  markRaw,
+  inject,
+  provide,
+  onMounted,
+  nextTick
+} from 'vue'
 
 import Sortable from 'sortablejs'
 
@@ -227,14 +237,10 @@ defineExpose({
   refetchColumns: fetchColumnsValues
 })
 
-// Inject
+// globals
 const axios = inject('axios')
 
-// const isFetchSuccessHeader = inject('isFetchListSucceeded', false)
-
-const isInsideListView = inject('isListView', false)
-
-// Refs
+// refs
 const columnContainer = ref(null)
 const columnsPagination = ref({})
 const columnsLoading = ref({})
@@ -348,20 +354,7 @@ const normalizedHeaders = computed(() => {
   return props.headers
 })
 
-// Watchers
-// watch(
-//   () => isFetchSuccessHeader.value,
-//   value => {
-//     /**
-//      * isFetchSuccessHeader é uma variável que pego do listView por inject/provide, no qual caso eu faça request do header e dê sucesso, eu chamo as demais funções.
-//      * Valido se não houve sucesso na requisição do header ou se não é uma atualização de posição, para assim não bater novamente nas colunas apenas no header.
-//      */
-//     if (!value || isUpdatingPosition.value) return
-
-//     fetchColumnsValues()
-//   }
-// )
-
+// watchers
 watch(
   () => normalizedHeaders.value,
   value => {
@@ -377,24 +370,17 @@ watch(() => columnContainerElements.value, () => {
   handleElementsList()
 })
 
-/**
- * Dispara o fetch inicial quando as colunas visíveis são detectadas pela primeira vez.
- * Usado no fluxo sem listView (onMounted não chama mais fetchColumnsValues diretamente).
- */
-watch(visibleItems, () => {
-  if (isInsideListView || props.skeleton) return
-
-  fetchColumnsValues()
-}, { once: true })
-
 // hooks
 onMounted(() => {
   window.addEventListener('resize', setColumnHeightContainer)
 })
 
-onBeforeUnmount(abortAllColumnRequests)
+onBeforeUnmount(() => {
+  abortAllColumnRequests()
+  destroySortable()
 
-onUnmounted(destroySortable)
+  window.removeEventListener('resize', setColumnHeightContainer)
+})
 
 // Computeds
 const columnsResultsModel = computed({
@@ -408,6 +394,8 @@ const columnsResultsModel = computed({
 })
 
 const isDragging = computed(() => draggingCount.value > 0)
+
+provide('isDragging', isDragging)
 
 const hasColumnsLength = computed(() => !!Object.keys(columnsResultsModel.value).length)
 
