@@ -83,7 +83,7 @@ import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasGrabbable from '../grabbable/QasGrabbable.vue'
 import QasLazyLoadingComponents from '../lazy-loading-components/QasLazyLoadingComponents.vue'
 
-import { ref, watch, computed, onUnmounted, markRaw, inject, onMounted, nextTick } from 'vue'
+import { ref, watch, computed, onUnmounted, onBeforeUnmount, markRaw, inject, onMounted, nextTick } from 'vue'
 import promiseHandler from '../../helpers/promise-handler'
 import NotifyError from '../../plugins/notify-error/NotifyError'
 
@@ -289,6 +289,24 @@ const draggingCount = ref(0)
  */
 let updatePositionQueue = Promise.resolve()
 
+/**
+ * Mapa de AbortControllers por chave de coluna para cancelar requests em andamento.
+ * Não é reativo pois não precisamos de reatividade sobre os controllers.
+ */
+let columnAbortControllers = {}
+
+/**
+ * Contador de sessão para o fetchColumns em execução.
+ * Incrementado a cada nova chamada, permitindo que sessões antigas detectem que foram substituídas.
+ */
+let currentFetchColumnsSession = 0
+
+/**
+ * Geração por coluna para invalidar callbacks onLoading de requests canceladas.
+ * Evita que o onLoading(false) de uma request cancelada sobrescreva o estado da nova request.
+ */
+const columnFetchGenerations = {}
+
 // consts
 const hasDragAndDrop = !!props.useDragAndDropX || !!props.useDragAndDropY
 
@@ -373,6 +391,8 @@ watch(visibleItems, () => {
 onMounted(() => {
   window.addEventListener('resize', setColumnHeightContainer)
 })
+
+onBeforeUnmount(abortAllColumnRequests)
 
 onUnmounted(destroySortable)
 
@@ -471,6 +491,13 @@ function setColumnHeightContainer () {
 async function fetchColumns () {
   if (props.skeleton) return
 
+  /**
+   * Cada chamada a fetchColumns recebe um ID de sessão único.
+   * Se um novo fetchColumnsValues for chamado durante a execução, a sessão anterior
+   * detecta que foi substituída e para de processar, evitando emissão de eventos falsos.
+   */
+  const mySession = ++currentFetchColumnsSession
+
   // Mapeia os índices visíveis para os IDs de coluna correspondentes
   const visibleKeys = new Set(visibleItems.value.map(i => getKeyByHeader(normalizedHeaders.value[i])))
 
@@ -496,8 +523,14 @@ async function fetchColumns () {
   // Etapa 1: colunas visíveis (prioridade)
   const visibleColumns = await Promise.allSettled(visibleHeaders.map(header => fetchColumn(header, false)))
 
+  // Sessão foi substituída por um novo fetchColumnsValues — encerra sem emitir eventos
+  if (currentFetchColumnsSession !== mySession) return
+
   // Etapa 2: colunas não visíveis (só executa após etapa 1 finalizar, menor prioridade)
   const hiddenColumns = await Promise.allSettled(hiddenHeaders.map(header => fetchColumn(header, false)))
+
+  // Verifica novamente pois outro fetchColumnsValues pode ter sido chamado durante a etapa 2
+  if (currentFetchColumnsSession !== mySession) return
 
   const allPromises = [...visibleColumns, ...hiddenColumns]
 
@@ -524,12 +557,27 @@ async function fetchColumns () {
 */
 async function fetchColumn (header, fromSeeMore, setEr) {
   const headerKey = getKeyByHeader(header)
+
+  // Cancela qualquer request anterior para esta mesma coluna antes de iniciar a nova.
+  // Garante que nunca haja duas requests paralelas para a mesma coluna.
+  abortColumnRequest(headerKey)
+
+  // Incrementa a geração desta coluna para invalidar callbacks onLoading da request cancelada,
+  // evitando que o onLoading(false) antigo sobrescreva o estado da nova request.
+  // Usa ?? 0 pois ++undefined retorna NaN, e NaN === NaN é sempre false, travando o skeleton.
+  columnFetchGenerations[headerKey] = (columnFetchGenerations[headerKey] ?? 0) + 1
+  const generation = columnFetchGenerations[headerKey]
+
+  const abortController = new AbortController()
+  columnAbortControllers[headerKey] = abortController
+
   const { limit, offset } = columnsPagination.value[headerKey] || {}
 
   isLoadingFromSeeMore.value = fromSeeMore
 
   const { data: response, error } = await promiseHandler(
     axios.get(`${props.columnUrl}/${headerKey}/${setEr ? 'setError' : ''}`, {
+      signal: abortController.signal,
       params: {
         ...props.columnParams,
         limit,
@@ -538,15 +586,24 @@ async function fetchColumn (header, fromSeeMore, setEr) {
     }),
     {
       onLoading: value => {
-        columnsLoading.value[headerKey] = value
+        // Só atualiza o loading se ainda for a request atual desta coluna,
+        // evitando que o onLoading(false) de uma request cancelada sobrescreva o da nova.
+        if (columnFetchGenerations[headerKey] === generation) {
+          columnsLoading.value[headerKey] = value
+        }
       },
       useLoading: false
     }
   )
 
+  delete columnAbortControllers[headerKey]
+
   isLoadingFromSeeMore.value = false
 
   if (error) {
+    // Request cancelada intencionalmente (novo fetchColumnsValues chamado): ignora silenciosamente.
+    if (isCancelledError(error)) return
+
     emit('fetch-column-error', error)
 
     columnsWithError.value[headerKey] = true
@@ -682,11 +739,18 @@ function setColumnsPagination () {
     const headerKey = getKeyByHeader(header)
 
     columnsPagination.value[headerKey] = { limit: props.limitPerColumn, offset: 0 }
-    columnsLoading.value[headerKey] = false
+
+    // Inicia como true para exibir skeleton imediatamente, evitando flash de tela vazia
+    // entre o reset e o início das novas requests.
+    columnsLoading.value[headerKey] = true
   })
 }
 
 function fetchColumnsValues () {
+  // Cancela todas as requests em andamento antes de iniciar novas,
+  // evitando resposta de requests antigas sobrescrevendo dados da nova sessão.
+  abortAllColumnRequests()
+
   lazyLoadingKey.value++
 
   reset()
@@ -1080,16 +1144,53 @@ function destroySortable () {
 }
 
 /**
+ * Cancela a request em andamento de uma coluna específica.
+ */
+function abortColumnRequest (headerKey) {
+  columnAbortControllers[headerKey]?.abort()
+  delete columnAbortControllers[headerKey]
+}
+
+/**
+ * Cancela todas as requests de colunas em andamento.
+ * Chamado em onBeforeUnmount e no início de fetchColumnsValues.
+ */
+function abortAllColumnRequests () {
+  /**
+   * Invalida a sessão atual de fetchColumns para que, após as requests visíveis
+   * serem canceladas, a verificação de sessão impeça o início das requests das
+   * colunas ocultas (que ainda não haviam sido disparadas).
+   * Sem isso, fetchColumns passaria na verificação e iniciaria as hidden columns
+   * mesmo após o componente ter iniciado o processo de unmount.
+   */
+  currentFetchColumnsSession++
+
+  Object.keys(columnAbortControllers).forEach(key => {
+    columnAbortControllers[key]?.abort()
+  })
+
+  columnAbortControllers = {}
+}
+
+/**
+ * Verifica se o erro é resultado de um cancelamento intencional de request
+ * (AbortController.abort() via axios ou fetch).
+ */
+function isCancelledError (error) {
+  return error?.code === 'ERR_CANCELED' || error?.name === 'CanceledError' || error?.name === 'AbortError'
+}
+
+/**
  * Transfere um item de uma coluna para outra localmente, sem realizar nenhuma requisição.
  * O item é sempre inserido como primeiro elemento na coluna de destino.
  * Após a transferência, o SortableJS continua funcionando normalmente sobre os elementos
  * do DOM atualizados pelo Vue, sem necessidade de reinicialização.
  *
  * @param {Object} params
- * @param {string|number} params.itemId       - ID do item a ser movido (valor correspondente à prop `itemIdKey`).
+ * @param {string|number} params.itemId - ID do item a ser movido (valor correspondente à prop `itemIdKey`).
  * @param {string|number} params.fromColumnId - ID da coluna de origem (valor correspondente à prop `columnIdKey`).
- * @param {string|number} params.toColumnId   - ID da coluna de destino (valor correspondente à prop `columnIdKey`).
- * @param {Object}        [params.updatedItem]- Dados atualizados do item. Quando informado, sobrescreve o item original na coluna de destino.
+ * @param {string|number} params.toColumnId - ID da coluna de destino (valor correspondente à prop `columnIdKey`).
+ * @param {Object}        [params.updatedItem] - Dados atualizados do item. Quando informado, sobrescreve o item original na coluna de destino.
  * @returns {void}
  */
 function transferItemToColumn ({ itemId, fromColumnId, toColumnId, updatedItem }) {
