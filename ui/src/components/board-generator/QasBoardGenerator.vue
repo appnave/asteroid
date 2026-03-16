@@ -361,8 +361,7 @@ watch(
     if (isLoadingUpdatePosition.value || !value?.length) return
 
     fetchColumnsValues()
-  },
-  { immediate: true }
+  }
 )
 
 watch(() => columnContainerElements.value, () => {
@@ -372,6 +371,10 @@ watch(() => columnContainerElements.value, () => {
 
 // hooks
 onMounted(() => {
+  if (normalizedHeaders.value.length) {
+    fetchColumnsValues()
+  }
+
   window.addEventListener('resize', setColumnHeightContainer)
 })
 
@@ -748,11 +751,12 @@ function fetchColumnsValues () {
 }
 
 /**
- * Descricao:
+ * Descrição:
  * Exibe o texto quando:
  * - Nao esta carregando a coluna
  * - Nao tem itens na coluna
  * - Nao estou fazendo o drag and drop
+ * - Nao esta exibindo o dialog de confirmação
  *
  * @param {Object} header
  */
@@ -762,7 +766,7 @@ function hasEmptyResultText (header) {
   const headerKey = getKeyByHeader(header)
   const items = getItemsByHeader(header)
 
-  return !columnsLoading.value[headerKey] && !items?.length && !isDragging.value
+  return !columnsLoading.value[headerKey] && !items?.length && !isDragging.value && !showConfirmDialog.value
 }
 
 /*
