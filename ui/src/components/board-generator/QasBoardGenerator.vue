@@ -230,7 +230,7 @@ defineExpose({
 // Inject
 const axios = inject('axios')
 
-const isFetchSuccessHeader = inject('isFetchListSucceeded', false)
+// const isFetchSuccessHeader = inject('isFetchListSucceeded', false)
 
 const isInsideListView = inject('isListView', false)
 
@@ -324,26 +324,27 @@ const normalizedHeaders = computed(() => {
 })
 
 // Watchers
-watch(
-  () => isFetchSuccessHeader.value,
-  value => {
-    /**
-     * isFetchSuccessHeader é uma variável que pego do listView por inject/provide, no qual caso eu faça request do header e dê sucesso, eu chamo as demais funções.
-     * Valido se não houve sucesso na requisição do header ou se não é uma atualização de posição, para assim não bater novamente nas colunas apenas no header.
-     */
-    if (!value || isUpdatingPosition.value) return
+// watch(
+//   () => isFetchSuccessHeader.value,
+//   value => {
+//     /**
+//      * isFetchSuccessHeader é uma variável que pego do listView por inject/provide, no qual caso eu faça request do header e dê sucesso, eu chamo as demais funções.
+//      * Valido se não houve sucesso na requisição do header ou se não é uma atualização de posição, para assim não bater novamente nas colunas apenas no header.
+//      */
+//     if (!value || isUpdatingPosition.value) return
 
-    fetchColumnsValues()
-  }
-)
+//     fetchColumnsValues()
+//   }
+// )
 
 watch(
   () => normalizedHeaders.value,
-  () => {
-    if (isUpdatingPosition.value) return
+  value => {
+    if (isLoadingUpdatePosition.value || !value?.length) return
 
-    isUpdatingPosition.value = false
-  }
+    fetchColumnsValues()
+  },
+  { immediate: true }
 )
 
 watch(() => columnContainerElements.value, () => {
