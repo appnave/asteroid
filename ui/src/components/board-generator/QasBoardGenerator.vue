@@ -28,13 +28,13 @@
 
               <template v-else>
                 <qas-lazy-loading-components :threshold="0">
-                  <div v-for="(item) in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item" :data-disable-drag="updatingPositionItemKey === item[props.itemIdKey]">
+                  <div v-for="(item) in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item" :data-disable-drag="updatingPositionItemKeys.has(item[props.itemIdKey])">
                     <!-- <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" /> -->
                     <!-- <qas-card v-if="updatingPositionItemKey === item[props.itemIdKey]" v-bind="skeletonCards.at(0)" :key="item[props.itemIdKey]" class="q-mb-sm" :column-index="index">
                       <template #default />
                     </qas-card> -->
 
-                    <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :is-updating-position="updatingPositionItemKey === item[props.itemIdKey]" :item="item" name="column-item" />
+                    <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :is-updating-position="updatingPositionItemKeys.has(item[props.itemIdKey])" :item="item" name="column-item" />
                   </div>
                 </qas-lazy-loading-components>
 
@@ -240,11 +240,10 @@ const columnsPagination = ref({})
 const columnsLoading = ref({})
 const columnsFieldsModel = ref({})
 const showConfirmDialog = ref(false)
-const isDragging = ref(false)
 const isLoadingUpdatePosition = ref(false)
 const isLoadingFromSeeMore = ref(false)
 const columnsWithError = ref({})
-const updatingPositionItemKey = ref(null)
+const updatingPositionItemKeys = ref(new Set())
 
 /**
  * Índices das colunas visíveis no viewport
@@ -276,11 +275,19 @@ const onConfirmDrop = ref(() => {})
 const isUpdatingPosition = ref(false)
 
 /**
- * Chave da coluna de origem durante um drag and drop confirmado.
- * Usada para exibir o texto "Não há itens" imediatamente na coluna de origem
- * antes da requisição de updatePosition ser finalizada.
+ * Contador de drags ativos. Usado em vez de um booleano com toggle para
+ * evitar race conditions quando múltiplos drags acontecem em sequência rápida.
+ * isDragging continua existindo como computed derivado deste contador.
  */
-const draggingFromHeaderKey = ref(null)
+const draggingCount = ref(0)
+
+/**
+ * Fila de chamadas de updatePosition para garantir execução sequencial.
+ * Cada entrada é uma função que retorna uma Promise (a chamada updatePosition).
+ * Isso evita race conditions causadas por múltiplas requests concorrentes
+ * que compartilham estado (updatingPositionItemKey, isLoadingUpdatePosition, etc).
+ */
+let updatePositionQueue = Promise.resolve()
 
 // consts
 const hasDragAndDrop = !!props.useDragAndDropX || !!props.useDragAndDropY
@@ -379,6 +386,8 @@ const columnsResultsModel = computed({
     emit('update:results', newValues)
   }
 })
+
+const isDragging = computed(() => draggingCount.value > 0)
 
 const hasColumnsLength = computed(() => !!Object.keys(columnsResultsModel.value).length)
 
@@ -701,13 +710,6 @@ function hasEmptyResultText (header) {
   const headerKey = getKeyByHeader(header)
   const items = getItemsByHeader(header)
 
-  // Durante drag and drop, exibe o texto imediatamente na coluna de origem
-  // enquanto a requisição de updatePosition ainda está em andamento
-  // (o item ainda está no model, mas já foi movido visualmente pelo SortableJS)
-  if (draggingFromHeaderKey.value === headerKey && items?.length <= 1) {
-    return !columnsLoading.value[headerKey]
-  }
-
   return !columnsLoading.value[headerKey] && !items?.length && !isDragging.value
 }
 
@@ -773,6 +775,13 @@ function setSortable (element, index) {
    */
   const useOnlyDragAndDropY = !!props.useDragAndDropY && !props.useDragAndDropX
 
+  /**
+   * Flag local por instância do Sortable para rastrear se o drop foi tratado
+   * pelo onAdd/onSort. Isso permite que o onEnd saiba se deve chamar stopDragging
+   * (caso o usuário arraste e devolva o card sem mover para outra coluna).
+   */
+  let dropHandled = false
+
   const sortable = new Sortable(element, {
     sort: props.useDragAndDropY,
 
@@ -784,20 +793,78 @@ function setSortable (element, index) {
 
     direction: useOnlyDragAndDropY ? 'vertical' : 'horizontal',
 
-    onStart: toggleIsDragging,
+    onStart: () => {
+      dropHandled = false
+      startDragging()
+    },
 
-    onAdd: event => onDropCard(event),
+    onAdd: event => {
+      dropHandled = true
+      onDropCard(event)
+    },
+
+    /**
+     * Chamado sempre que o drag termina, independente do resultado.
+     * Só chama stopDragging se onAdd/onSort não trataram o drop,
+     * ou seja, o usuário abandonou o drag sem mover o card.
+     */
+    onEnd: () => {
+      if (!dropHandled) stopDragging()
+    },
 
     ...(props.useDragAndDropY && {
-      onSort: event => onDropCard(event)
+      onSort: event => {
+        dropHandled = true
+        onDropCard(event)
+      }
     })
   })
 
   return sortable
 }
 
-function toggleIsDragging () {
-  isDragging.value = !isDragging.value
+function startDragging () {
+  draggingCount.value++
+}
+
+function stopDragging () {
+  draggingCount.value = Math.max(0, draggingCount.value - 1)
+}
+
+/**
+ * Reverte a manipulação de DOM feita pelo SortableJS.
+ * Deve ser chamada ANTES de qualquer atualização reativa do model,
+ * para que o Vue parta de um estado DOM consistente ao re-renderizar.
+ */
+function revertDomDrag (event) {
+  if (props.useDragAndDropX) {
+    event.from.insertBefore(event.item, event.from.children[event.oldIndex] || null)
+  }
+
+  if (props.useDragAndDropY) {
+    const oldIndex = event.oldIndex
+    const targetIndex = oldIndex === 0 ? oldIndex : oldIndex + 1
+    const insertBeforeElement = targetIndex < event.from.children.length
+      ? event.from.children[targetIndex]
+      : null
+
+    event.from.insertBefore(event.item, insertBeforeElement)
+  }
+}
+
+/**
+ * Adiciona um item na lista de resultados de uma coluna, criando uma nova
+ * referência de array para garantir reatividade com markRaw.
+ */
+function addItemToList ({ headerKey, item, index }) {
+  const columnItemList = columnsResultsModel.value[headerKey]
+  const updatedList = [...columnItemList]
+  const insertIndex = Math.min(index, updatedList.length)
+
+  updatedList.splice(insertIndex, 0, item)
+
+  columnsResultsModel.value[headerKey] = props.useMarkRaw ? markRaw(updatedList) : updatedList
+  columnsPagination.value[headerKey].count += 1
 }
 
 function onDropCard (event) {
@@ -836,36 +903,11 @@ function closeConfirmDialog () {
  * @param {event} event
  */
 function cancelDrop (event) {
-  draggingFromHeaderKey.value = null
-
-  /**
-   * Insere na posição antiga que pertencia (event.oldIndex) dentro do seu antigo pai (event.from)
-   */
-  if (props.useDragAndDropX) event.from.insertBefore(event.item, event.from.children[event.oldIndex])
-
-  if (props.useDragAndDropY) {
-    const oldIndex = event.oldIndex
-
-    /**
-     * Se oldIndex for 0, o targetIndex deverá ser 0, pois isso indica que se o item é o primeiro da lista, ele não será movido para outra posição.
-     *
-     * Caso o oldIndex for diferente, devo incrementar 1 para adicionar, pois isso permite que o item seja inserido logo após sua posição original.
-     */
-    const targetIndex = oldIndex === 0 ? oldIndex : oldIndex + 1
-
-    /**
-     * Verifica se o índice alvo é válido, caso contrário, define como o final
-     */
-    const insertBeforeElement = targetIndex < event.from.children.length
-      ? event.from.children[targetIndex]
-      : null
-
-    event.from.insertBefore(event.item, insertBeforeElement)
-  }
+  revertDomDrag(event)
 
   if (hasConfirmDialogProps.value) closeConfirmDialog()
 
-  toggleIsDragging()
+  stopDragging()
 }
 
 function confirmDrop (event) {
@@ -874,9 +916,47 @@ function confirmDrop (event) {
   const { headerKey: newHeaderKey } = to.dataset
   const { headerKey: oldHeaderKey } = from.dataset
 
-  draggingFromHeaderKey.value = oldHeaderKey
+  /**
+   * 1. Reverte o DOM imediatamente para que o Vue parta de um estado consistente.
+   * O SortableJS já moveu o elemento fisicamente, mas precisamos devolvê-lo
+   * antes de atualizar o model reativo.
+   */
+  revertDomDrag(event)
 
-  updatePosition({ newHeaderKey, oldHeaderKey, itemId, event })
+  /**
+   * 2. Atualização otimista: move o item no model ANTES da request de API.
+   * Isso garante que a UI esteja sempre sincronizada com o model,
+   * eliminando race conditions entre múltiplos drops rápidos.
+   */
+  const item = getColumnItemById(itemId)
+
+  removeItemFromList({ headerKey: oldHeaderKey, itemId })
+  addItemToList({ headerKey: newHeaderKey, item, index: event.newIndex })
+
+  stopDragging()
+
+  /**
+   * 3. Marca o item como "em atualização" imediatamente, antes mesmo
+   * da request de API iniciar (pode estar na fila).
+   */
+  updatingPositionItemKeys.value = new Set([...updatingPositionItemKeys.value, itemId])
+
+  /**
+   * 4. Enfileira a chamada de API para confirmação no servidor.
+   * Se falhar, o model é revertido automaticamente.
+   */
+  enqueueUpdatePosition({ newHeaderKey, oldHeaderKey, itemId, event, optimisticItem: item })
+}
+
+/**
+ * Enfileira a chamada de updatePosition para execução sequencial.
+ * Garante que a próxima chamada só inicia após a anterior ter finalizado,
+ * evitando race conditions no estado compartilhado.
+ */
+function enqueueUpdatePosition (params) {
+  updatePositionQueue = updatePositionQueue.then(
+    () => updatePosition(params)
+  )
 }
 
 /**
@@ -932,14 +1012,12 @@ function updateItemInList ({ headerKey, itemId, updatedItem }) {
  *  event: event
  * }}
  */
-async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
+async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event, optimisticItem }) {
   const params = {
     [props.columnIdKey]: newHeaderKey,
     ...(props.useDragAndDropY && { newIndex: event.newIndex }),
     ...props.updatePositionParams
   }
-
-  updatingPositionItemKey.value = itemId
 
   const isFnUpdatePositionUrl = typeof props.updatePositionUrl === 'function'
 
@@ -950,7 +1028,10 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
     : `${props.updatePositionUrl}/${itemId}/update-position`
 
   const { data, error } = await promiseHandler(
-    axios.patch(url, params),
+    axios.patch(url, params, {
+      adapter: 'fetch',
+      fetchOptions: { priority: 'low' }
+    }),
     {
       errorMessage: 'Ocorreu um erro ao atualizar a posição de seu item.',
       useLoading: false,
@@ -962,10 +1043,17 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
     }
   )
 
-  updatingPositionItemKey.value = null
+  const updatedKeys = new Set(updatingPositionItemKeys.value)
+  updatedKeys.delete(itemId)
+  updatingPositionItemKeys.value = updatedKeys
 
   if (error) {
-    onCancelDrop.value()
+    /**
+     * Reverte a atualização otimista: move o item de volta da coluna de destino
+     * para a coluna de origem no model.
+     */
+    removeItemFromList({ headerKey: newHeaderKey, itemId })
+    addItemToList({ headerKey: oldHeaderKey, item: optimisticItem, index: event.oldIndex })
 
     emit('update-error', error)
 
@@ -973,56 +1061,18 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event }) {
   }
 
   /**
-   * Reverte a mutação de DOM feita pelo SortableJS antes de atualizar os dados reativos.
-   *
-   * O SortableJS move elementos físicos do DOM imediatamente ao soltar o card,
-   * mas o virtual DOM do Vue ainda "pensa" que eles estão na posição original.
-   * Se atualizarmos os dados reativos sem primeiro restaurar o DOM, o Vue irá
-   * patchar os elementos errados (ex: sobrescreve o card movido com os dados do
-   * próximo card da coluna de origem), causando exibição incorreta.
-   *
-   * Ao reverter o DOM para o estado pré-drag, o Vue parte de um estado consistente
-   * e renderiza corretamente a nova ordenação via dados reativos.
+   * Atualiza o item na coluna de destino com os dados retornados pelo servidor,
+   * que podem conter campos atualizados (timestamps, status, etc).
    */
-  if (props.useDragAndDropX) {
-    event.from.insertBefore(event.item, event.from.children[event.oldIndex] || null)
+  if (data.data?.result) {
+    updateItemInList({ headerKey: newHeaderKey, itemId, updatedItem: data.data.result })
   }
-
-  if (props.useDragAndDropY) {
-    const oldIndex = event.oldIndex
-    const targetIndex = oldIndex === 0 ? oldIndex : oldIndex + 1
-    const insertBeforeElement = targetIndex < event.from.children.length
-      ? event.from.children[targetIndex]
-      : null
-
-    event.from.insertBefore(event.item, insertBeforeElement)
-  }
-
-  removeItemFromList({ headerKey: oldHeaderKey, itemId })
-
-  setItemList({ headerKey: newHeaderKey, data: data.data, index: event.newIndex })
 
   isUpdatingPosition.value = true
 
-  toggleIsDragging()
-
   closeConfirmDialog()
 
-  draggingFromHeaderKey.value = null
-
   emit('update-success', data.data)
-}
-
-function setItemList ({ headerKey, data, index }) {
-  /**
-   * Coluna referente ao model de resultado
-   */
-  const columnItemList = columnsResultsModel.value[headerKey]
-
-  /**
-   * Adiciona o item na posição do event escolhido.
-   */
-  columnItemList.splice(index, 0, data.result)
 }
 
 function destroySortable () {
