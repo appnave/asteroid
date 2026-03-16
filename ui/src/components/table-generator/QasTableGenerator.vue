@@ -483,7 +483,8 @@ export default {
         'qas-table-generator--mobile': this.$qas.screen.isSmall,
         'qas-table-generator--sticky-header': this.useStickyHeader,
         'qas-table-generator--has-actions': this.hasActionsMenu,
-        'qas-table-generator--multiline': this.useMultiline
+        'qas-table-generator--multiline': this.useMultiline,
+        'qas-table-generator--row-spacing': !!this.highlights || this.useStickyLastRow
       }
     },
 
@@ -893,16 +894,6 @@ export default {
     &--highlighted {
       background-color: $light-blue-1 !important;
       color: $grey-10;
-
-      &:first-child {
-        border-bottom-left-radius: var(--qas-generic-border-radius);
-        border-top-left-radius: var(--qas-generic-border-radius);
-      }
-
-      &:last-child {
-        border-bottom-right-radius: var(--qas-generic-border-radius);
-        border-top-right-radius: var(--qas-generic-border-radius);
-      }
     }
   }
 
@@ -955,6 +946,18 @@ export default {
     td {
       background-color: $light-blue-1 !important;
       color: $grey-10;
+    }
+  }
+
+  &--row-spacing {
+    .q-table {
+      th:first-child {
+        padding-left: var(--qas-spacing-md);
+      }
+
+      td:first-child {
+        padding-left: var(--qas-spacing-md);
+      }
     }
   }
 
