@@ -19,7 +19,6 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasDateTimeInput`: adicionado comportamento de setar hora automaticamente após digitar a data. ([#1411](https://github.com/bildvitta/asteroid/issues/1411))
 
 ### Modificado
-- `QasTableGenerator`: modificado fields do tipo `hidden`, não serão exibidos na tabela.([#1387](https://github.com/bildvitta/asteroid/issues/1387))
 - `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
 - `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
 

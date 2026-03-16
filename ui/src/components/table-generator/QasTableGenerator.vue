@@ -234,18 +234,7 @@ export default {
         return fields
       }
 
-      const fields = {}
-
-      // Remover os campos do tipo "hidden".
-      Object.keys(this.fields).forEach(key => {
-        const field = this.fields[key]
-
-        if (field.type === 'hidden') return
-
-        fields[key] = field
-      })
-
-      return fields
+      return this.fields
     },
 
     /**
