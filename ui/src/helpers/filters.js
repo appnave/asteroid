@@ -160,7 +160,7 @@ function parseValue (value) {
   try { return JSON.parse(value) } catch { return value }
 }
 
-function booleanLabel (value, trueLabel = 'sim', falseLabel = 'não') {
+function booleanLabel (value, trueLabel = 'Sim', falseLabel = 'Não') {
   try { return JSON.parse(value) ? trueLabel : falseLabel } catch { return value }
 }
 
