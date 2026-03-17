@@ -15,6 +15,13 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Adicionado
+- `QasDateTimeInput`: adicionado comportamento de setar hora automaticamente após digitar a data. ([#1411](https://github.com/bildvitta/asteroid/issues/1411))
+
+### Modificado
+- `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
+- `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
+
 ### Corrigido
 - `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
 
