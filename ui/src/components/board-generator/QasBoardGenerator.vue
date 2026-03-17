@@ -308,6 +308,16 @@ let columnAbortControllers = {}
 let currentFetchColumnsSession = 0
 
 /**
+ * Estado do smooth scroll horizontal.
+ * Acumula o target e interpola suavemente via requestAnimationFrame.
+ */
+const SMOOTH_SCROLL_LERP = 0.2
+
+let smoothScrollTarget = 0
+let smoothScrollRafId = null
+let smoothScrollEl = null
+
+/**
  * Geração por coluna para invalidar callbacks onLoading de requests canceladas.
  * Evita que o onLoading(false) de uma request cancelada sobrescreva o estado da nova request.
  */
@@ -823,7 +833,12 @@ function setSortable (element, index) {
     delay: 50,
     delayOnTouchOnly: true,
     emptyInsertThreshold: 0,
-    filter: '[data-disable-drag="true"]'
+    filter: '[data-disable-drag="true"]',
+    scrollSensitivity: 200,
+    scrollSpeed: 60,
+    bubbleScroll: true,
+    forceAutoScrollFallback: true,
+    scrollFn: handleSortableScroll
   }
 
   /**
@@ -885,6 +900,67 @@ function startDragging () {
 
 function stopDragging () {
   draggingCount.value = Math.max(0, draggingCount.value - 1)
+  resetSmoothScroll()
+}
+
+/**
+ * Intercepta cada chamada de scroll do SortableJS.
+ * - Scroll vertical (colunas): retorna 'continue' para manter o comportamento nativo.
+ * - Scroll horizontal (container do board): aplica smooth scroll via rAF.
+ */
+function handleSortableScroll (offsetX, _offsetY, _evt, _touchEvt, scrollEl) {
+  // Obtém o container com scroll horizontal (`.qas-grabbable__container`).
+  const horizontalContainer = columnContainerElements.value[0]?.closest('.qas-grabbable__container')
+
+  // Acumula o offset no target e inicia a interpolação via rAF.
+  if (scrollEl === horizontalContainer && offsetX) {
+    if (smoothScrollEl !== scrollEl) {
+      smoothScrollTarget = scrollEl.scrollLeft
+      smoothScrollEl = scrollEl
+    }
+
+    const maxScroll = scrollEl.scrollWidth - scrollEl.clientWidth
+
+    smoothScrollTarget = Math.max(0, Math.min(smoothScrollTarget + offsetX, maxScroll))
+
+    if (!smoothScrollRafId) {
+      smoothScrollRafId = requestAnimationFrame(smoothScrollStep)
+    }
+    return
+  }
+
+  return 'continue'
+}
+
+/**
+ * Loop de animação que interpola o scrollLeft em direção ao target
+ * usando fator de lerp (move 20% da distância restante por frame).
+ */
+function smoothScrollStep () {
+  smoothScrollRafId = null
+
+  if (!smoothScrollEl) return
+
+  const current = smoothScrollEl.scrollLeft
+  const diff = smoothScrollTarget - current
+
+  if (Math.abs(diff) < 0.5) {
+    smoothScrollEl.scrollLeft = smoothScrollTarget
+    return
+  }
+
+  smoothScrollEl.scrollLeft = current + diff * SMOOTH_SCROLL_LERP
+  smoothScrollRafId = requestAnimationFrame(smoothScrollStep)
+}
+
+function resetSmoothScroll () {
+  if (smoothScrollRafId) {
+    cancelAnimationFrame(smoothScrollRafId)
+    smoothScrollRafId = null
+  }
+
+  smoothScrollEl = null
+  smoothScrollTarget = 0
 }
 
 /**
