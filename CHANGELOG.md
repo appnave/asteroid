@@ -22,6 +22,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
 - `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
 
+### Corrigido
+- `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
+
 ## [3.20.0-beta.13] - 19-02-2026
 ### Adicionado
 - Adicionado skills:
