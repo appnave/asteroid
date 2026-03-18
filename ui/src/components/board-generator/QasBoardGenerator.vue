@@ -29,11 +29,6 @@
               <template v-else>
                 <qas-lazy-loading-components :threshold="0">
                   <div v-for="(item) in getItemsByHeader(header)" :id="item[props.itemIdKey]" :key="item[props.itemIdKey]" class="qas-board-generator__item" :data-disable-drag="updatingPositionItemKeys.has(item[props.itemIdKey])">
-                    <!-- <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :item="item" name="column-item" /> -->
-                    <!-- <qas-card v-if="updatingPositionItemKey === item[props.itemIdKey]" v-bind="skeletonCards.at(0)" :key="item[props.itemIdKey]" class="q-mb-sm" :column-index="index">
-                      <template #default />
-                    </qas-card> -->
-
                     <slot v-if="!props.skeleton" :column-index="index" :fields="getFieldsByHeader(header)" :header="header" :is-updating-position="updatingPositionItemKeys.has(item[props.itemIdKey])" :item="item" name="column-item" />
                   </div>
                 </qas-lazy-loading-components>
