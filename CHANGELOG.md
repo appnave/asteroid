@@ -19,6 +19,12 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasBtn`: adicionada prop `useMagicAiColor` que aplica gradiente de inteligência artificial (magic AI) ao botão. O comportamento varia por variante: `primary` altera o fundo, `secondary` altera texto e borda, `tertiary` altera apenas o texto. Hover usa `$secondary-contrast`.
 - `QasActionsMenu`: suporte à propriedade `useMagicAiColor` nos itens da prop `list`, que aplica o gradiente de magic AI no ícone e no texto do item no dropdown. Quando o item é renderizado como botão externo (via `splitName`), as cores são aplicadas automaticamente.
 - CSS: adicionadas classes utilitárias `text-magic-ai`, `bg-magic-ai` e `border-magic-ai` para aplicação do gradiente de magic AI em textos, fundos e bordas respectivamente.
+- `QasDateTimeInput`: adicionado comportamento de setar hora automaticamente após digitar a data. ([#1411](https://github.com/bildvitta/asteroid/issues/1411))
+
+### Modificado
+- `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
+- `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
+- `filters.js`: modificado label da função booleanLabel para começarem com letras maiúsculas.
 
 ### Corrigido
 - `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
