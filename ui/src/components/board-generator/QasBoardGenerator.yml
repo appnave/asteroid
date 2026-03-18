@@ -97,8 +97,8 @@ props:
     type: Number
     default: 12
 
-  use-mark-raw:
-    desc: Define se os valores dos itens das colunas irão ser atribuídos utilizando o "markRaw", onde somente a primeira camada do model será reativa. (https://vuejs.org/api/reactivity-advanced.html#markraw)
+  skeleton:
+    desc: Exibe o estado de esqueleto de carregamento das colunas. Enquanto `true`, cada coluna renderiza cards fictícios no lugar dos itens reais.
     type: Boolean
     default: true
 
@@ -150,10 +150,25 @@ slots:
   column-item:
     desc: Slot para acessar o item da coluna.
     scope:
+      column-index:
+        desc: Índice da coluna atual.
+        type: Number
+        default: 0
+
       fields:
         desc: Fields referente à coluna atual do template.
         type: Object
         default: {}
+
+      header:
+        desc: Informações do header da coluna atual.
+        type: Object
+        default: {}
+
+      is-updating-position:
+        desc: Indica se o item está sendo atualizado via drag-and-drop (aguardando retorno da API de update).
+        type: Boolean
+        default: false
 
       item:
         desc: Informações de cada item da coluna que foi buscado através da API.
@@ -219,6 +234,45 @@ methods:
 
   'fetchColumn: (header) => void':
     desc: Busca uma coluna específica com base no header fornecido.
+
+  'refreshColumn: (header) => void':
+    desc: Reinicia a paginação da coluna e refaz a busca, substituindo completamente os itens existentes.
+    params:
+      header:
+        desc: Header da coluna a ser recarregada (mesmo formato da prop `headers`).
+        type: Object
+        required: true
+
+  'removeItemFromList: ({ headerKey, itemId }) => void':
+    desc: Remove um item da lista de uma coluna localmente, sem realizar nenhuma requisição. Também decrementa o contador de paginação.
+    params:
+      headerKey:
+        desc: Chave identificadora da coluna de origem (valor correspondente à prop `column-id-key`).
+        type: String | Number
+        required: true
+      itemId:
+        desc: ID do item a ser removido (valor correspondente à prop `item-id-key`).
+        type: String | Number
+        required: true
+
+  'updateItemInList: ({ headerKey, itemId, updatedItem }) => void':
+    desc: Substitui os dados de um item existente em uma coluna localmente, sem realizar nenhuma requisição.
+    params:
+      headerKey:
+        desc: Chave identificadora da coluna (valor correspondente à prop `column-id-key`).
+        type: String | Number
+        required: true
+      itemId:
+        desc: ID do item a ser atualizado (valor correspondente à prop `item-id-key`).
+        type: String | Number
+        required: true
+      updatedItem:
+        desc: Dados atualizados que substituirão o item original.
+        type: Object
+        required: true
+
+  'refetchColumns: () => void':
+    desc: Alias de `fetchColumns`. Busca novamente todas as colunas com base nos headers fornecidos.
 
   'transferItemToColumn: ({ itemId, fromColumnId, toColumnId, updatedItem? }) => void':
     desc: |

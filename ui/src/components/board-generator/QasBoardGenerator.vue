@@ -178,12 +178,7 @@ const props = defineProps({
 
   skeleton: {
     type: Boolean,
-    default: true
-  },
-
-  useMarkRaw: {
-    type: Boolean,
-    default: true
+    default: false
   },
 
   useDragAndDropX: {
@@ -450,6 +445,14 @@ const defaultConfirmDialogProps = computed(() => {
 * de espaço que ele conseguir considerando a altura do container em relação ao topo.
 */
 function setColumnHeightContainer () {
+  if (props.height) {
+    columnContainerElements.value.forEach(columnElement => {
+      columnElement.style.height = props.height
+    })
+
+    return
+  }
+
   // Primeira etapa: calcula e aplica a altura inicial de cada coluna
   columnContainerElements.value.forEach(columnElement => {
     // Pega a posição atual da coluna em relação ao topo da viewport
@@ -648,7 +651,7 @@ async function fetchColumn (header, fromSeeMore, setEr) {
    * onde cada item do objeto é uma coluna no board. O mesmo vale para "columnsFieldsModel", "columnsLoading" e
    * "columnPagination", organizando os fields, loadings e o controle de paginação por chave identificadora do header.
    */
-  columnsResultsModel.value[headerKey] = props.useMarkRaw ? markRaw(newColumnValues) : newColumnValues
+  columnsResultsModel.value[headerKey] = hasDragAndDrop ? newColumnValues : markRaw(newColumnValues)
 
   /*
   * Pode acontecer das options nos fields da segunda página serem diferentes da primeira página,
@@ -1051,7 +1054,7 @@ function addItemToList ({ headerKey, item, index }) {
 
   updatedList.splice(insertIndex, 0, item)
 
-  columnsResultsModel.value[headerKey] = props.useMarkRaw ? markRaw(updatedList) : updatedList
+  columnsResultsModel.value[headerKey] = updatedList
   columnsPagination.value[headerKey].count += 1
 }
 
@@ -1172,7 +1175,7 @@ function removeItemFromList ({ headerKey, itemId }) {
   const updatedList = [...columnItemList]
   updatedList.splice(itemIndex, 1)
 
-  columnsResultsModel.value[headerKey] = props.useMarkRaw ? markRaw(updatedList) : updatedList
+  columnsResultsModel.value[headerKey] = updatedList
 
   /**
    * Remove o item do count da coluna para não mostrar o botão de "Ver mais¨.

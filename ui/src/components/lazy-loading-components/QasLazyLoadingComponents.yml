@@ -4,21 +4,46 @@ meta:
   desc: Componente para carregar elementos do slot somente quando ficam visíveis na viewport, otimizando performance da página.
 
 props:
-  threshold:
-    desc: Threshold do IntersectionObserver (0 = aparece um pouco, 1 = totalmente visível)
-    default: 0.1
-    type: Number
-  
+  direction:
+    desc: Direção do scroll e do lazy loading. Use `vertical` (padrão) para listas de rolagem vertical e `horizontal` para listas de rolagem horizontal.
+    type: String
+    default: vertical
+    values: vertical | horizontal
+
+  placeholder-height:
+    desc: Altura do placeholder exibido enquanto o elemento não está visível (usado quando `direction` é `vertical`).
+    default: '500px'
+    type: String
+
+  placeholder-width:
+    desc: Largura do placeholder exibido enquanto o elemento não está visível (usado quando `direction` é `horizontal`).
+    default: '300px'
+    type: String
+
   root-margin:
     desc: Margem extra ao redor do viewport para pré-carregamento
     default: '0px'
     type: String
 
-  placeholder-height:
-    desc: Altura do placeholder exibido enquanto o elemento não está visível
-    default: '500px'
-    type: String
+  threshold:
+    desc: Threshold do IntersectionObserver (0 = aparece um pouco, 1 = totalmente visível)
+    default: 0.1
+    type: Number
+
+  visible-items:
+    desc: Expõe os índices (0-based) dos itens atualmente visíveis na viewport. Útil para otimizar renders e priorizar carregamento de dados.
+    type: Array
+    default: []
+    model: true
 
 slots:
   default:
     desc: Elementos/componentes que serão carregados conforme ficam visíveis, onde cada elemento irmão dentro do slot será tratado individualmente para o lazy loading.
+
+events:
+  '@update:visible-items -> function(value)':
+    desc: Dispara toda vez que os índices dos itens visíveis são atualizados, também utilizado para v-model:visible-items.
+    params:
+      value:
+        desc: Array de índices (0-based) dos itens atualmente visíveis na viewport.
+        type: Array
