@@ -568,13 +568,17 @@ async function fetchColumns () {
 async function fetchColumn (header, fromSeeMore, setEr) {
   const headerKey = getKeyByHeader(header)
 
-  // Cancela qualquer request anterior para esta mesma coluna antes de iniciar a nova.
-  // Garante que nunca haja duas requests paralelas para a mesma coluna.
+  /**
+   * Cancela qualquer request anterior para esta mesma coluna antes de iniciar a nova.
+   * Garante que nunca haja duas requests paralelas para a mesma coluna.
+   */
   abortColumnRequest(headerKey)
 
-  // Incrementa a geração desta coluna para invalidar callbacks onLoading da request cancelada,
-  // evitando que o onLoading(false) antigo sobrescreva o estado da nova request.
-  // Usa ?? 0 pois ++undefined retorna NaN, e NaN === NaN é sempre false, travando o skeleton.
+  /**
+   * Incrementa a geração desta coluna para invalidar callbacks onLoading da request cancelada,
+   * evitando que o onLoading(false) antigo sobrescreva o estado da nova request.
+   * Usa ?? 0 pois ++undefined retorna NaN, e NaN === NaN é sempre false, travando o skeleton.
+   */
   columnFetchGenerations[headerKey] = (columnFetchGenerations[headerKey] ?? 0) + 1
   const generation = columnFetchGenerations[headerKey]
 
@@ -596,8 +600,10 @@ async function fetchColumn (header, fromSeeMore, setEr) {
     }),
     {
       onLoading: value => {
-        // Só atualiza o loading se ainda for a request atual desta coluna,
-        // evitando que o onLoading(false) de uma request cancelada sobrescreva o da nova.
+        /**
+         * Só atualiza o loading se ainda for a request atual desta coluna,
+         * evitando que o onLoading(false) de uma request cancelada sobrescreva o da nova.
+         */
         if (columnFetchGenerations[headerKey] === generation) {
           columnsLoading.value[headerKey] = value
         }
@@ -876,8 +882,6 @@ function setSortable (element, index) {
 
     group: useOnlyDragAndDropY ? `column-${index}` : 'shared',
 
-    // direction: 'vertical',
-
     /**
      * invertSwap muda o algoritmo de swap: em vez de trocar quando o centro do item arrastado
      * cruza o centro do alvo (instável, causa oscilação), troca apenas quando cruza a BORDA
@@ -962,10 +966,11 @@ function handleSortableScroll (offsetX, offsetY, evt, _touchEvt, scrollEl) {
     return
   }
 
-  // Scroll vertical (dentro da coluna): aplica manualmente com velocidade independente do scrollSpeed horizontal.
-  // offsetY já vem escalado pelo scrollSpeed (60), então normalizamos para VERTICAL_SCROLL_SPEED (10).
-  // Além disso, como scrollSensitivity está em HORIZONTAL_SCROLL_SENSITIVITY (200), verificamos manualmente
-  // se o cursor está dentro de VERTICAL_SCROLL_SENSITIVITY (80) da borda da coluna antes de rolar.
+  /**
+   * SortableJS chama essa função com offsets de scroll.
+   * Para scroll vertical: retorna 'continue' para deixar o comportamento nativo.
+   * Para scroll horizontal: aplica smooth scroll customizado via rAF.
+   */
   if (offsetY) {
     const clientY = evt?.clientY ?? evt?.touches?.[0]?.clientY
 
@@ -1309,7 +1314,7 @@ function isCancelledError (error) {
  * @param {string|number} params.itemId - ID do item a ser movido (valor correspondente à prop `itemIdKey`).
  * @param {string|number} params.fromColumnId - ID da coluna de origem (valor correspondente à prop `columnIdKey`).
  * @param {string|number} params.toColumnId - ID da coluna de destino (valor correspondente à prop `columnIdKey`).
- * @param {Object}        [params.updatedItem] - Dados atualizados do item. Quando informado, sobrescreve o item original na coluna de destino.
+ * @param {Object} [params.updatedItem] - Dados atualizados do item. Quando informado, sobrescreve o item original na coluna de destino.
  * @returns {void}
  */
 function transferItemToColumn ({ itemId, fromColumnId, toColumnId, updatedItem }) {

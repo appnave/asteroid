@@ -34,6 +34,7 @@
 
         <div class="qas-card__content relative-position" :class="contentClasses">
           <qas-skeleton v-if="props.skeleton" height="100px" />
+
           <slot v-else name="default" />
         </div>
 

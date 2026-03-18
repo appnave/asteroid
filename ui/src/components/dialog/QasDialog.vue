@@ -5,10 +5,8 @@
         <slot name="header">
           <div class="items-center justify-between row">
             <qas-label data-cy="dialog-title" :label="props.card.title" margin="none">
-              <slot name="title"></slot>
+              <slot name="title" />
             </qas-label>
-            <!-- <slot name="title">
-            </slot> -->
 
             <qas-btn v-if="isInfoDialog" v-close-popup color="grey-10" data-cy="dialog-close-btn" icon="sym_r_close" variant="tertiary" />
           </div>
