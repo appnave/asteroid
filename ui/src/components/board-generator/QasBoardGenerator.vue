@@ -313,6 +313,20 @@ let currentFetchColumnsSession = 0
  */
 const SMOOTH_SCROLL_LERP = 0.2
 
+/**
+ * Velocidade de scroll vertical (dentro da coluna), independente do scrollSpeed horizontal.
+ * O offsetY recebido no scrollFn é proporcional ao scrollSpeed (60), então normalizamos
+ * para que o scroll vertical se comporte como se scrollSpeed fosse 10 (padrão do SortableJS).
+ */
+const HORIZONTAL_SCROLL_SPEED = 60
+const VERTICAL_SCROLL_SPEED = 20
+
+/**
+ * Sensibilidade para iniciar o scroll automático ao arrastar próximo às bordas do container.
+ */
+const HORIZONTAL_SCROLL_SENSITIVITY = 150
+const VERTICAL_SCROLL_SENSITIVITY = 80
+
 let smoothScrollTarget = 0
 let smoothScrollRafId = null
 let smoothScrollEl = null
@@ -821,21 +835,20 @@ function handleElementsList () {
  * Seta a instancia do sortable, no qual varia de acordo com as props passadas.
  *
  * @param {HTMLElement} element
- * @param {Number} index
+ * @param {number} index
  */
 function setSortable (element, index) {
   const defaultSortableConfig = {
-    animation: 500,
+    animation: 150,
     group: 'shared',
-    ghostClass: 'ghost',
-    sort: false,
+    ghostClass: 'qas-board-generator__ghost',
     swapThreshold: 1,
-    delay: 50,
+    delay: 0,
     delayOnTouchOnly: true,
     emptyInsertThreshold: 0,
     filter: '[data-disable-drag="true"]',
-    scrollSensitivity: 200,
-    scrollSpeed: 60,
+    scrollSensitivity: HORIZONTAL_SCROLL_SENSITIVITY,
+    scrollSpeed: HORIZONTAL_SCROLL_SPEED,
     bubbleScroll: true,
     forceAutoScrollFallback: true,
     scrollFn: handleSortableScroll
@@ -854,15 +867,28 @@ function setSortable (element, index) {
   let dropHandled = false
 
   const sortable = new Sortable(element, {
-    sort: props.useDragAndDropY,
-
     ...defaultSortableConfig,
 
     ...props.sortableConfig,
 
+    /**
+     * `sort` deve vir APÓS os spreads para não ser sobrescrito pelo defaultSortableConfig.
+     * Quando useDragAndDropY é true, o sort precisa estar habilitado para que o SortableJS
+     * rastreie ativamente a posição do item dentro da coluna durante o drag. Sem isso,
+     * o item oscila entre colunas porque o Sortable do destino não "assume" o controle do item.
+     */
+    sort: props.useDragAndDropY,
+
     group: useOnlyDragAndDropY ? `column-${index}` : 'shared',
 
-    direction: useOnlyDragAndDropY ? 'vertical' : 'horizontal',
+    // direction: 'vertical',
+
+    /**
+     * invertSwap muda o algoritmo de swap: em vez de trocar quando o centro do item arrastado
+     * cruza o centro do alvo (instável, causa oscilação), troca apenas quando cruza a BORDA
+     * superior/inferior do alvo. Isso cria uma "zona morta" que elimina o jitter.
+     */
+    invertSwap: true,
 
     onStart: () => {
       dropHandled = false
@@ -886,6 +912,18 @@ function setSortable (element, index) {
     ...(props.useDragAndDropY && {
       onSort: event => {
         dropHandled = true
+
+        /**
+         * O SortableJS dispara onSort em AMBAS as listas envolvidas quando um item
+         * é arrastado entre colunas (cross-column): na lista de origem porque perdeu
+         * um item e na lista de destino porque ganhou um.
+         * O onAdd já trata o cross-column na lista de destino, então ao ignorar o
+         * onSort para eventos cross-column evitamos processar o mesmo drop duas vezes,
+         * o que causava corrupção do model (item duplicado no destino e remoção
+         * incorreta do último item da origem via splice(-1, 1)).
+         */
+        if (event.from !== event.to) return
+
         onDropCard(event)
       }
     })
@@ -908,7 +946,7 @@ function stopDragging () {
  * - Scroll vertical (colunas): retorna 'continue' para manter o comportamento nativo.
  * - Scroll horizontal (container do board): aplica smooth scroll via rAF.
  */
-function handleSortableScroll (offsetX, _offsetY, _evt, _touchEvt, scrollEl) {
+function handleSortableScroll (offsetX, offsetY, evt, _touchEvt, scrollEl) {
   // Obtém o container com scroll horizontal (`.qas-grabbable__container`).
   const horizontalContainer = columnContainerElements.value[0]?.closest('.qas-grabbable__container')
 
@@ -926,6 +964,24 @@ function handleSortableScroll (offsetX, _offsetY, _evt, _touchEvt, scrollEl) {
     if (!smoothScrollRafId) {
       smoothScrollRafId = requestAnimationFrame(smoothScrollStep)
     }
+    return
+  }
+
+  // Scroll vertical (dentro da coluna): aplica manualmente com velocidade independente do scrollSpeed horizontal.
+  // offsetY já vem escalado pelo scrollSpeed (60), então normalizamos para VERTICAL_SCROLL_SPEED (10).
+  // Além disso, como scrollSensitivity está em HORIZONTAL_SCROLL_SENSITIVITY (200), verificamos manualmente
+  // se o cursor está dentro de VERTICAL_SCROLL_SENSITIVITY (80) da borda da coluna antes de rolar.
+  if (offsetY) {
+    const clientY = evt?.clientY ?? evt?.touches?.[0]?.clientY
+
+    if (clientY !== undefined) {
+      const rect = scrollEl.getBoundingClientRect()
+      const distFromEdge = Math.min(clientY - rect.top, rect.bottom - clientY)
+
+      if (distFromEdge > VERTICAL_SCROLL_SENSITIVITY) return
+    }
+
+    scrollEl.scrollTop += offsetY * (VERTICAL_SCROLL_SPEED / HORIZONTAL_SCROLL_SPEED)
     return
   }
 
@@ -1327,6 +1383,29 @@ function getCardsContainerProps (header) {
 
   &__column-error {
     border: 1px solid $negative;
+  }
+
+  &__ghost {
+    border: 1px solid $grey-4 !important;
+    overflow: hidden;
+    border-radius: $generic-border-radius;
+    position: relative;
+    margin-bottom: var(--qas-spacing-sm);
+
+    &::after {
+      align-items: center;
+      background-color: $grey-3;
+      border-radius: inherit;
+      color: $grey-8;
+      content: 'place_item';
+      display: flex;
+      font-family: 'Material Symbols Rounded';
+      font-size: 40px;
+      inset: 0;
+      justify-content: center;
+      position: absolute;
+      z-index: 999;
+    }
   }
 }
 </style>
