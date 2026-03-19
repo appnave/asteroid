@@ -229,7 +229,7 @@ function getDialogSlot (name) {
 
 // ------------------------- composable functions ------------------------------
 function useList () {
-  const filteredOptions = ref(props.options)
+  const filteredOptions = ref([...props.options])
 
   const selectedOptions = computed(() => {
     const options = []
