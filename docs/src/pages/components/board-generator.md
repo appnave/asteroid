@@ -92,7 +92,6 @@ No payload será enviado o seguinte:
 O retorno do backend, deverá ser TODO o item atualizado em seu result, pois o componente irá pegar esse retorno para atualizar o model.
 
 #### Manipulação local de itens
-
 O `QasBoardGenerator` expõe métodos para manipular itens das colunas localmente, sem necessidade de novas requisições:
 
 - **`transferItemToColumn({ itemId, fromColumnId, toColumnId, updatedItem? })`**: Move um item de uma coluna para outra localmente. O item é inserido como primeiro elemento na coluna de destino. Passe `updatedItem` para sobrescrever os dados do item no destino.
@@ -102,5 +101,4 @@ O `QasBoardGenerator` expõe métodos para manipular itens das colunas localment
 - **`refetchColumns()`**: Alias de `fetchColumns`. Rebusca todas as colunas.
 
 #### Skeleton (carregamento)
-
-A prop `skeleton` (default `true`) controla o estado de carregamento do board. Enquanto `true`, cada coluna exibe cards fictícios (skeleton) no lugar dos itens reais. Assim que `fetchColumns` retorna com sucesso, o skeleton é substituído automaticamente pelos itens reais.
+A prop `skeleton` (default `false`) controla o estado de carregamento do board. Enquanto `true`, cada coluna exibe cards fictícios (skeleton) no lugar dos itens reais. Assim que `fetchColumns` retorna com sucesso, o skeleton é substituído automaticamente pelos itens reais.

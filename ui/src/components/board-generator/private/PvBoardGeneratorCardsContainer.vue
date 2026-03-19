@@ -5,7 +5,6 @@
 </template>
 
 <script setup>
-
 import setScrollGradient from '../../../helpers/set-scroll-gradient'
 
 import { ref, onMounted, onBeforeUnmount } from 'vue'

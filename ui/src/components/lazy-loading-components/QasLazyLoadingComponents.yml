@@ -31,7 +31,7 @@ props:
     type: Number
 
   visible-items:
-    desc: Expõe os índices (0-based) dos itens atualmente visíveis na viewport. Útil para otimizar renders e priorizar carregamento de dados.
+    desc: Expõe os índices dos itens atualmente visíveis na viewport. Útil para otimizar renders e priorizar carregamento de dados.
     type: Array
     default: []
     model: true
@@ -45,5 +45,5 @@ events:
     desc: Dispara toda vez que os índices dos itens visíveis são atualizados, também utilizado para v-model:visible-items.
     params:
       value:
-        desc: Array de índices (0-based) dos itens atualmente visíveis na viewport.
+        desc: Array de índices dos itens atualmente visíveis na viewport.
         type: Array

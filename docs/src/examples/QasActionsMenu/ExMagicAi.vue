@@ -1,10 +1,12 @@
 <template>
   <div class="container q-py-lg">
-    <qas-actions-menu v-bind="props" />
+    <qas-actions-menu :list />
   </div>
 </template>
 
 <script setup>
+defineOptions({ name: 'ExMagicAi' })
+
 const list = {
   magicAi: {
     icon: 'sym_r_wand_stars',
@@ -22,10 +24,5 @@ const list = {
     label: 'Visualizar',
     handler: () => alert('handler ativado')
   }
-}
-
-const props = {
-  list
-  // splitName: 'magicAi'
 }
 </script>

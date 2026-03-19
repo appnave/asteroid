@@ -3,12 +3,12 @@
     <qas-grabbable class="qas-board-generator" v-bind="grabbableProps">
       <div ref="columnsContainer" class="no-wrap q-gutter-md q-pb-xs q-px-lg row">
         <qas-lazy-loading-components :key="lazyLoadingKey" v-model:visible-items="visibleItems" direction="horizontal" placeholder-width="350px" :threshold="0">
-          <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClass(header)" :style="containerStyle">
-            <div class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
+          <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClasses(header)" :style="containerStyle">
+            <qas-header class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
               <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
 
               <slot v-else :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
-            </div>
+            </qas-header>
 
             <pv-board-generator-cards-container ref="columnContainer" class="qas-board-generator__column secondary-scroll" v-bind="getCardsContainerProps(header)">
               <!-- COLUNA COM ERRO -->
@@ -69,6 +69,7 @@
 <script setup>
 import PvBoardGeneratorCardsContainer from './private/PvBoardGeneratorCardsContainer.vue'
 import QasSkeleton from '../skeleton/QasSkeleton.vue'
+import QasHeader from '../header/QasHeader.vue'
 import QasCard from '../card/QasCard.vue'
 import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
@@ -299,7 +300,10 @@ let currentFetchColumnsSession = 0
 
 /**
  * Estado do smooth scroll horizontal.
- * Acumula o target e interpola suavemente via requestAnimationFrame.
+ * Acumula o target e interpola suavemente via requestAnimationFrame (rAF).
+ *
+ * rAF (requestAnimationFrame) sincroniza a animação com o refresh da tela (~60fps).
+ * Isso evita "saltos" de scroll, tornando o movimento suave e fluido.
  */
 const SMOOTH_SCROLL_LERP = 0.2
 
@@ -342,13 +346,15 @@ const grabbableProps = {
  * Gera cards de skeleton para exibir enquanto carrega os itens da coluna, o mesmo é usado para preencher a coluna
  * quando a prop "skeleton" for true, indicando que é para simular o carregamento.
  */
-const skeletonCards = Array.from({ length: 6 }).map(() => ({
-  skeleton: true,
-  title: '-',
-  expansionProps: { label: '-' },
-  actionsMenuProps: { list: {} },
-  useSelection: true
-}))
+const skeletonCards = Array.from({ length: 6 }).map(() => {
+  return {
+    skeleton: true,
+    title: '-',
+    expansionProps: { label: '-' },
+    actionsMenuProps: { list: {} },
+    useSelection: true
+  }
+})
 
 // computeds
 const columnContainerElements = computed(() => {
@@ -512,7 +518,7 @@ async function fetchColumns () {
   const mySession = ++currentFetchColumnsSession
 
   // Mapeia os índices visíveis para os IDs de coluna correspondentes
-  const visibleKeys = new Set(visibleItems.value.map(i => getKeyByHeader(normalizedHeaders.value[i])))
+  const visibleKeys = new Set(visibleItems.value.map(item => getKeyByHeader(normalizedHeaders.value[item])))
 
   const visibleHeaders = visibleKeys.size
     ? normalizedHeaders.value.filter(header => visibleKeys.has(getKeyByHeader(header)))
@@ -568,8 +574,9 @@ async function fetchColumns () {
 /*
 * Busca a coluna com base no header recebido.
 */
-async function fetchColumn (header, fromSeeMore, setEr) {
+async function fetchColumn (header, fromSeeMore) {
   const headerKey = getKeyByHeader(header)
+  console.log('🚀 ~ fetchColumn ~ header:', { headerKey, header, url: `${props.columnUrl}/${headerKey}` })
 
   /**
    * Cancela qualquer request anterior para esta mesma coluna antes de iniciar a nova.
@@ -593,7 +600,7 @@ async function fetchColumn (header, fromSeeMore, setEr) {
   isLoadingFromSeeMore.value = fromSeeMore
 
   const { data: response, error } = await promiseHandler(
-    axios.get(`${props.columnUrl}/${headerKey}/${setEr ? 'setError' : ''}`, {
+    axios.get(`${props.columnUrl}/${headerKey}`, {
       signal: abortController.signal,
       params: {
         ...props.columnParams,
@@ -759,15 +766,19 @@ function setColumnsPagination () {
 
     columnsPagination.value[headerKey] = { limit: props.limitPerColumn, offset: 0 }
 
-    // Inicia como true para exibir skeleton imediatamente, evitando flash de tela vazia
-    // entre o reset e o início das novas requests.
+    /**
+     * Inicia como true para exibir skeleton imediatamente, evitando flash de tela vazia
+     * entre o reset e o início das novas requests.
+     */
     columnsLoading.value[headerKey] = true
   })
 }
 
 function fetchColumnsValues () {
-  // Cancela todas as requests em andamento antes de iniciar novas,
-  // evitando resposta de requests antigas sobrescrevendo dados da nova sessão.
+  /**
+   * Cancela todas as requests em andamento antes de iniciar novas, evitando resposta de requests
+   * antigas sobrescrevendo dados da nova sessão.
+   */
   abortAllColumnRequests()
 
   lazyLoadingKey.value++
@@ -781,10 +792,10 @@ function fetchColumnsValues () {
 /**
  * Descrição:
  * Exibe o texto quando:
- * - Nao esta carregando a coluna
- * - Nao tem itens na coluna
- * - Nao estou fazendo o drag and drop
- * - Nao esta exibindo o dialog de confirmação
+ * - Não está carregando a coluna
+ * - Não tem itens na coluna
+ * - Não estou fazendo o drag and drop
+ * - Não está exibindo o dialog de confirmação
  *
  * @param {Object} header
  */
@@ -946,7 +957,10 @@ function stopDragging () {
 /**
  * Intercepta cada chamada de scroll do SortableJS.
  * - Scroll vertical (colunas): retorna 'continue' para manter o comportamento nativo.
- * - Scroll horizontal (container do board): aplica smooth scroll via rAF.
+ * - Scroll horizontal (container do board): aplica smooth scroll interpolado via rAF.
+ *
+ * rAF (requestAnimationFrame) sincroniza com o refresh da tela (~60fps),
+ * tornando o scroll suave. Sem rAF, seria um "salto" abrupto.
  */
 function handleSortableScroll (offsetX, offsetY, evt, _touchEvt, scrollEl) {
   // Obtém o container com scroll horizontal (`.qas-grabbable__container`).
@@ -963,9 +977,17 @@ function handleSortableScroll (offsetX, offsetY, evt, _touchEvt, scrollEl) {
 
     smoothScrollTarget = Math.max(0, Math.min(smoothScrollTarget + offsetX, maxScroll))
 
+    // Se não há animação em andamento, inicia uma.
+    // rAF (requestAnimationFrame) agenda a função smoothScrollStep para o próximo frame (~16ms a 60fps).
+
+    /**
+     * Se não há animação em andamento, inicia uma. rAF (requestAnimationFrame) agenda a função smoothScrollStep
+     * para o próximo frame (~16ms a 60fps).
+     */
     if (!smoothScrollRafId) {
       smoothScrollRafId = requestAnimationFrame(smoothScrollStep)
     }
+
     return
   }
 
@@ -994,6 +1016,14 @@ function handleSortableScroll (offsetX, offsetY, evt, _touchEvt, scrollEl) {
 /**
  * Loop de animação que interpola o scrollLeft em direção ao target
  * usando fator de lerp (move 20% da distância restante por frame).
+ *
+ * Funciona assim:
+ * 1. Calcula a diferença entre a posição atual e a posição desejada (target).
+ * 2. Se ainda há diferença significativa, move 20% da distância restante.
+ * 3. Agenda o próximo frame via rAF para continuar a interpolação.
+ * 4. Quando chega perto o suficiente (~0.5px), para a animação.
+ *
+ * Resultado: scroll suave e progressivo, não um "salto" abrupto.
  */
 function smoothScrollStep () {
   smoothScrollRafId = null
@@ -1003,16 +1033,21 @@ function smoothScrollStep () {
   const current = smoothScrollEl.scrollLeft
   const diff = smoothScrollTarget - current
 
+  // Se chegou bem perto do target, para na posição exata.
   if (Math.abs(diff) < 0.5) {
     smoothScrollEl.scrollLeft = smoothScrollTarget
     return
   }
 
+  // Move 20% da distância restante (interpolação suave).
   smoothScrollEl.scrollLeft = current + diff * SMOOTH_SCROLL_LERP
+
+  // Agenda o próximo frame para continuar a animação (chamada recursiva via rAF).
   smoothScrollRafId = requestAnimationFrame(smoothScrollStep)
 }
 
 function resetSmoothScroll () {
+  // Cancela a animação agendada (rAF) para evitar que continue executando após o drag terminar.
   if (smoothScrollRafId) {
     cancelAnimationFrame(smoothScrollRafId)
     smoothScrollRafId = null
@@ -1183,13 +1218,29 @@ function removeItemFromList ({ headerKey, itemId }) {
   columnsPagination.value[headerKey].count -= 1
 }
 
+/**
+ * Substitui um item na lista de uma coluna pelos dados atualizados do servidor.
+ *
+ * 1. Localiza a lista de itens da coluna
+ * 2. Encontra o índice do item usando o itemIdKey como identificador
+ * 3. Se encontrado, altera o item localmente (sem criar nova referência de array)
+ *
+ * @param {Object} params
+ * @param {string} params.headerKey - ID da coluna
+ * @param {string|number} params.itemId - ID do item a atualizar (deve corresponder a props.itemIdKey)
+ * @param {Object} params.updatedItem - Novo objeto do item com dados atualizados
+ *
+ */
 function updateItemInList ({ headerKey, itemId, updatedItem }) {
   const columnItemList = columnsResultsModel.value[headerKey]
 
+  // Encontra o índice do item na lista usando o identificador (itemIdKey)
   const itemIndex = columnItemList.findIndex(itemContent => itemContent[props.itemIdKey] === itemId)
 
+  // Se não encontrar (itemIndex === -1), retorna sem fazer nada
   if (!~itemIndex) return
 
+  // Substitui o item antigo pelo item atualizado na mesma posição
   columnItemList.splice(itemIndex, 1, updatedItem)
 }
 
@@ -1340,7 +1391,7 @@ function hasSkeletonByHeader (header) {
   return (props.skeleton || columnsLoading.value[headerKey]) && !isLoadingFromSeeMore.value
 }
 
-function getColumnClass (header) {
+function getColumnClasses (header) {
   const headerKey = getKeyByHeader(header)
 
   return {
