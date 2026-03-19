@@ -16,7 +16,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ## BREAKING CHANGES
-- `QasBoardGenerator`: Varias mudanças de comportamento e visuais no componente, revisar se nada quebra.
+- `QasBoardGenerator`:
+  - Varias mudanças de comportamento e visuais no componente, revisar se nada quebra.
+  - removido prop `headerBoxProps` porque agora não existe um `QasBox` englobando o header.
 
 ### Adicionado
 - `QasBoardGenerator`:
@@ -47,7 +49,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `helpers/set-scroll-gradient`: Corrigido pequena diferença de posicionamento do gradiente.
 
 ### Removido
-- `QasBoardGenerator`: removido prop `useMarkRaw`, agora o componente faz o controle sozinho de quando vai ser ou não reativo os dados.
+- `QasBoardGenerator`: 
+  - removido prop `useMarkRaw`, agora o componente faz o controle sozinho de quando vai ser ou não reativo os dados.
+  - removido prop `headerBoxProps` porque agora não existe um `QasBox` englobando o header.
 
 ## [3.20.0-beta.13] - 19-02-2026
 ### Adicionado

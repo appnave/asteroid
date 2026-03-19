@@ -4,11 +4,11 @@
       <div ref="columnsContainer" class="no-wrap q-gutter-md q-pb-xs q-px-lg row">
         <qas-lazy-loading-components :key="lazyLoadingKey" v-model:visible-items="visibleItems" direction="horizontal" placeholder-width="350px" :threshold="0">
           <qas-box v-for="(header, index) in normalizedHeaders" :key="index" :class="getColumnClasses(header)" :style="containerStyle">
-            <qas-header class="ellipsis q-mb-md text-grey-10" v-bind="headerBoxProps">
+            <div class="ellipsis q-mb-md text-grey-10">
               <qas-skeleton v-if="props.skeleton" type="text" use-contrast width="80%" />
 
               <slot v-else :fields="getFieldsByHeader(header)" :header="header" :index="index" name="header-column" />
-            </qas-header>
+            </div>
 
             <pv-board-generator-cards-container ref="columnContainer" class="qas-board-generator__column secondary-scroll" v-bind="getCardsContainerProps(header)">
               <!-- COLUNA COM ERRO -->
@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="text-center">
-                  <qas-btn class="q-mt-md" icon="sym_r_refresh" label="Tentar novamente" :loading="columnsLoading[getKeyByHeader(header)]" @click="fetchColumn(header, true)" />
+                  <qas-btn class="q-mt-md" icon="sym_r_refresh" label="Tentar novamente" :loading="columnsLoading[getKeyByHeader(header)]" @click="handleFetchColumnClick(header)" />
                 </div>
               </div>
 
@@ -34,7 +34,7 @@
                 </qas-lazy-loading-components>
 
                 <div class="full-width justify-center row">
-                  <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" :label="props.seeMoreButtonLabel" :loading="columnsLoading[getKeyByHeader(header)]" :use-label-on-small-screen="false" variant="tertiary" @click="fetchColumn(header, true)" />
+                  <qas-btn v-if="hasSeeMore(header)" icon="sym_r_add" :label="props.seeMoreButtonLabel" :loading="columnsLoading[getKeyByHeader(header)]" :use-label-on-small-screen="false" variant="tertiary" @click="handleFetchColumnClick(header)" />
 
                   <template v-if="hasSkeletonByHeader(header)">
                     <div class="q-col-gutter-y-sm row">
@@ -69,7 +69,6 @@
 <script setup>
 import PvBoardGeneratorCardsContainer from './private/PvBoardGeneratorCardsContainer.vue'
 import QasSkeleton from '../skeleton/QasSkeleton.vue'
-import QasHeader from '../header/QasHeader.vue'
 import QasCard from '../card/QasCard.vue'
 import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
@@ -109,11 +108,6 @@ const props = defineProps({
   },
 
   results: {
-    type: Object,
-    default: () => ({})
-  },
-
-  headerBoxProps: {
     type: Object,
     default: () => ({})
   },
@@ -178,8 +172,7 @@ const props = defineProps({
   },
 
   skeleton: {
-    type: Boolean,
-    default: false
+    type: Boolean
   },
 
   useDragAndDropX: {
@@ -238,8 +231,13 @@ const columnsLoading = ref({})
 const columnsFieldsModel = ref({})
 const showConfirmDialog = ref(false)
 const isLoadingUpdatePosition = ref(false)
-const isLoadingFromSeeMore = ref(false)
+const hideSkeleton = ref(false)
 const columnsWithError = ref({})
+
+/**
+ * Set de IDs dos itens com update de posição em andamento.
+ * Usamos Set para evitar duplicatas e ter O(1) no has().
+ */
 const updatingPositionItemKeys = ref(new Set())
 
 /**
@@ -374,6 +372,46 @@ const normalizedHeaders = computed(() => {
   return props.headers
 })
 
+const columnsResultsModel = computed({
+  get () {
+    return props.results
+  },
+
+  set (newValues) {
+    emit('update:results', newValues)
+  }
+})
+
+const isDragging = computed(() => draggingCount.value > 0)
+
+const hasColumnsLength = computed(() => !!Object.keys(columnsResultsModel.value).length)
+
+const containerStyle = computed(() => `width: ${props.columnWidth};`)
+
+const hasConfirmDialogProps = computed(() => !!Object.keys(props.confirmDialogProps).length)
+
+const defaultConfirmDialogProps = computed(() => {
+  const defaultProps = {
+    ok: {
+      label: 'Confirmar',
+      onClick: onConfirmDrop.value,
+      loading: isLoadingUpdatePosition.value
+    },
+
+    cancel: {
+      onClick: onCancelDrop.value
+    }
+  }
+
+  return {
+    ...props.confirmDialogProps,
+    ...defaultProps
+  }
+})
+
+// provide
+provide('isDragging', isDragging)
+
 // watchers
 watch(
   () => normalizedHeaders.value,
@@ -403,46 +441,6 @@ onBeforeUnmount(() => {
   destroySortable()
 
   window.removeEventListener('resize', setColumnHeightContainer)
-})
-
-// Computeds
-const columnsResultsModel = computed({
-  get () {
-    return props.results
-  },
-
-  set (newValues) {
-    emit('update:results', newValues)
-  }
-})
-
-const isDragging = computed(() => draggingCount.value > 0)
-
-provide('isDragging', isDragging)
-
-const hasColumnsLength = computed(() => !!Object.keys(columnsResultsModel.value).length)
-
-const containerStyle = computed(() => `width: ${props.columnWidth};`)
-
-const hasConfirmDialogProps = computed(() => !!Object.keys(props.confirmDialogProps).length)
-
-const defaultConfirmDialogProps = computed(() => {
-  const defaultProps = {
-    ok: {
-      label: 'Confirmar',
-      onClick: onConfirmDrop.value,
-      loading: isLoadingUpdatePosition.value
-    },
-
-    cancel: {
-      onClick: onCancelDrop.value
-    }
-  }
-
-  return {
-    ...props.confirmDialogProps,
-    ...defaultProps
-  }
 })
 
 // functions
@@ -552,6 +550,7 @@ async function fetchColumns () {
   if (currentFetchColumnsSession !== mySession) return
 
   const allPromises = [...visibleColumns, ...hiddenColumns]
+  console.log('🚀 ~ fetchColumns ~ allPromises:', allPromises)
 
   const hasAllPromisesSucceeded = allPromises.every(promise => promise.status === 'fulfilled')
   const hasAllPromisesFailed = allPromises.length > 0 && allPromises.every(promise => promise.status === 'rejected')
@@ -572,11 +571,24 @@ async function fetchColumns () {
 }
 
 /*
-* Busca a coluna com base no header recebido.
+* Wrapper para chamadas de fetchColumn originadas de eventos de clique do usuário.
+* fetchColumn relança o erro para que Promise.allSettled em fetchColumns consiga
+* detectar colunas com falha; aqui o erro já foi tratado internamente, portanto
+* é suprimido para evitar o warning "Unhandled error during execution of component
+* event handler" do Vue.
 */
-async function fetchColumn (header, fromSeeMore) {
+function handleFetchColumnClick (header) {
+  fetchColumn(header, true)
+}
+
+/**
+ * Busca a coluna com base no header recebido.
+ *
+ * @param header - payload do header da coluna a ser buscada, exemplo: { date: '2024-02-12', ... }
+ * @param shouldHideSkeleton - flag para controlar se o skeleton de carregamento deve ser ocultado durante a busca
+ */
+async function fetchColumn (header, shouldHideSkeleton) {
   const headerKey = getKeyByHeader(header)
-  console.log('🚀 ~ fetchColumn ~ header:', { headerKey, header, url: `${props.columnUrl}/${headerKey}` })
 
   /**
    * Cancela qualquer request anterior para esta mesma coluna antes de iniciar a nova.
@@ -597,7 +609,7 @@ async function fetchColumn (header, fromSeeMore) {
 
   const { limit, offset } = columnsPagination.value[headerKey] || {}
 
-  isLoadingFromSeeMore.value = fromSeeMore
+  hideSkeleton.value = shouldHideSkeleton
 
   const { data: response, error } = await promiseHandler(
     axios.get(`${props.columnUrl}/${headerKey}`, {
@@ -624,7 +636,7 @@ async function fetchColumn (header, fromSeeMore) {
 
   delete columnAbortControllers[headerKey]
 
-  isLoadingFromSeeMore.value = false
+  hideSkeleton.value = false
 
   if (error) {
     // Request cancelada intencionalmente (novo fetchColumnsValues chamado): ignora silenciosamente.
@@ -1263,7 +1275,7 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event, opti
 
   const isFnUpdatePositionUrl = typeof props.updatePositionUrl === 'function'
 
-  isLoadingFromSeeMore.value = true
+  hideSkeleton.value = true
 
   const url = isFnUpdatePositionUrl
     ? props.updatePositionUrl({ newHeaderKey, oldHeaderKey, itemId })
@@ -1388,7 +1400,7 @@ function transferItemToColumn ({ itemId, fromColumnId, toColumnId, updatedItem }
 function hasSkeletonByHeader (header) {
   const headerKey = getKeyByHeader(header)
 
-  return (props.skeleton || columnsLoading.value[headerKey]) && !isLoadingFromSeeMore.value
+  return (props.skeleton || columnsLoading.value[headerKey]) && !hideSkeleton.value
 }
 
 function getColumnClasses (header) {

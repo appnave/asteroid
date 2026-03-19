@@ -31,32 +31,27 @@ import { ref, onMounted, onBeforeUnmount, useSlots, nextTick, watch } from 'vue'
 defineOptions({ name: 'QasLazyLoadingComponents' })
 
 const props = defineProps({
-  // Porcentagem de visibilidade necessária para ativar (0.0 a 1.0)
   threshold: {
     type: Number,
     default: 0.1 // 10% visível
   },
 
-  // Margem extra ao redor do viewport para pré-carregamento
   rootMargin: {
     type: String,
     default: '0px'
   },
 
-  // Direção do scroll: 'vertical' (padrão) ou 'horizontal'
   direction: {
     type: String,
     default: 'vertical',
     validator: value => ['vertical', 'horizontal'].includes(value)
   },
 
-  // Altura dos placeholders antes de carregar (usado em direction='vertical')
   placeholderHeight: {
     type: String,
     default: '500px'
   },
 
-  // Largura dos placeholders antes de carregar (usado em direction='horizontal')
   placeholderWidth: {
     type: String,
     default: '300px'
