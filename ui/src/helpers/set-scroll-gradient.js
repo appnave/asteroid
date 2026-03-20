@@ -174,13 +174,16 @@ export default function setScrollGradient (config = {}) {
     const elementRect = element.getBoundingClientRect()
     const parentRect = element.parentElement.getBoundingClientRect()
 
+    // pequena margem para garantir que o gradiente fique grudado ao elemento.
+    const safeArea = 1
+
     /**
      * diferença entre o bottom do pai e o bottom do filho, valor positivo significa
      * que há espaço livre abaixo do filho.
      */
     const distance = {
-      end: isVertical ? (parentRect.bottom - elementRect.bottom) : (parentRect.right - elementRect.right),
-      start: isVertical ? (elementRect.top - parentRect.top) : (elementRect.left - parentRect.left)
+      end: isVertical ? (parentRect.bottom - elementRect.bottom - safeArea) : (parentRect.right - elementRect.right - safeArea),
+      start: isVertical ? (elementRect.top - parentRect.top) - safeArea : (elementRect.left - parentRect.left) - safeArea
     }
 
     span.style[getDirection(direction)] = `${distance[direction]}px`

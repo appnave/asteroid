@@ -111,6 +111,9 @@ selectors:
     desc: Seletor do botão de confirmar do componente.
     examples: ['data-cy="dialog-ok-btn"']
 
+  title:
+    desc: Slot para inserir conteúdo adicional ao lado do título do card do dialog.
+
   dialog-title:
     desc: Seletor do título do componente.
     examples: ['data-cy="dialog-title"']

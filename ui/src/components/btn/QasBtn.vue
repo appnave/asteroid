@@ -10,7 +10,7 @@
 
       <q-icon v-if="hasIcon" :class="iconClasses" :name="props.icon" />
 
-      <div v-if="showLabel" :class="labelClasses">
+      <div v-if="showLabel" class="qas-btn__label" :class="labelClasses">
         {{ props.label }}
       </div>
 
@@ -112,6 +112,10 @@ const props = defineProps({
   useHoverOnWhiteColor: {
     default: true,
     type: Boolean
+  },
+
+  useMagicAiColor: {
+    type: Boolean
   }
 })
 
@@ -208,6 +212,9 @@ const classes = computed(() => {
 
       // loading
       'qas-btn--loading': props.loading,
+
+      // magic ai
+      'qas-btn--magic-ai': props.useMagicAiColor,
 
       // ellipsis
       'full-width': props.useEllipsis
