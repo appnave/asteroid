@@ -144,3 +144,16 @@ Boas práticas:
 - Documente no pai quando estiver alterando os defaults (ex.: comentário `@see QasBtn.vue`) para facilitar manutenção.
 :::
 <doc-example file="QasBtn/ExWithInputDefault" title="Propriedades padrões dentro do QasInput" />
+
+:::info
+#### Magic AI Color (`use-magic-ai-color`)
+A prop `useMagicAiColor` aplica um gradiente de inteligência artificial ao botão. O comportamento visual varia conforme a variante:
+
+- **primary**: o gradiente substitui a cor de fundo do botão. O texto permanece branco.
+- **secondary**: o gradiente é aplicado como cor de texto e borda.
+- **tertiary**: o gradiente é aplicado apenas na cor do texto.
+
+Em todas as variantes, o hover utiliza a cor `$secondary-contrast`.
+:::
+
+<doc-example file="QasBtn/ExBtnMagicAi" title="Magic AI Color" />

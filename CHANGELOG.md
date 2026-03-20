@@ -14,14 +14,47 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## BREAKING CHANGES
+- `QasBoardGenerator`:
+  - Varias mudanças de comportamento e visuais no componente, revisar se nada quebra.
+  - removido prop `headerBoxProps` porque agora não existe um `QasBox` englobando o header.
+
 ### Adicionado
-- `Screen (Plugin) | use-screen`: Adicionado novos tokens de tamanhos para validaçào de telas maiores. ([#1351](https://github.com/bildvitta/asteroid/issues/1351))
+- `Screen (Plugin) | use-screen`: Adicionado novos tokens de tamanhos para validação de telas maiores. ([#1351](https://github.com/bildvitta/asteroid/issues/1351))
+- `QasBoardGenerator`:
+  - adicionada prop `skeleton` (default `false`) para exibir cards fictícios de carregamento enquanto as colunas são buscadas.
+  - adicionado suporte a lazy loading das colunas via `QasLazyLoadingComponents`, priorizando o carregamento das colunas visíveis.
+  - adicionado scroll horizontal suave durante drag-and-drop, com velocidade vertical independente e melhoras no estilo da classe ghost.
+  - adicionados novos métodos expostos: `refreshColumn`, `removeItemFromList`, `updateItemInList`, `refetchColumns` e `transferItemToColumn`.
+  - adicionado parâmetro `isUpdatingPosition` no slot `column-item` para indicar quando o item está sendo processado pelo drag-and-drop.
+  - adicionado parâmetros `header` e `columnIndex` no slot `column-item`.
+- `QasLazyLoadingComponents`:
+  - adicionada prop `direction` (`vertical` | `horizontal`) para suporte a listas de rolagem horizontal.
+  - adicionada prop `placeholder-width` para definir a largura dos placeholders no modo horizontal.
+  - adicionado `v-model:visible-items` que expõe os índices dos itens atualmente visíveis na viewport.
+- `QasDialog`: adicionado slot `title` para inserir conteúdo adicional ao lado do título do card do dialog.
+- `QasBtn`: adicionada prop `useMagicAiColor` que aplica gradiente de inteligência artificial (magic AI) ao botão. O comportamento varia por variante: `primary` altera o fundo, `secondary` altera texto e borda, `tertiary` altera apenas o texto. Hover usa `$secondary-contrast`.
+- `QasActionsMenu`: suporte à propriedade `useMagicAiColor` nos itens da prop `list`, que aplica o gradiente de magic AI no ícone e no texto do item no dropdown. Quando o item é renderizado como botão externo (via `splitName`), as cores são aplicadas automaticamente.
+- CSS: adicionadas classes utilitárias `text-magic-ai`, `bg-magic-ai` e `border-magic-ai` para aplicação do gradiente de magic AI em textos, fundos e bordas respectivamente.
+- `QasDateTimeInput`: adicionado comportamento de setar hora automaticamente após digitar a data. ([#1411](https://github.com/bildvitta/asteroid/issues/1411))
+
+### Modificado
+- `QasListView`: removida lógica que acionava delete automático quando `useStore: false` e `entity` estava definido; o comportamento agora é controlado exclusivamente pelas props `useAutoHandleOnDelete` e `useAutoRefetchOnDelete`.
+- `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
+- `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
+- `filters.js`: modificado label da função booleanLabel para começarem com letras maiúsculas.
 
 ### Corrigido
+- `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
+- `helpers/set-scroll-gradient`: Corrigido pequena diferença de posicionamento do gradiente.
 - `QasStepper`:
   - Corrigido cor da linha quando da step anterior quando uma outra step é finalizada. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
   - Corrigido tamanho das linhas centrais setando proporções na primeira e última linha. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
+
+### Removido
+- `QasBoardGenerator`: 
+  - removido prop `useMarkRaw`, agora o componente faz o controle sozinho de quando vai ser ou não reativo os dados.
+  - removido prop `headerBoxProps` porque agora não existe um `QasBox` englobando o header.
 
 ## [3.20.0-beta.13] - 19-02-2026
 ### Adicionado
