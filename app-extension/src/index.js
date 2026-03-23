@@ -18,6 +18,7 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
     'boot/font-face.js',
     'boot/register.js',
     'boot/loading.js',
+    'boot/tanstack-query.js',
     'boot/query-cache.js',
     'boot/store-adapter',
     'boot/before-each.js'

@@ -48,10 +48,11 @@ import QasPagination from '../pagination/QasPagination.vue'
 
 import { viewMixin, contextMixin } from '../../mixins'
 import { useOverlayNavigation } from '../../composables'
+import tanStackQueryMixin from './_mixins/tan-stack-query-mixin.js'
 
-import { decamelize } from 'humps'
 import debug from 'debug'
 import { extend } from 'quasar'
+import { decamelize } from 'humps'
 import { getState, getAction } from '@bildvitta/store-adapter'
 import { computed } from 'vue'
 
@@ -65,7 +66,7 @@ export default {
     QasPagination
   },
 
-  mixins: [contextMixin, viewMixin],
+  mixins: [contextMixin, viewMixin, tanStackQueryMixin],
 
   provide () {
     return {
@@ -127,6 +128,11 @@ export default {
       type: Boolean
     },
 
+    useQuery: {
+      type: Boolean,
+      default: false
+    },
+
     useStore: {
       type: Boolean,
       default: true
@@ -180,16 +186,16 @@ export default {
     },
 
     /**
-     * Em casos de não utilizar store, utiliza o data do mixin.
+     * Em casos de não utilizar store ou ao usar useQuery, utiliza o data local.
      */
     resultsModel () {
-      if (this.useStore) return getState.call(this, { entity: this.entity, key: 'list' })
+      if (this.useStore && !this.useQuery) return getState.call(this, { entity: this.entity, key: 'list' })
 
       return this.resultsList || []
     },
 
     totalPages () {
-      if (this.useStore) return getState.call(this, { entity: this.entity, key: 'totalPages' })
+      if (this.useStore && !this.useQuery) return getState.call(this, { entity: this.entity, key: 'totalPages' })
 
       return Math.ceil(this.count / this.resultsPerPage)
     },
@@ -208,8 +214,11 @@ export default {
       if (this.isBackgroundOverlay) return
 
       if (to.name === from.name) {
-        this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
         this.setCurrentPage()
+
+        if (!this.useQuery) {
+          this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
+        }
       }
     },
 
@@ -223,7 +232,9 @@ export default {
   },
 
   created () {
-    this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
+    if (!this.useQuery) {
+      this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
+    }
 
     this.setCurrentPage()
   },
@@ -301,6 +312,22 @@ export default {
       }
     },
 
+    buildFetchParams ({ filters = {}, limit, ordering, page = 1, search, resultsPerPage }) {
+      const resolvedLimit = parseInt(limit) || resultsPerPage
+
+      return {
+        ...filters,
+        ...(ordering && { ordering }),
+        ...(search && { search }),
+        limit: resolvedLimit,
+        offset: (page - 1) * resolvedLimit
+      }
+    },
+
+    resolveUrl (url, entity) {
+      return url || decamelize(entity, { separator: '-' })
+    },
+
     setResults (results) {
       this.resultsList = results
     },
@@ -314,27 +341,20 @@ export default {
         })
       }
 
-      const { url: payloadURL, page, filters, limit: payloadLimit, ...payloadParams } = payload
+      const { url: payloadURL, page, filters, limit, ordering, search } = payload
 
-      const limit = payloadLimit || this.resultsPerPage
-
-      // Define os parâmetros que serão enviados para a API
-      const params = {
-        ...filters,
-        ...payloadParams,
-        limit,
-        offset: ((page || 1) - 1) * limit
-      }
-
-      const decamelizedEntity = decamelize(this.entity, { separator: '-' })
-
-      const url = payloadURL || decamelizedEntity
+      const params = this.buildFetchParams({ filters, limit, ordering, page, search, resultsPerPage: this.resultsPerPage })
+      const url = this.resolveUrl(payloadURL, this.entity)
 
       return this.$axios.get(url, { params })
     },
 
     async refresh (done) {
-      await this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
+      if (this.useQuery) {
+        await this.tanStackRefetch()
+      } else {
+        await this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
+      }
 
       if (typeof done === 'function') {
         done()
@@ -382,6 +402,11 @@ export default {
     },
 
     onDeleteResult (event) {
+      if (this.useQuery) {
+        this.tanStackRefetch()
+        return
+      }
+
       if (this.useAutoRefetchOnDelete || !this.useStore) {
         this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
         return
