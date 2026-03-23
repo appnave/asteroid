@@ -148,6 +148,10 @@ export default {
       }
 
       resolve()
+    },
+
+    mx_fetchHandlerAsync (payload) {
+      return new Promise(resolve => this.mx_fetchHandler(payload, resolve))
     }
   }
 }

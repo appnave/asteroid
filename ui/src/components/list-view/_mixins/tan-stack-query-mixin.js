@@ -23,25 +23,67 @@ export default {
     if (!this.useQuery) return
 
     const { data, isFetching, isError, error, refetch } = useQuery({
-      queryKey: computed(() => [this.entity, this.url, this.$route.query]),
+      /**
+       * Identificador único da query no cache do TanStack.
+       * Quando a key muda reativamente (ex: troca de página ou filtro), um novo fetch é disparado automaticamente.
+       * O `!!this.beforeFetch` diferencia instâncias com e sem beforeFetch, evitando que o TanStack
+       * deduplique queries de componentes com comportamentos distintos.
+       */
+      queryKey: computed(() => [this.entity, this.url, this.$route.query, !!this.beforeFetch]),
 
+      /**
+       * Função responsável por realizar o fetch. Só é chamada quando não há cache válido ou quando
+       * forçado por `staleTime`/`refetchOnMount`.
+       * Aguarda o `beforeFetch` via `mx_fetchHandlerAsync` antes de disparar o axios,
+       * permitindo interceptar e modificar o payload (url, params) antes da requisição.
+       */
       queryFn: async ({ signal }) => {
         const { limit, ordering, page, search, ...filters } = this.$route.query
 
-        const params = this.buildFetchParams({
-          filters,
-          limit,
-          ordering,
-          page: parseInt(page) || 1,
-          search,
-          resultsPerPage: this.resultsPerPage
-        })
+        const basePayload = {
+          url: this.resolveUrl(this.url, this.entity),
+          params: this.buildFetchParams({
+            filters,
+            limit,
+            ordering,
+            page: parseInt(page) || 1,
+            search,
+            resultsPerPage: this.resultsPerPage
+          })
+        }
 
-        return this.$axios.get(this.resolveUrl(this.url, this.entity), { params, signal })
+        const finalPayload = await this.mx_fetchHandlerAsync(basePayload)
+        const { url, params } = finalPayload ?? basePayload
+
+        return this.$axios.get(url, { params, signal })
       },
 
+      /**
+       * Exibe os dados da página anterior enquanto os novos estão sendo carregados,
+       * evitando flicker de tela em branco durante a troca de filtros ou páginas.
+       */
       placeholderData: keepPreviousData,
 
+      /**
+       * Tempo em ms antes de os dados serem considerados desatualizados.
+       * Com `0`, os dados do cache (incluindo o persister) são imediatamente considerados stale,
+       * garantindo que o `queryFn` sempre seja executado para buscar dados frescos.
+       */
+      staleTime: 0,
+
+      /**
+       * Garante que o `queryFn` seja sempre executado ao montar o componente,
+       * mesmo que o persister já tenha restaurado dados do cache do IndexedDB.
+       * Combinado com `staleTime: 0`, o persister exibe o cache instantaneamente (sem tela em branco)
+       * e em seguida a API é chamada para atualizar os dados.
+       */
+      refetchOnMount: 'always',
+
+      /**
+       * Persiste o cache da query no IndexedDB via idb-keyval.
+       * Na próxima visita, os dados são restaurados instantaneamente antes do fetch,
+       * eliminando a tela em branco inicial.
+       */
       persister: createQueryPersister({
         storage: {
           getItem: key => get(key),
@@ -51,8 +93,14 @@ export default {
         }
       }).persisterFn,
 
+      /**
+       * Número de tentativas automáticas em caso de falha na requisição.
+       */
       retry: 3,
 
+      /**
+       * Tempo de espera entre tentativas com backoff exponencial (1s, 2s, 4s), limitado a 30s.
+       */
       retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000)
     })
 
