@@ -54,6 +54,11 @@ props:
     type: Boolean
     default: false
 
+provide:
+  is-header:
+    desc: Identificador booleano que indica quando um componente está dentro do contexto de um QasHeader.
+    type: Boolean
+
 slots:
   actions:
     desc: slot para acessar seção da direita (ações).

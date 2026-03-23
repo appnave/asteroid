@@ -164,7 +164,7 @@ export default {
      * automaticamente.
      */
     hasDeleteEventListener () {
-      return this.useAutoHandleOnDelete || this.useAutoRefetchOnDelete || (!this.useStore && this.entity)
+      return this.useAutoHandleOnDelete || this.useAutoRefetchOnDelete
     },
 
     hasHeaderSlot () {
@@ -382,7 +382,7 @@ export default {
     },
 
     onDeleteResult (event) {
-      if (this.useAutoRefetchOnDelete || !this.useStore) {
+      if (this.useAutoRefetchOnDelete) {
         this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
         return
       }

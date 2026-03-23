@@ -3,7 +3,7 @@ type: component
 meta:
   desc: Plugin que implementa o `QasDialog`.
 
-inject:
+provide:
   'this.$qas.dialog(config)':
     params:
       config:
