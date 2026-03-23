@@ -14,6 +14,8 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## [3.20.0-beta.14] - 23-03-2026
+
 ## BREAKING CHANGES
 - `QasBoardGenerator`:
   - Varias mudanças de comportamento e visuais no componente, revisar se nada quebra.
@@ -4959,3 +4961,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.9]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.8...v3.20.0-beta.9?expand=1
 [3.20.0-beta.10]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.9...v3.20.0-beta.10?expand=1
 [3.20.0-beta.13]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.10-alpha.15...v3.20.0-beta.13?expand=1
+[3.20.0-beta.14]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.14-alpha.4...v3.20.0-beta.14?expand=1
