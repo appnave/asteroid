@@ -46,6 +46,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Corrigido
 - `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
+- `QasSelectListDialog`: corrigido mutação direta da prop `options` causada por `filteredOptions` ser inicializado com a mesma referência do array original. Corrigido usando `ref([...props.options])` para garantir uma cópia independente.
 - `helpers/set-scroll-gradient`: Corrigido pequena diferença de posicionamento do gradiente.
 - `QasStepper`:
   - Corrigido cor da linha quando da step anterior quando uma outra step é finalizada. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
