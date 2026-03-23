@@ -14,13 +14,13 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
 ## BREAKING CHANGES
 - `QasBoardGenerator`:
   - Varias mudanças de comportamento e visuais no componente, revisar se nada quebra.
   - removido prop `headerBoxProps` porque agora não existe um `QasBox` englobando o header.
 
 ### Adicionado
+- `Screen (Plugin) | use-screen`: Adicionado novos tokens de tamanhos para validação de telas maiores. ([#1351](https://github.com/bildvitta/asteroid/issues/1351))
 - `QasBoardGenerator`:
   - adicionada prop `skeleton` (default `false`) para exibir cards fictícios de carregamento enquanto as colunas são buscadas.
   - adicionado suporte a lazy loading das colunas via `QasLazyLoadingComponents`, priorizando o carregamento das colunas visíveis.
@@ -47,6 +47,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Corrigido
 - `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
 - `helpers/set-scroll-gradient`: Corrigido pequena diferença de posicionamento do gradiente.
+- `QasStepper`:
+  - Corrigido cor da linha quando da step anterior quando uma outra step é finalizada. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
+  - Corrigido tamanho das linhas centrais setando proporções na primeira e última linha. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
 
 ### Removido
 - `QasBoardGenerator`: 

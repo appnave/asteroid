@@ -69,6 +69,11 @@ slots:
   header:
     desc: Slot para o título.
 
+provide:
+  is-dialog:
+    desc: Identificador booleano que indica quando um componente está dentro do contexto de um QasDialog.
+    type: Boolean
+
 events:
   '@update:model-value -> function (value)':
     desc: Dispara toda vez que o model é atualizado, também utilizado para v-model.
