@@ -31,7 +31,7 @@ const attrs = useAttrs()
 const slots = useSlots()
 
 const lines = computed(() => {
-  const text = props.text || getSlotChildrenText(slots.default())
+  const text = props.text || (slots.default ? getSlotChildrenText(slots.default()) : '')
 
   return text.split(props.split)
 })
