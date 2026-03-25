@@ -250,6 +250,10 @@ module.exports = [
         path: '/components/option-group'
       },
       {
+        name: 'OverlayRouterLink',
+        path: '/components/overlay-router-link'
+      },
+      {
         name: 'PageHeader',
         path: '/components/page-header'
       },

@@ -29,6 +29,11 @@ props:
     default: {}
     type: Object
 
+  overlay-route:
+    desc: Rota que será utilizada ao clicar no título, abrindo em um overlay.
+    default: {}
+    type: Object
+
   status-color:
     desc: Insere uma borda na esquerda para indicar o status do card.
     default: ''

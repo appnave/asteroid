@@ -67,6 +67,7 @@
 </template>
 
 <script setup>
+import QasOverlayRouterLink from '../overlay-router-link/QasOverlayRouterLink.vue'
 import QasTooltip from '../tooltip/QasTooltip.vue'
 import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasCheckbox from '../checkbox/QasCheckbox.vue'
@@ -104,6 +105,11 @@ const props = defineProps({
   },
 
   route: {
+    type: Object,
+    default: () => ({})
+  },
+
+  overlayRoute: {
     type: Object,
     default: () => ({})
   },
@@ -172,11 +178,13 @@ const titleComponent = computed(() => {
   const hasRoute = !!Object.keys(props.route).length && !props.skeleton
 
   return {
-    is: hasRoute ? 'router-link' : 'h5',
+    is: hasRoute ? QasOverlayRouterLink : 'h5',
+
     props: {
       ...(hasRoute && {
-        to: props.route,
-        class: 'qas-card__router'
+        route: props.route,
+        overlayRoute: props.overlayRoute,
+        title: props.title
       })
     }
   }
@@ -227,12 +235,6 @@ const formattedActionsMenuProps = computed(() => {
 
   .q-card {
     background-color: transparent;
-  }
-
-  &__router {
-    &:hover {
-      color: $primary;
-    }
   }
 
   &__expansion-header {

@@ -1,0 +1,24 @@
+type: component
+
+meta:
+  desc: Componente de link que, ao ser clicado normalmente, abre a rota no overlay. Ao abrir em uma nova guia, navega diretamente para a página sem overlay.
+
+props:
+  title:
+    desc: Texto exibido como conteúdo padrão do link, utilizado quando o slot default não é fornecido.
+    default: ''
+    type: String
+
+  route:
+    desc: Rota de destino padrão do link (repassada ao `router-link`).
+    required: true
+    type: Object
+
+  overlay-route:
+    desc: Rota a ser aberta no overlay ao clicar no link. Quando não informada, o comportamento padrão do `router-link` é mantido.
+    default: {}
+    type: Object
+
+slots:
+  default:
+    desc: Conteúdo do link. Quando não fornecido, exibe o valor da prop `title`.
