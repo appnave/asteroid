@@ -1,14 +1,14 @@
+<!--
+  Tratamento feito para ter o comportamento de ao abrir em uma nova guia, direto na página, abre sem overlay.
+  Caso contrário, ao clicar normalmente, abrirá no overlay.
+-->
 <template>
-  <!--
-    Tratamento feito para ter o comportamento de ao abrir em uma nova guia, direto na página, abre sem overlay.
-    Caso contrário, ao clicar normalmente, abrirá no overlay.
-  -->
   <router-link
     class="qas-overlay-router-link text-no-decoration"
     v-bind="routerLinkProps"
   >
     <slot>
-      {{ props.title }}
+      {{ props.label }}
     </slot>
   </router-link>
 </template>
@@ -21,7 +21,7 @@ import { useOverlayNavigation } from 'asteroid'
 defineOptions({ name: 'QasOverlayRouterLink' })
 
 const props = defineProps({
-  title: {
+  label: {
     type: String,
     default: ''
   },
@@ -65,6 +65,7 @@ const routerLinkProps = computed(() => {
 
 <style lang="scss">
 .qas-overlay-router-link {
+  transition: color var(--qas-generic-transition);
   color: inherit;
 
   &:hover {

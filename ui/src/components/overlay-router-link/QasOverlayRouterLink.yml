@@ -4,7 +4,7 @@ meta:
   desc: Componente de link que, ao ser clicado normalmente, abre a rota no overlay. Ao abrir em uma nova guia, navega diretamente para a página sem overlay.
 
 props:
-  title:
+  label:
     desc: Texto exibido como conteúdo padrão do link, utilizado quando o slot default não é fornecido.
     default: ''
     type: String
@@ -21,4 +21,4 @@ props:
 
 slots:
   default:
-    desc: Conteúdo do link. Quando não fornecido, exibe o valor da prop `title`.
+    desc: Conteúdo do link. Quando não fornecido, exibe o valor da prop `label`.
