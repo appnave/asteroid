@@ -20,7 +20,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasCard`: adicionado nova prop `useOverlayRoute` onde será repassado para o componente `QasRouterLink` para controlar a rota de overlay.
 
 ### Modificado
-- `QasCard`: modificado titulo, onde passou a utilizar o componente criado `QasOverlayRouterLink`.
+- `QasCard`: modificado titulo, onde passou a utilizar o componente criado `QasRouterLink`.
 
 ## [3.20.0-beta.14] - 23-03-2026
 
