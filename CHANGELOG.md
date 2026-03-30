@@ -16,8 +16,8 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Adicionado
-- `QasOverlayRouterLink`: adicionado componente pra controlar as rotas de overlay e rotas pra abrir em uma nova guia.
-- `QasCard`: adicionado nova prop `overlayRoute` onde será repassado para o componente `QasOverlayRouterLink` para controlar a rota de overlay.
+- `QasRouterLink`: adicionado componente pra controlar as rotas de overlay e rotas pra abrir em uma nova guia.
+- `QasCard`: adicionado nova prop `useOverlayRoute` onde será repassado para o componente `QasRouterLink` para controlar a rota de overlay.
 
 ### Modificado
 - `QasCard`: modificado titulo, onde passou a utilizar o componente criado `QasOverlayRouterLink`.
