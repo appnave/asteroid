@@ -22,6 +22,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Modificado
 - `QasCard`: modificado titulo, onde passou a utilizar o componente criado `QasRouterLink`.
 
+### Corrigido
+- `use-overlay-navigation`: corrigido problema em que callbacks de outras instâncias eram executados indevidamente quando o composable era utilizado em múltiplos componentes simultaneamente. A correção garante que cada callback seja removido automaticamente via `onUnmounted` ao desmontar o componente que o registrou.
+
 ## [3.20.0-beta.14] - 23-03-2026
 
 ## BREAKING CHANGES
