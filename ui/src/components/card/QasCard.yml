@@ -29,10 +29,10 @@ props:
     default: {}
     type: Object
 
-  overlay-route:
-    desc: Rota que será utilizada ao clicar no título, abrindo em um overlay.
-    default: {}
-    type: Object
+  use-overlay-route:
+    desc: Quando verdadeiro, o clique no título abre a rota no overlay em vez de navegar normalmente. Ao abrir em uma nova guia, o comportamento padrão do `router-link` é mantido.
+    default: false
+    type: Boolean
 
   status-color:
     desc: Insere uma borda na esquerda para indicar o status do card.

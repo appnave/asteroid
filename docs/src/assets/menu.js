@@ -250,10 +250,6 @@ module.exports = [
         path: '/components/option-group'
       },
       {
-        name: 'OverlayRouterLink',
-        path: '/components/overlay-router-link'
-      },
-      {
         name: 'PageHeader',
         path: '/components/page-header'
       },
@@ -288,6 +284,10 @@ module.exports = [
       {
         name: 'Resizer',
         path: '/components/resizer'
+      },
+      {
+        name: 'RouterLink',
+        path: '/components/router-link'
       },
       {
         name: 'SearchBox',

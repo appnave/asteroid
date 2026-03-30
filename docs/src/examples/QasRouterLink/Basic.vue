@@ -1,6 +1,6 @@
 <template>
   <div class="container spaced">
-    <qas-overlay-router-link v-bind="props" />
+    <qas-router-link v-bind="props" />
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 defineOptions({ name: 'Basic' })
 
 const props = {
-  overlayRoute: { name: 'Root', query: { overlay: 'true' } },
+  useOverlayRoute: true,
   route: { name: 'Root' },
   label: 'Link com rota de overlay'
 }

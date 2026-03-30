@@ -4,7 +4,7 @@
 -->
 <template>
   <router-link
-    class="qas-overlay-router-link text-no-decoration"
+    class="qas-router-link text-no-decoration"
     v-bind="routerLinkProps"
   >
     <slot>
@@ -18,7 +18,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useOverlayNavigation } from 'asteroid'
 
-defineOptions({ name: 'QasOverlayRouterLink' })
+defineOptions({ name: 'QasRouterLink' })
 
 const props = defineProps({
   label: {
@@ -31,9 +31,9 @@ const props = defineProps({
     required: true
   },
 
-  overlayRoute: {
-    type: Object,
-    default: () => ({})
+  useOverlayRoute: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -43,12 +43,10 @@ const { getOverlayRoute } = useOverlayNavigation()
 
 // computeds
 const routerLinkProps = computed(() => {
-  const hasOverlayRoute = !!Object.keys(props.overlayRoute).length
-
   return {
     to: props.route,
 
-    ...(hasOverlayRoute && {
+    ...(props.useOverlayRoute && {
       onClick: event => {
         /**
          * @click.prevent pra evitar com que o router-link já trate o clique e tente navegar para a rota
@@ -56,7 +54,7 @@ const routerLinkProps = computed(() => {
          */
         event.preventDefault()
 
-        router.push(getOverlayRoute(props.overlayRoute))
+        router.push(getOverlayRoute(props.route))
       }
     })
   }
@@ -64,7 +62,7 @@ const routerLinkProps = computed(() => {
 </script>
 
 <style lang="scss">
-.qas-overlay-router-link {
+.qas-router-link {
   transition: color var(--qas-generic-transition);
   color: inherit;
 

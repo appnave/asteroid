@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import QasOverlayRouterLink from '../overlay-router-link/QasOverlayRouterLink.vue'
+import QasRouterLink from '../router-link/QasRouterLink.vue'
 import QasTooltip from '../tooltip/QasTooltip.vue'
 import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasCheckbox from '../checkbox/QasCheckbox.vue'
@@ -134,6 +134,12 @@ const props = defineProps({
     default: true
   },
 
+  // useOverlayRoute - criar prop pra repassar pro componente de overlay, e fazer a lógica no is
+
+  useOverlayRoute: {
+    type: Boolean
+  },
+
   useSelection: {
     type: Boolean
   }
@@ -178,12 +184,12 @@ const titleComponent = computed(() => {
   const hasRoute = !!Object.keys(props.route).length && !props.skeleton
 
   return {
-    is: hasRoute ? QasOverlayRouterLink : 'h5',
+    is: hasRoute ? QasRouterLink : 'h5',
 
     props: {
       ...(hasRoute && {
         route: props.route,
-        overlayRoute: props.overlayRoute,
+        useOverlayRoute: props.useOverlayRoute,
         title: props.title
       })
     }
