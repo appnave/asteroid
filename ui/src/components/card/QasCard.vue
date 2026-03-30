@@ -129,8 +129,6 @@ const props = defineProps({
     default: true
   },
 
-  // useOverlayRoute - criar prop pra repassar pro componente de overlay, e fazer a lógica no is
-
   useOverlayRoute: {
     type: Boolean
   },
