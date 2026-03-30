@@ -139,9 +139,6 @@ export default function useOverlayNavigation () {
   async function expandOverlay () {
     if (!hasOverlay.value) return
 
-    console.log(route, '<--- route')
-    console.log(backgroundRoute.value, '<--- backgroundRoute')
-    console.log(historyRoute.value, '<--- historyRoute')
     // callbacks
     execCallbackFunctions('onExpandOverlay')
     execCallbackFunctions('onHideOverlay')

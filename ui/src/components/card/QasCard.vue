@@ -109,11 +109,6 @@ const props = defineProps({
     default: () => ({})
   },
 
-  overlayRoute: {
-    type: Object,
-    default: () => ({})
-  },
-
   statusColor: {
     type: String,
     default: ''
