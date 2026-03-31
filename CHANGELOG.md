@@ -14,6 +14,10 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Corrigido
+- `useOverlayNavigation`: corrigido problema em que callbacks de outras instâncias eram executados indevidamente quando o composable era utilizado em múltiplos componentes simultaneamente. A correção garante que cada callback seja removido automaticamente via `onUnmounted` ao desmontar o componente que o registrou.
+
 ## [3.20.0-beta.14] - 23-03-2026
 
 ## BREAKING CHANGES
