@@ -16,7 +16,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Modificado
-- `QasSelectListDialog`: modificado componente de listagem dos itens selecionados, agora usamos o `QasSearchBox` onde terá um input de pesquisa.
+- `QasSelectListDialog`: modificado componente de listagem dos itens selecionados, agora usamos o `QasSearchBox` onde terá um input de pesquisa. ([#1497](https://github.com/bildvitta/asteroid/issues/1497))
 
 ### Segurança
 - Fixada versão do `axios` (removido `^`) em `package.json`, `ui/package.json` e `docs/package.json` para evitar atualizações automáticas em versões comprometidas (`0.30.4` e `1.14.1`).
