@@ -86,6 +86,12 @@ export default {
       return !!this.mx_filteredOptions.length
     },
 
+    mx_hasMorePages () {
+      const { lastPage, page, hasCount, hasNextPage } = this.mx_pagination
+
+      return hasCount ? !!(lastPage && page <= lastPage) : hasNextPage
+    },
+
     mx_hasOptionsToExclude () {
       return !!this.optionsToExclude.length
     }
@@ -211,6 +217,8 @@ export default {
           hasCount,
           hasNextPage
         }
+
+        console.log(this.mx_pagination, '<--- pagination after fetch')
 
         this.$emit('fetch-options-success', data)
 

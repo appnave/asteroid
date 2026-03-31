@@ -9,12 +9,12 @@
       v-if="canShowContainerList"
       class="q-mt-md relative-position"
     >
-      <span class="text-grey-10 text-subtitle1">
-        {{ props.listLabel }}
-      </span>
-
       <slot name="selected-content">
         <qas-search-box v-model:results="searchedResults" v-bind="searchSelectedItemsBoxProps" class="q-mt-md">
+          <span class="text-grey-10 text-subtitle1">
+            {{ props.listLabel }}
+          </span>
+
           <q-virtual-scroll #default="{ item, index }" class="app-select-list-dialog__list" :items="searchedResults" separator>
             <q-item class="q-px-none text-body1 text-grey-8">
               <q-item-section>
