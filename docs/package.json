@@ -23,7 +23,7 @@
     "@docsearch/js": "^3.4.0",
     "@fawmi/vue-google-maps": "^0.9.79",
     "@quasar/extras": "^1.16.17",
-    "axios": "^1.4.0",
+    "axios": "1.4.0",
     "chart.js": "^4.4.2",
     "chartjs-plugin-datalabels": "^2.2.0",
     "chartjs-plugin-zoom": "^2.0.1",
