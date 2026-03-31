@@ -22,6 +22,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Modificado
 - `QasCard`: modificado titulo, onde passou a utilizar o componente criado `QasRouterLink`.
 
+### Segurança
+- Fixada versão do `axios` (removido `^`) em `package.json`, `ui/package.json` e `docs/package.json` para evitar atualizações automáticas em versões comprometidas (`0.30.4` e `1.14.1`).
+
 ## [3.20.0-beta.14] - 23-03-2026
 
 ## BREAKING CHANGES
