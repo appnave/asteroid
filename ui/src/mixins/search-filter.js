@@ -218,8 +218,6 @@ export default {
           hasNextPage
         }
 
-        console.log(this.mx_pagination, '<--- pagination after fetch')
-
         this.$emit('fetch-options-success', data)
 
         const options = this.mx_getOptions(results)

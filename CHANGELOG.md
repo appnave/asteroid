@@ -15,8 +15,8 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
-### Modificado
-- `QasSelectListDialog`: modificado componente de listagem dos itens selecionados, agora usamos o `QasSearchBox` onde terá um input de pesquisa. ([#1497](https://github.com/bildvitta/asteroid/issues/1497))
+### Adicionado
+- `QasSelectListDialog`: adicionado campo de pesquisa para os itens selecionados. ([#1497](https://github.com/bildvitta/asteroid/issues/1497))
 
 ### Corrigido
 - `QasSelectListDialog`: corrigido problema de não buscar a próxima página ao ter todos os itens da primeira página selecionados. ([#1110](https://github.com/bildvitta/asteroid/issues/1110))
