@@ -1,4 +1,4 @@
-import { computed, hasInjectionContext, inject, onUnmounted, ref } from 'vue'
+import { computed, inject, onUnmounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 /**
@@ -265,29 +265,21 @@ export default function useOverlayNavigation () {
   function registerCallback (callbackName, callback) {
     callbackFunctions[callbackName].push(callback)
 
-    /**
-     * "hasInjectionContext()" retorna "true" somente quando há uma instância de componente ativa,
-     * ou seja, quando o código está sendo executado dentro de setup() ou de um lifecycle hook.
-     * Retorna "false" em contextos externos como guards de rota, data() de mixins ou métodos
-     * chamados após a montagem — nesses casos não há instância para registrar o onUnmounted.
-     */
-    if (hasInjectionContext()) {
-      onUnmounted(() => {
-        // Obtém o array de callbacks correspondente ao nome do callback que está sendo removido.
-        const callbackFunctionsList = callbackFunctions[callbackName]
+    onUnmounted(() => {
+      // Obtém o array de callbacks correspondente ao nome do callback que está sendo removido.
+      const callbackFunctionsList = callbackFunctions[callbackName]
 
-        /**
-         * Localiza a referência exata da função no array.
-         * O "callback" aqui é o mesmo do fechamento (closure) de "registerCallback",
-         * garantindo que apenas o callback desta instância seja removido, e não outros
-         * componentes que possam ter registrado callbacks para o mesmo evento.
-         */
-        const index = callbackFunctionsList.indexOf(callback)
+      /**
+       * Localiza a referência exata da função no array.
+       * O "callback" aqui é o mesmo do fechamento (closure) de "registerCallback",
+       * garantindo que apenas o callback desta instância seja removido, e não outros
+       * componentes que possam ter registrado callbacks para o mesmo evento.
+       */
+      const index = callbackFunctionsList.indexOf(callback)
 
-        // Remove o callback do array somente se ele ainda existir.
-        if (index !== -1) callbackFunctionsList.splice(index, 1)
-      })
-    }
+      // Remove o callback do array somente se ele ainda existir.
+      if (index !== -1) callbackFunctionsList.splice(index, 1)
+    })
   }
 
   /**
