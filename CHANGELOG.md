@@ -15,6 +15,12 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Adicionado
+- `QasSelectListDialog`: adicionado campo de pesquisa para os itens selecionados. ([#1497](https://github.com/bildvitta/asteroid/issues/1497))
+
+### Corrigido
+- `QasSelectListDialog`: corrigido problema de não buscar a próxima página ao ter todos os itens da primeira página selecionados. ([#1110](https://github.com/bildvitta/asteroid/issues/1110))
+
 ### Segurança
 - Fixada versão do `axios` (removido `^`) em `package.json`, `ui/package.json` e `docs/package.json` para evitar atualizações automáticas em versões comprometidas (`0.30.4` e `1.14.1`).
 
