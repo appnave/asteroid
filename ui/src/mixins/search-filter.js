@@ -86,6 +86,12 @@ export default {
       return !!this.mx_filteredOptions.length
     },
 
+    mx_hasNextPage () {
+      const { lastPage, page, hasCount, hasNextPage } = this.mx_pagination
+
+      return hasCount ? !!(lastPage && page <= lastPage) : hasNextPage
+    },
+
     mx_hasOptionsToExclude () {
       return !!this.optionsToExclude.length
     }
@@ -98,7 +104,7 @@ export default {
 
         this.mx_cachedOptions = []
 
-        this.mx_filterOptionsByStore('')
+        if (!this.disable) this.mx_filterOptionsByStore('')
 
         setTimeout(() => this.$emit('update:modelValue', undefined))
       }

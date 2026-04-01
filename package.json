@@ -1,7 +1,7 @@
 {
   "name": "@bildvitta/asteroid",
   "description": "Asteroid",
-  "version": "3.20.0-beta.14-alpha.1",
+  "version": "3.20.0-beta.15",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
   "license": "MIT",
   "scripts": {
@@ -22,7 +22,7 @@
     "@octokit/rest": "^19.0.11",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/test-utils": "^2.3.2",
-    "axios": "^1.4.0",
+    "axios": "1.4.0",
     "colors": "^1.4.0",
     "enquirer": "^2.3.6",
     "eslint": "^8.42.0",

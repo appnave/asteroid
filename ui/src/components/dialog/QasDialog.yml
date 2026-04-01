@@ -85,6 +85,11 @@ slots:
   header:
     desc: Slot para o título.
 
+provide:
+  is-dialog:
+    desc: Identificador booleano que indica quando um componente está dentro do contexto de um QasDialog.
+    type: Boolean
+
 events:
   '@update:model-value -> function (value)':
     desc: Dispara toda vez que o model é atualizado, também utilizado para v-model.
@@ -130,6 +135,9 @@ selectors:
   dialog-ok-btn:
     desc: Seletor do botão de confirmar do componente.
     examples: ['data-cy="dialog-ok-btn"']
+
+  title:
+    desc: Slot para inserir conteúdo adicional ao lado do título do card do dialog.
 
   dialog-title:
     desc: Seletor do título do componente.

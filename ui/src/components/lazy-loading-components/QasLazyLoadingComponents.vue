@@ -20,7 +20,6 @@
       <div
         v-else
         :ref="element => setPlaceholderRef(element, index)"
-        :style="{ height: placeholderHeight }"
       />
     </transition>
   </template>
@@ -32,24 +31,35 @@ import { ref, onMounted, onBeforeUnmount, useSlots, nextTick, watch } from 'vue'
 defineOptions({ name: 'QasLazyLoadingComponents' })
 
 const props = defineProps({
-  // Porcentagem de visibilidade necessária para ativar (0.0 a 1.0)
   threshold: {
     type: Number,
     default: 0.1 // 10% visível
   },
 
-  // Margem extra ao redor do viewport para pré-carregamento
   rootMargin: {
     type: String,
     default: '0px'
   },
 
-  // Altura dos placeholders antes de carregar
+  direction: {
+    type: String,
+    default: 'vertical',
+    validator: value => ['vertical', 'horizontal'].includes(value)
+  },
+
   placeholderHeight: {
     type: String,
     default: '500px'
+  },
+
+  placeholderWidth: {
+    type: String,
+    default: '300px'
   }
 })
+
+// models
+const visibleItemsModel = defineModel('visibleItems', { type: Array, default: () => [] })
 
 // refs
 /**
@@ -140,6 +150,9 @@ function createObserver () {
 
         // Para de observar - componente já foi renderizado
         observer.unobserve(entry.target)
+
+        // Emite os índices atualmente visíveis
+        visibleItemsModel.value = Array.from(visibleItems.value)
       })
     },
     {
@@ -229,10 +242,21 @@ function setPlaceholderRef (element, index) {
 
   placeholderRefs.set(index, element)
 
-  /**
-   * Define a altura do placeholder com base no atributo "data-placeholder-height" caso queira customizar pra
-   * o elemento específico, e não o definido na prop placeholderHeight.
-   */
-  element.style.height = items.value[index].props?.['data-placeholder-height'] || props.placeholderHeight
+  const itemProps = items.value[index].props
+
+  if (props.direction === 'horizontal') {
+    /**
+     * Define a largura do placeholder com base no atributo "data-placeholder-width" caso queira customizar
+     * para o elemento específico, e não o definido na prop placeholderWidth.
+     */
+    element.style.width = itemProps?.['data-placeholder-width'] || props.placeholderWidth
+    element.style.flexShrink = '0'
+  } else {
+    /**
+     * Define a altura do placeholder com base no atributo "data-placeholder-height" caso queira customizar
+     * para o elemento específico, e não o definido na prop placeholderHeight.
+     */
+    element.style.height = itemProps?.['data-placeholder-height'] || props.placeholderHeight
+  }
 }
 </script>

@@ -5,7 +5,13 @@
         <slot name="header" />
       </header>
 
-      <qas-header v-else-if="props.title" v-bind="headerProps" />
+      <qas-header v-else-if="props.title" v-bind="headerProps">
+        <template v-if="hasTitleSlot" #label>
+          <qas-label>
+            <slot name="title" />
+          </qas-label>
+        </template>
+      </qas-header>
 
       <section class="relative-position text-body1 text-grey-8">
         <component :is="mainComponent.is" ref="form" v-bind="mainComponent.props">
@@ -25,6 +31,7 @@
 </template>
 
 <script setup>
+import QasLabel from '../label/QasLabel.vue'
 import QasActions from '../actions/QasActions.vue'
 import QasHeader from '../header/QasHeader.vue'
 
@@ -233,6 +240,7 @@ const defaultActionsProps = computed(() => {
 })
 
 const hasHeaderSlot = computed(() => !!slots.header)
+const hasTitleSlot = computed(() => !!slots.title)
 
 // functions
 function updateModelValue (value) {

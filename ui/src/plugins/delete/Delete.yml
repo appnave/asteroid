@@ -3,7 +3,7 @@ type: component
 meta:
   desc: Plugin que implementa a action `destroy` do `StoreModule` adicionando comportamento de confirmação antes de excluir, este mesmo plugin é utilizado no componente `QasDelete`.
 
-inject:
+provide:
   'this.$qas.delete(config)':
     params:
       config:
