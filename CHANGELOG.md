@@ -18,6 +18,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Segurança
 - Fixada versão do `axios` (removido `^`) em `package.json`, `ui/package.json` e `docs/package.json` para evitar atualizações automáticas em versões comprometidas (`0.30.4` e `1.14.1`).
 
+### Corrigido
+- `QasInfiniteScroll`: Corrigido `scrollTarget` para usar o container do overlay (`.pv-layout-overlay-drawer__content`) quando o componente é utilizado dentro de um overlay navigation. ([#1490](https://github.com/bildvitta/asteroid/issues/1490))
+
 ## [3.20.0-beta.14] - 23-03-2026
 
 ## BREAKING CHANGES
@@ -44,12 +47,6 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - CSS: adicionadas classes utilitárias `text-magic-ai`, `bg-magic-ai` e `border-magic-ai` para aplicação do gradiente de magic AI em textos, fundos e bordas respectivamente.
 - `QasDateTimeInput`: adicionado comportamento de setar hora automaticamente após digitar a data. ([#1411](https://github.com/bildvitta/asteroid/issues/1411))
 
-### Modificado
-- `QasListView`: removida lógica que acionava delete automático quando `useStore: false` e `entity` estava definido; o comportamento agora é controlado exclusivamente pelas props `useAutoHandleOnDelete` e `useAutoRefetchOnDelete`.
-- `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
-- `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
-- `filters.js`: modificado label da função booleanLabel para começarem com letras maiúsculas.
-
 ### Corrigido
 - `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
 - `QasSelectListDialog`: corrigido mutação direta da prop `options` causada por `filteredOptions` ser inicializado com a mesma referência do array original. Corrigido usando `ref([...props.options])` para garantir uma cópia independente.
@@ -57,6 +54,12 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasStepper`:
   - Corrigido cor da linha quando da step anterior quando uma outra step é finalizada. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
   - Corrigido tamanho das linhas centrais setando proporções na primeira e última linha. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
+
+### Modificado
+- `QasListView`: removida lógica que acionava delete automático quando `useStore: false` e `entity` estava definido; o comportamento agora é controlado exclusivamente pelas props `useAutoHandleOnDelete` e `useAutoRefetchOnDelete`.
+- `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
+- `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
+- `filters.js`: modificado label da função booleanLabel para começarem com letras maiúsculas.
 
 ### Removido
 - `QasBoardGenerator`: 
