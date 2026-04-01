@@ -22,6 +22,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Modificado
 - `QasCard`: modificado titulo, onde passou a utilizar o componente criado `QasRouterLink`.
 - `QasSelectListDialog`: adicionado campo de pesquisa para os itens selecionados. ([#1497](https://github.com/bildvitta/asteroid/issues/1497))
+- `QasBoardGenerator`: alterado de 4 para 8 a quantidade de colunas quando tem skeleton.
 
 ### Corrigido
 - `QasSelectListDialog`: corrigido problema de não buscar a próxima página ao ter todos os itens da primeira página selecionados. ([#1110](https://github.com/bildvitta/asteroid/issues/1110))
