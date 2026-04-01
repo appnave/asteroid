@@ -86,7 +86,7 @@ export default {
       return !!this.mx_filteredOptions.length
     },
 
-    mx_hasMorePages () {
+    mx_hasNextPage () {
       const { lastPage, page, hasCount, hasNextPage } = this.mx_pagination
 
       return hasCount ? !!(lastPage && page <= lastPage) : hasNextPage
