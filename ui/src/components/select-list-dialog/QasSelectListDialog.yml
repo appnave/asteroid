@@ -55,6 +55,11 @@ props:
     type: Array
     model: true
 
+  search-placeholder:
+    desc: Placeholder do campo de busca.
+    default: Pesquisar...
+    type: String
+
   select-list-model:
     desc: Model dos itens selecionados dentro do dialog.
     type: Array
@@ -64,8 +69,8 @@ props:
 
   select-list-props:
     desc: Propriedades repassadas para o componente QasSelectList.
-    default: []
-    type: Array
+    default: {}
+    type: Object
 
   use-lazy-loading:
     desc: O componente precisa saber se o lazy-loading esta habilitado para este componente, e caso esteja usando customização pelos slots do "dialog-description", é necessário informar por esta prop.
