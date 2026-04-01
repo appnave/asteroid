@@ -286,6 +286,10 @@ module.exports = [
         path: '/components/resizer'
       },
       {
+        name: 'RouterLink',
+        path: '/components/router-link'
+      },
+      {
         name: 'SearchBox',
         path: '/components/search-box'
       },

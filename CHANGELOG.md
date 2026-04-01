@@ -16,6 +16,11 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Adicionado
+- `QasRouterLink`: adicionado componente pra controlar as rotas de overlay e rotas pra abrir em uma nova guia.
+- `QasCard`: adicionado nova prop `useOverlayRoute` onde será repassado para o componente `QasRouterLink` para controlar a rota de overlay.
+
+### Modificado
+- `QasCard`: modificado titulo, onde passou a utilizar o componente criado `QasRouterLink`.
 - `QasSelectListDialog`: adicionado campo de pesquisa para os itens selecionados. ([#1497](https://github.com/bildvitta/asteroid/issues/1497))
 
 ### Corrigido
