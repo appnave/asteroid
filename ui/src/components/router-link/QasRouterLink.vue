@@ -32,8 +32,7 @@ const props = defineProps({
   },
 
   useOverlayRoute: {
-    type: Boolean,
-    default: false
+    type: Boolean
   }
 })
 
