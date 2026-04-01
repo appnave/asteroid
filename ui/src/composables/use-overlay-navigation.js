@@ -1,38 +1,82 @@
-import { computed, inject, onUnmounted, ref } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 /**
- * Histórico de navegação utilizado para controlar o histórico de rotas quando em um overlay.
- * Obs: Esse histórico é resetado sempre que o overlay é fechado ou expandido para tela cheia.
- * Obs2: Esse histórico não é persistido, ou seja, ao recarregar a página ele é perdido.
- * Obs3: Esse histórico é compartilhado entre todas as instâncias que utilizam o useOverlayNavigation,
- * por isso declara fora da função.
+ * Cria o estado compartilhado para uma entidade (ou para o modo padrão sem entidade).
+ * @private
  */
-const historyRoute = ref({
-  history: [],
-  nextStack: [],
-  currentIndex: -1
-})
+function createOverlayStateByEntity () {
+  return {
+    /**
+     * Histórico de navegação utilizado para controlar o histórico de rotas quando em um overlay.
+     * Obs: Esse histórico é resetado sempre que o overlay é fechado ou expandido para tela cheia.
+     * Obs2: Esse histórico não é persistido, ou seja, ao recarregar a página ele é perdido.
+     * Obs3: Esse histórico é compartilhado entre todas as instâncias que utilizam o useOverlayNavigation
+     * com a mesma entidade.
+     */
+    historyRoute: ref({
+      history: [],
+      nextStack: [],
+      currentIndex: -1
+    }),
 
-const canLeaveOverlay = ref(true)
+    canLeaveOverlay: ref(true),
+
+    /**
+     * Definição de callbacks para a entidade.
+     * Obs: são arrays para permitir múltiplos callbacks, ex se você usa "onCloseOverlay" em 2 componentes
+     * diferentes da mesma entidade, ambos serão executados.
+     */
+    callbackFunctions: {
+      onCloseOverlay: [],
+      onExpandOverlay: [],
+      onHideOverlay: [],
+      onBackgroundChange: [],
+      onOverlayChange: []
+    }
+  }
+}
 
 /**
- * Definição de callbacks locais para esta instância.
- * Obs: são arrays para permitir múltiplos callbacks, ex se você usa "onCloseOverlay" em 2 componentes diferentes,
- * ambos serão executados.
+ * Registro de estados por entidade.
+ * A chave null representa o modo padrão (sem entidade).
+ * @type {Map<string|null, ReturnType<typeof createOverlayStateByEntity>>}
  */
-const callbackFunctions = {
-  onCloseOverlay: [],
-  onExpandOverlay: [],
-  onHideOverlay: [],
-  onBackgroundChange: [],
-  onOverlayChange: []
+const overlayStatesByEntity = new Map()
+
+/**
+ * Retorna (ou cria) o estado compartilhado para a entidade informada.
+ * @param {string|undefined} entity
+ * @private
+ */
+function getOverlayStateByEntity (entity) {
+  const entityKey = entity ?? null
+
+  if (!overlayStatesByEntity.has(entityKey)) {
+    overlayStatesByEntity.set(entityKey, createOverlayStateByEntity())
+  }
+
+  return overlayStatesByEntity.get(entityKey)
 }
 
 /**
  * Composable para gerenciar navegação em overlays, sempre que for lidar com overlays utilize esse composable.
+ *
+ * @param {string} [entity] - Nome da entidade para isolar o estado (historyRoute, canLeaveOverlay e callbacks).
+ * Quando informado, instâncias com a mesma entidade compartilham o estado entre si, mas são isoladas de
+ * instâncias com entidades diferentes. Quando omitido, mantém o comportamento padrão: estado global
+ * compartilhado entre todas as instâncias sem entidade.
+ *
+ * @example
+ * // Modo padrão — comportamento legado, estado global compartilhado
+ * const nav = useOverlayNavigation()
+ *
+ * // Modo com entidade — página A e componente B compartilham 'activities', isolado de 'funnels'
+ * const nav = useOverlayNavigation('activities')
  */
-export default function useOverlayNavigation () {
+export default function useOverlayNavigation (entity) {
+  const { historyRoute, canLeaveOverlay, callbackFunctions } = getOverlayStateByEntity(entity)
+
   // composables
   const route = useRoute()
   const router = useRouter()
@@ -63,6 +107,7 @@ export default function useOverlayNavigation () {
    * Computada para ser utilizada tanto no background quanto no overlay, substituindo o uso padrão do "route".
    */
   const defaultRoute = computed(() => {
+    console.log(overlayStatesByEntity, '<--- overlayStatesByEntity')
     return isBackgroundOverlay.value ? backgroundRoute.value : route
   })
 
@@ -249,45 +294,63 @@ export default function useOverlayNavigation () {
   // callbacks
   /**
    * @private
-   * Registra um callback no array global e agenda sua remoção automática ao desmontar o componente.
-   *
-   * Isso evita callbacks "zumbi": quando um componente é desmontado mas outro componente ainda ativo
-   * dispara um "trigger" (ex: triggerOverlayChange), o callback do componente desmontado não é mais
-   * executado — caso contrário, referências como "listViewRef.value" estariam nulas e lançariam exceções.
-   *
-   * Consequência prática: as funções de registro de callback (onCloseOverlay, onExpandOverlay, etc.)
-   * devem ser chamadas dentro de "setup()" ou lifecycle hooks. Se chamadas em métodos comuns, o callback
-   * será adicionado mas nunca removido, tornando-se um callback zumbi.
-   *
-   * @param {string} callbackName - Nome do callback a ser registrado, uma chave existente em "callbackFunctions".
-   * @param {Function} callback - Função a ser registrada como callback (ex: triggerOverlayChange).
-   */
-  function registerCallback (callbackName, callback) {
-    callbackFunctions[callbackName].push(callback)
-
-    onUnmounted(() => {
-      // Obtém o array de callbacks correspondente ao nome do callback que está sendo removido.
-      const callbackFunctionsList = callbackFunctions[callbackName]
-
-      /**
-       * Localiza a referência exata da função no array.
-       * O "callback" aqui é o mesmo do fechamento (closure) de "registerCallback",
-       * garantindo que apenas o callback desta instância seja removido, e não outros
-       * componentes que possam ter registrado callbacks para o mesmo evento.
-       */
-      const index = callbackFunctionsList.indexOf(callback)
-
-      // Remove o callback do array somente se ele ainda existir.
-      if (index !== -1) callbackFunctionsList.splice(index, 1)
-    })
-  }
-
-  /**
-   * @private
    * @param {string} callbackName - Nome do callback a ser executado.
    */
   function execCallbackFunctions (callbackName, payload) {
     callbackFunctions[callbackName].forEach(fn => fn(payload))
+  }
+
+  /**
+   * Remove listeners registrados no composable.
+   *
+   * Aceita três formatos:
+   * - `removeListeners(fn)` — remove uma função específica de todos os callbacks da entidade atual.
+   * - `removeListeners([fn1, fn2])` — remove múltiplas funções da entidade atual.
+   * - `removeListeners('entityName')` — remove **todos** os callbacks da entidade informada.
+   *
+   * @param {Function|Function[]|string} target - Função, array de funções ou nome da entidade.
+   *
+   * @example
+   * ```js
+   * const { onCloseOverlay, removeListeners } = useOverlayNavigation('activities')
+   *
+   * function handleClose () { ... }
+   * onCloseOverlay(handleClose)
+   *
+   * // Remove apenas handleClose
+   * removeListeners(handleClose)
+   *
+   * // Remove todas as funções registradas na entidade 'activities'
+   * removeListeners('activities')
+   * ```
+   */
+  function removeListeners (target) {
+    if (!target) return
+
+    // Remove todos os callbacks de uma entidade pelo nome
+    if (typeof target === 'string') {
+      // Pego o estado da entidade informada.
+      const stateByEntity = overlayStatesByEntity.get(target)
+
+      if (!stateByEntity) return
+
+      // Reseto as funções de callback para a entidade, mantendo a estrutura mas limpando os arrays.
+      for (const key of Object.keys(stateByEntity.callbackFunctions)) {
+        stateByEntity.callbackFunctions[key] = []
+      }
+
+      return
+    }
+
+    // Normaliza para array e remove as funções da entidade atual
+    const functionsToRemove = Array.isArray(target) ? target : [target]
+
+    const callbackFunctionsKeys = Object.keys(callbackFunctions)
+
+    // Percorro cada chave de callbackFunctions e filtro as funções que devem ser removidas com base no target, mantendo as que não devem ser removidas.
+    for (const key of callbackFunctionsKeys) {
+      callbackFunctions[key] = callbackFunctions[key].filter(fn => !functionsToRemove.includes(fn))
+    }
   }
 
   /**
@@ -339,7 +402,7 @@ export default function useOverlayNavigation () {
    * ```
    */
   function onBackgroundChange (callback) {
-    registerCallback('onBackgroundChange', callback)
+    callbackFunctions.onBackgroundChange.push(callback)
   }
 
   /**
@@ -358,7 +421,7 @@ export default function useOverlayNavigation () {
    * ```
    */
   function onOverlayChange (callback) {
-    registerCallback('onOverlayChange', callback)
+    callbackFunctions.onOverlayChange.push(callback)
   }
 
   /**
@@ -375,7 +438,7 @@ export default function useOverlayNavigation () {
    * ```
    */
   function onCloseOverlay (callback) {
-    registerCallback('onCloseOverlay', callback)
+    callbackFunctions.onCloseOverlay.push(callback)
   }
 
   /**
@@ -392,7 +455,7 @@ export default function useOverlayNavigation () {
    * ```
    */
   function onExpandOverlay (callback) {
-    registerCallback('onExpandOverlay', callback)
+    callbackFunctions.onExpandOverlay.push(callback)
   }
 
   /**
@@ -410,7 +473,7 @@ export default function useOverlayNavigation () {
    * ```
    */
   function onHideOverlay (callback) {
-    registerCallback('onHideOverlay', callback)
+    callbackFunctions.onHideOverlay.push(callback)
   }
 
   return {
@@ -439,6 +502,7 @@ export default function useOverlayNavigation () {
     triggerOverlayChange,
     getNormalizedRoute,
     toggleCanLeaveOverlay,
+    removeListeners,
 
     // callbacks functions
     onBackgroundChange,
