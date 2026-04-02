@@ -5040,8 +5040,5 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.9]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.8...v3.20.0-beta.9?expand=1
 [3.20.0-beta.10]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.9...v3.20.0-beta.10?expand=1
 [3.20.0-beta.13]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.10-alpha.15...v3.20.0-beta.13?expand=1
-<<<<<<< HEAD
-=======
 [3.20.0-beta.14]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.14-alpha.4...v3.20.0-beta.14?expand=1
 [3.20.0-beta.15]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.14...v3.20.0-beta.15?expand=1
->>>>>>> e8d3fc068cdca2fc43be403108b872a46384f225
