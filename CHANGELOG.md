@@ -14,6 +14,10 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `QasCopy`: adicionado prop `buttonProps` para passar propriedades para o botão, sendo repassado ao `QasBtn` do componente. 
+
 ## [3.20.0-beta.15] - 01-04-2026
 ### Adicionado
 - `QasRouterLink`: adicionado componente pra controlar as rotas de overlay e rotas pra abrir em uma nova guia.
