@@ -1,5 +1,5 @@
 <template>
-  <q-dialog ref="dialogRef" v-model="model" class="qas-dialog" :class="classes" data-cy="dialog" v-bind="dialogProps" @update:model-value="updateModelValue">
+  <q-dialog ref="dialogRef" v-model="model" class="qas-dialog" :class="classes" data-cy="dialog" v-bind="dialogProps">
     <div class="bg-white full-width q-pa-md qas-dialog__container" :style="containerStyles">
       <header v-if="hasHeaderSlot" class="q-mb-md">
         <slot name="header" />
@@ -134,25 +134,23 @@ provide('btnPropsDefaults', { size: 'md' }) // define o tamanho padrão para os 
 // necessário para pegar as props default do dialog quando usado no QasDrawer
 const defaultProps = inject('dialogDefaultProps', null)
 
-// composables
-const slots = useSlots()
-const attrs = useAttrs()
-const { dialogRef, onDialogHide } = useDialogPluginComponent() // usado para o plugin
-
 // refs
 const form = ref(null)
 
 // composables
+const slots = useSlots()
+const attrs = useAttrs()
+const { dialogRef, onDialogHide } = useDialogPluginComponent() // usado para o plugin
 const { defaultCancel, hasCancel } = useCancel()
 const { defaultOk, hasOk, onOk } = useOk()
 const { descriptionComponent, mainComponent } = useDynamicComponents()
 
+// computeds
 /**
  * Necessária logica via provide para controle interno no componente QasDrawer.
  */
 const hasDefaultMaxWidth = computed(() => !!defaultProps?.value.maxWidth)
 
-// computeds
 /**
  * Classes criadas para serem utilizadas quando usado com a prop "position", pois
  * o comportamento do dialog muda, e não é possível usar em conjunto com a prop
@@ -179,7 +177,7 @@ const classes = computed(() => {
 })
 
 /**
- * Manter dessa forma até issue #1431 ser resolvida.
+ * TODO-ISSUE: Manter dessa forma até issue #1431 ser resolvida.
  */
 const containerStyles = computed(() => {
   if (!hasDefaultMaxWidth.value) return

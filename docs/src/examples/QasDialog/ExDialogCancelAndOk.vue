@@ -57,7 +57,6 @@ function onOk () {
   setTimeout(() => {
     isLoading.value = false
     isDialogOpened.value = false
-    qas.success('Evento ok finalizado.')
   }, 2000)
 }
 </script>
