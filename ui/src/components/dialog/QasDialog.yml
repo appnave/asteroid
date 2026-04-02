@@ -16,7 +16,7 @@ props:
     examples: ["{ label: 'Meu botão de cancelar', onClick: () => alert('fui clicado!') }"]
 
   description:
-    desc: Descrição do dialog, pode ser uma string ou um componente ou uma string com HTML (passando a prop useHtmlDescription).
+    desc: Descrição do dialog, pode ser uma string, um componente ou uma string com HTML (passando a prop useHtmlDescription).
     type: [String, Object]
 
   disable-close-button:
