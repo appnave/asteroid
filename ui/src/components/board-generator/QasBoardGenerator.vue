@@ -362,7 +362,7 @@ const columnContainerElements = computed(() => {
 const normalizedHeaders = computed(() => {
   // retorna dados fakes para criar colunas de skeleton, caso a prop skeleton seja true.
   if (props.skeleton) {
-    return Array.from({ length: 4 }).map((_, index) => {
+    return Array.from({ length: 8 }).map((_, index) => {
       return {
         [props.columnIdKey]: `${props.columnIdKey}-${index}`
       }
