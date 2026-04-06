@@ -303,12 +303,13 @@ export default function useOverlayNavigation (entity) {
   /**
    * Remove listeners registrados no composable.
    *
-   * Aceita três formatos:
+   * Aceita quatro formatos:
+   * - `removeListeners()` — remove **todos** os callbacks da entidade `null` (instâncias sem entidade).
    * - `removeListeners(fn)` — remove uma função específica de todos os callbacks da entidade atual.
    * - `removeListeners([fn1, fn2])` — remove múltiplas funções da entidade atual.
    * - `removeListeners('entityName')` — remove **todos** os callbacks da entidade informada.
    *
-   * @param {Function|Function[]|string} target - Função, array de funções ou nome da entidade.
+   * @param {Function|Function[]|string} [target] - Função, array de funções, nome da entidade ou vazio para limpar a entidade `null`.
    *
    * @example
    * ```js
@@ -317,15 +318,32 @@ export default function useOverlayNavigation (entity) {
    * function handleClose () { ... }
    * onCloseOverlay(handleClose)
    *
-   * // Remove apenas handleClose
+   * // Remove apenas handleClose da entidade atual
    * removeListeners(handleClose)
+   *
+   * // Remove handleClose e handleExpand da entidade atual
+   * removeListeners([handleClose, handleExpand])
    *
    * // Remove todas as funções registradas na entidade 'activities'
    * removeListeners('activities')
+   *
+   * // Remove todas as funções das instâncias sem entidade (entity null)
+   * removeListeners()
    * ```
    */
   function removeListeners (target) {
-    if (!target) return
+    // remove todos os callbacks da entidade null (modo padrão sem entidade)
+    if (target === undefined) {
+      const nullState = overlayStatesByEntity.get(null)
+
+      if (!nullState) return
+
+      for (const key of Object.keys(nullState.callbackFunctions)) {
+        nullState.callbackFunctions[key] = []
+      }
+
+      return
+    }
 
     // Remove todos os callbacks de uma entidade pelo nome
     if (typeof target === 'string') {

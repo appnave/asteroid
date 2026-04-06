@@ -33,6 +33,7 @@ const {
   triggerOverlayChange,
   getNormalizedRoute,
   toggleCanLeaveOverlay,
+  removeListeners,
 
   // callbacks
   onBackgroundChange,
@@ -236,4 +237,34 @@ onHideOverlay(() => {
   // Lógica executada quando o overlay for ocultado
   console.log('Overlay foi ocultado')
 })
+```
+
+### `removeListeners(target?)`
+Remove listeners registrados no composable. Aceita três formas de uso:
+
+**Sem argumentos** — remove todos os listeners da entidade `null` (instâncias criadas sem nome de entidade):
+```js
+removeListeners()
+```
+
+**Passando uma função ou array de funções** — remove o(s) listener(s) específico(s) da entidade atual:
+```js
+function handleClose () { ... }
+function handleExpand () { ... }
+
+onCloseOverlay(handleClose)
+onExpandOverlay(handleExpand)
+
+// Remove apenas handleClose
+removeListeners(handleClose)
+
+// Remove handleClose e handleExpand
+removeListeners([handleClose, handleExpand])
+```
+
+**Passando uma string** — remove todos os listeners da entidade informada:
+```js
+const { onCloseOverlay, removeListeners } = useOverlayNavigation('activities')
+
+removeListeners('activities')
 ```

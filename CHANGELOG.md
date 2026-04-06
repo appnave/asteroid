@@ -15,8 +15,10 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
-### Corrigido
-- `useOverlayNavigation`: corrigido problema em que callbacks de outras instâncias eram executados indevidamente quando o composable era utilizado em múltiplos componentes simultaneamente. A correção garante que cada callback seja removido automaticamente via `onUnmounted` ao desmontar o componente que o registrou.
+### Adicionado
+- `use-overlay-navigation`:
+  - adicionado opção de instanciar por entidade, isso irá corrigir o problema de chamar callbacks de outras páginas, que causava erro.
+  - adicionado função `removeListeners` pra remover as funções de callback pra evitar problemas de multiplas instancias, podendo remover as funções por fn ou entidade.
 
 ## [3.20.0-beta.16] - 02-04-2026
 ### Adicionado
