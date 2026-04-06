@@ -4,6 +4,28 @@ title: useOverlayNavigation
 
 Composable para gerenciar navegação em overlays e controlar o histórico de rotas.
 
+## Formas de instanciar
+
+### Sem entidade (padrão)
+Estado compartilhado entre **todas** as instâncias sem entidade. Comportamento legado.
+
+```js
+const { ... } = useOverlayNavigation()
+```
+
+### Com entidade
+Isola o estado (histórico, canLeaveOverlay e callbacks) por entidade. Instâncias com o mesmo entidade compartilham estado entre si, mas são isoladas de outras entidades.
+
+```js
+const { ... } = useOverlayNavigation('activities')
+```
+
+::: tip
+Prefira sempre usar entidade quando o composable for utilizado em contextos específicos (ex: lista de atividades, funis). Isso evita que callbacks e histórico de uma tela interfiram em outra.
+:::
+
+## Desestruturação completa
+
 ```js
 import { useOverlayNavigation } from 'asteroid'
 
