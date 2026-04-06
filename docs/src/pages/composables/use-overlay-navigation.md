@@ -212,7 +212,7 @@ triggerOverlayChange({ someData: 123 })
 ### `removeListeners(target?)`
 Remove listeners registrados no composable. Aceita três formas de uso:
 
-**Sem argumentos** — remove todos os listeners da entidade `null` (instâncias criadas sem nome de entidade):
+**Sem argumentos** — remove todos os listeners da entidade `default` (instâncias criadas sem nome de entidade):
 ```js
 removeListeners()
 ```

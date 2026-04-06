@@ -2,9 +2,11 @@ import { computed, inject, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 /**
- * Estado global compartilhado entre todas as instâncias, independente de entidade.
+ * Histórico de navegação utilizado para controlar o histórico de rotas quando em um overlay.
  * Obs: Esse histórico é resetado sempre que o overlay é fechado ou expandido para tela cheia.
  * Obs2: Esse histórico não é persistido, ou seja, ao recarregar a página ele é perdido.
+ * Obs3: Esse histórico é compartilhado entre todas as instâncias que utilizam o useOverlayNavigation,
+ * por isso declara fora da função.
  */
 const historyRoute = ref({
   history: [],
@@ -299,12 +301,12 @@ export default function useOverlayNavigation (entity) {
    * Remove listeners registrados no composable.
    *
    * Aceita quatro formatos:
-   * - `removeListeners()` — remove **todos** os callbacks da entidade `null` (instâncias sem entidade).
+   * - `removeListeners()` — remove **todos** os callbacks da entidade `default` (instâncias sem entidade).
    * - `removeListeners(fn)` — remove uma função específica de todos os callbacks da entidade atual.
    * - `removeListeners([fn1, fn2])` — remove múltiplas funções da entidade atual.
    * - `removeListeners('entityName')` — remove **todos** os callbacks da entidade informada.
    *
-   * @param {Function|Function[]|string} [target] - Função, array de funções, nome da entidade ou vazio para limpar a entidade `null`.
+   * @param {Function|Function[]|string} [target] - Função, array de funções, nome da entidade ou vazio para limpar a entidade `default`.
    *
    * @example
    * ```js
