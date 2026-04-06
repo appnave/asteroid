@@ -14,14 +14,14 @@ const { ... } = useOverlayNavigation()
 ```
 
 ### Com entidade
-Isola o estado (histórico, canLeaveOverlay e callbacks) por entidade. Instâncias com o mesmo entidade compartilham estado entre si, mas são isoladas de outras entidades.
+Isola os **callbacks** por entidade. Instâncias com o mesmo nome compartilham os callbacks entre si, mas são isoladas de outras entidades. O `historyRoute` e o `canLeaveOverlay` são sempre globais, independente da entidade.
 
 ```js
 const { ... } = useOverlayNavigation('activities')
 ```
 
 ::: tip
-Prefira sempre usar entidade quando o composable for utilizado em contextos específicos (ex: lista de atividades, funis). Isso evita que callbacks e histórico de uma tela interfiram em outra.
+Prefira sempre usar entidade quando o composable for utilizado em contextos específicos (ex: lista de atividades, funis). Isso evita que os callbacks de uma tela interfiram em outra.
 :::
 
 ## Desestruturação completa
@@ -209,6 +209,36 @@ Dispara mudanças no componente de overlay.
 triggerOverlayChange({ someData: 123 })
 ```
 
+### `removeListeners(target?)`
+Remove listeners registrados no composable. Aceita três formas de uso:
+
+**Sem argumentos** — remove todos os listeners da entidade `null` (instâncias criadas sem nome de entidade):
+```js
+removeListeners()
+```
+
+**Passando uma função ou array de funções** — remove o(s) listener(s) específico(s) da entidade atual:
+```js
+function handleClose () { ... }
+function handleExpand () { ... }
+
+onCloseOverlay(handleClose)
+onExpandOverlay(handleExpand)
+
+// Remove apenas handleClose
+removeListeners(handleClose)
+
+// Remove handleClose e handleExpand
+removeListeners([handleClose, handleExpand])
+```
+
+**Passando uma string** — remove todos os listeners da entidade informada:
+```js
+const { onCloseOverlay, removeListeners } = useOverlayNavigation('activities')
+
+removeListeners('activities')
+```
+
 ## Callbacks
 
 ### `onBackgroundChange(callback)`
@@ -259,34 +289,4 @@ onHideOverlay(() => {
   // Lógica executada quando o overlay for ocultado
   console.log('Overlay foi ocultado')
 })
-```
-
-### `removeListeners(target?)`
-Remove listeners registrados no composable. Aceita três formas de uso:
-
-**Sem argumentos** — remove todos os listeners da entidade `null` (instâncias criadas sem nome de entidade):
-```js
-removeListeners()
-```
-
-**Passando uma função ou array de funções** — remove o(s) listener(s) específico(s) da entidade atual:
-```js
-function handleClose () { ... }
-function handleExpand () { ... }
-
-onCloseOverlay(handleClose)
-onExpandOverlay(handleExpand)
-
-// Remove apenas handleClose
-removeListeners(handleClose)
-
-// Remove handleClose e handleExpand
-removeListeners([handleClose, handleExpand])
-```
-
-**Passando uma string** — remove todos os listeners da entidade informada:
-```js
-const { onCloseOverlay, removeListeners } = useOverlayNavigation('activities')
-
-removeListeners('activities')
 ```

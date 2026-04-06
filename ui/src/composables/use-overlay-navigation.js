@@ -2,70 +2,66 @@ import { computed, inject, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 /**
- * Cria o estado compartilhado para uma entidade (ou para o modo padrão sem entidade).
+ * Estado global compartilhado entre todas as instâncias, independente de entidade.
+ * Obs: Esse histórico é resetado sempre que o overlay é fechado ou expandido para tela cheia.
+ * Obs2: Esse histórico não é persistido, ou seja, ao recarregar a página ele é perdido.
+ */
+const historyRoute = ref({
+  history: [],
+  nextStack: [],
+  currentIndex: -1
+})
+
+const canLeaveOverlay = ref(true)
+
+/**
+ * Cria o estado de callbacks para uma entidade (ou para o modo padrão sem entidade).
+ *
+ * Definição de callbacks para a entidade.
+ * Obs: são arrays para permitir múltiplos callbacks, ex se você usa "onCloseOverlay" em 2 componentes
+ * diferentes da mesma entidade, ambos serão executados.
  * @private
  */
-function createOverlayStateByEntity () {
+function createCallbackFunctionsByEntity () {
   return {
-    /**
-     * Histórico de navegação utilizado para controlar o histórico de rotas quando em um overlay.
-     * Obs: Esse histórico é resetado sempre que o overlay é fechado ou expandido para tela cheia.
-     * Obs2: Esse histórico não é persistido, ou seja, ao recarregar a página ele é perdido.
-     * Obs3: Esse histórico é compartilhado entre todas as instâncias que utilizam o useOverlayNavigation
-     * com a mesma entidade.
-     */
-    historyRoute: ref({
-      history: [],
-      nextStack: [],
-      currentIndex: -1
-    }),
-
-    canLeaveOverlay: ref(true),
-
-    /**
-     * Definição de callbacks para a entidade.
-     * Obs: são arrays para permitir múltiplos callbacks, ex se você usa "onCloseOverlay" em 2 componentes
-     * diferentes da mesma entidade, ambos serão executados.
-     */
-    callbackFunctions: {
-      onCloseOverlay: [],
-      onExpandOverlay: [],
-      onHideOverlay: [],
-      onBackgroundChange: [],
-      onOverlayChange: []
-    }
+    onCloseOverlay: [],
+    onExpandOverlay: [],
+    onHideOverlay: [],
+    onBackgroundChange: [],
+    onOverlayChange: []
   }
 }
 
 /**
- * Registro de estados por entidade.
- * A chave null representa o modo padrão (sem entidade).
- * @type {Map<string|null, ReturnType<typeof createOverlayStateByEntity>>}
+ * Registro de callbacks por entidade.
+ * A chave 'default' representa o modo padrão (sem entidade).
+ * @type {Map<string, ReturnType<typeof createCallbackFunctionsByEntity>>}
  */
-const overlayStatesByEntity = new Map()
+const callbackFunctionsByEntity = new Map()
 
 /**
  * Retorna (ou cria) o estado compartilhado para a entidade informada.
  * @param {string|undefined} entity
  * @private
  */
-function getOverlayStateByEntity (entity) {
-  const entityKey = entity ?? null
+function getCallbackFunctionsByEntity (entity) {
+  const entityKey = entity ?? 'default'
 
-  if (!overlayStatesByEntity.has(entityKey)) {
-    overlayStatesByEntity.set(entityKey, createOverlayStateByEntity())
+  if (!callbackFunctionsByEntity.has(entityKey)) {
+    callbackFunctionsByEntity.set(entityKey, createCallbackFunctionsByEntity())
   }
 
-  return overlayStatesByEntity.get(entityKey)
+  return callbackFunctionsByEntity.get(entityKey)
 }
 
 /**
  * Composable para gerenciar navegação em overlays, sempre que for lidar com overlays utilize esse composable.
  *
- * @param {string} [entity] - Nome da entidade para isolar o estado (historyRoute, canLeaveOverlay e callbacks).
- * Quando informado, instâncias com a mesma entidade compartilham o estado entre si, mas são isoladas de
- * instâncias com entidades diferentes. Quando omitido, mantém o comportamento padrão: estado global
- * compartilhado entre todas as instâncias sem entidade.
+ * @param {string} [entity] - Nome da entidade para isolar os callbacks.
+ * Quando informado, instâncias com a mesma entidade compartilham os callbacks entre si, mas são isoladas de
+ * instâncias com entidades diferentes. Quando omitido, mantém o comportamento padrão: callbacks sob a chave
+ * `'default'`, compartilhados entre todas as instâncias sem entidade.
+ * O historyRoute e o canLeaveOverlay são sempre globais, independente da entidade.
  *
  * @example
  * // Modo padrão — comportamento legado, estado global compartilhado
@@ -75,7 +71,7 @@ function getOverlayStateByEntity (entity) {
  * const nav = useOverlayNavigation('activities')
  */
 export default function useOverlayNavigation (entity) {
-  const { historyRoute, canLeaveOverlay, callbackFunctions } = getOverlayStateByEntity(entity)
+  const callbackFunctions = getCallbackFunctionsByEntity(entity)
 
   // composables
   const route = useRoute()
@@ -107,7 +103,6 @@ export default function useOverlayNavigation (entity) {
    * Computada para ser utilizada tanto no background quanto no overlay, substituindo o uso padrão do "route".
    */
   const defaultRoute = computed(() => {
-    console.log(overlayStatesByEntity, '<--- overlayStatesByEntity')
     return isBackgroundOverlay.value ? backgroundRoute.value : route
   })
 
@@ -333,13 +328,13 @@ export default function useOverlayNavigation (entity) {
    */
   function removeListeners (target) {
     // remove todos os callbacks da entidade null (modo padrão sem entidade)
-    if (target === undefined) {
-      const nullState = overlayStatesByEntity.get(null)
+    if (!target) {
+      const defaultCallbackFunctions = callbackFunctionsByEntity.get('default')
 
-      if (!nullState) return
+      if (!defaultCallbackFunctions) return
 
-      for (const key of Object.keys(nullState.callbackFunctions)) {
-        nullState.callbackFunctions[key] = []
+      for (const functionKey of Object.keys(defaultCallbackFunctions)) {
+        defaultCallbackFunctions[functionKey] = []
       }
 
       return
@@ -348,13 +343,13 @@ export default function useOverlayNavigation (entity) {
     // Remove todos os callbacks de uma entidade pelo nome
     if (typeof target === 'string') {
       // Pego o estado da entidade informada.
-      const stateByEntity = overlayStatesByEntity.get(target)
+      const callbackFunctions = callbackFunctionsByEntity.get(target)
 
-      if (!stateByEntity) return
+      if (!callbackFunctions) return
 
       // Reseto as funções de callback para a entidade, mantendo a estrutura mas limpando os arrays.
-      for (const key of Object.keys(stateByEntity.callbackFunctions)) {
-        stateByEntity.callbackFunctions[key] = []
+      for (const functionKey of Object.keys(callbackFunctions)) {
+        callbackFunctions[functionKey] = []
       }
 
       return
