@@ -17,22 +17,62 @@ const historyRoute = ref({
 const canLeaveOverlay = ref(true)
 
 /**
- * Definição de callbacks locais para esta instância.
- * Obs: são arrays para permitir múltiplos callbacks, ex se você usa "onCloseOverlay" em 2 componentes diferentes,
- * ambos serão executados.
+ * Cria o estado de callbacks para uma entidade (ou para o modo padrão sem entidade).
+ *
+ * Definição de callbacks para a entidade.
+ * Obs: são arrays para permitir múltiplos callbacks, ex se você usa "onCloseOverlay" em 2 componentes
+ * diferentes da mesma entidade, ambos serão executados.
+ * @private
  */
-const callbackFunctions = {
-  onCloseOverlay: [],
-  onExpandOverlay: [],
-  onHideOverlay: [],
-  onBackgroundChange: [],
-  onOverlayChange: []
+function createCallbackFunctionsByEntity () {
+  return {
+    onCloseOverlay: [],
+    onExpandOverlay: [],
+    onHideOverlay: [],
+    onBackgroundChange: [],
+    onOverlayChange: []
+  }
+}
+
+/**
+ * Registro de callbacks por entidade.
+ * A chave 'default' representa o modo padrão (sem entidade).
+ * @type {Map<string, ReturnType<typeof createCallbackFunctionsByEntity>>}
+ */
+const callbackFunctionsByEntity = new Map()
+
+/**
+ * Retorna (ou cria) o estado compartilhado para a entidade informada.
+ * @private
+ * @param {string|undefined} entity
+ */
+function getCallbackFunctionsByEntity (entity) {
+  const entityKey = entity ?? 'default'
+
+  if (!callbackFunctionsByEntity.has(entityKey)) {
+    callbackFunctionsByEntity.set(entityKey, createCallbackFunctionsByEntity())
+  }
+
+  return callbackFunctionsByEntity.get(entityKey)
 }
 
 /**
  * Composable para gerenciar navegação em overlays, sempre que for lidar com overlays utilize esse composable.
+ *
+ * @example
+ * Modo padrão — comportamento legado, estado global compartilhado
+ * const nav = useOverlayNavigation()
+ *
+ * Modo com entidade — página A e componente B compartilham 'activities', isolado de 'funnels'
+ * const nav = useOverlayNavigation('activities')
+ *
+ * @param {string} [entity] - Nome da entidade para isolar os callbacks.
+ * Quando informado, instâncias com a mesma entidade compartilham os callbacks entre si, mas são isoladas de
+ * instâncias com entidades diferentes.
  */
-export default function useOverlayNavigation () {
+export default function useOverlayNavigation (entity) {
+  const callbackFunctions = getCallbackFunctionsByEntity(entity)
+
   // composables
   const route = useRoute()
   const router = useRouter()
@@ -256,6 +296,71 @@ export default function useOverlayNavigation () {
   }
 
   /**
+   * Remove listeners registrados no composable.
+   *
+   * @param {Function|Function[]|string} [target] - Função, array de funções, nome da entidade ou vazio para limpar
+   * a entidade `default`.
+   *
+   * @example
+   * ```js
+   * const { onCloseOverlay, removeListeners } = useOverlayNavigation('activities')
+   *
+   * function handleClose () { ... }
+   * onCloseOverlay(handleClose)
+   *
+   * removeListeners(handleClose) - Remove apenas handleClose da entidade atual
+   *
+   * removeListeners([handleClose, handleExpand]) - Remove handleClose e handleExpand da entidade atual
+   *
+   * removeListeners('activities') - Remove todas as funções registradas na entidade 'activities'
+   *
+   * removeListeners() - Remove todas as funções das instâncias sem entidade (entity 'default')
+   * ```
+   */
+  function removeListeners (target) {
+    // remove todos os callbacks da entidade 'default' (modo padrão sem entidade)
+    if (!target) {
+      const defaultCallbackFunctions = callbackFunctionsByEntity.get('default')
+
+      if (!defaultCallbackFunctions) return
+
+      for (const functionKey of Object.keys(defaultCallbackFunctions)) {
+        defaultCallbackFunctions[functionKey] = []
+      }
+
+      return
+    }
+
+    // Remove todos os callbacks de uma entidade pelo nome
+    if (typeof target === 'string') {
+      // Pego o estado da entidade informada.
+      const callbackFunctions = callbackFunctionsByEntity.get(target)
+
+      if (!callbackFunctions) return
+
+      // Reseto as funções de callback para a entidade, mantendo a estrutura mas limpando os arrays.
+      for (const functionKey of Object.keys(callbackFunctions)) {
+        callbackFunctions[functionKey] = []
+      }
+
+      return
+    }
+
+    // Normaliza para array e remove as funções da entidade atual
+    const functionsToRemove = Array.isArray(target) ? target : [target]
+
+    const callbackFunctionsKeys = Object.keys(callbackFunctions)
+
+    /**
+     * Percorro cada função de callback registrada na entidade atual e filtro as funções que devem ser removidas,
+     * mantendo as que não devem ser removidas.
+     */
+    for (const key of callbackFunctionsKeys) {
+      callbackFunctions[key] = callbackFunctions[key].filter(fn => !functionsToRemove.includes(fn))
+    }
+  }
+
+  /**
    * Função para disparar mudanças no background componente.
    *
    * @param {*} payload - Qualquer tipo de dado que será passado para o callback registrado.
@@ -404,6 +509,7 @@ export default function useOverlayNavigation () {
     triggerOverlayChange,
     getNormalizedRoute,
     toggleCanLeaveOverlay,
+    removeListeners,
 
     // callbacks functions
     onBackgroundChange,
