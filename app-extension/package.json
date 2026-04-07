@@ -1,7 +1,7 @@
 {
   "name": "@bildvitta/quasar-app-extension-asteroid",
   "description": "Asteroid",
-  "version": "3.20.0-beta.16",
+  "version": "3.20.0-beta.17",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
   "license": "MIT",
   "main": "src/index.js",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@bildvitta/quasar-app-extension-asteroid": "file:",
-    "@bildvitta/quasar-ui-asteroid": "3.20.0-beta.16",
+    "@bildvitta/quasar-ui-asteroid": "3.20.0-beta.17",
     "@bildvitta/store-adapter": "^1.0.0",
     "execa": "^7.1.1",
     "fontfaceobserver": "^2.3.0",
