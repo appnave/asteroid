@@ -14,6 +14,12 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `use-overlay-navigation`:
+  - adicionado opção de instanciar por entidade, isso irá corrigir o problema de chamar callbacks de outras páginas, que causava erro.
+  - adicionado função `removeListeners` pra remover as funções de callback pra evitar problemas de multiplas instancias, podendo remover as funções por fn ou entidade.
+
 ## [3.20.0-beta.16] - 02-04-2026
 ### Adicionado
 - `QasCopy`: adicionado prop `buttonProps` para passar propriedades para o botão, sendo repassado ao `QasBtn` do componente. 
