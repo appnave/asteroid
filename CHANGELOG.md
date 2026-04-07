@@ -14,7 +14,23 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## [3.20.0-beta.16] - 02-04-2026
+### Adicionado
+- `QasCopy`: adicionado prop `buttonProps` para passar propriedades para o botão, sendo repassado ao `QasBtn` do componente. 
+
+## [3.20.0-beta.15] - 01-04-2026
+### Adicionado
+- `QasRouterLink`: adicionado componente pra controlar as rotas de overlay e rotas pra abrir em uma nova guia.
+- `QasCard`: adicionado nova prop `useOverlayRoute` onde será repassado para o componente `QasRouterLink` para controlar a rota de overlay.
+
+### Modificado
+- `QasCard`: modificado titulo, onde passou a utilizar o componente criado `QasRouterLink`.
+- `QasSelectListDialog`: adicionado campo de pesquisa para os itens selecionados. ([#1497](https://github.com/bildvitta/asteroid/issues/1497))
+- `QasBoardGenerator`: alterado de 4 para 8 a quantidade de colunas quando tem skeleton.
+
+### Corrigido
+- `QasSelectListDialog`: corrigido problema de não buscar a próxima página ao ter todos os itens da primeira página selecionados. ([#1110](https://github.com/bildvitta/asteroid/issues/1110))
+
 ### Segurança
 - Fixada versão do `axios` (removido `^`) em `package.json`, `ui/package.json` e `docs/package.json` para evitar atualizações automáticas em versões comprometidas (`0.30.4` e `1.14.1`).
 
