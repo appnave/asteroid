@@ -62,7 +62,7 @@ const isForwardButtonDisabled = computed(() => !hasNextRoute.value || isDisabled
 const drawerProps = computed(() => {
   return {
     position: 'right',
-    maxWidth: '90%',
+    size: 'xl',
     dialogProps: {
       class: 'pv-layout-overlay-drawer',
       onHide: closeOverlay,

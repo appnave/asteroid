@@ -1,5 +1,5 @@
 <template>
-  <qas-dialog v-model="model" class="qas-drawer" v-bind="attributes">
+  <qas-dialog v-model="model" class="qas-drawer" :class="containerDialogClasses" v-bind="attributes">
     <template #header>
       <slot name="header">
         <div class="items-center justify-between row">
@@ -40,7 +40,7 @@ import QasBtn from '../btn/QasBtn.vue'
 
 import useScreen from '../../composables/use-screen.js'
 
-import { computed, provide } from 'vue'
+import { computed } from 'vue'
 
 defineOptions({
   name: 'QasDrawer',
@@ -51,11 +51,6 @@ const props = defineProps({
   dialogProps: {
     type: Object,
     default: () => ({})
-  },
-
-  maxWidth: {
-    type: String,
-    default: '60%'
   },
 
   persistent: {
@@ -75,6 +70,12 @@ const props = defineProps({
 
   loading: {
     type: Boolean
+  },
+
+  size: {
+    type: String,
+    default: 'sm',
+    validator: value => !value || ['sm', 'md', 'lg', 'xl'].includes(value)
   }
 })
 
@@ -85,12 +86,21 @@ const model = defineModel({ type: Boolean })
 const screen = useScreen()
 
 // computed
-const normalizedMaxWidth = computed(() => screen.isSmall ? '95%' : props.maxWidth)
+const containerDialogClasses = computed(() => {
+  return screen.isSmall
+    ? 'qas-drawer--mobile'
+    : `qas-drawer--${props.size}`
+})
 
 const loadingStyle = computed(() => {
-  return {
-    right: `calc(100% - ${normalizedMaxWidth.value})`
+  const sizesWidth = {
+    sm: '20%',
+    md: '50%',
+    lg: '70%',
+    xl: '90%'
   }
+
+  return screen.isSmall ? '95%' : sizesWidth[props.size]
 })
 
 const attributes = computed(() => {
@@ -105,17 +115,6 @@ const attributes = computed(() => {
   }
 })
 
-// globals
-/**
- * Manter dessa forma até issue #1431 ser resolvida.
- */
-provide('dialogDefaultProps', computed(() => {
-  return {
-    maxWidth: normalizedMaxWidth.value,
-    persistent: props.persistent
-  }
-}))
-
 // functions
 function close () {
   model.value = false
@@ -129,6 +128,36 @@ function close () {
     left: 0;
     position: absolute;
     top: 0;
+  }
+
+  &--mobile {
+    .qas-dialog__container {
+      max-width: 95% !important;
+    }
+  }
+
+  &--sm {
+    .qas-dialog__container {
+      max-width: 20% !important;
+    }
+  }
+
+  &--md {
+    .qas-dialog__container {
+      max-width: 50% !important;
+    }
+  }
+
+  &--lg {
+    .qas-dialog__container {
+      max-width: 70% !important;
+    }
+  }
+
+  &--xl {
+    .qas-dialog__container {
+      max-width: 90% !important;
+    }
   }
 }
 </style>

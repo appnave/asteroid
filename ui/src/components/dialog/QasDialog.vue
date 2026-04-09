@@ -1,6 +1,6 @@
 <template>
   <q-dialog ref="dialogRef" v-model="model" class="qas-dialog" :class="classes" data-cy="dialog" v-bind="dialogProps">
-    <div class="bg-white full-width q-pa-md qas-dialog__container" :style="containerStyles">
+    <div class="bg-white full-width q-pa-md qas-dialog__container">
       <header v-if="hasHeaderSlot" class="q-mb-md">
         <slot name="header" />
       </header>
@@ -35,7 +35,7 @@ import QasLabel from '../label/QasLabel.vue'
 import QasActions from '../actions/QasActions.vue'
 import QasHeader from '../header/QasHeader.vue'
 
-import { computed, ref, useAttrs, provide, useSlots, inject } from 'vue'
+import { computed, ref, useAttrs, provide, useSlots } from 'vue'
 import { useDialogPluginComponent, QForm } from 'quasar'
 
 defineOptions({ name: 'QasDialog' })
@@ -131,9 +131,6 @@ const model = defineModel({ type: Boolean })
 provide('isDialog', true)
 provide('btnPropsDefaults', { size: 'md' }) // define o tamanho padrão para os botões dentro do dialog
 
-// necessário para pegar as props default do dialog quando usado no QasDrawer
-const defaultProps = inject('dialogDefaultProps', null)
-
 // refs
 const form = ref(null)
 
@@ -146,11 +143,6 @@ const { defaultOk, hasOk, onOk } = useOk()
 const { descriptionComponent, mainComponent } = useDynamicComponents()
 
 // computeds
-/**
- * Necessária logica via provide para controle interno no componente QasDrawer.
- */
-const hasDefaultMaxWidth = computed(() => !!defaultProps?.value.maxWidth)
-
 /**
  * Classes criadas para serem utilizadas quando usado com a prop "position", pois
  * o comportamento do dialog muda, e não é possível usar em conjunto com a prop
@@ -169,22 +161,11 @@ const classes = computed(() => {
 
   return [
     {
-      [sizes[props.size]]: !hasDefaultMaxWidth.value,
+      [sizes[props.size]]: true,
       'qas-dialog--right': isRightPosition,
       'qas-dialog--left': isLeftPosition
     }
   ]
-})
-
-/**
- * TODO-ISSUE: Manter dessa forma até issue #1431 ser resolvida.
- */
-const containerStyles = computed(() => {
-  if (!hasDefaultMaxWidth.value) return
-
-  return {
-    maxWidth: defaultProps?.value?.maxWidth
-  }
 })
 
 const dialogProps = computed(() => {
@@ -193,7 +174,7 @@ const dialogProps = computed(() => {
   return {
     ...(!props.usePlugin && { modelValue: props.modelValue }),
     ...attributes,
-    persistent: defaultProps?.value?.persistent ?? hasActions.value,
+    persistent: hasActions.value,
 
     onHide: onDialogHide
   }
