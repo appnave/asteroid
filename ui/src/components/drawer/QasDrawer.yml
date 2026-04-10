@@ -34,6 +34,11 @@ props:
     desc: Titulo do drawer.
     type: String
 
+  size:
+    desc: Tamanho do drawer.
+    default: sm
+    type: String
+
 slots:
   header:
     desc: Slot para conteúdo do cabeçalho.

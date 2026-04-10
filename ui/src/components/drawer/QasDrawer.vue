@@ -111,7 +111,8 @@ const attributes = computed(() => {
     cancel: false,
     maximized: true,
     ok: false,
-    position: props.position
+    position: props.position,
+    persistent: props.persistent
   }
 })
 

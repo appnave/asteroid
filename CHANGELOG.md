@@ -48,7 +48,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - adicionada propriedade `useAutoCloseOnOk` e `useAutoCloseOnCancel` ([#1360](https://github.com/bildvitta/asteroid/issues/1360))([#1121](https://github.com/bildvitta/asteroid/issues/1121))
   - adicionada propriedade `useCloseButton` para remover botão de fechar (x).
   - adicionada propriedade `useHtmlDescription`.
-- `QasDrawer`: adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`.
+- `QasDrawer`:
+  - adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`.
+  - adicionado propriedade `size` pra controlar o tamanho do drawer.
 - `QasBoardGenerator`: adicionado nova propriedade `use-confirm-dialog` para controlar quando vai ter ou não o dialog de confirmação.
 
 ### Modificado
