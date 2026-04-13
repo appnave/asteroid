@@ -160,8 +160,9 @@ const classes = computed(() => {
   }
 
   return [
+    sizes[props.size],
+
     {
-      [sizes[props.size]]: true,
       'qas-dialog--right': isRightPosition,
       'qas-dialog--left': isLeftPosition
     }

@@ -87,9 +87,7 @@ const screen = useScreen()
 
 // computed
 const containerDialogClasses = computed(() => {
-  return screen.isSmall
-    ? 'qas-drawer--mobile'
-    : `qas-drawer--${props.size}`
+  return screen.isSmall ? 'qas-drawer--mobile' : `qas-drawer--${props.size}`
 })
 
 const loadingStyle = computed(() => {
