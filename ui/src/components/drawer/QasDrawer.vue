@@ -40,7 +40,7 @@ import QasBtn from '../btn/QasBtn.vue'
 
 import useScreen from '../../composables/use-screen.js'
 
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 
 defineOptions({
   name: 'QasDrawer',
@@ -79,6 +79,8 @@ const props = defineProps({
   }
 })
 
+const isOverlay = inject('isOverlay', false)
+
 // emits
 const model = defineModel({ type: Boolean })
 
@@ -87,15 +89,17 @@ const screen = useScreen()
 
 // computed
 const containerDialogClasses = computed(() => {
+  if (isOverlay) return 'qas-drawer--overlay'
+
   return screen.isSmall ? 'qas-drawer--mobile' : `qas-drawer--${props.size}`
 })
 
 const loadingStyle = computed(() => {
   const sizesWidth = {
-    sm: '20%',
-    md: '50%',
-    lg: '70%',
-    xl: '90%'
+    sm: '450px',
+    md: '800px',
+    lg: '1000px',
+    xl: '1200px'
   }
 
   return screen.isSmall ? '95%' : sizesWidth[props.size]
@@ -131,31 +135,37 @@ function close () {
 
   &--mobile {
     .qas-dialog__container {
-      max-width: 95% !important;
+      max-width: 450px !important;
+    }
+  }
+
+  &--overlay {
+    .qas-dialog__container {
+      max-width: 90% !important;
     }
   }
 
   &--sm {
     .qas-dialog__container {
-      max-width: 20% !important;
+      max-width: 368px !important;
     }
   }
 
   &--md {
     .qas-dialog__container {
-      max-width: 50% !important;
+      max-width: 512px !important;
     }
   }
 
   &--lg {
     .qas-dialog__container {
-      max-width: 70% !important;
+      max-width: 656px !important;
     }
   }
 
   &--xl {
     .qas-dialog__container {
-      max-width: 90% !important;
+      max-width: 800px !important;
     }
   }
 }
