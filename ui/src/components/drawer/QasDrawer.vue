@@ -17,12 +17,12 @@
     </template>
 
     <template #description>
-      <div>
-        <div class="relative-position" data-cy="drawer-default">
+      <div class="relative-position">
+        <div data-cy="drawer-default">
           <slot />
         </div>
 
-        <div v-if="props.loading" class="qas-drawer__loading" :style="loadingStyle">
+        <div v-if="props.loading" class="qas-drawer__loading">
           <div class="full-height relative-position">
             <q-inner-loading :showing="props.loading">
               <q-spinner color="grey" size="2em" />
@@ -89,20 +89,17 @@ const screen = useScreen()
 
 // computed
 const containerDialogClasses = computed(() => {
-  if (isOverlay) return 'qas-drawer--overlay'
+  // tratamento para mobile, onde sempre pegará 95% da tela.
+  if (screen.isSmall) return 'qas-drawer--mobile'
 
-  return screen.isSmall ? 'qas-drawer--mobile' : `qas-drawer--${props.size}`
-})
+  /**
+   * no caso de ter passado a prop lg ou xl, mas o tamanho da tela ser médio,
+   * o drawer irá se comportar como md, pegando 512px de largura, caso contrário, teria o problema
+   * do drawer acabar pegando 100% da página, tendo o comportamento errado.
+   */
+  if (screen.isMedium && (props.size === 'lg' || props.size === 'xl')) return 'qas-drawer--md'
 
-const loadingStyle = computed(() => {
-  const sizesWidth = {
-    sm: '450px',
-    md: '800px',
-    lg: '1000px',
-    xl: '1200px'
-  }
-
-  return screen.isSmall ? '95%' : sizesWidth[props.size]
+  return isOverlay ? 'qas-drawer--overlay' : `qas-drawer--${props.size}`
 })
 
 const attributes = computed(() => {
@@ -131,11 +128,12 @@ function close () {
     left: 0;
     position: absolute;
     top: 0;
+    width: 100%;
   }
 
   &--mobile {
     .qas-dialog__container {
-      max-width: 450px !important;
+      max-width: 95% !important;
     }
   }
 
@@ -165,7 +163,7 @@ function close () {
 
   &--xl {
     .qas-dialog__container {
-      max-width: 800px !important;
+      max-width: 960px !important;
     }
   }
 }
