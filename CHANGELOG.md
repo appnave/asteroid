@@ -14,6 +14,86 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Modificado
+- Atualizado `.nvmrc` de `lts/iron` (Node 20) para `lts/jod` (Node 22).
+- Atualizado dependências do projeto:
+  **Root (`package.json`)**
+  - `@octokit/rest` ^19.0.11 → ^19.0.13
+  - `@vitejs/plugin-vue` ^4.2.3 → ^4.6.2
+  - `@vue/test-utils` ^2.3.2 → ^2.4.6
+  - `axios` 1.4.0 → 1.15.0
+  - `enquirer` ^2.3.6 → ^2.4.1
+  - `eslint` ^8.42.0 → ^8.57.1
+  - `eslint-plugin-import` ^2.27.5 → ^2.32.0
+  - `eslint-plugin-promise` ^6.1.1 → ^6.6.0
+  - `eslint-plugin-vue` ^9.25.0 → ^9.33.0
+  - `execa` ^7.1.1 → ^7.2.0
+  - `js-yaml` ^4.1.0 → ^4.1.1
+  - `lodash` ^4.17.21 → ^4.18.1
+  - `open` ^9.0.0 → ^9.1.0
+  - `postcss-html` ^1.5.0 → ^1.8.1
+  - `rimraf` ^5.0.1 → ^5.0.10
+  - `sass` ^1.63.6 → ^1.99.0
+  - `semver` ^7.5.1 → ^7.7.4
+  - `vite` ^4.3.9 → ^4.5.14
+  - `vitest` ^0.32.0 → ^0.34.6
+  - `vue-eslint-parser` ^9.3.0 → ^9.4.3
+
+  **UI (`ui/package.json`)**
+  - `@bildvitta/composables` ^1.0.0-beta.7 → ^1.0.0-beta.12
+  - `@rollup/plugin-json` ^6.0.0 → ^6.1.0
+  - `@rollup/plugin-replace` ^5.0.2 → ^5.0.7
+  - `@rollup/plugin-url` ^8.0.1 → ^8.0.2
+  - `@vue/compiler-sfc` ^3.3.4 → ^3.5.32
+  - `autoprefixer` ^10.4.14 → ^10.5.0
+  - `axios` 1.4.0 → 1.15.0
+  - `core-js` ^3.30.2 → ^3.49.0
+  - `debug` ^4.3.4 → ^4.4.3
+  - `gleap` ^14.2.7 → ^14.8.14
+  - `lodash-es` ^4.17.21 → ^4.18.1
+  - `pdfjs-dist` 4.3.136 → 4.10.38
+  - `postcss` ^8.4.24 → ^8.5.9
+  - `rimraf` ^5.0.1 → ^5.0.10
+  - `rollup` ^3.23.1 → ^3.30.0
+  - `rollup-plugin-scss` ^4.0.0 → ^4.0.1
+  - `sass` ^1.62.1 → ^1.99.0
+  - `signature_pad` ^4.1.5 → ^4.2.0
+
+  **App Extension (`app-extension/package.json`)**
+  - `execa` ^7.1.1 → ^7.2.0
+  - `laravel-echo` ^1.15.3 → ^1.19.0
+  - `pusher-js` ^8.4.0-rc2 → ^8.5.0
+  - `unplugin-vue-components` 28.5.0 → 28.8.0
+
+  **Docs (`docs/package.json`)**
+  - `@algolia/autocomplete-js` ^1.9.2 → ^1.19.8
+  - `@algolia/autocomplete-theme-classic` ^1.9.2 → ^1.19.8
+  - `@babel/eslint-parser` 7.21.8 → 7.28.6
+  - `@bildvitta/composables` ^1.0.0-beta.7 → ^1.0.0-beta.12
+  - `@bildvitta/store-module` ^1.0.0-beta.10 → ^1.1.0-beta.1
+  - `@docsearch/css` ^3.4.0 → ^3.9.0
+  - `@docsearch/js` ^3.4.0 → ^3.9.0
+  - `@quasar/extras` ^1.16.17 → ^1.18.0
+  - `axios` 1.4.0 → 1.15.0
+  - `chart.js` ^4.4.2 → ^4.5.1
+  - `chartjs-plugin-zoom` ^2.0.1 → ^2.2.0
+  - `core-js` ^3.30.2 → ^3.49.0
+  - `eslint-webpack-plugin` 4.0.1 → 4.2.0
+  - `highlight.js` ^11.8.0 → ^11.11.1
+  - `markdown-it` ^13.0.1 → ^13.0.2
+  - `quasar` ^2.18.1 → ^2.19.3
+  - `unplugin-vue-components` 28.5.0 → 28.8.0
+  - `vue` 3.4.0 → 3.5.32
+  - `vue-chartjs` ^5.3.1 → ^5.3.3
+  - `vue-router` ^4.3.2 → ^4.6.4
+  - `web-vitals` ^3.3.2 → ^3.5.2
+  - `workbox-webpack-plugin` ^6.5.3 → ^6.6.1
+
+  **ESLint (`eslint/package.json`)**
+  - `eslint` ^8.8.0 → ^8.57.1
+  - `vue-eslint-parser` ^8.2.0 → ^8.3.0
+
 ## [3.20.0-beta.18] - 08-04-2026
 ### Corrigido
 - `QasBoardGenerator`: Removido fetchAdapter do axios pois existem versões que não tem compatibilidade.
