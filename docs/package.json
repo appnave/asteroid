@@ -1,14 +1,14 @@
 {
   "name": "@bildvitta/asteroid-docs",
   "description": "Asteroid",
-  "version": "3.20.0-beta.18",
+  "version": "3.20.0-beta.18-alpha.1",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
   "license": "MIT",
   "productName": "Asteroid Docs",
   "private": true,
   "scripts": {
     "build": "npx quasar build --mode pwa",
-    "lint": "eslint --ext .js,.vue ./",
+    "lint": "eslint .",
     "dev:pwa": "quasar dev -m pwa",
     "test": "echo \"No test specified\" && exit 0"
   },
