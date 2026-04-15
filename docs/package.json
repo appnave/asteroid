@@ -19,8 +19,8 @@
     "@bildvitta/quasar-ui-asteroid": "file:../ui",
     "@bildvitta/store-module": "1.1.0-beta.1",
     "@bildvitta/vuex-offline": "3.2.1",
-    "@docsearch/css": "3.9.0",
-    "@docsearch/js": "3.9.0",
+    "@docsearch/css": "^4.6.2",
+    "@docsearch/js": "^4.6.2",
     "@fawmi/vue-google-maps": "0.9.79",
     "@modyfi/vite-plugin-yaml": "^1.1.1",
     "@quasar/app-vite": "^2.6.0",
@@ -35,9 +35,9 @@
     "unplugin-vue-components": "^32.0.0",
     "vue": "3.5.32",
     "vue-chartjs": "^5.3.3",
-    "vue-router": "4.6.4",
+    "vue-router": "^5.0.4",
     "vuex": "4.1.0",
-    "web-vitals": "3.5.2",
+    "web-vitals": "^5.2.0",
     "workbox-build": "^7.4.0"
   },
   "devDependencies": {

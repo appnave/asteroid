@@ -1,5 +1,5 @@
 import { boot } from 'quasar/wrappers'
-import { onCLS, onFCP, onFID, onLCP, onTTFB } from 'web-vitals'
+import { onCLS, onFCP, onINP, onLCP, onTTFB } from 'web-vitals'
 
 const vitalsUrl = 'https://vitals.vercel-analytics.com/v1/vitals'
 
@@ -44,13 +44,12 @@ export function sendToVercelAnalytics (metric = {}, options = {}) {
 
 export function reportWebVitals (options) {
   try {
-    onFID(metric => sendToVercelAnalytics(metric, options))
+    onINP(metric => sendToVercelAnalytics(metric, options))
     onTTFB(metric => sendToVercelAnalytics(metric, options))
     onLCP(metric => sendToVercelAnalytics(metric, options))
     onCLS(metric => sendToVercelAnalytics(metric, options))
     onFCP(metric => sendToVercelAnalytics(metric, options))
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('[Analytics]', error)
   }
 }
