@@ -1,7 +1,6 @@
 import asteroidConfigHandler from './helpers/asteroid-config-handler.js'
 
 import ComponentsVite from 'unplugin-vue-components/vite'
-import ComponentsWebpack from 'unplugin-vue-components/webpack'
 import { pathToFileURL } from 'url'
 
 const sourcePath = '~@bildvitta/quasar-app-extension-asteroid/src/'
@@ -26,19 +25,6 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
   // controle das notificações
   if (asteroidConfigFile.framework.featureToggle.useNotifications) {
     quasar.boot.push(...resolve('boot/notifications'))
-  }
-
-  // Transpilação de arquivos!
-  if (api.hasWebpack) {
-    const transpileTarget = (
-      quasar.build.webpackTranspileDependencies || // q/app-webpack >= v4
-      quasar.build.transpileDependencies // q/app-webpack v3
-    )
-
-    transpileTarget.push(
-      /quasar-app-extension-asteroid[\\/]src/,
-      /@bildvitta[\\/]quasar-ui-asteroid[\\/]src/
-    )
   }
 
   // Adiciona todas classes do asteroid
@@ -105,44 +91,28 @@ export default async function (api) {
     quasar: api.resolve.app(quasar)
   }
 
-  if (api.hasVite) {
-    api.compatibleWith('@quasar/app-vite', '^2.0.0')
+  api.compatibleWith('@quasar/app-vite', '^2.0.0')
 
-    api.extendViteConf(viteConf => {
-      Object.assign(viteConf.resolve.alias, alias)
+  api.extendViteConf(viteConf => {
+    Object.assign(viteConf.resolve.alias, alias)
 
-      // optimizeDeps (necessário para funcionamento do QasMap)
-      viteConf.optimizeDeps = viteConf.optimizeDeps || {}
-      viteConf.optimizeDeps.include = viteConf.optimizeDeps.include || []
-      viteConf.optimizeDeps.include.push(...[
-        '@fawmi/vue-google-maps',
-        'fast-deep-equal',
-        'humps',
-        'debug',
-        'pica',
-        'hammerjs',
-        'lodash-es',
-        'date-fns',
-        'date-fns/locale'
-      ])
+    // optimizeDeps (necessário para funcionamento do QasMap)
+    viteConf.optimizeDeps = viteConf.optimizeDeps || {}
+    viteConf.optimizeDeps.include = viteConf.optimizeDeps.include || []
+    viteConf.optimizeDeps.include.push(...[
+      '@fawmi/vue-google-maps',
+      'fast-deep-equal',
+      'humps',
+      'debug',
+      'pica',
+      'hammerjs',
+      'lodash-es',
+      'date-fns',
+      'date-fns/locale'
+    ])
 
-      viteConf.plugins = viteConf.plugins || []
-      viteConf.plugins.push(ComponentsVite(unpluginVueComponentsConfig))
-    })
-
-    api.extendQuasarConf(quasar => extendQuasar(quasar, api, asteroidConfigFile))
-
-    return
-  }
-
-  api.compatibleWith('@quasar/app', '^3.10.0 || ^4.0.0')
-
-  api.extendWebpack(webpack => {
-    Object.assign(webpack.resolve.alias, alias)
-
-    // Adiciona o plugin de componentes
-    webpack.plugins = webpack.plugins || []
-    webpack.plugins.push(ComponentsWebpack(unpluginVueComponentsConfig))
+    viteConf.plugins = viteConf.plugins || []
+    viteConf.plugins.push(ComponentsVite(unpluginVueComponentsConfig))
   })
 
   api.extendQuasarConf(quasar => extendQuasar(quasar, api, asteroidConfigFile))
