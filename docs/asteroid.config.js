@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   /**
    * Configurações de API
    * @type {{ serverTimeout: number=10000 }}

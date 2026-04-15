@@ -50,6 +50,9 @@ import { markRaw } from 'vue'
 import { openURL } from 'quasar'
 import { fabGithub } from '@quasar/extras/fontawesome-v5'
 
+const exampleModules = import.meta.glob('../examples/**/*.vue')
+const exampleRawModules = import.meta.glob('../examples/**/*.vue', { query: '?raw', import: 'default' })
+
 export default {
   props: {
     file: {
@@ -104,21 +107,23 @@ export default {
     loadFile () {
       this.isLoading = true
 
+      const modulePath = `../examples/${this.file}.vue`
+      const loadComponent = exampleModules[modulePath]
+      const loadRaw = exampleRawModules[modulePath]
+
+      if (!loadComponent) {
+        console.warn(`[DocExample] File not found: ${this.file}.vue`)
+        this.isLoading = false
+        return
+      }
+
       Promise.all([
-        import(
-          /* webpackChunkName: 'demo' */
-          /* webpackMode: 'lazy-once' */
-          `examples/${this.file}.vue`
-        ).then(component => {
+        loadComponent().then(component => {
           this.component = markRaw(component.default)
         }),
 
-        import(
-          /* webpackChunkName: 'demo-source' */
-          /* webpackMode: 'lazy-once' */
-          `!raw-loader!examples/${this.file}.vue`
-        ).then(component => {
-          this.parseSource(component.default)
+        loadRaw().then(source => {
+          this.parseSource(source)
         })
       ]).then(() => {
         this.isLoading = false

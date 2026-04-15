@@ -1,9 +1,9 @@
-const MarkdownIt = require('markdown-it')
+import MarkdownIt from 'markdown-it'
 
-const markdownPluginCode = require('./markdown-plugin-code.js')
-const markdownPluginContainer = require('./markdown-plugin-container.js')
-const markdownPluginHeading = require('./markdown-plugin-heading.js')
-const markdownPluginTable = require('./markdown-plugin-table.js')
+import markdownPluginCode from './markdown-plugin-code.js'
+import markdownPluginContainer from './markdown-plugin-container.js'
+import markdownPluginHeading from './markdown-plugin-heading.js'
+import markdownPluginTable from './markdown-plugin-table.js'
 
 const markdownOptions = {
   html: true,
@@ -16,23 +16,36 @@ const markdown = new MarkdownIt(markdownOptions)
   .use(markdownPluginHeading)
   .use(markdownPluginTable)
 
-const matter = require('gray-matter')
-const toml = require('toml')
+import matter from 'gray-matter'
+import toml from 'toml'
 
 const getVueComponent = function (source) {
   const { data, content } = parseFrontMatter(source)
 
+  let rendered = markdown.render(content)
+
+  // Convert require('assets/...') to ESM imports for Vite compatibility.
+  // In webpack, require() worked inline in Vue templates.
+  // In Vite, we extract them as imports and reference variables in the template.
+  const imports = []
+  let importIndex = 0
+
+  rendered = rendered.replace(/require\(['"]([^'"]+)['"]\)/g, (match, assetPath) => {
+    const varName = `__asset_${importIndex++}`
+    imports.push(`import ${varName} from '${assetPath}'`)
+    return varName
+  })
+
+  const importsBlock = imports.length ? imports.join('\n') + '\n' : ''
+
   return `
     <template>
-      <doc-page v-bind="attrs">${markdown.render(content)}</doc-page>
+      <doc-page v-bind="attrs">${rendered}</doc-page>
     </template>
 
-    <script>
-      export default {
-        computed: {
-          attrs () { return ${JSON.stringify(data)} }
-        }
-      }
+    <script setup>
+      ${importsBlock}import { computed } from 'vue'
+      const attrs = computed(() => (${JSON.stringify(data)}))
     </script>
   `
 }
@@ -48,5 +61,4 @@ const parseFrontMatter = function (content) {
   })
 }
 
-module.exports.getVueComponent = getVueComponent
-module.exports.parseFrontMatter = parseFrontMatter
+export { getVueComponent, parseFrontMatter }
