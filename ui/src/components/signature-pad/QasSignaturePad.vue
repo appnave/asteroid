@@ -1,17 +1,30 @@
 <template>
   <div ref="signatureContainer" class="qas-signature-pad relative-position">
-    <canvas :id="canvasId" :ref="$attrs.ref" class="qas-signature-pad__canvas rounded-borders vertical-bottom" :height="height" />
-    <qas-btn v-if="!empty" class="absolute-bottom-right q-mb-sm q-mr-sm" icon="sym_r_delete" variant="primary" @click="clearSignature" />
+    <canvas
+      :id="canvasId"
+      class="qas-signature-pad__canvas rounded-borders vertical-bottom"
+      :height="height"
+    />
+
+    <qas-btn
+      v-if="!empty"
+      class="absolute-bottom-right q-mb-sm q-mr-sm"
+      icon="sym_r_delete"
+      variant="primary"
+      @click="clearSignature"
+    />
   </div>
 
   <div>
-    <slot :clear-signature="clearSignature" :get-signature-data="getSignatureData" />
+    <slot
+      :clear-signature="clearSignature"
+      :get-signature-data="getSignatureData"
+    />
   </div>
 </template>
 
 <script>
 import QasBtn from '../btn/QasBtn.vue'
-
 import { uid } from 'quasar'
 import isEqual from 'lodash-es/isEqual'
 import SignaturePad from 'signature_pad'
@@ -19,9 +32,7 @@ import SignaturePad from 'signature_pad'
 export default {
   name: 'QasSignaturePad',
 
-  components: {
-    QasBtn
-  },
+  components: { QasBtn },
 
   props: {
     empty: {
@@ -30,18 +41,18 @@ export default {
     },
 
     height: {
-      default: '250',
-      type: String
+      type: String,
+      default: '250'
     },
 
     signatureOptions: {
-      default: () => ({}),
-      type: Object
+      type: Object,
+      default: () => ({})
     },
 
     type: {
-      default: 'image/png',
-      type: String
+      type: String,
+      default: 'image/png'
     }
   },
 
@@ -52,9 +63,7 @@ export default {
   data () {
     return {
       canvasId: uid(),
-      hasEndStrokeEvent: false,
-      signaturePad: null,
-      SignaturePad: null
+      signaturePad: null
     }
   },
 
@@ -69,45 +78,65 @@ export default {
 
   mounted () {
     window.addEventListener('resize', this.setCanvasWidth)
-    this.setCanvasWidth()
 
+    this.setCanvasWidth()
     this.setupSignaturePad()
   },
 
   unmounted () {
     window.removeEventListener('resize', this.setCanvasWidth)
-    this.signaturePad.off()
+
+    this.destroySignaturePad()
   },
 
   methods: {
+    destroySignaturePad () {
+      if (!this.signaturePad) return
+
+      this.signaturePad.off()
+      this.signaturePad.onEnd = null
+      this.signaturePad = null
+    },
+
     clearSignature () {
+      if (!this.signaturePad) return
+
       this.signaturePad.clear()
       this.updateEmptyModel()
     },
 
     getSignatureData () {
+      if (!this.signaturePad) return ''
+
       return this.signaturePad.toDataURL(this.type)
     },
 
     setCanvasWidth () {
-      const signatureContainer = this.$refs.signatureContainer
-      const canvasElement = signatureContainer.querySelector('canvas')
-      canvasElement.setAttribute('width', signatureContainer.offsetWidth)
+      const container = this.$refs.signatureContainer
+      if (!container) return
+
+      const canvas = container.querySelector('canvas')
+      if (!canvas) return
+
+      canvas.width = container.offsetWidth
     },
 
     setupSignaturePad () {
-      const canvasElement = document.getElementById(this.canvasId)
-      this.signaturePad = new SignaturePad(canvasElement, this.signatureOptions)
+      const canvas = document.getElementById(this.canvasId)
+      if (!canvas) return
 
-      if (!this.hasEndStrokeEvent) {
-        this.signaturePad.addEventListener('endStroke', this.updateEmptyModel)
-      }
+      this.destroySignaturePad()
 
-      this.hasEndStrokeEvent = true
+      this.signaturePad = new SignaturePad(canvas, this.signatureOptions)
+
+      this.signaturePad.onEnd = this.updateEmptyModel
+
       this.clearSignature()
     },
 
     updateEmptyModel () {
+      if (!this.signaturePad) return
+
       this.$emit('update:empty', this.signaturePad.isEmpty())
     }
   }

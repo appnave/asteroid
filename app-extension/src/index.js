@@ -60,7 +60,7 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
 
 export default async function (api) {
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('date-fns', '^2.3.0')
+  api.compatibleWith('date-fns', '^4.1.0')
 
   const asteroid = 'node_modules/@bildvitta/quasar-ui-asteroid/src/asteroid.js'
   const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'

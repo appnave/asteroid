@@ -31,14 +31,14 @@
     "chartjs-plugin-zoom": "2.2.0",
     "highlight.js": "11.11.1",
     "markdown-it": "^14.1.1",
-    "quasar": "^2.19.3",
+    "quasar": "2.19.3",
     "unplugin-vue-components": "^32.0.0",
     "vue": "3.5.32",
     "vue-chartjs": "^5.3.3",
     "vue-router": "^5.0.4",
     "vuex": "4.1.0",
     "web-vitals": "^5.2.0",
-    "workbox-build": "^7.4.0"
+    "workbox-build": "7.4.0"
   },
   "devDependencies": {
     "gray-matter": "4.0.3",

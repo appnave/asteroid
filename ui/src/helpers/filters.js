@@ -1,13 +1,14 @@
-import { format, parseISO, isMatch } from 'date-fns'
+import { format, parseISO, isMatch, isValid } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 // Private
 function __format (value, token, options = {}) {
-  if (!value) {
-    return ''
-  }
+  if (!value) return ''
 
   value = value instanceof Date ? value : parseISO(value)
+
+  if (!isValid(value)) return ''
+
   return format(value, token, { locale: ptBR, ...options })
 }
 
