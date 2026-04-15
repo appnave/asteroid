@@ -12,7 +12,7 @@
     "src"
   ],
   "scripts": {
-    "build": "npx rollup -c --bundleConfigAsCjs"
+    "build": "npx rollup -c"
   },
   "publishConfig": {
     "access": "public",
@@ -28,14 +28,15 @@
   ],
   "devDependencies": {
     "@rollup/plugin-json": "6.1.0",
-    "@rollup/plugin-replace": "5.0.7",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-url": "8.0.2",
     "@vue/compiler-sfc": "3.5.32",
     "autoprefixer": "10.5.0",
     "core-js": "3.49.0",
     "postcss": "8.5.9",
     "rimraf": "5.0.10",
-    "rollup": "3.30.0",
+    "rollup": "^4.60.1",
     "rollup-plugin-local-resolve": "1.0.7",
     "rollup-plugin-scss": "4.0.1",
     "rollup-plugin-vue": "6.0.0",
@@ -47,25 +48,25 @@
     "autonumeric": "4.10.9",
     "axios": "1.15.0",
     "date-fns": "2.30.0",
-    "pdfjs-dist": "4.10.38",
     "debug": "4.4.3",
     "fuse.js": "6.6.2",
     "gleap": "14.8.14",
     "humps": "2.0.1",
     "lodash-es": "4.18.1",
+    "pdfjs-dist": "4.10.38",
     "pica": "9.0.1",
     "signature_pad": "4.2.0",
     "sortablejs": "1.15.7"
   },
   "peerDependencies": {
-    "@quasar/extras": "1.18.0",
-    "vue-router": "4.6.4",
     "@fawmi/vue-google-maps": "0.9.79",
-    "vue-chartjs": "5.3.3",
+    "@quasar/extras": "1.18.0",
     "chart.js": "4.5.1",
     "chartjs-plugin-datalabels": "2.2.0",
     "chartjs-plugin-zoom": "2.2.0",
-    "quasar": "2.18.1"
+    "quasar": "2.18.1",
+    "vue-chartjs": "5.3.3",
+    "vue-router": "4.6.4"
   },
   "browserslist": [
     "defaults"
