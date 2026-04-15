@@ -40,7 +40,7 @@ import QasBtn from '../btn/QasBtn.vue'
 
 import useScreen from '../../composables/use-screen.js'
 
-import { computed, inject } from 'vue'
+import { computed, inject, provide } from 'vue'
 
 defineOptions({
   name: 'QasDrawer',
@@ -79,7 +79,10 @@ const props = defineProps({
   }
 })
 
+// globals
 const isOverlay = inject('isOverlay', false)
+
+provide('drawerProps', computed(() => ({ persistent: props.persistent })))
 
 // emits
 const model = defineModel({ type: Boolean })

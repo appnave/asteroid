@@ -35,10 +35,10 @@ import QasLabel from '../label/QasLabel.vue'
 import QasActions from '../actions/QasActions.vue'
 import QasHeader from '../header/QasHeader.vue'
 
-import { computed, ref, useAttrs, provide, useSlots } from 'vue'
+import { computed, ref, useAttrs, provide, useSlots, inject } from 'vue'
 import { useDialogPluginComponent, QForm } from 'quasar'
 
-defineOptions({ name: 'QasDialog' })
+defineOptions({ name: 'QasDialog', inheritAttrs: false })
 
 const props = defineProps({
   badges: {
@@ -128,8 +128,11 @@ const emit = defineEmits([
 const model = defineModel({ type: Boolean })
 
 // globals
+const drawerProps = inject('drawerProps', null)
+
 provide('isDialog', true)
 provide('btnPropsDefaults', { size: 'md' }) // define o tamanho padrão para os botões dentro do dialog
+provide('drawerProps', null) // quebra a cadeia para dialogs filhos usarem hasActions normalmente
 
 // refs
 const form = ref(null)
@@ -175,7 +178,12 @@ const dialogProps = computed(() => {
   return {
     ...(!props.usePlugin && { modelValue: props.modelValue }),
     ...attributes,
-    persistent: hasActions.value,
+
+    /**
+     * valida se a prop "persistent" foi passada para o drawer, caso tenha passado,
+     * ele respeita a prop, caso contrário é validado se tem ações para ser persistente ou não.
+     */
+    persistent: drawerProps?.value ? drawerProps?.value.persistent : hasActions.value,
 
     onHide: onDialogHide
   }
@@ -245,7 +253,7 @@ function useOk () {
     }
   })
 
-  const hasOk = computed(() => typeof props.ok === 'boolean' ? props.ok : !!Object.keys(props.ok))
+  const hasOk = computed(() => typeof props.ok === 'boolean' ? props.ok : !!Object.keys(props.ok)?.length)
 
   // functions
   function onOk () {
@@ -278,7 +286,7 @@ function useCancel () {
     }
   })
 
-  const hasCancel = computed(() => typeof props.cancel === 'boolean' ? props.cancel : !!Object.keys(props.cancel))
+  const hasCancel = computed(() => typeof props.cancel === 'boolean' ? props.cancel : !!Object.keys(props.cancel)?.length)
 
   // functions
   function onCancel () {
