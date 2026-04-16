@@ -106,9 +106,8 @@ const props = defineProps({
   },
 
   user: {
-    default: () => ({}),
-    required: true,
-    type: Object
+    type: Object,
+    default: () => ({})
   },
 
   useDataOnSmallScreen: {

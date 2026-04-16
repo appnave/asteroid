@@ -26,7 +26,7 @@ module.exports = {
     const components = getComponentList(toTag)
 
     // Public
-    return context.parserServices.defineTemplateBodyVisitor({
+    return context.sourceCode.parserServices.defineTemplateBodyVisitor({
       VElement (element) {
         const { rawName } = element
 

@@ -1,7 +1,7 @@
-function installNextUi ({ execaSync, ora, nextVersion, packages, retry = false }) {
-  const jetpack = require('fs-jetpack') // https://github.com/szwacz/fs-jetpack
-  const getAppExtensionPackage = require('./get-app-extension-package')
+import jetpack from 'fs-jetpack' // https://github.com/szwacz/fs-jetpack
+import getAppExtensionPackage from './get-app-extension-package.js'
 
+function installNextUi ({ execaSync, ora, nextVersion, packages, retry = false }) {
   const installSpinner = ora('Instalando "ui" no "app-extension"...').start()
 
   // limpa o cache do npm para evitar problemas de cache
@@ -43,4 +43,4 @@ function installNextUi ({ execaSync, ora, nextVersion, packages, retry = false }
   }
 }
 
-module.exports = installNextUi
+export default installNextUi

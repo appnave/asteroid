@@ -5,7 +5,7 @@
         <slot :filter="filter" name="search">
           <q-form v-if="useSearch" @submit.prevent="filter()">
             <qas-search-input v-model="internalSearch" :placeholder="searchPlaceholder" :use-search-on-type="useSearchOnType" @clear="clearSearch" @filter="filter()" @update:model-value="onSearch">
-              <template v-if="showFilterActions" #after-clear>ack
+              <template v-if="showFilterActions" #after-clear>
                 <slot :context="mx_context" :filter="filter" :filters="activeFilters" name="filter-button" :remove-filter="removeFilter">
                   <pv-filters-actions ref="filtersActions" v-model:filters-button="internalFilters" v-bind="filtersActionsProps" />
                 </slot>

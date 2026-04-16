@@ -136,14 +136,12 @@ defineOptions({
 const props = defineProps({
   appUserProps: {
     type: Object,
-    required: true,
     default: () => ({})
   },
 
   brand: {
-    default: '',
-    required: true,
-    type: String
+    type: String,
+    default: ''
   },
 
   homeRoute: {
@@ -158,7 +156,6 @@ const props = defineProps({
 
   miniBrand: {
     type: String,
-    required: true,
     default: ''
   },
 

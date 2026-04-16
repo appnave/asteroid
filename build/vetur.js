@@ -1,8 +1,8 @@
-const jetpack = require('fs-jetpack')
-const yaml = require('js-yaml')
-const { kebabCase } = require('lodash')
-const path = require('path')
-const rimraf = require('rimraf')
+import jetpack from 'fs-jetpack'
+import yaml from 'js-yaml'
+import { kebabCase } from 'lodash'
+import path from 'node:path'
+import { rimrafSync } from 'rimraf'
 
 function parseTypes (types) {
   if (Array.isArray(types)) {
@@ -14,6 +14,8 @@ function parseTypes (types) {
 
 const attributes = {}
 const tags = {}
+
+const __dirname = import.meta.dirname
 
 const components = path.resolve(__dirname, '../ui/src/components')
 const ui = path.resolve(__dirname, '../ui')
@@ -49,7 +51,7 @@ for (const file of files) {
 }
 
 // Clean build artifacts!
-rimraf.sync('ui/dist/vetur')
+rimrafSync('ui/dist/vetur')
 
 // Create files!
 jetpack.dir(`${ui}/dist/vetur`)

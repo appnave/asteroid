@@ -77,10 +77,11 @@ export default async function (api) {
   const { default: asteroidConfigFile } = await import(pathToFileURL(asteroidConfigPath).href)
 
   const unpluginVueComponentsConfig = {
-    dirs: [api.resolve.app(asteroidComponents)], // ajusta o path para a lib
+    dirs: [api.resolve.app(asteroidComponents)],
     extensions: ['vue'],
     deep: true,
-    dts: false // desativa geração de types
+    dts: false,
+    include: [/\.vue$/, /\.vue\?vue/]
   }
 
   const alias = {

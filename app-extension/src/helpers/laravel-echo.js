@@ -24,6 +24,7 @@ export function setLaravelEcho (accessToken) {
     encrypted: true,
     cluster: isLocal ? 'mt1' : 'eu',
     authEndpoint: `${process.env.SERVER_BASE_URL}/broadcasting/auth`,
+    enabledTransports: ['ws', 'wss'],
     auth: {
       headers: {
         Authorization: accessToken

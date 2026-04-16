@@ -47,8 +47,7 @@ const props = defineProps({
 
   url: {
     type: String,
-    default: '',
-    required: true
+    default: ''
   },
 
   params: {

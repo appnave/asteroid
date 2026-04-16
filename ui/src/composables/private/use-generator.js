@@ -171,12 +171,12 @@ export default function ({ props = {}, isGrid = false }) {
 
         subset: hasSubset
           ? getNormalizedFields({
-            items: subset,
-            isGrid: params.isGrid,
-            fields: params.fields,
-            result: params.result,
-            useEmptyResult: params.useEmptyResult
-          })
+              items: subset,
+              isGrid: params.isGrid,
+              fields: params.fields,
+              result: params.result,
+              useEmptyResult: params.useEmptyResult
+            })
           : {},
 
         // Propriedades auxiliares para controle na view

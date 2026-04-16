@@ -1,10 +1,20 @@
-/* eslint-disable no-console */
+import 'colors' // https://github.com/Marak/colors.js
+import enquirer from 'enquirer' // https://github.com/enquirer/enquirer
+import jetpack from 'fs-jetpack' // https://github.com/szwacz/fs-jetpack
+import path from 'node:path' // https://nodejs.org/api/path.html
+import { readFileSync } from 'node:fs'
+import semver from 'semver' // https://github.com/npm/node-semver
+import { execaSync } from 'execa' // https://github.com/sindresorhus/execa
+import ora from 'ora' // https://github.com/sindresorhus/ora
 
-require('colors') // https://github.com/Marak/colors.js
-const { prompt } = require('enquirer') // https://github.com/enquirer/enquirer
-const jetpack = require('fs-jetpack') // https://github.com/szwacz/fs-jetpack
-const path = require('path') // https://nodejs.org/api/path.html
-const semver = require('semver') // https://github.com/npm/node-semver
+import notifyDiscordChat from './release/notify-discord-chat.js'
+import createGithubRelease from './release/create-github-release.js'
+import getLatestVersions from './release/get-latest-versions.js'
+import changelogHandler from './release/changelog-handler.js'
+import releaseAppExtension from './release/release-app-extension.js'
+import releaseUi from './release/release-ui.js'
+import createGithubReleaseFromBrowser from './release/create-github-release-from-browser.js'
+import gitHandler from './release/git-handler.js'
 
 // Options
 const packages = {
@@ -36,18 +46,6 @@ const packageCore = {
 
 // Main
 async function main () {
-  const { execaSync } = await import('execa') // https://github.com/sindresorhus/execa
-  const { default: ora } = await import('ora') // https://github.com/sindresorhus/ora
-
-  const notifyDiscordChat = require('./release/notify-discord-chat')
-  const createGithubRelease = require('./release/create-github-release')
-  const getLatestVersions = require('./release/get-latest-versions')
-  const changelogHandler = require('./release/changelog-handler')
-  const releaseAppExtension = require('./release/release-app-extension')
-  const releaseUi = require('./release/release-ui')
-  const createGithubReleaseFromBrowser = require('./release/create-github-release-from-browser')
-  const gitHandler = require('./release/git-handler')
-
   // Start!
   console.clear()
 
@@ -75,9 +73,11 @@ async function main () {
   const latestVersions = getLatestVersions({ execaSync, ora, isBeta })
   const model = isBeta ? 'beta' : isAlpha ? 'alpha' : 'stable'
 
-  const currentVersion = require('../package.json').version
+  const currentVersion = JSON.parse(
+    readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+  ).version
 
-  const responses = await prompt({
+  const responses = await enquirer.prompt({
     name: 'nextVersion',
     type: 'input',
     message: 'Qual será o número da próxima versão?',

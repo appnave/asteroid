@@ -57,7 +57,7 @@ export default configure(function () {
 
       vitePlugins: [
         [Components, {
-          dirs: ['../ui/src/components'],
+          dirs: [path.resolve(__dirname, '../ui/src/components')],
           deep: true,
           dts: false
         }],

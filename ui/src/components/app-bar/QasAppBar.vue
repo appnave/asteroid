@@ -34,7 +34,6 @@ defineOptions({ name: 'QasAppBar' })
 const props = defineProps({
   appUserProps: {
     type: Object,
-    required: true,
     default: () => ({})
   },
 
