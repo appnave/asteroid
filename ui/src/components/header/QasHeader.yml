@@ -12,7 +12,7 @@ props:
   badges:
     desc: Adiciona badges ao lado do titulo (QasLabel), caso não tenha titulo fica somente as bages acima da descrição.
     default: []
-    type: Array
+    type: [Array, Object]
 
   button-props:
     desc: Propriedades do QasBtn.

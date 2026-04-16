@@ -388,8 +388,6 @@ const hasColumnsLength = computed(() => !!Object.keys(columnsResultsModel.value)
 
 const containerStyle = computed(() => `width: ${props.columnWidth};`)
 
-const hasConfirmDialogProps = computed(() => !!Object.keys(props.confirmDialogProps).length)
-
 const defaultConfirmDialogProps = computed(() => {
   const defaultProps = {
     ok: {
@@ -1124,7 +1122,7 @@ function onDropCard (event) {
     return
   }
 
-  hasConfirmDialogProps.value
+  props.useConfirmDialog
     ? openConfirmDialog()
     : confirmDrop(event)
 }
@@ -1143,7 +1141,7 @@ function closeConfirmDialog () {
 function cancelDrop (event) {
   revertDomDrag(event)
 
-  if (hasConfirmDialogProps.value) closeConfirmDialog()
+  if (props.useConfirmDialog) closeConfirmDialog()
 
   stopDragging()
 }

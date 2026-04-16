@@ -15,7 +15,7 @@
         </slot>
 
         <div v-if="hasBadges" class="col-auto items-center q-col-gutter-sm row">
-          <div v-for="(badge, badgeIndex) in props.badges" :key="badgeIndex">
+          <div v-for="(badge, badgeIndex) in normalizedBadges" :key="badgeIndex">
             <qas-skeleton v-if="props.skeleton" type="QasBadge" />
 
             <qas-badge v-else v-bind="badge" />
@@ -73,7 +73,7 @@ const props = defineProps({
   },
 
   badges: {
-    type: Array,
+    type: [Array, Object],
     default: () => []
   },
 
@@ -203,13 +203,15 @@ const actionsComponent = computed(() => {
   return component.true
 })
 
+const normalizedBadges = computed(() => Array.isArray(props.badges) ? props.badges : [props.badges])
+
 const hasActionsComponent = computed(() => {
   return hasDefaultButton.value || hasDefaultActionsMenu.value || hasDefaultFilters.value
 })
 
 const hasActionsSection = computed(() => !!slots.actions || hasActionsComponent.value)
 
-const hasBadges = computed(() => !!props.badges.length)
+const hasBadges = computed(() => !!normalizedBadges.value.length)
 const hasLabel = computed(() => !!Object.keys(props.labelProps).length)
 const hasDefaultButton = computed(() => !!Object.keys(props.buttonProps).length)
 const hasDefaultFilters = computed(() => !!Object.keys(props.filtersProps).length)

@@ -21,16 +21,12 @@ export default function (config = {}) {
   const { entity, id, url } = deleteActionParams
 
   const defaultDialogProps = {
-    useForm: true,
+    useAutoCloseOnOk: false,
+
+    title: 'Excluir',
+    description: 'Tem certeza que deseja excluir este item?',
 
     ...dialogProps,
-
-    card: {
-      title: 'Excluir',
-      description: 'Tem certeza que deseja excluir este item?',
-
-      ...dialogProps.card
-    },
 
     ok: {
       label: 'Excluir',

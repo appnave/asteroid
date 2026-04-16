@@ -35,12 +35,12 @@ export default function useDynamicComponents (config = {}) {
   })
 
   const hasRenderFunction = computed(() => {
-    const description = props.card.description
+    const description = props.description
 
     return typeof description === 'object' && description !== null && !Array.isArray(description)
   })
 
-  const descriptionComponent = computed(() => hasRenderFunction.value ? props.card.description : 'div')
+  const descriptionComponent = computed(() => hasRenderFunction.value ? props.description : 'div')
 
   // métodos
   function submitHandler () {

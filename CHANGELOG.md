@@ -14,6 +14,69 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+## BREAKING CHANGES
+- Componentes/Plugins que usam dialog:
+  - QasBoardGenerator -> prop `confirmDialogProps`.
+  - QasGallery -> prop `dialogProps`.
+  - QasDelete -> prop `dialogProps`.
+  - QasSelectListDialog -> prop `dialogProps`.
+  - QasSignatureUploader -> prop `dialogProps`.
+  - QasTextTruncate -> prop `dialogProps`.
+  - QasUploader -> prop `dialogProps`.
+  - QasDrawer -> prop `dialogProps` (prop `persistent` saiu do `dialogProps` e agora é passado diretamente para o QasDrawer).
+  - Delete.js -> config `dialogProps`.
+- `QasDialog`:
+  - removido prop `card` em favor de usar as props `title` e `description`.
+  - removido slot `actions` em favor de fazer os controles somente por `ok`, `cancel` e `tertiary`.
+  - removido prop `persistent`, agora é feito sempre de forma automática.
+  - removido prop `actionsProps`.
+  - removido props `useFullMaxWidth`, `maxWidth`, `minWidth` em favor de utilizar a prop `size`.
+  - agora todos dialogs tem a propriedade `title` sendo obrigatória.
+  - **Recomendação**: Lugares que usam a prop `useForm` sem ter formulário só para desativar o auto close no botão `ok` modificar pela prop `useAutoCloseOnOk`.
+- `QasBoardGenerator`:
+  - necessário passar a prop `useConfirmDialog` caso queria dialog de confirmação.
+  - necessário repassar `title` na propriedade `confirmDialogProps` pois é obrigatória no `QasDialog` caso esteja usando a prop `useConfirmDialog`.
+- `QasDrawer`: adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`
+
+### Adicionado
+- `QasDialog/Dialog.js`:
+  - adicionado propriedade `size` com default `sm`.
+  - adicionado propriedades `title` com `required: true` e `description` para ser usado no lugar da prop `card`.
+  - adicionada propriedade `disableCloseButton` para desabilitar botão de fechar (x).
+  - adicionada propriedade `tertiary`.
+  - adicionada propriedade `useAutoCloseOnOk` e `useAutoCloseOnCancel` ([#1360](https://github.com/bildvitta/asteroid/issues/1360))([#1121](https://github.com/bildvitta/asteroid/issues/1121))
+  - adicionada propriedade `useCloseButton` para remover botão de fechar (x).
+  - adicionada propriedade `useHtmlDescription`.
+- `QasDrawer`:
+  - adicionado propriedade `persistent` para não utilizar dentro de `dialogProps`.
+  - adicionado propriedade `size` pra controlar o tamanho do drawer.
+- `QasBoardGenerator`: adicionado nova propriedade `use-confirm-dialog` para controlar quando vai ter ou não o dialog de confirmação.
+
+### Modificado
+- `QasDialog/Dialog.js`:
+  - mudanças gerais do dialog ([#1346](https://github.com/bildvitta/asteroid/issues/1346)).
+  - removido uso de composable em arquivos separados para centralizar tudo no arquivo vue.
+- `QasHeader`: modificado propriedade `badges` para aceitar objeto quando tiver apenas 1 badge.
+- `QasSignatureUploader`: Modificado label e tamanho do dialog.
+- Normalização dos dialogs:
+  - QasSignatureUploader.
+  - QasTreeGenerator.
+  - QasTextTruncate.
+  - QasSelectListDialog.
+  - QasFormView.
+  - QasGallery -> PvGalleryCarouselDialog.
+  - composables/use-delete.js
+  - QasDrawer.
+
+### Removido
+- `QasDialog/Dialog.js`:
+  - removido prop `card` em favor de usar as props `title` e `description`.
+  - removido slot `actions` em favor de fazer os controles somente por `ok`, `cancel` e `tertiary`.
+  - removido prop `persistent`, agora é feito sempre de forma automática.
+  - removido prop `actionsProps`.
+  - removido props `useFullMaxWidth`, `maxWidth`, `minWidth` em favor de utilizar a prop `size`.
+
 ## [3.20.0-beta.18] - 08-04-2026
 ### Corrigido
 - `QasBoardGenerator`: Removido fetchAdapter do axios pois existem versões que não tem compatibilidade.
@@ -40,12 +103,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Corrigido
 - `QasSelectListDialog`: corrigido problema de não buscar a próxima página ao ter todos os itens da primeira página selecionados. ([#1110](https://github.com/bildvitta/asteroid/issues/1110))
-
-### Segurança
 - Fixada versão do `axios` (removido `^`) em `package.json`, `ui/package.json` e `docs/package.json` para evitar atualizações automáticas em versões comprometidas (`0.30.4` e `1.14.1`).
 
 ## [3.20.0-beta.14] - 23-03-2026
-
 ## BREAKING CHANGES
 - `QasBoardGenerator`:
   - Varias mudanças de comportamento e visuais no componente, revisar se nada quebra.
