@@ -1280,10 +1280,7 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event, opti
     : `${props.updatePositionUrl}/${itemId}/update-position`
 
   const { data, error } = await promiseHandler(
-    axios.patch(url, params, {
-      adapter: 'fetch',
-      fetchOptions: { priority: 'low' }
-    }),
+    axios.patch(url, params),
     {
       errorMessage: 'Ocorreu um erro ao atualizar a posição de seu item.',
       useLoading: false,

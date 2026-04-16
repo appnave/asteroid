@@ -1,7 +1,7 @@
 {
   "name": "@bildvitta/asteroid-docs",
   "description": "Asteroid",
-  "version": "3.20.0-beta.18-alpha.0",
+  "version": "3.20.0-beta.18",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
   "license": "MIT",
   "productName": "Asteroid Docs",

@@ -77,6 +77,10 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - removido prop `actionsProps`.
   - removido props `useFullMaxWidth`, `maxWidth`, `minWidth` em favor de utilizar a prop `size`.
 
+## [3.20.0-beta.18] - 08-04-2026
+### Corrigido
+- `QasBoardGenerator`: Removido fetchAdapter do axios pois existem versões que não tem compatibilidade.
+
 ## [3.20.0-beta.17] - 07-04-2026
 ### Adicionado
 - `use-overlay-navigation`:
@@ -5051,3 +5055,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.15]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.14...v3.20.0-beta.15?expand=1
 [3.20.0-beta.16]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.15...v3.20.0-beta.16?expand=1
 [3.20.0-beta.17]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.16...v3.20.0-beta.17?expand=1
+[3.20.0-beta.18]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.18-alpha.0...v3.20.0-beta.18?expand=1
