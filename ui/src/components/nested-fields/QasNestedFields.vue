@@ -38,18 +38,18 @@
               <qas-btn class="q-px-sm" color="primary" data-cy="nested-fields-add-btn" :label="addFirstInputLabel" variant="tertiary" @click="add()" />
             </div>
 
-            <div v-else-if="useInlineActions" class="cursor-pointer items-center q-col-gutter-x-md q-mt-md row" data-cy="nested-fields-add-btn" @click="add()">
+            <div v-else-if="useInlineActions" class="items-center q-col-gutter-x-md q-mt-md row" :class="inlineActionClasses" data-cy="nested-fields-add-btn" :disable="disable" @click="handleInlineAdd">
               <div class="col">
-                <qas-input class="disabled no-pointer-events" hide-bottom-space :label="addInputLabel" @focus="add()" />
+                <qas-input class="disabled no-pointer-events" :disable="disable" hide-bottom-space :label="addInputLabel" @focus="add()" />
               </div>
 
               <div class="col-auto">
-                <qas-btn color="primary" icon="sym_r_add_circle_outline" variant="tertiary" />
+                <qas-btn color="primary" :disable="disable" icon="sym_r_add_circle_outline" variant="tertiary" />
               </div>
             </div>
 
             <div v-else class="text-left">
-              <qas-btn class="q-px-sm" color="primary" data-cy="nested-fields-add-btn" icon="sym_r_add" :label="addInputLabel" variant="tertiary" @click="add()" />
+              <qas-btn class="q-px-sm" color="primary" data-cy="nested-fields-add-btn" :disable="disable" icon="sym_r_add" :label="addInputLabel" variant="tertiary" @click="add()" />
             </div>
           </slot>
         </div>
@@ -142,6 +142,10 @@ export default {
       default: false
     },
 
+    disable: {
+      type: Boolean
+    },
+
     errors: {
       type: [Array, Object],
       default: () => ({})
@@ -215,6 +219,11 @@ export default {
     useDestroyAlways: {
       type: Boolean,
       default: undefined
+    },
+
+    useDestroyButton: {
+      type: Boolean,
+      default: true
     },
 
     useDuplicate: {
@@ -300,6 +309,14 @@ export default {
     },
 
     showDestroyButton () {
+      // Caso a prop "useDestroyButton" seja false, nunca exibirá o botão.
+      if (!this.useDestroyButton) return false
+
+      /**
+       * Caso a prop "useDestroyButton" seja true,
+       * verifica se existe mais de um item na lista que possa ser deletado ou
+       * sempre será exibido o botão de deletar caso a prop "useDestroyAlways" seja true.
+       */
       return this.nested.filter(item => !item[this.destroyKey]).length > 1 || this.hasDestroyAlways
     },
 
@@ -323,6 +340,13 @@ export default {
 
     isButtonDestroyPropsFunction () {
       return typeof this.buttonDestroyProps === 'function'
+    },
+
+    inlineActionClasses () {
+      return {
+        'cursor-pointer': !this.disable,
+        'cursor-not-allowed': this.disable
+      }
     }
   },
 
@@ -368,6 +392,8 @@ export default {
 
     getDefaultActionsMenuList (index, row) {
       const list = {}
+
+      if (this.disable) return list
 
       const destroyProps = this.isButtonDestroyPropsFunction
         ? this.buttonDestroyProps({ index, row })
@@ -532,6 +558,8 @@ export default {
     },
 
     isDisabledRow (row) {
+      if (this.disable) return true
+
       if (!this.disabledRows) return false
 
       if (typeof this.disabledRows === 'function') return this.disabledRows(row)
@@ -582,6 +610,12 @@ export default {
           }
         })
       }
+    },
+
+    handleInlineAdd () {
+      if (this.disable) return
+
+      this.add()
     }
   }
 }

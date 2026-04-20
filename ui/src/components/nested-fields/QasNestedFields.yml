@@ -156,7 +156,12 @@ props:
     type: Boolean
 
   use-destroy-always:
-    desc: Controla o botão de remover em todas linhas, incluindo a primeira.
+    desc: Controla se terá o botão de remover em todas linhas, incluindo a primeira.
+    type: Boolean
+
+  use-destroy-button:
+    desc: Controla se terá o botão de remover linha.
+    default: true
     type: Boolean
 
   use-duplicate:

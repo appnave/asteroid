@@ -33,7 +33,7 @@ provide:
         desc: Nome do step que deseja visualizar.
         type: Number
 
-  'next: (payload) => void':
+  'next: ({ payload }) => void':
     desc: Avança para o próximo step.
     params:
       payload:

@@ -640,6 +640,11 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasFormView`: Corrigido validação para não exibir o dialog de descarte após a criação.
 - `QasGalleryCard`: Corrigido lógica pra exibir o tipo do arquivo no card(pdf, docx, etc), onde pra determinado padrão de url não era possível obter o tipo anteriormente.
 
+### Adicionado
+- `QasNestedFields`:
+ - Adicionado prop `use-destroy-button` pra controlar se terá o botão de remoção das linhas.
+ - Adicionado prop `disable` pra desabilitar os campos, botão de adicionar novas linhas e as ações laterais.
+
 ## [3.19.0-beta.12] - 29-10-2025
 ## BREAKING CHANGES
 - `QasDelete`: Removido prop tag, sendo que agora o sempre será um botão. Validar lugares que utilizam pois pode ocorrer quebra no layout.
