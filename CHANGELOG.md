@@ -17,6 +17,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ## Não publicado
 ### Corrigido
 - `QasDialog`: corrigido validação dos botões de ação.
+- `QasSelectListDialog`: corrigido importação do `QasSearchBox`.
 
 ## [3.20.0-beta.19] - 15-04-2026
 ## BREAKING CHANGES
