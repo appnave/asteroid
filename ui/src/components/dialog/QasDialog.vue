@@ -253,7 +253,7 @@ function useOk () {
     }
   })
 
-  const hasOk = computed(() => typeof props.ok === 'boolean' ? props.ok : !!Object.keys(props.ok)?.length)
+  const hasOk = computed(() => typeof props.ok === 'boolean' ? props.ok : !!Object.keys(props.ok))
 
   // functions
   function onOk () {
@@ -286,7 +286,7 @@ function useCancel () {
     }
   })
 
-  const hasCancel = computed(() => typeof props.cancel === 'boolean' ? props.cancel : !!Object.keys(props.cancel)?.length)
+  const hasCancel = computed(() => typeof props.cancel === 'boolean' ? props.cancel : !!Object.keys(props.cancel))
 
   // functions
   function onCancel () {
