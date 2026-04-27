@@ -14,7 +14,7 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## [3.20.0-beta.20] - 27-04-2026
 ### Corrigido
 - `QasDialog`: corrigido validação dos botões de ação.
 - `QasSelectListDialog`: corrigido importação do `QasSearchBox`.
@@ -5062,3 +5062,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.17]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.16...v3.20.0-beta.17?expand=1
 [3.20.0-beta.18]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.18-alpha.0...v3.20.0-beta.18?expand=1
 [3.20.0-beta.19]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.18...v3.20.0-beta.19?expand=1
+[3.20.0-beta.20]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.19...v3.20.0-beta.20?expand=1
