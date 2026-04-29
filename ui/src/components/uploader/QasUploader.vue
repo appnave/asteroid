@@ -317,7 +317,17 @@ export default {
       } = this.$props
 
       return {
-        dialogProps,
+        dialogProps: {
+          title: 'Editar arquivo',
+
+          ok: {
+            label: 'Salvar',
+            ...dialogProps.ok
+          },
+
+          ...dialogProps
+        },
+
         fields,
         formGeneratorProps,
         galleryCardProps,

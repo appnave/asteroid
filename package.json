@@ -1,8 +1,7 @@
 {
   "name": "@bildvitta/asteroid",
   "description": "Asteroid",
-  "version": "3.20.0-beta.18-alpha.1",
-  "type": "module",
+  "version": "3.20.0-beta.21",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
   "license": "MIT",
   "scripts": {
@@ -15,7 +14,8 @@
     "setup:app-extension": "cd app-extension && npm i && cd ..",
     "setup:docs": "cd docs && npm i && cd ..",
     "setup:ui": "cd ui && npm i && cd ..",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "setup:agent-links": "node scripts/setup-links.js"
   },
   "devDependencies": {
     "@bildvitta/quasar-ui-asteroid": "file:ui",

@@ -91,7 +91,8 @@ const model = computed({
 const drawerProps = computed(() => {
   return {
     loading: isMarkingNotificationsAsRead.value,
-    title: 'Notificações'
+    title: 'Notificações',
+    size: 'md'
   }
 })
 

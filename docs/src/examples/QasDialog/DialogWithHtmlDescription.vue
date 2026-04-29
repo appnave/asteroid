@@ -8,9 +8,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import DescriptionComponent from './DescriptionComponent.vue'
 
-defineOptions({ name: 'DialogWithDescriptionComponent' })
+defineOptions({ name: 'DialogWithHtmlDescription' })
 
 // refs
 const isDialogOpened = ref(false)
@@ -18,7 +17,8 @@ const isDialogOpened = ref(false)
 // consts
 const dialogProps = {
   title: 'Título do dialog',
-  description: DescriptionComponent
+  description: 'Cerca <strong>elétrica</strong> perto do corrimão risco iminente de choque. Código da ordem de serviço: 159488 CRM ID: 1179512',
+  useHtmlDescription: true
 }
 
 // functions
