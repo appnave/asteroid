@@ -49,7 +49,7 @@
             </div>
 
             <slot v-else name="footer">
-              <q-expansion-item v-if="hasExpansion" class="full-width" dense expand-icon-class="text-grey-10" header-class="qas-card__expansion-header q-mt-sm q-pa-none" :label="props.expansionProps.label">
+              <q-expansion-item v-if="hasExpansion" class="full-width" v-bind="expansionItemProps">
                 <div class="q-mt-xs">
                   <q-separator vertical />
 
@@ -220,6 +220,16 @@ const formattedActionsMenuProps = computed(() => {
   return {
     ...props.actionsMenuProps,
     useLabel: false
+  }
+})
+
+const expansionItemProps = computed(() => {
+  return {
+    ...props.expansionProps,
+    dense: true,
+    expandIconClass: 'text-grey-10',
+    headerClass: 'qas-card__expansion-header q-mt-sm q-pa-none',
+    label: props.expansionProps.label
   }
 })
 </script>

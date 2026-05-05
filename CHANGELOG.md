@@ -14,6 +14,10 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Modificado
+- `QasCard`: Modificado internamente para que consiga repassar outras props ou eventos pelo `expansionProps`.
+
 ## [3.20.0-beta.21] - 27-04-2026
 ### Corrigido
 - `ui v3.20.0-beta.20`: Versão foi publicado sem correção do `QasSelectListDialog`.
