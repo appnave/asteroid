@@ -429,7 +429,6 @@ watch(() => columnContainerElements.value, () => {
 
 // hooks
 onMounted(() => {
-  console.log('to linkado')
   if (normalizedHeaders.value.length) {
     fetchColumnsValues()
   }
