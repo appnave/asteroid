@@ -57,7 +57,8 @@ const props = defineProps({
   },
 
   disableCloseButton: {
-    type: Boolean
+    type: Boolean,
+    default: undefined
   },
 
   ok: {
@@ -202,7 +203,7 @@ const headerProps = computed(() => {
     buttonProps: {
       ...(props.useCloseButton && {
         color: 'grey-10',
-        disable: props.disableCloseButton,
+        disable: typeof props.disableCloseButton === 'boolean' ? props.disableCloseButton : props.ok.loading,
         icon: 'sym_r_close',
         variant: 'tertiary',
         'data-cy': 'dialog-close-btn',

@@ -390,6 +390,8 @@ const containerStyle = computed(() => `width: ${props.columnWidth};`)
 
 const defaultConfirmDialogProps = computed(() => {
   const defaultProps = {
+    title: 'Confirmar movimentação',
+
     ok: {
       label: 'Confirmar',
       onClick: onConfirmDrop.value,
@@ -427,6 +429,7 @@ watch(() => columnContainerElements.value, () => {
 
 // hooks
 onMounted(() => {
+  console.log('to linkado')
   if (normalizedHeaders.value.length) {
     fetchColumnsValues()
   }
