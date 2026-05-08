@@ -390,6 +390,8 @@ const containerStyle = computed(() => `width: ${props.columnWidth};`)
 
 const defaultConfirmDialogProps = computed(() => {
   const defaultProps = {
+    title: 'Confirmar mudança',
+
     ok: {
       label: 'Confirmar',
       onClick: onConfirmDrop.value,
