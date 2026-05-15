@@ -35,7 +35,7 @@
     "core-js": "^3.30.2",
     "postcss": "^8.4.24",
     "rimraf": "^5.0.1",
-    "rollup": "^3.23.1",
+    "rollup": "^4.60.4",
     "rollup-plugin-local-resolve": "^1.0.7",
     "rollup-plugin-scss": "^4.0.0",
     "rollup-plugin-vue": "^6.0.0",
