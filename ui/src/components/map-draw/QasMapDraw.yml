@@ -1,0 +1,112 @@
+type: component
+
+meta:
+  desc: Componente de mapa interativo baseado em Leaflet para desenho e edição de polígonos sobre uma imagem de fundo (ex. planta baixa).
+
+props:
+  image-url:
+    desc: URL da imagem usada como fundo do mapa.
+    type: String
+    default: ''
+
+  height:
+    desc: Altura do container do mapa.
+    type: String
+    default: 600px
+
+  model-key:
+    desc: Chave usada para ler e gravar os pontos em cada item do model.
+    type: String
+    default: points
+
+  use-handle-model:
+    desc: Quando ativo, adiciona automaticamente o novo polígono desenhado ao model assim que o desenho é finalizado.
+    type: Boolean
+    default: true
+
+  badge-label-key:
+    desc: Chave do item do model exibida como label na badge centralizada de cada polígono.
+    type: String
+    default: ''
+
+  get-item-classes:
+    desc: Callback "(item) => string" que retorna classes CSS aplicadas à badge e ao polígono com base nos dados do item.
+    type: Function
+    default: undefined
+
+  draw-button-label:
+    desc: Texto do tooltip exibido ao passar o mouse sobre o botão de iniciar desenho.
+    type: String
+    default: ''
+
+  model-value:
+    desc: Lista de itens do mapa. Cada item deve conter a propriedade definida em "model-key" com os pontos do polígono.
+    type: Array
+    default: []
+
+slots:
+  polygon-tooltip:
+    desc: Slot do tooltip exibido ao passar o mouse sobre um polígono.
+    scope:
+      item:
+        desc: Item do model associado ao polígono.
+        type: Object
+      polygon-key:
+        desc: Chave única do polígono gerada internamente.
+        type: Number
+
+events:
+  '@area-drawn -> function(points)':
+    desc: Emitido ao finalizar o desenho de um polígono.
+    params:
+      points:
+        desc: Array de pontos { lat, lng } do polígono desenhado.
+        type: Array
+
+  '@update:model-value -> function(value)':
+    desc: Dispara quando o model-value altera, também usado para v-model.
+    params:
+      value:
+        desc: Novo valor do model.
+        type: Array
+
+methods:
+  addBadge:
+    desc: Adiciona uma badge no centro de um polígono manualmente.
+    params:
+      points:
+        desc: Array de pontos { lat, lng }.
+        type: Array
+      label:
+        desc: Texto exibido na badge.
+        type: String
+      itemClass:
+        desc: Classes CSS da badge.
+        type: String
+
+  cancelDraw:
+    desc: Cancela o desenho em andamento.
+
+  removeLastPolygon:
+    desc: Remove o último polígono adicionado ao mapa.
+
+  removePolygon:
+    desc: Remove um polígono específico pelo seu key interno.
+    params:
+      polygonKey:
+        desc: Key único do polígono (recebido no slot polygon-tooltip).
+        type: Number
+
+  replaceImage:
+    desc: Substitui a imagem de fundo do mapa mantendo os polígonos existentes.
+    params:
+      newUrl:
+        desc: URL da nova imagem.
+        type: String
+
+  startEditPolygon:
+    desc: Ativa o modo de edição para o polígono com o key informado.
+    params:
+      key:
+        desc: Key único do polígono.
+        type: Number

@@ -97,4 +97,5 @@ export const QasWelcome = defineAsyncComponent(() => import('./components/welcom
 export const QasWhatsappLink = defineAsyncComponent(() => import('./components/whatsapp-link/QasWhatsappLink.vue'))
 export const QasReportsFilters = defineAsyncComponent(() => import('./components/reports-filters/QasReportsFilters.vue'))
 export const QasMap = defineAsyncComponent(() => import('./components/map/QasMap.vue'))
+export const QasMapDraw = defineAsyncComponent(() => import('./components/map-draw/QasMapDraw.vue'))
 export const QasChartView = defineAsyncComponent(() => import('./components/chart-view/QasChartView.vue'))

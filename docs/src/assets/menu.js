@@ -238,6 +238,10 @@ module.exports = [
         path: '/components/map'
       },
       {
+        name: 'MapDraw',
+        path: '/components/map-draw'
+      },
+      {
         name: 'NestedFields',
         path: '/components/nested-fields'
       },
