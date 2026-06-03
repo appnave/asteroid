@@ -84,6 +84,11 @@ const props = defineProps({
   drawButtonLabel: {
     type: String,
     default: ''
+  },
+
+  useDrawButton: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -356,7 +361,12 @@ function setupLeaflet (width, height) {
   map.fitBounds(bounds)
   map.setZoom(map.getZoom() + 1)
 
-  addDrawControl()
+  /**
+   * Se useDrawButton for true, adiciona o controle de desenho ao mapa para
+   * permitir que os usuários desenhem novos polígonos.
+   */
+  if (props.useDrawButton) addDrawControl()
+
   map.on('click', onMapClick)
   map.on('mousemove', onMapMouseMove)
 
