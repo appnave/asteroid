@@ -108,5 +108,5 @@ methods:
     desc: Ativa o modo de edição para o polígono com o key informado.
     params:
       key:
-        desc: Key único do polígono.
+        desc: Key único do polígono (recebido no slot polygon-tooltip).
         type: Number
