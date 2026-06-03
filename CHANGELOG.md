@@ -14,6 +14,10 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `QasMapDraw`: adicionado componente de mapa interativo baseado em Leaflet para desenho e edição de polígonos sobre uma imagem de fundo (ex. planta baixa), com suporte a badges, tooltips customizáveis via slot e integração com `v-model`.
+
 ## [3.20.0-beta.23] - 08-05-2026
 ### Adicionado
 - `QasDialog` adicionado validação da prop `disableCloseButton` para desabilitar o botão, onde por padrão, caso tenha uma prop `loading` para o `ok` do dialog, será desabilitado quando o loading estiver ativo.

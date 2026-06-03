@@ -3,10 +3,7 @@
     <qas-map-draw
       ref="mapRef"
       v-model="polygons"
-      badge-label-key="name"
-      draw-button-label="Desenhar área"
-      image-url="https://upload.wikimedia.org/wikipedia/commons/3/3f/Location_map_Mexico_City_2.svg"
-      model-key="points"
+      v-bind="mapDrawProps"
     >
       <template #polygon-tooltip="context">
         <qas-box class="q-pa-sm">
@@ -27,9 +24,19 @@
 <script setup>
 import { ref } from 'vue'
 
+// consts
+const mapDrawProps = {
+  badgeLabelKey: 'name',
+  drawButtonLabel: 'Desenhar área',
+  imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Location_map_Mexico_City_2.svg',
+  modelKey: 'points'
+}
+
+// refs
 const mapRef = ref(null)
 const polygons = ref([])
 
+// functions
 function editPolygon (polygonKey) {
   mapRef.value.startEditPolygon(polygonKey)
 }
