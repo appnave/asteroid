@@ -209,7 +209,7 @@ export function usePolygons (context) {
         : polygonStyle
 
       const layer = L.polygon(points, layerStyle).addTo(map)
-      const entry = { layer, points, modelItem: polygon, key: polygonKeyIndex++ }
+      const entry = { layer, points, modelItem: polygon, key: polygonKeyIndex++, style: layerStyle }
 
       polygons.push(entry)
       handleMouseEvents({ layer, modelItem: polygon, polygonKey: entry.key })

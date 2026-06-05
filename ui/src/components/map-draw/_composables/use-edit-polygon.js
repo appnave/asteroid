@@ -295,7 +295,7 @@ export function useEditPolygon (config) {
     entry.layer.off('mouseover', onEditLayerMouseover)
     entry.layer.off('mouseout', onEditLayerMouseout)
 
-    entry.layer.setStyle(polygonStyle)
+    entry.layer.setStyle(entry.style || polygonStyle)
     entry.points = workingPoints.map(point => ({ ...point }))
 
     // reposiciona a badge para o novo centro do polígono
@@ -343,7 +343,7 @@ export function useEditPolygon (config) {
 
     // Restaura os pontos originais e o estilo do polígono
     entry.layer.setLatLngs(originalPoints.map(point => [point.lat, point.lng]))
-    entry.layer.setStyle(polygonStyle)
+    entry.layer.setStyle(entry.style || polygonStyle)
     entry.points = originalPoints
 
     map.getContainer().style.cursor = ''
