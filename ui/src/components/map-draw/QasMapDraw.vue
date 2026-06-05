@@ -74,8 +74,8 @@ const props = defineProps({
     default: ''
   },
 
-  // Callback opcional (item) => string para retornar classes CSS de cor aplicadas à badge e ao polígono
-  getItemClasses: {
+  // Callback opcional para retornar um nome de cor Quasar (ex: 'yellow-4') aplicado inline à badge e ao polígono
+  getItemColor: {
     type: Function,
     default: undefined
   },
@@ -187,7 +187,7 @@ const {
   polygonStyle: POLYGON_STYLE,
   modelKey: props.modelKey,
   badgeLabelKey: props.badgeLabelKey,
-  getItemClasses: props.getItemClasses,
+  getItemColor: props.getItemColor,
   cancelEditPolygon,
   onReset: hideTooltip,
   onMouseover: handlePolygonMouseover,

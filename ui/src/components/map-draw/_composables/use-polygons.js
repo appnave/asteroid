@@ -1,4 +1,5 @@
 import L from 'leaflet'
+import { colors } from 'quasar'
 
 /**
  * Composable responsável por renderizar e gerenciar os polígonos vinculados no mapa.
@@ -11,7 +12,7 @@ import L from 'leaflet'
  * @param {Object} context.polygonStyle - Estilo Leaflet padrão dos polígonos
  * @param {string} context.modelKey - Chave usada para ler os pontos em cada item do model
  * @param {string} context.badgeLabelKey - Caminho para o label da badge
- * @param {Function} [context.getItemClasses] - Callback opcional (item) => string que retorna classes CSS para badge e polígono
+ * @param {Function} [context.getItemColor] - Callback opcional que retorna um nome de cor Quasar (ex: 'yellow-4')
  * @param {Function} context.cancelEditPolygon - Cancela qualquer edição ativa antes de re-renderizar
  * @param {Function} context.onReset - Callback chamado ao iniciar re-renderização (ex: fechar tooltip)
  * @param {Function} context.onMouseover - Callback(modelItem, polygonKey, containerPoint) ao entrar no polígono
@@ -28,7 +29,7 @@ export function usePolygons (context) {
     polygonStyle,
     modelKey,
     badgeLabelKey,
-    getItemClasses,
+    getItemColor,
     cancelEditPolygon,
     onReset,
     onMouseover,
@@ -41,25 +42,47 @@ export function usePolygons (context) {
   let polygonKeyIndex = 0
 
   /**
+   * Resolve um nome de cor Quasar (ex: 'yellow-4') ou hex/rgb para um hex usável inline.
+   * @param {string} colorName - nome da cor
+   */
+  function resolveColor (colorName) {
+    if (!colorName) return ''
+
+    return colors.getPaletteColor(colorName) || ''
+  }
+
+  /**
    * Adiciona uma badge no centro do polígono.
    *
    * @param {Array<Object>} points - array de pontos { lat, lng }
    * @param {string} label - texto exibido dentro da badge
-   * @param {string} [itemClass] - classes CSS opcionais para colorir a badge com base no status do item
+   * @param {string} [itemColor] - cor hex resolvida para colorir a badge inline
    */
-  function addBadge (points, label = '', itemClass = '') {
+  function addBadge (points, label = '', itemColor = '') {
     const map = getMap()
 
     const lat = points.reduce((sum, point) => sum + point.lat, 0) / points.length
     const lng = points.reduce((sum, point) => sum + point.lng, 0) / points.length
 
-    const badgeClasses = itemClass || 'bg-light-blue-2 text-black'
+    const defaultStyle = 'height: 20px; transform: translate(-50%,-50%);'
+    let formattedBadgeColor = ''
+
+    // Caso foi passado uma cor para o item, resolve a cor de fundo e do texto da badge para garantir legibilidade.
+    if (itemColor) {
+      /**
+       * faz o tratamento pra definir a cor do texto da badge com base na luminosidade da cor de fundo,
+       * garantindo legibilidade.
+       */
+      const color = colors.brightness(itemColor) > 128 ? '#000' : '#fff'
+
+      formattedBadgeColor = `background-color:${itemColor}; color:${color};`
+    }
+
+    const badgeHtml = `<div class="q-badge flex inline items-center no-wrap q-badge--single-line qas-badge" style="${formattedBadgeColor}${defaultStyle}">${label}</div>`
 
     const badge = L.divIcon({
       className: '',
-      html: `
-        <div class="q-badge flex inline items-center no-wrap q-badge--single-line ${badgeClasses} qas-badge" style="height:20px;transform:translate(-50%,-50%);">${label}</div>
-      `,
+      html: badgeHtml,
       iconSize: null,
       iconAnchor: [0, 0]
     })
@@ -179,18 +202,18 @@ export function usePolygons (context) {
 
       if (!points?.length) return
 
-      /**
-       * callback opcional para adicionar classes CSS com base no status do item
-       * (ex: cor diferente para itens com base no status)
-       */
-      const itemClass = getItemClasses?.(polygon) ?? ''
+      const resolvedColor = getItemColor ? resolveColor(getItemColor(polygon)) : ''
 
-      const layer = L.polygon(points, { ...polygonStyle, className: itemClass }).addTo(map)
+      const layerStyle = resolvedColor
+        ? { ...polygonStyle, fillColor: resolvedColor, color: resolvedColor, fillOpacity: 0.35 }
+        : polygonStyle
+
+      const layer = L.polygon(points, layerStyle).addTo(map)
       const entry = { layer, points, modelItem: polygon, key: polygonKeyIndex++ }
 
       polygons.push(entry)
       handleMouseEvents({ layer, modelItem: polygon, polygonKey: entry.key })
-      addBadge(points, polygon[badgeLabelKey], itemClass)
+      addBadge(points, polygon[badgeLabelKey], resolvedColor)
     })
   }
 
