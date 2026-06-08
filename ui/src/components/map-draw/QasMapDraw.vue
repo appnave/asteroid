@@ -7,8 +7,8 @@
       v-if="hoveredItem"
       class="app-map__polygon-tooltip"
       :style="hoveredItemStyle"
-      @mouseenter="cleanupTooltip"
-      @mouseleave="scheduleHideTooltip"
+      @mouseenter="handleTooltipMouseenter"
+      @mouseleave="handleTooltipMouseleave"
     >
       <slot
         :item="hoveredItem"
@@ -111,6 +111,7 @@ let imageOverlay = null
 const polygons = []
 const badgeMarkers = []
 let suppressModelWatch = false
+let isTooltipHovered = false
 
 /**
  * Estilos Leaflet reutilizados pelos composables
@@ -283,6 +284,7 @@ function handlePolygonEditConfirm ({ modelItem, entry }) {
 function handlePolygonMouseover (modelItem, polygonKey, containerPoint) {
   if (isDrawingActive.value || isEditingPolygon.value) return
 
+  isTooltipHovered = false
   showTooltip({ item: modelItem, polygonKey, containerPoint })
 }
 
@@ -291,9 +293,31 @@ function handlePolygonMouseover (modelItem, polygonKey, containerPoint) {
  * @param {Object} containerPoint - Ponto no container do mapa
  */
 function handlePolygonMousemove (containerPoint) {
-  if (!hoveredItem.value) return
+  /**
+   * Se não houver item hovered ou se a tooltip estiver sendo hoverada,
+   * não atualiza a posição para evitar que a tooltip "corra" atrás do mouse.
+   */
+  if (!hoveredItem.value || isTooltipHovered) return
 
   updateTooltipPosition(containerPoint)
+}
+
+/**
+ * Evita que a tooltip seja escondida ao mover o mouse da borda do polígono para a própria tooltip,
+ * permitindo que o usuário interaja com a tooltip sem que ela desapareça.
+ */
+function handleTooltipMouseenter () {
+  isTooltipHovered = true
+  cleanupTooltip()
+}
+
+/**
+ * Permite que a tooltip seja escondida novamente ao mover o mouse para fora da tooltip,
+ * se não estiver mais sobre o polígono.
+ */
+function handleTooltipMouseleave () {
+  isTooltipHovered = false
+  scheduleHideTooltip()
 }
 
 /**
@@ -476,6 +500,7 @@ function setupMap () {
   &__polygon-tooltip {
     position: absolute;
     z-index: 1200;
+    transition: left 50ms linear, top 50ms linear;
   }
 
   .leaflet-control {
