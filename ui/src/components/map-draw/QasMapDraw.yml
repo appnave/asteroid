@@ -29,8 +29,8 @@ props:
     type: String
     default: ''
 
-  get-item-classes:
-    desc: Callback "(item) => string" que retorna classes CSS aplicadas à badge e ao polígono com base nos dados do item.
+  get-item-color:
+    desc: Callback que retorna um nome de cor do Quasar, aplicado inline à badge e ao polígono.
     type: Function
     default: undefined
 
@@ -80,8 +80,8 @@ methods:
       label:
         desc: Texto exibido na badge.
         type: String
-      itemClass:
-        desc: Classes CSS da badge.
+      itemColor:
+        desc: Nome de cor Quasar (yellow-4 por exemplo) aplicado inline à badge.
         type: String
 
   cancelDraw:
