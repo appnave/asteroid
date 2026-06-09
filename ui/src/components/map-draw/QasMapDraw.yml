@@ -39,6 +39,11 @@ props:
     type: String
     default: ''
 
+  use-draw-button:
+    desc: Controla se o botão de desenho é exibido no mapa.
+    type: Boolean
+    default: true
+
   model-value:
     desc: Lista de itens do mapa. Cada item deve conter a propriedade definida em "model-key" com os pontos do polígono.
     type: Array
