@@ -82,26 +82,26 @@
           </template>
         </q-list>
 
-        <!-- usuário + chat ajuda -->
         <div v-if="showAppUser" class="column justify-end no-wrap qas-app-menu__user-chat" @mouseenter="onMouseEvent" @mouseleave="onMouseEvent">
-          <!-- Chat Ajuda -->
-          <q-list v-if="useChat" class="q-mt-md">
-            <q-item class="q-pb-none qas-app-menu__chat-item" clickable @click="toggleChat">
-              <q-item-section avatar class="qas-app-menu__chat-item-section text-primary">
-                <q-icon name="sym_r_chat" />
+          <!-- navezap + chat ajuda -->
+          <q-list v-for="(item, itemIndex) in bottomListItems" :key="itemIndex" class="q-mt-md">
+            <q-item class="q-pb-none qas-app-menu__bottom-list-item" clickable @click="item.onClick">
+              <q-item-section avatar class="qas-app-menu__bottom-list-item-section text-primary">
+                <q-img v-if="item.useImage" height="24px" :src="item.image" width="24px" />
+                <q-icon v-else :name="item.icon" />
               </q-item-section>
 
-              <q-item-section class="qas-app-menu__chat-item-section text-primary">
+              <q-item-section class="qas-app-menu__bottom-list-item-section text-primary">
                 <q-item-label>
                   <div class="ellipsis text-subtitle2">
-                    Solicitar ajuda
+                    {{ item.label }}
                   </div>
                 </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
 
-          <!-- User -->
+          <!-- usuário -->
           <div class="full-width q-mt-md q-pb-lg q-px-lg">
             <qas-app-user v-bind="defaultAppUserProps" />
           </div>
@@ -123,6 +123,7 @@ import { useScreen } from '../../composables'
 import { useAuthUser } from '../../composables/private'
 
 import { handleProcess, setScrollGradient } from '../../helpers'
+import naveZapSVG from '../../assets/navezap.svg'
 
 import Gleap from 'gleap'
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
@@ -183,6 +184,10 @@ const props = defineProps({
   },
 
   useChat: {
+    type: Boolean
+  },
+
+  useNaveZap: {
     type: Boolean
   },
 
@@ -269,6 +274,26 @@ const classes = computed(() => {
       'qas-app-menu__label--spaced': !isMiniMode.value
     }
   }
+})
+
+/**
+ * Botões de NaveZap e Chat de ajuda.
+ */
+const bottomListItems = computed(() => {
+  return [
+    ...(props.useNaveZap ? [{
+      onClick: openNaveZapExtension,
+      useImage: true,
+      image: naveZapSVG,
+      label: 'NaveZap'
+    }] : []),
+
+    ...(props.useChat ? [{
+      onClick: toggleChat,
+      icon: 'sym_r_chat',
+      label: 'Solicitar ajuda'
+    }] : [])
+  ]
 })
 
 /**
@@ -369,6 +394,12 @@ function onMouseMoveList (event) {
 
 function setHasOpenedMenu (value) {
   hasOpenedMenu.value = value
+}
+
+function openNaveZapExtension () {
+  const naveZapExtensionLink = 'https://chromewebstore.google.com/detail/navezap/heghlbliaodcahfnbfjdebhpofcjclag'
+
+  window.open(naveZapExtensionLink, '_blank')
 }
 
 // composables definitions
@@ -484,11 +515,11 @@ function useChatMenu () {
     flex: 1 1 auto;
   }
 
-  &__chat-item:hover &__chat-item-section {
+  &__bottom-list-item:hover &__bottom-list-item-section {
     color: var(--qas-primary-contrast) !important;
   }
 
-  &__chat-item-section {
+  &__bottom-list-item-section {
     transition: color var(--qas-generic-transition);
   }
 
