@@ -140,6 +140,11 @@ const props = defineProps({
     default: () => ({})
   },
 
+  bottomListItems: {
+    type: Array,
+    default: () => []
+  },
+
   brand: {
     default: '',
     required: true,
@@ -184,11 +189,6 @@ const props = defineProps({
 
   useChat: {
     type: Boolean
-  },
-
-  bottomListItems: {
-    type: Array,
-    default: () => []
   },
 
   useHomeItem: {
