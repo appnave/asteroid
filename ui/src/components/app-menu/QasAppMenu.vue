@@ -83,8 +83,8 @@
         </q-list>
 
         <div v-if="showAppUser" class="column justify-end no-wrap qas-app-menu__user-chat" @mouseenter="onMouseEvent" @mouseleave="onMouseEvent">
-          <!-- navezap + chat ajuda -->
-          <q-list v-for="(item, itemIndex) in bottomListItems" :key="itemIndex" class="q-mt-md">
+          <!-- chat ajuda e outros botões podendo vir via prop -->
+          <q-list v-for="(item, itemIndex) in formattedBottomListItems" :key="itemIndex" class="q-mt-md">
             <q-item class="q-pb-none qas-app-menu__bottom-list-item" clickable @click="item.onClick">
               <q-item-section avatar class="qas-app-menu__bottom-list-item-section text-primary">
                 <q-img v-if="item.useImage" height="24px" :src="item.image" width="24px" />
@@ -123,7 +123,6 @@ import { useScreen } from '../../composables'
 import { useAuthUser } from '../../composables/private'
 
 import { handleProcess, setScrollGradient } from '../../helpers'
-import naveZapSVG from '../../assets/navezap.svg'
 
 import Gleap from 'gleap'
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
@@ -187,8 +186,9 @@ const props = defineProps({
     type: Boolean
   },
 
-  useNaveZap: {
-    type: Boolean
+  bottomListItems: {
+    type: Array,
+    default: () => []
   },
 
   useHomeItem: {
@@ -277,16 +277,11 @@ const classes = computed(() => {
 })
 
 /**
- * Botões de NaveZap e Chat de ajuda.
+ * Botões como Chat de ajuda, e outros à mais como por exemplo NaveZap.
  */
-const bottomListItems = computed(() => {
+const formattedBottomListItems = computed(() => {
   return [
-    ...(props.useNaveZap ? [{
-      onClick: openNaveZapExtension,
-      useImage: true,
-      image: naveZapSVG,
-      label: 'NaveZap'
-    }] : []),
+    ...props.bottomListItems,
 
     ...(props.useChat ? [{
       onClick: toggleChat,
@@ -394,12 +389,6 @@ function onMouseMoveList (event) {
 
 function setHasOpenedMenu (value) {
   hasOpenedMenu.value = value
-}
-
-function openNaveZapExtension () {
-  const naveZapExtensionLink = 'https://chromewebstore.google.com/detail/navezap/heghlbliaodcahfnbfjdebhpofcjclag'
-
-  window.open(naveZapExtensionLink, '_blank')
 }
 
 // composables definitions

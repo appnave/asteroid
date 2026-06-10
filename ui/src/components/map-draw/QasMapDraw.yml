@@ -29,7 +29,7 @@ props:
     type: String
     default: ''
 
-  get-item-color:
+  item-color-fn:
     desc: Callback que retorna um nome de cor do Quasar, aplicado inline à badge e ao polígono.
     type: Function
     default: undefined

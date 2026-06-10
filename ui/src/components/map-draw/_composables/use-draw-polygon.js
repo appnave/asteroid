@@ -22,7 +22,12 @@ export function useDrawPolygon ({ getMap, polygonStyle, drawButtonLabel, onFinis
   /**
    * Estilo Leaflet para as linhas de prévia durante o desenho.
    */
-  const PREVIEW_STYLE = { color: '#3388ff', weight: 3, dashArray: '6 4', opacity: 0.9 }
+  const PREVIEW_STYLE = {
+    color: '#3388ff',
+    weight: 3,
+    dashArray: '6 4',
+    opacity: 0.9
+  }
 
   const drawPoints = {
     preview: [], // Pontos coletados durante o desenho para a camada de preview

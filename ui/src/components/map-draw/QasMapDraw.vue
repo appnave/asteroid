@@ -1,11 +1,11 @@
 <template>
   <div
     ref="mapContainer"
-    class="app-map"
+    class="qas-map-draw"
   >
     <div
       v-if="hoveredItem"
-      class="app-map__polygon-tooltip"
+      class="qas-map-draw__polygon-tooltip"
       :style="hoveredItemStyle"
       @mouseenter="handleTooltipMouseenter"
       @mouseleave="handleTooltipMouseleave"
@@ -26,7 +26,7 @@
 
     <qas-alert
       v-if="hasAlert"
-      class="app-map__alert"
+      class="qas-map-draw__alert"
       text="Use Ctrl + Z para desfazer e Ctrl + Y para refazer alterações."
       use-box
     />
@@ -75,7 +75,7 @@ const props = defineProps({
   },
 
   // Callback opcional para retornar um nome de cor Quasar (ex: 'yellow-4') aplicado inline à badge e ao polígono
-  getItemColor: {
+  itemColorFn: {
     type: Function,
     default: undefined
   },
@@ -116,7 +116,12 @@ let isTooltipHovered = false
 /**
  * Estilos Leaflet reutilizados pelos composables
  */
-const POLYGON_STYLE = { color: '#3388ff', fillColor: '#3388ff', fillOpacity: 0.25, weight: 2 }
+const POLYGON_STYLE = {
+  color: '#3388ff',
+  fillColor: '#3388ff',
+  fillOpacity: 0.25,
+  weight: 2
+}
 
 // composables
 /**
@@ -188,7 +193,7 @@ const {
   polygonStyle: POLYGON_STYLE,
   modelKey: props.modelKey,
   badgeLabelKey: props.badgeLabelKey,
-  getItemColor: props.getItemColor,
+  itemColorFn: props.itemColorFn,
   cancelEditPolygon,
   onReset: hideTooltip,
   onMouseover: handlePolygonMouseover,
@@ -238,7 +243,7 @@ const hasAlert = computed(() => isDrawingActive.value || isEditingPolygon.value)
  * Callback chamado ao finalizar o desenho de um polígono, para adicionar ao mapa e opcionalmente ao model.
  * @param {Object} params
  * @param {import('leaflet').Polygon} params.layer - Layer do polígono desenhado
- * @param {Array} params.points - Pontos do polígono desenhado
+ * @param {Array<Object>} params.points - Pontos do polígono desenhado
  */
 function handleFinishDraw ({ layer, points }) {
   const modelItem = { [props.modelKey]: points }
@@ -376,8 +381,12 @@ function setupLeaflet (width, height) {
 
   const zoomControl = L.control.zoom({ zoomInTitle: 'Mais zoom', zoomOutTitle: 'Menos zoom' }).addTo(map)
   const zoomContainer = zoomControl.getContainer()
-  zoomContainer.querySelector('.leaflet-control-zoom-in').innerHTML = '<i class="q-icon notranslate material-symbols-rounded app-map__location-icon">zoom_in</i>'
-  zoomContainer.querySelector('.leaflet-control-zoom-out').innerHTML = '<i class="q-icon notranslate material-symbols-rounded app-map__location-icon">zoom_out</i>'
+
+  const zoomInHTML = '<i class="q-icon notranslate material-symbols-rounded qas-map-draw__location-icon">zoom_in</i>'
+  const zoomOutHTML = '<i class="q-icon notranslate material-symbols-rounded qas-map-draw__location-icon">zoom_out</i>'
+
+  zoomContainer.querySelector('.leaflet-control-zoom-in').innerHTML = zoomInHTML
+  zoomContainer.querySelector('.leaflet-control-zoom-out').innerHTML = zoomOutHTML
 
   const bounds = [[0, 0], [height, width]]
 
@@ -486,7 +495,7 @@ function setupMap () {
 </script>
 
 <style lang="scss">
-.app-map {
+.qas-map-draw {
   width: 100%;
   background-color: $grey-4;
   position: relative;

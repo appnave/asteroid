@@ -12,7 +12,7 @@ import { colors } from 'quasar'
  * @param {Object} context.polygonStyle - Estilo Leaflet padrão dos polígonos
  * @param {string} context.modelKey - Chave usada para ler os pontos em cada item do model
  * @param {string} context.badgeLabelKey - Caminho para o label da badge
- * @param {Function} [context.getItemColor] - Callback opcional que retorna um nome de cor Quasar (ex: 'yellow-4')
+ * @param {Function} [context.itemColorFn] - Callback opcional que retorna um nome de cor Quasar (ex: 'yellow-4')
  * @param {Function} context.cancelEditPolygon - Cancela qualquer edição ativa antes de re-renderizar
  * @param {Function} context.onReset - Callback chamado ao iniciar re-renderização (ex: fechar tooltip)
  * @param {Function} context.onMouseover - Callback(modelItem, polygonKey, containerPoint) ao entrar no polígono
@@ -29,7 +29,7 @@ export function usePolygons (context) {
     polygonStyle,
     modelKey,
     badgeLabelKey,
-    getItemColor,
+    itemColorFn,
     cancelEditPolygon,
     onReset,
     onMouseover,
@@ -39,8 +39,10 @@ export function usePolygons (context) {
     model
   } = context
 
+  // vars
   let polygonKeyIndex = 0
 
+  // functions
   /**
    * Resolve um nome de cor Quasar (ex: 'yellow-4') ou hex/rgb para um hex usável inline.
    * @param {string} colorName - nome da cor
@@ -184,35 +186,52 @@ export function usePolygons (context) {
    * @param {Array<Object>} polygonList - itens do v-model, cada um com a propriedade [modelKey] contendo os pontos
    */
   function renderPolygonsFromModel (polygonList = []) {
+    // Cancela qualquer edição ativa para evitar estado inconsistente durante a re-renderização
     cancelEditPolygon()
+
+    // Notifica o componente pai para fechar tooltip ou qualquer UI aberta
     onReset()
 
     const map = getMap()
     const polygons = getPolygons()
     const badgeMarkers = getBadgeMarkers()
 
+    // Remove os layers de polígonos e badges existentes do mapa antes de re-renderizar
     polygons.forEach(({ layer }) => map.removeLayer(layer))
     badgeMarkers.forEach(marker => map.removeLayer(marker))
 
+    // Limpa os arrays reativos após remover do mapa
     polygons.length = 0
     badgeMarkers.length = 0
 
     polygonList.forEach(polygon => {
+      // Lê os pontos do item usando a chave configurada pelo consumidor (ex: 'coordinates')
       const points = polygon[modelKey]
 
+      // Ignora itens sem pontos para não criar polígonos inválidos
       if (!points?.length) return
 
-      const resolvedColor = getItemColor ? resolveColor(getItemColor(polygon)) : ''
+      // Resolve a cor personalizada do item se o callback itemColorFn foi fornecido
+      const resolvedColor = itemColorFn ? resolveColor(itemColorFn(polygon)) : ''
 
+      // Aplica a cor personalizada ao estilo do layer, sobrescrevendo fillColor e color do padrão
       const layerStyle = resolvedColor
         ? { ...polygonStyle, fillColor: resolvedColor, color: resolvedColor, fillOpacity: 0.35 }
         : polygonStyle
 
+      // Cria e adiciona o layer do polígono ao mapa
       const layer = L.polygon(points, layerStyle).addTo(map)
+
+      // Monta o entry com todos os dados necessários para edição, eventos e badge
       const entry = { layer, points, modelItem: polygon, key: polygonKeyIndex++, style: layerStyle }
 
+      // Registra o entry no array reativo para rastreamento interno
       polygons.push(entry)
+
+      // Vincula os eventos de mouseover/mousemove/mouseout ao layer
       handleMouseEvents({ layer, modelItem: polygon, polygonKey: entry.key })
+
+      // Adiciona a badge com label e cor no centro do polígono
       addBadge(points, polygon[badgeLabelKey], resolvedColor)
     })
   }

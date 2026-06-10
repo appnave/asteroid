@@ -1,8 +1,21 @@
 import L from 'leaflet'
 import { ref } from 'vue'
 
-const EDITING_POLYGON_STYLE = { color: '#ff6600', fillColor: '#ff6600', fillOpacity: 0.2, weight: 2.5 }
-const VERTEX_MARKER_STYLE = { radius: 6, color: '#fff', fillColor: '#3388ff', fillOpacity: 1, weight: 2, bubblingMouseEvents: false }
+const EDITING_POLYGON_STYLE = {
+  color: '#ff6600',
+  fillColor: '#ff6600',
+  fillOpacity: 0.2,
+  weight: 2.5
+}
+
+const VERTEX_MARKER_STYLE = {
+  radius: 6,
+  color: '#fff',
+  fillColor: '#3388ff',
+  fillOpacity: 1,
+  weight: 2,
+  bubblingMouseEvents: false
+}
 
 /**
  * Composable responsável por toda a lógica de edição de polígonos no AppMap.
@@ -18,7 +31,7 @@ const VERTEX_MARKER_STYLE = { radius: 6, color: '#fff', fillColor: '#3388ff', fi
  * @param {Function} context.onStartEdit - Callback chamado ao iniciar a edição (ex: fechar tooltip ao editar)
  * @param {Function} context.onConfirm - Callback chamado ao confirmar edição.
  */
-export function useEditPolygon (config) {
+export function useEditPolygon (context) {
   const {
     getMap,
     getPolygons,
@@ -27,7 +40,7 @@ export function useEditPolygon (config) {
     polygonStyle,
     onStartEdit,
     onConfirm
-  } = config
+  } = context
 
   // refs
   const isEditingPolygon = ref(false)
@@ -146,6 +159,22 @@ export function useEditPolygon (config) {
 
     editControl.remove()
     editControl = null
+  }
+
+  /**
+   * Restaura o estado inicial de edição, limpando histórico, resetando flags e escondendo controles.
+   * Deve ser chamado ao finalizar ou cancelar a edição.
+   */
+  function resetEditState () {
+    const map = getMap()
+
+    if (map) map.getContainer().style.cursor = ''
+
+    hideEditControl()
+    history.payload = []
+    history.index = -1
+    editingPolygonData = null
+    isEditingPolygon.value = false
   }
 
   /**
@@ -316,12 +345,7 @@ export function useEditPolygon (config) {
      */
     onConfirm({ modelItem, entry })
 
-    map.getContainer().style.cursor = ''
-    hideEditControl()
-    history.payload = []
-    history.index = -1
-    editingPolygonData = null
-    isEditingPolygon.value = false
+    resetEditState()
   }
 
   /**
@@ -346,12 +370,7 @@ export function useEditPolygon (config) {
     entry.layer.setStyle(entry.style || polygonStyle)
     entry.points = originalPoints
 
-    map.getContainer().style.cursor = ''
-    hideEditControl()
-    history.payload = []
-    history.index = -1
-    editingPolygonData = null
-    isEditingPolygon.value = false
+    resetEditState()
   }
 
   /**
