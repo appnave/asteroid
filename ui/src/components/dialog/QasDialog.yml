@@ -4,10 +4,10 @@ meta:
   desc: Componente de dialog.
 
 props:
-  actions-props:
-    desc: Props repassadas para o "QasActions".
-    default: {}
-    type: Object
+  badges:
+    desc: Badges que aparecem no canto superior direito do dialog.
+    type: [Array, Object]
+    default: []
 
   cancel:
     desc: Props para o botão de cancelar, pode ser objeto com as propriedades ou um boolean, caso for "false", remove o botão de cancelar.
@@ -15,19 +15,13 @@ props:
     type: [Object, Boolean]
     examples: ["{ label: 'Meu botão de cancelar', onClick: () => alert('fui clicado!') }"]
 
-  card:
-    desc: Objeto contendo as informações para serem exibidas dentro do dialog como "title" e "description".
-    default: {}
-    type: Object
-    examples: ["{ title: 'Meu título', description: 'Minha descrição' }"]
+  description:
+    desc: Descrição do dialog, pode ser uma string, um componente ou uma string com HTML (passando a prop useHtmlDescription).
+    type: [String, Object]
 
-  max-width:
-    desc: Tamanho máximo do dialog.
-    type: String
-
-  min-width:
-    desc: Tamanho mínimo do dialog.
-    type: String
+  disable-close-button:
+    desc: Define se o botão de fechar no canto superior direito estará desabilitado.
+    type: Boolean
 
   model-value:
     desc: Model do componente, abre ou fecha o dialog.
@@ -42,27 +36,49 @@ props:
     type: [Object, Boolean]
     examples: ["{ label: 'Meu botão de confirmar', onClick: () => alert('fui clicado!') }"]
 
-  persistent:
-    desc: Define se o dialog vai fechar ou não após clicar fora do dialog.
+  size:
+    desc: Tamanho do dialog.
+    type: String
+    default: 'md'
+    options: ['xs', 'sm', 'md', 'lg', 'xl']
+
+  use-auto-close-on-cancel:
+    desc: Define se o dialog vai fechar automaticamente ao clicar no botão de cancelar.
+    type: Boolean
     default: true
+
+  use-auto-close-on-ok:
+    desc: Define se o dialog vai fechar automaticamente ao clicar no botão de confirmar (ok).
+    type: Boolean
+    default: true
+
+  use-close-button:
+    desc: Define se o dialog vai ter um botão de fechar no canto superior direito.
     type: Boolean
 
   use-form:
     desc: Define se a tag onde fica a descrição no dialog vai ser um "<q-form />" ou "<div />".
     type: Boolean
 
-  use-full-max-width:
-    desc: propriedade para utilizar `100% do maxWidth`.
+  use-html-description:
+    desc: Define se a descrição aceita HTML (utilize com cuidado para evitar XSS).
     type: Boolean
 
   use-validation-all-at-once:
     desc: Valida todos os campos de uma única vez, ao invés de ser um por vez (que é o padrão).
     type: Boolean
 
-slots:
-  actions:
-    desc: Slot para ações (botões por exemplo).
+  tertiary:
+    desc: Props para o botão terciário
+    type: Object
+    default: {}
 
+  title:
+    desc: Título do dialog.
+    type: String
+    required: true
+
+slots:
   description:
     desc: Slot para descrição.
 
@@ -103,6 +119,10 @@ selectors:
   dialog-cancel-btn:
     desc: Seletor do botão de cancelar do componente.
     examples: ['data-cy="dialog-cancel-btn"']
+
+  dialog-tertiary-btn:
+    desc: Seletor do botão terciário do componente.
+    examples: ['data-cy="dialog-tertiary-btn"']
 
   dialog-close-btn:
     desc: Seletor do botão de fechar do componente.

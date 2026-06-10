@@ -54,7 +54,7 @@
 
       <template #description>
         <slot name="dialog-description">
-          <div v-if="dialogDescription" class="q-mb-xl text-center">
+          <div v-if="dialogDescription" class="q-mb-md">
             {{ dialogDescription }}
           </div>
 
@@ -73,6 +73,7 @@ import QasHeader from '../header/QasHeader.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasDialog from '../dialog/QasDialog.vue'
 import QasSelectList from '../select-list/QasSelectList.vue'
+import QasSearchBox from '../search-box/QasSearchBox.vue'
 
 import { computed, ref, watch, useSlots, inject } from 'vue'
 
@@ -342,8 +343,8 @@ function useSelectDialog () {
 
   const defaultDialogProps = computed(() => {
     return {
-      useFullMaxWidth: true,
-
+      size: 'md',
+      title: 'Adicionar itens',
       ...props.dialogProps,
 
       onBeforeShow: event => {

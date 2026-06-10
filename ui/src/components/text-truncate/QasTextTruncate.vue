@@ -19,7 +19,7 @@
       <qas-btn v-if="hasButton" class="q-ml-xs" :label="buttonLabel" @click.stop.prevent="toggle" />
     </div>
 
-    <qas-dialog v-model="show" v-bind="defaultProps" aria-label="Diálogo de texto completo" role="dialog">
+    <qas-dialog v-model="show" v-bind="defaultProps" aria-label="Diálogo de texto completo" role="dialog" size="md">
       <template v-if="showDescriptionSlot" #description>
         <component :is="dialogComponent.is" v-bind="dialogComponent.props" v-model:results="searchModel">
           <q-list separator>
@@ -225,10 +225,8 @@ function useDialog ({ props, textContent }) {
 
       ...props.dialogProps,
 
-      card: {
-        title: props.dialogTitle,
-        description: description.value
-      }
+      title: props.dialogTitle,
+      description: description.value
     }
   })
 

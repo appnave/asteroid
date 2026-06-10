@@ -388,10 +388,10 @@ const hasColumnsLength = computed(() => !!Object.keys(columnsResultsModel.value)
 
 const containerStyle = computed(() => `width: ${props.columnWidth};`)
 
-const hasConfirmDialogProps = computed(() => !!Object.keys(props.confirmDialogProps).length)
-
 const defaultConfirmDialogProps = computed(() => {
   const defaultProps = {
+    title: 'Confirmar mudança',
+
     ok: {
       label: 'Confirmar',
       onClick: onConfirmDrop.value,
@@ -1124,7 +1124,7 @@ function onDropCard (event) {
     return
   }
 
-  hasConfirmDialogProps.value
+  props.useConfirmDialog
     ? openConfirmDialog()
     : confirmDrop(event)
 }
@@ -1143,7 +1143,7 @@ function closeConfirmDialog () {
 function cancelDrop (event) {
   revertDomDrag(event)
 
-  if (hasConfirmDialogProps.value) closeConfirmDialog()
+  if (props.useConfirmDialog) closeConfirmDialog()
 
   stopDragging()
 }
@@ -1282,10 +1282,7 @@ async function updatePosition ({ newHeaderKey, oldHeaderKey, itemId, event, opti
     : `${props.updatePositionUrl}/${itemId}/update-position`
 
   const { data, error } = await promiseHandler(
-    axios.patch(url, params, {
-      adapter: 'fetch',
-      fetchOptions: { priority: 'low' }
-    }),
+    axios.patch(url, params),
     {
       errorMessage: 'Ocorreu um erro ao atualizar a posição de seu item.',
       useLoading: false,

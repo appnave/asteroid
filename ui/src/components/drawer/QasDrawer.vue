@@ -1,5 +1,5 @@
 <template>
-  <qas-dialog class="qas-drawer" v-bind="attributes" @update:model-value="onUpdateModelValue">
+  <qas-dialog v-model="model" class="qas-drawer" :class="containerDialogClasses" v-bind="attributes">
     <template #header>
       <slot name="header">
         <div class="items-center justify-between row">
@@ -11,18 +11,18 @@
             </slot>
           </span>
 
-          <qas-btn v-close-popup class="z-max" color="grey-10" data-cy="drawer-close-btn" icon="sym_r_close" variant="tertiary" @click="emit('update:modelValue', false)" />
+          <qas-btn class="z-max" color="grey-10" data-cy="drawer-close-btn" icon="sym_r_close" variant="tertiary" @click="close" />
         </div>
       </slot>
     </template>
 
     <template #description>
-      <div>
-        <div class="relative-position" data-cy="drawer-default">
+      <div class="relative-position">
+        <div data-cy="drawer-default">
           <slot />
         </div>
 
-        <div v-if="props.loading" class="qas-drawer__loading" :style="loadingStyle">
+        <div v-if="props.loading" class="qas-drawer__loading">
           <div class="full-height relative-position">
             <q-inner-loading :showing="props.loading">
               <q-spinner color="grey" size="2em" />
@@ -40,7 +40,7 @@ import QasBtn from '../btn/QasBtn.vue'
 
 import useScreen from '../../composables/use-screen.js'
 
-import { computed, useAttrs } from 'vue'
+import { computed, inject, provide } from 'vue'
 
 defineOptions({
   name: 'QasDrawer',
@@ -53,9 +53,8 @@ const props = defineProps({
     default: () => ({})
   },
 
-  maxWidth: {
-    type: String,
-    default: '60%'
+  persistent: {
+    type: Boolean
   },
 
   position: {
@@ -71,43 +70,57 @@ const props = defineProps({
 
   loading: {
     type: Boolean
+  },
+
+  size: {
+    type: String,
+    default: 'sm',
+    validator: value => !value || ['sm', 'md', 'lg', 'xl'].includes(value)
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+// globals
+const isOverlay = inject('isOverlay', false)
 
-const attrs = useAttrs()
+provide('drawerProps', computed(() => ({ persistent: props.persistent })))
+
+// emits
+const model = defineModel({ type: Boolean })
+
+// composables
 const screen = useScreen()
 
 // computed
-const normalizedMaxWidth = computed(() => screen.isSmall ? '95%' : props.maxWidth)
+const containerDialogClasses = computed(() => {
+  // tratamento para mobile, onde sempre pegará 95% da tela.
+  if (screen.isSmall) return 'qas-drawer--mobile'
 
-const loadingStyle = computed(() => {
-  return {
-    right: `calc(100% - ${normalizedMaxWidth.value})`
-  }
+  /**
+   * no caso de ter passado a prop lg ou xl, mas o tamanho da tela ser médio,
+   * o drawer irá se comportar como md, pegando 512px de largura, caso contrário, teria o problema
+   * do drawer acabar pegando 100% da página, tendo o comportamento errado.
+   */
+  if (screen.isMedium && (props.size === 'lg' || props.size === 'xl')) return 'qas-drawer--md'
+
+  return isOverlay ? 'qas-drawer--overlay' : `qas-drawer--${props.size}`
 })
 
 const attributes = computed(() => {
-  const { modelValue } = attrs
-
   return {
-    persistent: false,
-    modelValue,
-
     ...props.dialogProps,
 
+    title: props.title,
     cancel: false,
-    maxWidth: normalizedMaxWidth.value,
     maximized: true,
     ok: false,
     position: props.position,
-    useFullMaxWidth: true
+    persistent: props.persistent
   }
 })
 
-function onUpdateModelValue (value) {
-  emit('update:modelValue', value)
+// functions
+function close () {
+  model.value = false
 }
 </script>
 
@@ -118,6 +131,43 @@ function onUpdateModelValue (value) {
     left: 0;
     position: absolute;
     top: 0;
+    width: 100%;
+  }
+
+  &--mobile {
+    .qas-dialog__container {
+      max-width: 95% !important;
+    }
+  }
+
+  &--overlay {
+    .qas-dialog__container {
+      max-width: 90% !important;
+    }
+  }
+
+  &--sm {
+    .qas-dialog__container {
+      max-width: 368px !important;
+    }
+  }
+
+  &--md {
+    .qas-dialog__container {
+      max-width: 512px !important;
+    }
+  }
+
+  &--lg {
+    .qas-dialog__container {
+      max-width: 656px !important;
+    }
+  }
+
+  &--xl {
+    .qas-dialog__container {
+      max-width: 960px !important;
+    }
   }
 }
 </style>

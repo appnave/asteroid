@@ -8,9 +8,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import DescriptionComponent from './DescriptionComponent.vue'
 
-defineOptions({ name: 'DialogWithDescriptionComponent' })
+defineOptions({ name: 'DialogWithTertiary' })
 
 // refs
 const isDialogOpened = ref(false)
@@ -18,7 +17,10 @@ const isDialogOpened = ref(false)
 // consts
 const dialogProps = {
   title: 'Título do dialog',
-  description: DescriptionComponent
+  description: 'Cerca elétrica perto do corrimão risco iminente de choque. Código da ordem de serviço: 159488 CRM ID: 1179512',
+  tertiary: {
+    label: 'Ação terciária'
+  }
 }
 
 // functions
