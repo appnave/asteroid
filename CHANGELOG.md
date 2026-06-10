@@ -17,7 +17,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ## Não publicado
 ### Corrigido
 - `QasInfiniteScroll`: Corrigido `scrollTarget` para usar o container do overlay (`.pv-layout-overlay-drawer__content`) quando o componente é utilizado dentro de um overlay navigation. ([#1490](https://github.com/bildvitta/asteroid/issues/1490))
-- `QasField | QasRadio`: Corrigido renderização dos erros no campo do tipo `QasRadio` quando utilizado pelo `QasField` ou em um `QasFormGenerator`. 
+- `QasField | QasRadio`: Corrigido renderização dos erros no campo do tipo `QasRadio` quando utilizado pelo `QasField` ou em um `QasFormGenerator`. ([#1520](https://github.com/appnave/asteroid/issues/1520))
 
 ## [3.20.0-beta.23] - 08-05-2026
 ### Adicionado
