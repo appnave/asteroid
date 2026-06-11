@@ -1,6 +1,6 @@
 <template>
   <div
-    ref="mapContainer"
+    ref="mapContainerRef"
     class="qas-map-draw"
   >
     <div
@@ -39,7 +39,7 @@ import { useDrawPolygon } from './_composables/use-draw-polygon.js'
 import { usePolygonTooltip } from './_composables/use-polygon-tooltip.js'
 import { usePolygons } from './_composables/use-polygons.js'
 
-import { ref, watch, onMounted, onBeforeUnmount, computed, useTemplateRef } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount, computed } from 'vue'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 
@@ -99,7 +99,7 @@ const model = defineModel({ type: Array, default: () => [] })
 const emit = defineEmits(['area-drawn', 'polygon-edited'])
 
 // refs
-const mapContainerRef = useTemplateRef('mapContainer')
+const mapContainerRef = ref(null)
 const isLoading = ref(true)
 
 // consts
