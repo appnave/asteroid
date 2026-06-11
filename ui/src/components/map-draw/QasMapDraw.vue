@@ -370,7 +370,6 @@ function handleRemoveLastPolygon () {
  * @param {number} height - altura real da imagem em pixels
  */
 function setupLeaflet (width, height) {
-  console.log('estou linkado')
   map = L.map(mapContainerRef.value, {
     crs: L.CRS.Simple,
     minZoom: -3,
