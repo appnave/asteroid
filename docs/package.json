@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "7.21.8",
-    "@quasar/app-webpack": "^3.15.1",
+    "@quasar/app-webpack": "^4.4.5",
     "eslint-webpack-plugin": "4.0.1",
     "gray-matter": "^4.0.3",
     "markdown-it-container": "^3.0.0",
@@ -48,7 +48,7 @@
     "raw-loader": "^4.0.2",
     "toml": "^3.0.0",
     "ware-loader": "^0.2.4",
-    "workbox-webpack-plugin": "^6.5.3",
+    "workbox-webpack-plugin": "^7.4.1",
     "yaml-loader": "^0.8.0"
   },
   "browserslist": [
