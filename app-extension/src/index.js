@@ -4,7 +4,7 @@ import ComponentsVite from 'unplugin-vue-components/vite'
 import ComponentsWebpack from 'unplugin-vue-components/webpack'
 import { pathToFileURL } from 'url'
 
-const sourcePath = '~@bildvitta/quasar-app-extension-asteroid/src/'
+const sourcePath = '~@appnave/quasar-app-extension-asteroid/src/'
 const resolve = (...paths) => paths.map(path => sourcePath + path)
 
 function extendQuasar (quasar, api, asteroidConfigFile) {
@@ -76,9 +76,9 @@ export default async function (api) {
   api.compatibleWith('quasar', '^2.0.0')
   api.compatibleWith('date-fns', '^2.3.0')
 
-  const asteroid = 'node_modules/@bildvitta/quasar-ui-asteroid/src/asteroid.js'
-  const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'
-  const asteroidConfig = 'node_modules/@bildvitta/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
+  const asteroid = 'node_modules/@appnave/quasar-ui-asteroid/src/asteroid.js'
+  const asteroidComponents = 'node_modules/@appnave/quasar-ui-asteroid/src/components'
+  const asteroidConfig = 'node_modules/@appnave/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
   const vueRouter = 'node_modules/vue-router/dist/vue-router.esm-bundler.js'
   const quasar = 'node_modules/quasar'
 

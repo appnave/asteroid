@@ -1,5 +1,5 @@
 {
-  "name": "@bildvitta/asteroid-docs",
+  "name": "@appnave/asteroid-docs",
   "description": "Asteroid",
   "version": "3.20.0-beta.23",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
@@ -16,7 +16,7 @@
     "@algolia/autocomplete-js": "^1.9.2",
     "@algolia/autocomplete-theme-classic": "^1.9.2",
     "@bildvitta/composables": "^1.0.0-beta.7",
-    "@bildvitta/quasar-ui-asteroid": "file:../ui",
+    "@appnave/quasar-ui-asteroid": "file:../ui",
     "@bildvitta/store-module": "^1.0.0-beta.10",
     "@bildvitta/vuex-offline": "^3.2.1",
     "@docsearch/css": "^3.4.0",
