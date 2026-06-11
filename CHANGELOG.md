@@ -15,6 +15,10 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Adicionado
+- `QasMapDraw`: adicionado componente de mapa interativo baseado em Leaflet para desenho e edição de polígonos sobre uma imagem de fundo (ex. planta baixa), com suporte a badges, tooltips customizáveis via slot e integração com `v-model`.
+- `QasAppMenu`: adicionado prop `bottomListItems` podendo passar mais botões para o menu além do chat de ajuda.
+
 ### Corrigido
 - `QasInfiniteScroll`: Corrigido `scrollTarget` para usar o container do overlay (`.pv-layout-overlay-drawer__content`) quando o componente é utilizado dentro de um overlay navigation. ([#1490](https://github.com/bildvitta/asteroid/issues/1490))
 

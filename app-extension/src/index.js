@@ -143,6 +143,16 @@ export default async function (api) {
     // Adiciona o plugin de componentes
     webpack.plugins = webpack.plugins || []
     webpack.plugins.push(ComponentsWebpack(unpluginVueComponentsConfig))
+
+    // Resolve o conflito de alias do "images" usado na lib leaflet.
+    webpack.module.rules.push({
+      test: /leaflet[\\/]dist[\\/].*\.css$/,
+      resolve: {
+        alias: {
+          images: api.resolve.app('node_modules/leaflet/dist/images')
+        }
+      }
+    })
   })
 
   api.extendQuasarConf(quasar => extendQuasar(quasar, api, asteroidConfigFile))
