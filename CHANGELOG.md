@@ -22,6 +22,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Corrigido
 - `QasInfiniteScroll`: Corrigido `scrollTarget` para usar o container do overlay (`.pv-layout-overlay-drawer__content`) quando o componente é utilizado dentro de um overlay navigation. ([#1490](https://github.com/bildvitta/asteroid/issues/1490))
 
+### Modificado
+- `QasNestedFields`: Alterado botão de adicionar novos campos quando utilizado com `inline-actions` para ser sempre um botão ao invés de input.
+
 ## [3.20.0-beta.23] - 08-05-2026
 ### Adicionado
 - `QasDialog` adicionado validação da prop `disableCloseButton` para desabilitar o botão, onde por padrão, caso tenha uma prop `loading` para o `ok` do dialog, será desabilitado quando o loading estiver ativo.
