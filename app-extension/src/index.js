@@ -137,22 +137,24 @@ export default async function (api) {
 
   api.compatibleWith('@quasar/app', '^3.10.0 || ^4.0.0')
 
+  /**
+   * Corrige os paths das imagens do Leaflet para que sejam resolvidas corretamente, uma vez que o Leaflet
+   * utiliza imagens que são referenciadas diretamente em seu código, e não é possível alterar isso.
+   * Dessa forma, é necessário configurar os aliases para que o webpack consiga resolver os paths corretamente.
+   */
+  api.chainWebpack(chain => {
+    chain.resolve.alias
+      .set('images/layers.png', api.resolve.app('node_modules/leaflet/dist/images/layers.png'))
+      .set('images/layers-2x.png', api.resolve.app('node_modules/leaflet/dist/images/layers-2x.png'))
+      .set('images/marker-icon.png', api.resolve.app('node_modules/leaflet/dist/images/marker-icon.png'))
+  })
+
   api.extendWebpack(webpack => {
     Object.assign(webpack.resolve.alias, alias)
 
     // Adiciona o plugin de componentes
     webpack.plugins = webpack.plugins || []
     webpack.plugins.push(ComponentsWebpack(unpluginVueComponentsConfig))
-
-    // Resolve o conflito de alias do "images" usado na lib leaflet.
-    webpack.module.rules.push({
-      test: /leaflet[\\/]dist[\\/].*\.css$/,
-      resolve: {
-        alias: {
-          images: api.resolve.app('node_modules/leaflet/dist/images')
-        }
-      }
-    })
   })
 
   api.extendQuasarConf(quasar => extendQuasar(quasar, api, asteroidConfigFile))
