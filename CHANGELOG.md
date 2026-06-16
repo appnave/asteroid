@@ -31,6 +31,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Modificado
 - `QasAlert`: Alterado estilo visual dos alertas para não utilizarem `QasBox` e terem cores de background.
+- `Notify`: 
+  - Alterado para os ícones do notify terem a mesma cor do status em questão (`positive` ou `negative`).
+  - Alterado ícone do notify de erro.
 
 ### Removido
 - `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar.

@@ -103,7 +103,7 @@ const iconProps = computed(() => {
     },
 
     [Status.Error]: {
-      icon: 'sym_r_error'
+      icon: 'sym_r_dangerous'
     },
 
     [Status.Success]: {
