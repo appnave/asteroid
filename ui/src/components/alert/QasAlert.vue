@@ -1,8 +1,8 @@
 <template>
   <div v-if="displayAlert" class="inline-block qas-alert">
-    <component :is="component">
+    <div :class="containerClasses">
       <div class="flex items-center no-wrap">
-        <div class="flex items-center no-wrap text-body1 text-grey-8">
+        <div class="flex items-center no-wrap text-body1 text-grey-10">
           <q-icon v-bind="iconProps" />
 
           <component
@@ -21,14 +21,13 @@
           </span>
         </div>
 
-        <qas-btn v-if="useCloseButton" class="q-ml-sm" color="grey-10" icon="sym_r_close" variant="tertiary" @click="close" />
+        <qas-btn v-if="canUseCloseButton" class="q-ml-sm" color="grey-10" icon="sym_r_close" variant="tertiary" @click="close" />
       </div>
-    </component>
+    </div>
   </div>
 </template>
 
 <script setup>
-import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
 
 import { Status, StatusColor } from '../../enums/Status'
@@ -66,7 +65,7 @@ const props = defineProps({
     default: ''
   },
 
-  useBox: {
+  useBackground: {
     type: Boolean,
     default: undefined
   },
@@ -109,6 +108,10 @@ const iconProps = computed(() => {
 
     [Status.Success]: {
       icon: 'sym_r_check_circle'
+    },
+
+    [Status.Warning]: {
+      icon: 'sym_r_warning'
     }
   }
 
@@ -120,16 +123,23 @@ const iconProps = computed(() => {
 })
 
 /**
- * Por padrão, quando este componente estiver dentro de um QasBox ou QasDialog, ele não terá
- * shadow, terá padding e não terá margin.
+ * Caso a prop useBackground não seja fornecida, assume que deve usar background quando não estiver dentro de um
+ * QasBox ou QasDialog por padrão.
  */
-const component = computed(() => {
-  const hasBoxProps = props.useBox !== undefined
+const canUseBackground = computed(() => {
+  if (props.useBackground !== undefined) return props.useBackground
 
-  // Se não tiver a prop useBox, assume que está dentro de um QasBox ou QasDialog
-  const useBox = hasBoxProps ? props.useBox : !isBox && !isDialog
+  return !isBox && !isDialog
+})
 
-  return useBox ? QasBox : 'div'
+const containerClasses = computed(() => {
+  return {
+    'q-pa-md': canUseBackground.value,
+    'qas-alert--info': canUseBackground.value && props.status === Status.Info,
+    'qas-alert--error': canUseBackground.value && props.status === Status.Error,
+    'qas-alert--success': canUseBackground.value && props.status === Status.Success,
+    'qas-alert--warning': canUseBackground.value && props.status === Status.Warning
+  }
 })
 
 const textComponent = computed(() => {
@@ -240,6 +250,11 @@ const textComponent = computed(() => {
   return h('span', result)
 })
 
+/**
+ * Não é possível ter botão de fechar se o alerta não tiver background.
+ */
+const canUseCloseButton = computed(() => props.useCloseButton && canUseBackground.value)
+
 // composable definitions
 function useStorageClosed () {
   // computeds
@@ -264,11 +279,3 @@ function useStorageClosed () {
   }
 }
 </script>
-
-<style lang="scss">
-.qas-alert {
-  &__link {
-    text-decoration: none;
-  }
-}
-</style>
