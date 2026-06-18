@@ -9,6 +9,7 @@ function getBaseURL () {
   // Permite sobrescrever a URL base da API via query string, útil para ambiente de preview.
   const previewURL = new URLSearchParams(window.location.search).get('$base')
 
+  // TODO: Validar variavel de ambiente se é produção.
   if (previewURL) {
     try {
       const { hostname, protocol } = new URL(previewURL)
@@ -50,13 +51,13 @@ export default async ({ app, router }) => {
   })
 
   api.interceptors.request.use(config => {
+    if (!config.params) return config
+
     /**
       * Remove os parâmetros de query string iniciados com $ antes de enviar a requisição para a API, pois eles
       * são utilizados apenas para controlar a chave do back end por exemplo.
       */
-    if (config.params) config.params = Object.fromEntries(Object.entries(config.params).filter(([key]) => !key.startsWith('$')))
-
-    return config
+    config.params = Object.fromEntries(Object.entries(config.params).filter(([key]) => !key.startsWith('$')))
   })
 
   api.defaults.timeout = asteroidConfig.api.serverTimeout
