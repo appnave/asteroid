@@ -279,3 +279,42 @@ function useStorageClosed () {
   }
 }
 </script>
+
+<style lang="scss">
+@mixin qas-alert-variant($color) {
+  border-color: rgba($color, 0.5);
+  background-color: rgba($color, 0.1);
+}
+
+.qas-alert {
+  &__link {
+    text-decoration: none;
+  }
+
+  &--info,
+  &--error,
+  &--success,
+  &--warning {
+    border-radius: $generic-border-radius;
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  &--info {
+    @include qas-alert-variant($blue-11);
+  }
+
+  &--error {
+    @include qas-alert-variant($red-11);
+  }
+
+  &--success {
+    @include qas-alert-variant($green-12);
+  }
+
+  &--warning {
+    @include qas-alert-variant($orange-11);
+  }
+}
+
+</style>
