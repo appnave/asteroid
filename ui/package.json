@@ -1,7 +1,7 @@
 {
-  "name": "@bildvitta/quasar-ui-asteroid",
+  "name": "@appnave/quasar-ui-asteroid",
   "description": "Asteroid",
-  "version": "3.20.0-beta.23",
+  "version": "3.20.0-beta.24",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
   "license": "MIT",
   "main": "./src/asteroid.js",
@@ -59,6 +59,7 @@
   },
   "peerDependencies": {
     "@quasar/extras": "^1.16.0",
+    "leaflet": "1.9.4",
     "vue-router": "^4.3.2",
     "@fawmi/vue-google-maps": "0.9.79",
     "vue-chartjs": "^5.2.0",
