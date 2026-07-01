@@ -6,7 +6,7 @@ Aplicação Quasar dedicada à documentação do Asteroid, hospedada como PWA em
 
 ```
 docs/
-├── package.json             # @bildvitta/asteroid-docs (privado)
+├── package.json             # @appnave/asteroid-docs (privado)
 ├── quasar.conf.js           # Config do Quasar (Webpack)
 ├── asteroid.config.js       # Config do Asteroid para a própria doc
 ├── babel.config.js

@@ -19,6 +19,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Removido
 - `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
 
+## [3.20.0-beta.24] - 16-06-2026
 ### Adicionado
 - `QasMapDraw`: adicionado componente de mapa interativo baseado em Leaflet para desenho e edição de polígonos sobre uma imagem de fundo (ex. planta baixa), com suporte a badges, tooltips customizáveis via slot e integração com `v-model`.
 - `QasAppMenu`: adicionado prop `bottomListItems` podendo passar mais botões para o menu além do chat de ajuda.
@@ -5105,3 +5106,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.21]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.20...v3.20.0-beta.21?expand=1
 [3.20.0-beta.22]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.21-alpha.0...v3.20.0-beta.22?expand=1
 [3.20.0-beta.23]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.22...v3.20.0-beta.23?expand=1
+[3.20.0-beta.24]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24-alpha.2...v3.20.0-beta.24?expand=1

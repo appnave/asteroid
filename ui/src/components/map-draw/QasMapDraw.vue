@@ -34,6 +34,8 @@
 </template>
 
 <script setup>
+import QasAlert from '../alert/QasAlert.vue'
+
 import { useEditPolygon } from './_composables/use-edit-polygon.js'
 import { useDrawPolygon } from './_composables/use-draw-polygon.js'
 import { usePolygonTooltip } from './_composables/use-polygon-tooltip.js'
