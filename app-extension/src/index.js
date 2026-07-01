@@ -4,7 +4,7 @@ import ComponentsVite from 'unplugin-vue-components/vite'
 import ComponentsWebpack from 'unplugin-vue-components/webpack'
 import { pathToFileURL } from 'url'
 
-const sourcePath = '~@bildvitta/quasar-app-extension-asteroid/src/'
+const sourcePath = '~@appnave/quasar-app-extension-asteroid/src/'
 const resolve = (...paths) => paths.map(path => sourcePath + path)
 
 function extendQuasar (quasar, api, asteroidConfigFile) {
@@ -76,9 +76,9 @@ export default async function (api) {
   api.compatibleWith('quasar', '^2.0.0')
   api.compatibleWith('date-fns', '^2.3.0')
 
-  const asteroid = 'node_modules/@bildvitta/quasar-ui-asteroid/src/asteroid.js'
-  const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'
-  const asteroidConfig = 'node_modules/@bildvitta/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
+  const asteroid = 'node_modules/@appnave/quasar-ui-asteroid/src/asteroid.js'
+  const asteroidComponents = 'node_modules/@appnave/quasar-ui-asteroid/src/components'
+  const asteroidConfig = 'node_modules/@appnave/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
   const vueRouter = 'node_modules/vue-router/dist/vue-router.esm-bundler.js'
   const quasar = 'node_modules/quasar'
 
@@ -137,22 +137,24 @@ export default async function (api) {
 
   api.compatibleWith('@quasar/app', '^3.10.0 || ^4.0.0')
 
+  /**
+   * Corrige os paths das imagens do Leaflet para que sejam resolvidas corretamente, uma vez que o Leaflet
+   * utiliza imagens que são referenciadas diretamente em seu código, e não é possível alterar isso.
+   * Dessa forma, é necessário configurar os aliases para que o webpack consiga resolver os paths corretamente.
+   */
+  api.chainWebpack(chain => {
+    chain.resolve.alias
+      .set('images/layers.png', api.resolve.app('node_modules/leaflet/dist/images/layers.png'))
+      .set('images/layers-2x.png', api.resolve.app('node_modules/leaflet/dist/images/layers-2x.png'))
+      .set('images/marker-icon.png', api.resolve.app('node_modules/leaflet/dist/images/marker-icon.png'))
+  })
+
   api.extendWebpack(webpack => {
     Object.assign(webpack.resolve.alias, alias)
 
     // Adiciona o plugin de componentes
     webpack.plugins = webpack.plugins || []
     webpack.plugins.push(ComponentsWebpack(unpluginVueComponentsConfig))
-
-    // Resolve o conflito de alias do "images" usado na lib leaflet.
-    webpack.module.rules.push({
-      test: /leaflet[\\/]dist[\\/].*\.css$/,
-      resolve: {
-        alias: {
-          images: api.resolve.app('node_modules/leaflet/dist/images')
-        }
-      }
-    })
   })
 
   api.extendQuasarConf(quasar => extendQuasar(quasar, api, asteroidConfigFile))

@@ -1,6 +1,6 @@
 # Módulo App Extension (`app-extension/`)
 
-O pacote `@bildvitta/quasar-app-extension-asteroid` é a **Quasar App Extension** que integra o Asteroid em qualquer projeto Quasar. Ao instalar via `quasar ext add @bildvitta/asteroid`, ele configura automaticamente boots, aliases, plugins, CSS, e transpilações necessárias.
+O pacote `@bildvitta/quasar-app-extension-asteroid` é a **Quasar App Extension** que integra o Asteroid em qualquer projeto Quasar. Ao instalar via `quasar ext add @appnave/asteroid`, ele configura automaticamente boots, aliases, plugins, CSS, e transpilações necessárias.
 
 ## Estrutura
 

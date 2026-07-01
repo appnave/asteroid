@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { dateTime } from '@bildvitta/quasar-ui-asteroid/src/helpers'
+import { dateTime } from '@appnave/quasar-ui-asteroid/src/helpers'
 
 defineOptions({ name: 'HeaderLeftSlot' })
 

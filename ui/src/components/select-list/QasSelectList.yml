@@ -1,7 +1,7 @@
 type: component
 
 mixins:
-  - '@bildvitta/quasar-ui-asteroid/dist/api/QasSearchBox.json'
+  - '@appnave/quasar-ui-asteroid/dist/api/QasSearchBox.json'
 
 meta:
   desc: Componente para selecionar dentro de uma lista com pesquisa utilizando o `QasSearchBox`.
