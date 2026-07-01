@@ -19,7 +19,18 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
 
 ### Adicionado
-- `QasAlert`: Adicionado nova prop `use-background` para controlar se o alerta usará cor de background com base no status.
+- `QasAlert`: 
+  - Adicionado novo status de `warning`;
+  - Adicionado nova prop `use-background` para aplicar cor de fundo.
+
+### Corrigido
+- `QasField | QasRadio`: Corrigido renderização dos erros no campo do tipo `QasRadio` quando utilizado pelo `QasField` ou em um `QasFormGenerator`. ([#1520](https://github.com/appnave/asteroid/issues/1520))
+
+### Modificado
+- `QasAlert`: Alterado estilo visual dos alertas para não utilizarem `QasBox` e terem cores de background.
+- `Notify`: 
+  - Alterado para os ícones do notify terem a mesma cor do status em questão (`positive` ou `negative`).
+  - Alterado ícone do notify de erro.
 
 ### Removido
 - `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
@@ -29,21 +40,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Adicionado
 - `QasMapDraw`: adicionado componente de mapa interativo baseado em Leaflet para desenho e edição de polígonos sobre uma imagem de fundo (ex. planta baixa), com suporte a badges, tooltips customizáveis via slot e integração com `v-model`.
 - `QasAppMenu`: adicionado prop `bottomListItems` podendo passar mais botões para o menu além do chat de ajuda.
-- `QasAlert`: 
-  - Adicionado novo status de `warning`;
-  - Adicionado nova prop `use-background` para aplicar cor de fundo.
 
 ### Corrigido
 - `QasInfiniteScroll`: Corrigido `scrollTarget` para usar o container do overlay (`.pv-layout-overlay-drawer__content`) quando o componente é utilizado dentro de um overlay navigation. ([#1490](https://github.com/bildvitta/asteroid/issues/1490))
-
-### Modificado
-- `QasAlert`: Alterado estilo visual dos alertas para não utilizarem `QasBox` e terem cores de background.
-- `Notify`: 
-  - Alterado para os ícones do notify terem a mesma cor do status em questão (`positive` ou `negative`).
-  - Alterado ícone do notify de erro.
-
-### Removido
-- `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar.
 
 ## [3.20.0-beta.23] - 08-05-2026
 ### Adicionado
