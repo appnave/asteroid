@@ -22,7 +22,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasAlert`: 
   - Adicionado novo status de `warning`;
   - Adicionado nova prop `use-background` para aplicar cor de fundo.
-  
+
 ### Corrigido
 - `QasField | QasRadio`: Corrigido renderização dos erros no campo do tipo `QasRadio` quando utilizado pelo `QasField` ou em um `QasFormGenerator`. ([#1520](https://github.com/appnave/asteroid/issues/1520))
 
@@ -34,6 +34,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Removido
 - `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
+- `QasNestedFields`: Removido input utilizado para adicionar novo item quando for `inline-actions`, pois agora sempre será um botão. ([#1518](https://github.com/appnave/asteroid/issues/1518))
 
 ## [3.20.0-beta.24] - 16-06-2026
 ### Adicionado
