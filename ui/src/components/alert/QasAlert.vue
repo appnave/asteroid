@@ -133,12 +133,14 @@ const canUseBackground = computed(() => {
 })
 
 const containerClasses = computed(() => {
+  if (!canUseBackground.value) return {}
+
   return {
-    'q-pa-md': canUseBackground.value,
-    'qas-alert--info': canUseBackground.value && props.status === Status.Info,
-    'qas-alert--error': canUseBackground.value && props.status === Status.Error,
-    'qas-alert--success': canUseBackground.value && props.status === Status.Success,
-    'qas-alert--warning': canUseBackground.value && props.status === Status.Warning
+    'q-pa-md': true,
+    'qas-alert--info': props.status === Status.Info,
+    'qas-alert--error': props.status === Status.Error,
+    'qas-alert--success': props.status === Status.Success,
+    'qas-alert--warning': props.status === Status.Warning
   }
 })
 

@@ -16,6 +16,11 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ## BREAKING CHANGES 
+- `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
+
+### Adicionado
+- `QasAlert`: Adicionado nova prop `use-background` para controlar se o alerta usará cor de background com base no status.
+
 ### Removido
 - `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
 
