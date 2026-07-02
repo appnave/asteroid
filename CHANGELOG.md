@@ -22,6 +22,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasAlert`: 
   - Adicionado novo status de `warning`;
   - Adicionado nova prop `use-background` para aplicar cor de fundo.
+- `QasActionsMenu`: Adicionado possibilidade de passar `buttonProps` dentro do `deleteProps`.
 
 ### Corrigido
 - `QasField | QasRadio`: Corrigido renderização dos erros no campo do tipo `QasRadio` quando utilizado pelo `QasField` ou em um `QasFormGenerator`. ([#1520](https://github.com/appnave/asteroid/issues/1520))
