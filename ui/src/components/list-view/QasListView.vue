@@ -223,6 +223,7 @@ export default {
   },
 
   created () {
+    console.log('to linkado')
     this.mx_fetchHandler({ ...this.mx_context, url: this.url }, this.fetchList)
 
     this.setCurrentPage()
