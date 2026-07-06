@@ -38,16 +38,6 @@
               <qas-btn class="q-px-sm" color="primary" data-cy="nested-fields-add-btn" :label="addFirstInputLabel" variant="tertiary" @click="add()" />
             </div>
 
-            <div v-else-if="useInlineActions" class="cursor-pointer items-center q-col-gutter-x-md q-mt-md row" data-cy="nested-fields-add-btn" @click="add()">
-              <div class="col">
-                <qas-input class="disabled no-pointer-events" hide-bottom-space :label="addInputLabel" @focus="add()" />
-              </div>
-
-              <div class="col-auto">
-                <qas-btn color="primary" icon="sym_r_add_circle_outline" variant="tertiary" />
-              </div>
-            </div>
-
             <div v-else class="text-left">
               <qas-btn class="q-px-sm" color="primary" data-cy="nested-fields-add-btn" icon="sym_r_add" :label="addInputLabel" variant="tertiary" @click="add()" />
             </div>
@@ -63,7 +53,6 @@ import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasBox from '../box/QasBox.vue'
 import QasFormGenerator from '../form-generator/QasFormGenerator.vue'
-import QasInput from '../input/QasInput.vue'
 import QasLabel from '../label/QasLabel.vue'
 import QasHeader from '../header/QasHeader.vue'
 
@@ -84,7 +73,6 @@ export default {
     QasBtn,
     QasBox,
     QasFormGenerator,
-    QasInput,
     QasLabel,
     QasHeader,
 

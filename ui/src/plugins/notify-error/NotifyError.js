@@ -9,6 +9,7 @@ export default (message, caption) => {
     classes: 'qas-notification qas-notification--error',
     message,
     type: 'error',
-    icon: 'sym_r_error'
+    icon: 'sym_r_dangerous',
+    iconColor: 'negative'
   })
 }

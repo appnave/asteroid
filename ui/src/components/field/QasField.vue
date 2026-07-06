@@ -165,7 +165,7 @@ const qasRadio = computed(() => {
 
   return {
     is: QasRadio,
-    props: { label, options }
+    props: { label, options, ...errorPayload.value }
   }
 })
 

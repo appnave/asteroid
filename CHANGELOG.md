@@ -18,6 +18,29 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Modificado
 - `api.js`: modificado boot para aceitar parâmetros do tipo `$` vindas da query, para controles internos, como por exemplo URL do back end nos ambientes de preview.
 
+## [3.20.0-beta.25] - 02-07-2026
+## BREAKING CHANGES 
+- `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
+
+### Adicionado
+- `QasAlert`: 
+  - Adicionado novo status de `warning`;
+  - Adicionado nova prop `use-background` para aplicar cor de fundo.
+- `QasActionsMenu`: Adicionado possibilidade de passar `buttonProps` dentro do `deleteProps`.
+
+### Corrigido
+- `QasField | QasRadio`: Corrigido renderização dos erros no campo do tipo `QasRadio` quando utilizado pelo `QasField` ou em um `QasFormGenerator`. ([#1520](https://github.com/appnave/asteroid/issues/1520))
+
+### Modificado
+- `QasAlert`: Alterado estilo visual dos alertas para não utilizarem `QasBox` e terem cores de background.
+- `Notify`: 
+  - Alterado para os ícones do notify terem a mesma cor do status em questão (`positive` ou `negative`).
+  - Alterado ícone do notify de erro.
+
+### Removido
+- `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
+- `QasNestedFields`: Removido input utilizado para adicionar novo item quando for `inline-actions`, pois agora sempre será um botão. ([#1518](https://github.com/appnave/asteroid/issues/1518))
+
 ## [3.20.0-beta.24] - 16-06-2026
 ### Adicionado
 - `QasMapDraw`: adicionado componente de mapa interativo baseado em Leaflet para desenho e edição de polígonos sobre uma imagem de fundo (ex. planta baixa), com suporte a badges, tooltips customizáveis via slot e integração com `v-model`.
@@ -5094,3 +5117,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.22]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.21-alpha.0...v3.20.0-beta.22?expand=1
 [3.20.0-beta.23]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.22...v3.20.0-beta.23?expand=1
 [3.20.0-beta.24]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24-alpha.2...v3.20.0-beta.24?expand=1
+[3.20.0-beta.25]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24...v3.20.0-beta.25?expand=1
