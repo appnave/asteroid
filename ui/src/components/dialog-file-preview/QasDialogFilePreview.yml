@@ -1,0 +1,37 @@
+type: component
+
+meta:
+  desc: Componente de dialog para pré-visualização de arquivos. Suporta imagens (com zoom e pan via panzoom) e PDFs (renderizados via pdfjs-dist, com scroll interno e zoom). Exibe estados de carregamento e erro para ambos os tipos.
+
+props:
+  file-type:
+    desc: Força o modo de exibição do arquivo. Quando definido como "pdf", o componente usa o renderizador de PDF independentemente da extensão da URL.
+    type: String
+    default: ''
+    examples: ["'pdf'"]
+
+  model-value:
+    desc: Model do componente, abre ou fecha o dialog.
+    type: Boolean
+    examples: [v-model="value"]
+    model: true
+
+  title:
+    desc: Título exibido no cabeçalho do dialog.
+    type: String
+    default: ''
+    examples: ["'Visualizar contrato'"]
+
+  url:
+    desc: URL do arquivo a ser pré-visualizado. O tipo é detectado automaticamente pela extensão (.pdf para PDF, demais extensões de imagem para imagem).
+    type: String
+    default: ''
+    examples: ["'https://example.com/contrato.pdf'", "'https://example.com/foto.jpg'"]
+
+events:
+  '@update:model-value -> function (value)':
+    desc: Dispara toda vez que o model é atualizado, também utilizado para v-model.
+    params:
+      value:
+        desc: Novo valor do v-model.
+        type: Boolean
