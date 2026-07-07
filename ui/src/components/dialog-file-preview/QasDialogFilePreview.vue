@@ -119,7 +119,7 @@ const isPdf = computed(() => {
 const dialogProps = computed(() => {
   return {
     title: props.title,
-    size: 'lg',
+    size: 'xl',
     ok: false,
     cancel: false
   }
