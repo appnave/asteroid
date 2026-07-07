@@ -16,7 +16,7 @@ Este componente utiliza [`@panzoom/panzoom`](https://github.com/timmywil/panzoom
 O componente detecta o tipo pelo final da URL:
 
 - **Imagem** → qualquer URL que não termine em `.pdf`
-- **PDF** → URL terminando em `.pdf` ou prop `fileType="pdf"`
+- **PDF** → URL terminando em `.pdf` ou forçando com a prop `fileType="pdf"`
 :::
 
 ## Uso

@@ -30,7 +30,8 @@
           <img
             v-show="!isLoading && !hasError"
             ref="imageRef"
-            class="qas-dialog-file-preview__image rounded-borders"
+            class="block qas-dialog-file-preview__image rounded-borders"
+            fit="contain"
             :src="props.url"
             @error="onImageError"
             @load="onImageLoad"
@@ -39,7 +40,7 @@
 
         <div class="items-center justify-between q-mt-lg row">
           <div>
-            <qas-btn icon="sym_r_download" label="Download" />
+            <qas-btn icon="sym_r_download" label="Download" @click="handleDownload" />
           </div>
 
           <div class="items-center q-gutter-sm row">
@@ -64,6 +65,7 @@
 import Panzoom from '@panzoom/panzoom'
 import * as PDFJs from 'pdfjs-dist'
 import QasDialog from '../dialog/QasDialog.vue'
+import downloadFile from '../../helpers/download-file'
 
 import { computed, ref, watch, onBeforeUnmount } from 'vue'
 
@@ -83,6 +85,11 @@ const props = defineProps({
   url: {
     type: String,
     default: ''
+  },
+
+  customDownload: {
+    type: Function,
+    default: null
   }
 })
 
@@ -214,7 +221,7 @@ function onPreviewRefChange (element, oldElement) {
   // Setup: chamado quando um novo elemento entra no DOM.
   if (element) {
     // Cria a instância do panzoom no <img>, habilitando pan (arrastar) e zoom programático.
-    panzoom.instance = Panzoom(element, { maxScale: MAX_SCALE, minScale: MIN_SCALE, step: 0.1 })
+    panzoom.instance = Panzoom(element, { maxScale: MAX_SCALE, minScale: MIN_SCALE, step: 0.5 })
 
     // Guarda o handler de zoom via scroll — o panzoom expõe esse método pronto para uso como listener.
     panzoom.wheelHandler = panzoom.instance.zoomWithWheel
@@ -239,21 +246,30 @@ async function loadPDF () {
     isLoading.value = true
     hasError.value = false
 
-    // Limpa páginas de uma exibição anterior.
+    // Remove os <canvas> de uma renderização anterior para evitar páginas duplicadas ao reabrir o dialog.
     if (pdfWrapper.value) pdfWrapper.value.innerHTML = ''
 
+    // Aponta o pdfjs para o worker bundlado — necessário para o parse do PDF rodar em background thread.
     PDFJs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).href
 
+    // Baixa e parseia o PDF; retorna um objeto com metadados e acesso às páginas.
     const pdf = await PDFJs.getDocument(props.url).promise
 
+    // Itera cada página do PDF sequencialmente (await dentro do for para não criar canvases fora de ordem).
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      // Obtém o objeto da página com seus operadores de renderização.
       const page = await pdf.getPage(pageNum)
+
+      // Calcula as dimensões reais da página em pixels no scale escolhido (1.5 = boa resolução sem pesar demais).
       const viewport = page.getViewport({ scale: 1.5 })
+
       const canvas = document.createElement('canvas')
 
+      // Define o tamanho do canvas exatamente com as dimensões da página para não distorcer o conteúdo.
       canvas.height = viewport.height
       canvas.width = viewport.width
 
+      // Adiciona o canvas ao wrapper antes de renderizar para que o elemento já exista no DOM durante o render.
       pdfWrapper.value.appendChild(canvas)
 
       await renderPage(canvas, page)
@@ -288,6 +304,12 @@ function handleReset () {
   panzoom.instance?.reset()
   scale.value = MIN_SCALE
 }
+
+function handleDownload () {
+  props.customDownload
+    ? props.customDownload(props.url)
+    : downloadFile({ url: props.url, fileName: props.fileName })
+}
 </script>
 
 <style lang="scss">
@@ -298,9 +320,7 @@ function handleReset () {
 
   &__image {
     cursor: grab;
-    display: block;
     max-width: 100%;
-    object-fit: contain;
     user-select: none;
 
     &:active {

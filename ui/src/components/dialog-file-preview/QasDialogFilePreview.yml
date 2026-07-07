@@ -28,6 +28,12 @@ props:
     default: ''
     examples: ["'https://example.com/contrato.pdf'", "'https://example.com/foto.jpg'"]
 
+  custom-download:
+    desc: Função customizada chamada ao clicar no botão de download, recebendo a URL do arquivo como argumento. Quando não definida, o comportamento padrão de download é utilizado.
+    type: Function
+    default: null
+    examples: ["(url) => minhaFuncaoDeDownload(url)"]
+
 events:
   '@update:model-value -> function (value)':
     desc: Dispara toda vez que o model é atualizado, também utilizado para v-model.
