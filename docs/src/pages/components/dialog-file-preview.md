@@ -8,7 +8,7 @@ Componente de dialog para pré-visualização de arquivos. Suporta imagens e PDF
 
 :::info
 ##### Dependências
-Este componente utiliza [`@panzoom/panzoom`](https://github.com/timmywil/panzoom) e [`pdfjs-dist`](https://github.com/mozilla/pdf.js).
+Este componente utiliza [`@panzoom/panzoom`](https://github.com/timmywil/panzoom).
 :::
 
 :::info
