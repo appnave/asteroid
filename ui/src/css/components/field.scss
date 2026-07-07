@@ -47,6 +47,21 @@
   &__label,
   &--dense &__label {
     @include set-typography($body2);
+    pointer-events: none;
+  }
+
+  // Mantém o label sem interação, mas libera hover/click no qas-tip dentro dele.
+  &__label:has(.qas-tip) {
+    pointer-events: auto;
+
+    > * {
+      pointer-events: none;
+    }
+
+    .qas-tip,
+    .qas-tip * {
+      pointer-events: auto;
+    }
   }
 
   // pega o ícone imediato dos append e prepend, não os do q-chip por exemplo.

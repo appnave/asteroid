@@ -58,6 +58,16 @@
       </q-item>
     </template>
 
+    <template v-if="tip" #label>
+      <div class="items-center no-wrap q-gutter-x-xs row">
+        <div>
+          {{ formattedLabel }}
+        </div>
+
+        <qas-tip v-bind="tipProps" />
+      </div>
+    </template>
+
     <template v-for="(_, name) in $slots" #[name]="context">
       <slot :name="name" v-bind="context || {}" />
     </template>
@@ -134,6 +144,11 @@ export default {
     },
 
     prefix: {
+      type: String,
+      default: ''
+    },
+
+    tip: {
       type: String,
       default: ''
     },
@@ -232,7 +247,9 @@ export default {
     },
 
     hasError () {
-      return this.mx_hasFetchError || this.$attrs.error
+      const hasErrorAttr = this.$attrs.error === '' || !!this.$attrs.error
+
+      return this.mx_hasFetchError || hasErrorAttr
     },
 
     hasLoading () {
@@ -321,6 +338,14 @@ export default {
 
     hasIcon () {
       return this.isSearchable || !!this.icon
+    },
+
+    tipProps () {
+      return {
+        text: this.tip,
+
+        ...(this.hasError && { color: 'negative' })
+      }
     }
   },
 
