@@ -6,29 +6,28 @@
   >
     <template #description>
       <div class="col column no-wrap">
-        <template v-if="isPdf">
-          <div v-if="isLoading" class="flex flex-center q-py-xl">
-            <q-spinner color="grey" size="3em" />
-          </div>
+        <!-- Error message -->
+        <div v-if="hasError" class="flex flex-center q-py-xl">
+          <span class="text-body1 text-grey-7">{{ feedbackMessage }}</span>
+        </div>
 
-          <div v-show="!isLoading">
-            <div v-if="!hasError" ref="pdfWrapper" class="column full-width no-wrap overflow-auto q-gutter-y-sm qas-dialog-file-preview__pdf-container" />
+        <!-- PDF -->
+        <div v-else-if="isPdf" class="col flex flex-center">
+          <q-spinner v-if="isLoading" color="grey" size="3em" />
 
-            <div v-else class="flex flex-center q-py-xl text-body1 text-grey-7">
-              Erro ao carregar PDF.
-            </div>
-          </div>
-        </template>
+          <div
+            v-show="!isLoading"
+            ref="pdfWrapper"
+            class="column full-width no-wrap overflow-auto q-gutter-y-sm qas-dialog-file-preview__pdf-container"
+          />
+        </div>
 
+        <!-- Image -->
         <div v-else class="col flex flex-center overflow-hidden">
           <q-spinner v-if="isLoading" color="grey" size="3em" />
 
-          <div v-else-if="hasError" class="text-body1 text-grey-7">
-            Erro ao carregar imagem.
-          </div>
-
           <img
-            v-show="!isLoading && !hasError"
+            v-show="!isLoading"
             ref="imageRef"
             class="block qas-dialog-file-preview__image rounded-borders"
             fit="contain"
@@ -38,6 +37,7 @@
           >
         </div>
 
+        <!-- Controls (zoom, download) -->
         <div class="items-center justify-between q-mt-lg row">
           <div>
             <qas-btn icon="sym_r_download" label="Download" @click="handleDownload" />
@@ -150,10 +150,12 @@ const zoomButtonsProps = computed(() => {
       size: 'lg',
       variant: 'tertiary',
       color: 'grey-10',
-      onClick: handleReset
+      onClick: resetZoom
     }
   }
 })
+
+const feedbackMessage = computed(() => isPdf.value ? 'Erro ao carregar PDF.' : 'Erro ao carregar imagem.')
 
 const sliderProps = computed(() => {
   return {
@@ -179,9 +181,8 @@ watch(pdfWrapper, onPreviewRefChange)
 watch(model, async value => {
   if (!value) return
 
-  handleReset()
-  hasError.value = false
-  isLoading.value = !isPdf.value
+  resetZoom()
+  isLoading.value = true
 
   if (isPdf.value) await loadPDF()
 })
@@ -243,7 +244,6 @@ async function loadPDF () {
   if (!props.url) return
 
   try {
-    isLoading.value = true
     hasError.value = false
 
     // Remove os <canvas> de uma renderização anterior para evitar páginas duplicadas ao reabrir o dialog.
@@ -300,7 +300,7 @@ function handleSliderZoom (value) {
   panzoom.instance?.zoom(value / 100)
 }
 
-function handleReset () {
+function resetZoom () {
   panzoom.instance?.reset()
   scale.value = MIN_SCALE
 }
