@@ -6,35 +6,32 @@
   >
     <template #description>
       <div class="col column no-wrap">
-        <!-- Error message -->
-        <div v-if="hasError" class="flex flex-center q-py-xl">
-          <span class="text-body1 text-grey-7">{{ feedbackMessage }}</span>
-        </div>
-
         <!-- PDF -->
-        <div v-else-if="isPdf" class="col flex flex-center">
-          <q-spinner v-if="isLoading" color="grey" size="3em" />
-
-          <div
-            v-show="!isLoading"
-            ref="pdfWrapper"
-            class="column full-width no-wrap overflow-auto q-gutter-y-sm qas-dialog-file-preview__pdf-container"
-          />
-        </div>
+        <iframe
+          v-if="isPdf"
+          class="qas-dialog-file-preview__pdf-iframe"
+          :src="props.url"
+        />
 
         <!-- Image -->
         <div v-else class="col flex flex-center overflow-hidden">
-          <q-spinner v-if="isLoading" color="grey" size="3em" />
+          <div v-if="hasError" class="flex flex-center q-py-xl">
+            <span class="text-body1 text-grey-7">Erro ao carregar imagem.</span>
+          </div>
 
-          <img
-            v-show="!isLoading"
-            ref="imageRef"
-            class="block qas-dialog-file-preview__image rounded-borders"
-            fit="contain"
-            :src="props.url"
-            @error="onImageError"
-            @load="onImageLoad"
-          >
+          <template v-else>
+            <q-spinner v-if="isLoading" color="grey" size="3em" />
+
+            <img
+              v-show="!isLoading"
+              ref="imageRef"
+              class="block qas-dialog-file-preview__image rounded-borders"
+              fit="contain"
+              :src="props.url"
+              @error="onImageError"
+              @load="onImageLoad"
+            >
+          </template>
         </div>
 
         <!-- Controls (zoom, download) -->
@@ -43,7 +40,7 @@
             <qas-btn icon="sym_r_download" label="Download" @click="handleDownload" />
           </div>
 
-          <div class="items-center q-gutter-sm row">
+          <div v-if="!isPdf" class="items-center q-gutter-sm row">
             <qas-btn v-bind="zoomButtonsProps.zoomOut" />
 
             <q-slider
@@ -63,7 +60,6 @@
 
 <script setup>
 import Panzoom from '@panzoom/panzoom'
-import * as PDFJs from 'pdfjs-dist'
 import QasDialog from '../dialog/QasDialog.vue'
 import downloadFile from '../../helpers/download-file'
 
@@ -98,7 +94,6 @@ const model = defineModel({ type: Boolean })
 
 // refs
 const imageRef = ref(null)
-const pdfWrapper = ref(null)
 const isLoading = ref(false)
 const hasError = ref(false)
 const scale = ref(1)
@@ -155,8 +150,6 @@ const zoomButtonsProps = computed(() => {
   }
 })
 
-const feedbackMessage = computed(() => isPdf.value ? 'Erro ao carregar PDF.' : 'Erro ao carregar imagem.')
-
 const sliderProps = computed(() => {
   return {
     color: 'primary',
@@ -169,27 +162,17 @@ const sliderProps = computed(() => {
 })
 
 // hooks
-/**
- * Adiciona e remove o listener de zoom com o scroll do mouse.
- */
 watch(imageRef, onPreviewRefChange)
-watch(pdfWrapper, onPreviewRefChange)
 
-/**
- * Reseta o zoom e carrega o PDF quando o dialog é aberto.
- */
-watch(model, async value => {
-  if (!value) return
+watch(model, value => {
+  if (!value || isPdf.value) return
 
   resetZoom()
   isLoading.value = true
-
-  if (isPdf.value) await loadPDF()
 })
 
 onBeforeUnmount(() => {
-  const activeRef = isPdf.value ? pdfWrapper.value : imageRef.value
-  activeRef?.parentElement?.removeEventListener('wheel', panzoom.wheelHandler)
+  imageRef.value?.parentElement?.removeEventListener('wheel', panzoom.wheelHandler)
   panzoom.instance?.destroy()
 })
 
@@ -240,54 +223,6 @@ function onPreviewRefChange (element, oldElement) {
   }
 }
 
-async function loadPDF () {
-  if (!props.url) return
-
-  try {
-    hasError.value = false
-
-    // Remove os <canvas> de uma renderização anterior para evitar páginas duplicadas ao reabrir o dialog.
-    if (pdfWrapper.value) pdfWrapper.value.innerHTML = ''
-
-    // Aponta o pdfjs para o worker bundlado — necessário para o parse do PDF rodar em background thread.
-    PDFJs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.min.mjs', import.meta.url).href
-
-    // Baixa e parseia o PDF; retorna um objeto com metadados e acesso às páginas.
-    const pdf = await PDFJs.getDocument(props.url).promise
-
-    // Itera cada página do PDF sequencialmente (await dentro do for para não criar canvases fora de ordem).
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      // Obtém o objeto da página com seus operadores de renderização.
-      const page = await pdf.getPage(pageNum)
-
-      // Calcula as dimensões reais da página em pixels no scale escolhido (1.5 = boa resolução sem pesar demais).
-      const viewport = page.getViewport({ scale: 1.5 })
-
-      const canvas = document.createElement('canvas')
-
-      // Define o tamanho do canvas exatamente com as dimensões da página para não distorcer o conteúdo.
-      canvas.height = viewport.height
-      canvas.width = viewport.width
-
-      // Adiciona o canvas ao wrapper antes de renderizar para que o elemento já exista no DOM durante o render.
-      pdfWrapper.value.appendChild(canvas)
-
-      await renderPage(canvas, page)
-    }
-  } catch {
-    hasError.value = true
-  } finally {
-    isLoading.value = false
-  }
-}
-
-async function renderPage (canvas, page) {
-  await page.render({
-    canvasContext: canvas.getContext('2d'),
-    viewport: page.getViewport({ scale: 1.5 })
-  }).promise
-}
-
 function zoomIn () {
   panzoom.instance?.zoomIn()
 }
@@ -314,8 +249,10 @@ function handleDownload () {
 
 <style lang="scss">
 .qas-dialog-file-preview {
-  &__pdf-container {
-    max-height: 700px;
+  &__pdf-iframe {
+    border: none;
+    height: 700px;
+    width: 100%;
   }
 
   &__image {

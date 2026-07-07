@@ -1,5 +1,7 @@
 <template>
   <div class="container q-py-lg">
+    <qas-input v-model="imageUrl" class="q-mb-md" label="link da imagem" />
+
     <qas-btn label="Visualizar imagem" @click="toggle" />
 
     <qas-dialog-file-preview
@@ -10,19 +12,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 defineOptions({ name: 'Basic' })
 
 // refs
 const showDialog = ref(false)
+const imageUrl = ref('https://placehold.co/1000x600')
 
-// consts
-const previewProps = {
-  title: 'Visualizar imagem',
-  url: 'https://placehold.co/1000x600',
-  fileName: 'imagem-exemplo'
-}
+// computeds
+const previewProps = computed(() => {
+  return {
+    title: 'Visualizar imagem',
+    url: imageUrl.value,
+    fileName: 'imagem-exemplo'
+  }
+})
 
 // functions
 function toggle () {
