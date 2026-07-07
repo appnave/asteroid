@@ -20,7 +20,7 @@ const showDialog = ref(false)
 // consts
 const previewProps = {
   title: 'Visualizar imagem',
-  url: 'https://placehold.net/600x400.png',
+  url: 'https://placehold.co/1000x600',
   fileName: 'imagem-exemplo'
 }
 
