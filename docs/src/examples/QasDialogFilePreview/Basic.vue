@@ -20,7 +20,7 @@ const showDialog = ref(false)
 // consts
 const previewProps = {
   title: 'Visualizar imagem',
-  url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgOCyW9n3Tfu3QNbQUSByqsIvNxOVgXk66D_fAz1Zu2A3yVrHD6wUOlgc9&s=10',
+  url: 'https://placehold.net/600x400.png',
   fileName: 'imagem-exemplo'
 }
 
