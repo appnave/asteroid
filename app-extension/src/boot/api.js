@@ -58,6 +58,8 @@ export default async ({ app, router }) => {
       * são utilizados apenas para controlar a chave do back end por exemplo.
       */
     config.params = Object.fromEntries(Object.entries(config.params).filter(([key]) => !key.startsWith('$')))
+
+    return config
   })
 
   api.defaults.timeout = asteroidConfig.api.serverTimeout
