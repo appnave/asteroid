@@ -68,6 +68,11 @@ import { computed, ref, watch, onBeforeUnmount } from 'vue'
 defineOptions({ name: 'QasDialogFilePreview' })
 
 const props = defineProps({
+  customDownload: {
+    type: Function,
+    default: null
+  },
+
   fileType: {
     type: String,
     default: ''
@@ -81,11 +86,6 @@ const props = defineProps({
   url: {
     type: String,
     default: ''
-  },
-
-  customDownload: {
-    type: Function,
-    default: null
   }
 })
 
@@ -157,19 +157,14 @@ const sliderProps = computed(() => {
     min: MIN_SCALE * 100,
     modelValue: scale.value * 100,
     step: 1,
-    'onUpdate:modelValue': handleSliderZoom
+    'onUpdate:modelValue': onZoomChange
   }
 })
 
-// hooks
+// watchers
 watch(imageRef, onPreviewRefChange)
 
-watch(model, value => {
-  if (!value || isPdf.value) return
-
-  resetZoom()
-  isLoading.value = true
-})
+watch(model, onDialogOpen)
 
 onBeforeUnmount(() => {
   imageRef.value?.parentElement?.removeEventListener('wheel', panzoom.wheelHandler)
@@ -189,13 +184,9 @@ function onImageError () {
 function onPreviewRefChange (element, oldElement) {
   // Cleanup: chamado quando o elemento anterior sai do DOM (ex: dialog fechado ou src trocado).
   if (oldElement) {
-    // Remove o listener de zoom via scroll do mouse no container pai para não vazar memória.
     oldElement.parentElement?.removeEventListener('wheel', panzoom.wheelHandler)
 
-    // Destrói a instância do panzoom, removendo todos os event listeners internos que ele criou.
     panzoom.instance?.destroy()
-
-    // Limpa a referência para evitar que o objeto fique preso na memória após destruído.
     panzoom.instance = null
 
     // Volta o scale para o valor inicial para que o slider fique na posição correta na próxima abertura.
@@ -204,16 +195,11 @@ function onPreviewRefChange (element, oldElement) {
 
   // Setup: chamado quando um novo elemento entra no DOM.
   if (element) {
-    // Cria a instância do panzoom no <img>, habilitando pan (arrastar) e zoom programático.
     panzoom.instance = Panzoom(element, { maxScale: MAX_SCALE, minScale: MIN_SCALE, step: 0.5 })
 
     // Guarda o handler de zoom via scroll — o panzoom expõe esse método pronto para uso como listener.
     panzoom.wheelHandler = panzoom.instance.zoomWithWheel
 
-    /**
-     * Registra o zoom via scroll no container pai (não no <img>) porque o scroll no próprio <img>
-     * é cancelado pelo panzoom.
-     */
     element.parentElement.addEventListener('wheel', panzoom.wheelHandler)
 
     // Escuta o evento nativo do panzoom que dispara a cada mudança de escala para manter o slider sincronizado.
@@ -221,6 +207,13 @@ function onPreviewRefChange (element, oldElement) {
       scale.value = detail.scale
     })
   }
+}
+
+function onDialogOpen (value) {
+  if (!value || isPdf.value) return
+
+  resetZoom()
+  isLoading.value = true
 }
 
 function zoomIn () {
@@ -231,7 +224,7 @@ function zoomOut () {
   panzoom.instance?.zoomOut()
 }
 
-function handleSliderZoom (value) {
+function onZoomChange (value) {
   panzoom.instance?.zoom(value / 100)
 }
 
