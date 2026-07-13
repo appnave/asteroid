@@ -2,9 +2,6 @@ import { camelizeKeys, decamelizeKeys } from 'humps'
 
 import asteroidConfig from 'asteroid-config'
 
-/**
- * @private
- */
 function getBaseURL () {
   // Permite sobrescrever a URL base da API via query string, útil para ambiente de preview.
   const previewURL = new URLSearchParams(window.location.search).get('$base')
@@ -41,9 +38,9 @@ export default async ({ app, router }) => {
      * Valida se há algum parâmetro de query string iniciado com $ que esteja presente
      * na rota de origem (from) mas ausente na rota de destino (to).
      */
-    const hasMissing = Object.keys(dollarParams).some(key => !(key in to.query))
+    const hasMissingDollarParams = Object.keys(dollarParams).some(key => !(key in to.query))
 
-    if (hasMissing) {
+    if (hasMissingDollarParams) {
       next({ ...to, query: { ...dollarParams, ...to.query } })
     } else {
       next()
