@@ -4,6 +4,10 @@ meta:
   desc: Componente wrapper do QBadge/QChip do quasar.
 
 props:
+  icon:
+    desc: Ícone que terá o badge, sendo exibida APENAS quando use-subtle estiver habilitado.
+    type: String
+
   color:
     desc: Cor da badge.
     default: light-blue-2
@@ -36,6 +40,11 @@ props:
   model-value:
     desc: Model do componente (usar junto a propriedade "removable").
     default: true
+    type: Boolean
+
+  use-subtle:
+    desc: Habilita o estilo sutil do badge/chip com opacidade reduzida.
+    default: false
     type: Boolean
 
 slots:

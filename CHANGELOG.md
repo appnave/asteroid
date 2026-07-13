@@ -18,6 +18,11 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Modificado
 - `api.js`: modificado boot para aceitar parâmetros do tipo `$` vindas da query, para controles internos, como por exemplo URL do back end nos ambientes de preview.
 
+### Adicionado
+- `QasBadge`: 
+  - Adicionado nova prop `use-subtle` para aplicar background sútil e com opacidade.
+  - Adicionado nova prop `icon` para ícone a esquerda do texto (apenas quando `use-subtle` ativado).
+
 ## [3.20.0-beta.25] - 02-07-2026
 ## BREAKING CHANGES 
 - `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
