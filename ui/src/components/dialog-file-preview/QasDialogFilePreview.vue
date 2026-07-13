@@ -209,8 +209,8 @@ function onPreviewRefChange (element, oldElement) {
   }
 }
 
-function onDialogOpen (value) {
-  if (!value || isPdf.value) return
+function onDialogOpen (isOpen) {
+  if (!isOpen || isPdf.value) return
 
   resetZoom()
   isLoading.value = true
