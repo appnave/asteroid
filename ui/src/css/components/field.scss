@@ -47,6 +47,7 @@
   &__label,
   &--dense &__label {
     @include set-typography($body2);
+
     pointer-events: none;
   }
 

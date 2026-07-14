@@ -76,6 +76,7 @@
 
 <script>
 import QasBadge from '../badge/QasBadge.vue'
+import QasTip from '../tip/QasTip.vue'
 
 import { getRequiredLabel } from '../../helpers'
 import { searchFilterMixin } from '../../mixins'
@@ -88,7 +89,8 @@ export default {
   name: 'QasSelect',
 
   components: {
-    QasBadge
+    QasBadge,
+    QasTip
   },
 
   mixins: [searchFilterMixin],
