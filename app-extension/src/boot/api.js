@@ -2,12 +2,12 @@ import { camelizeKeys, decamelizeKeys } from 'humps'
 
 import asteroidConfig from 'asteroid-config'
 
-function getBaseURL () {
+function getBaseURL (isProduction) {
   // Permite sobrescrever a URL base da API via query string, útil para ambiente de preview.
   const previewURL = new URLSearchParams(window.location.search).get('$base')
 
   // TODO: Validar variavel de ambiente se é produção.
-  if (previewURL) {
+  if (previewURL && !isProduction) {
     try {
       const { hostname, protocol } = new URL(previewURL)
 
@@ -22,42 +22,45 @@ function getBaseURL () {
 
 export default async ({ app, router }) => {
   const api = app.config.globalProperties.$axios
+  const isProduction = process.env.ENVIRONMENT === 'production'
 
   // Defaults
-  api.defaults.baseURL = getBaseURL()
+  api.defaults.baseURL = getBaseURL(isProduction)
 
-  /**
-   * Permite que parâmetros de query string iniciados com $ sejam propagados para todas as rotas,
-   * útil para ambiente de preview.
-   */
-  router.beforeEach((to, from, next) => {
-    // Extrai os parâmetros de query string iniciados com $ da rota de origem (from).
-    const dollarParams = Object.fromEntries(Object.entries(from.query).filter(([key]) => key.startsWith('$')))
-
+  if (!isProduction) {
     /**
-     * Valida se há algum parâmetro de query string iniciado com $ que esteja presente
-     * na rota de origem (from) mas ausente na rota de destino (to).
+     * Permite que parâmetros de query string iniciados com $ sejam propagados para todas as rotas,
+     * útil para ambiente de preview.
      */
-    const hasMissingDollarParams = Object.keys(dollarParams).some(key => !(key in to.query))
+    router.beforeEach((to, from, next) => {
+      // Extrai os parâmetros de query string iniciados com $ da rota de origem (from).
+      const dollarParams = Object.fromEntries(Object.entries(from.query).filter(([key]) => key.startsWith('$')))
 
-    if (hasMissingDollarParams) {
-      next({ ...to, query: { ...dollarParams, ...to.query } })
-    } else {
-      next()
-    }
-  })
+      /**
+       * Valida se há algum parâmetro de query string iniciado com $ que esteja presente
+       * na rota de origem (from) mas ausente na rota de destino (to).
+       */
+      const hasMissingDollarParams = Object.keys(dollarParams).some(key => !(key in to.query))
 
-  api.interceptors.request.use(config => {
-    if (!config.params) return config
+      if (hasMissingDollarParams) {
+        next({ ...to, query: { ...dollarParams, ...to.query } })
+      } else {
+        next()
+      }
+    })
 
-    /**
-      * Remove os parâmetros de query string iniciados com $ antes de enviar a requisição para a API, pois eles
-      * são utilizados apenas para controlar a chave do back end por exemplo.
-      */
-    config.params = Object.fromEntries(Object.entries(config.params).filter(([key]) => !key.startsWith('$')))
+    api.interceptors.request.use(config => {
+      if (!config.params) return config
 
-    return config
-  })
+      /**
+        * Remove os parâmetros de query string iniciados com $ antes de enviar a requisição para a API, pois eles
+        * são utilizados apenas para controlar a chave do back end por exemplo.
+        */
+      config.params = Object.fromEntries(Object.entries(config.params).filter(([key]) => !key.startsWith('$')))
+
+      return config
+    })
+  }
 
   api.defaults.timeout = asteroidConfig.api.serverTimeout
 
