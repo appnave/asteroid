@@ -47,7 +47,7 @@
     "autonumeric": "4.10.9",
     "axios": "1.4.0",
     "date-fns": "^2.30.0",
-    "pdfjs-dist": "4.3.136",
+    "pdfjs-dist": "4.10.38",
     "debug": "^4.3.4",
     "fuse.js": "^6.6.2",
     "gleap": "^14.2.7",
