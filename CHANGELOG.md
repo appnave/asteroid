@@ -20,6 +20,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - Adicionado nova prop `use-subtle` para aplicar background sútil e com opacidade.
   - Adicionado nova prop `icon` para ícone a esquerda do texto (apenas quando `use-subtle` ativado).
 - `QasCheckbox`, `QasInput`, `QasRadio`, `QasSelect` e `QasToggle`: adicionada nova prop `tip` para exibir conteúdo de ajuda ao lado da label.
+- `QasTransferList`: Adicionado novo componente visual para exibir itens entre duas colunas (origem e destino).
 
 ## [3.20.0-beta.25] - 02-07-2026
 ## BREAKING CHANGES 
