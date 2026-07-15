@@ -59,9 +59,11 @@
 </template>
 
 <script setup>
-import Panzoom from '@panzoom/panzoom'
 import QasDialog from '../dialog/QasDialog.vue'
 import downloadFile from '../../helpers/download-file'
+import QasBtn from '../btn/QasBtn.vue'
+
+import Panzoom from '@panzoom/panzoom'
 
 import { computed, ref, watch, onBeforeUnmount } from 'vue'
 
