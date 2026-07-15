@@ -146,6 +146,10 @@ module.exports = [
         path: '/components/dialog'
       },
       {
+        name: 'DialogFilePreview',
+        path: '/components/dialog-file-preview'
+      },
+      {
         name: 'DialogRouter',
         path: '/components/dialog-router'
       },

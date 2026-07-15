@@ -16,6 +16,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### Adicionado
+- `QasDialogFilePreview`: adicionado o componente de dialog para visualizar imagens ou pdfs, com funcionalidade de download e zoom.
 - `QasBadge`: 
   - Adicionado nova prop `use-subtle` para aplicar background sútil e com opacidade.
   - Adicionado nova prop `icon` para ícone a esquerda do texto (apenas quando `use-subtle` ativado).

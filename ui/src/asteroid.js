@@ -37,6 +37,7 @@ export const QasDebugger = defineAsyncComponent(() => import('./components/debug
 export const QasDelete = defineAsyncComponent(() => import('./components/delete/QasDelete.vue'))
 export const QasSelectFilter = defineAsyncComponent(() => import('./components/select-filter/QasSelectFilter.vue'))
 export const QasDialog = defineAsyncComponent(() => import('./components/dialog/QasDialog.vue'))
+export const QasDialogFilePreview = defineAsyncComponent(() => import('./components/dialog-file-preview/QasDialogFilePreview.vue'))
 export const QasDialogRouter = defineAsyncComponent(() => import('./components/dialog-router/QasDialogRouter.vue'))
 export const QasDrawer = defineAsyncComponent(() => import('./components/drawer/QasDrawer.vue'))
 export const QasEmptyResultText = defineAsyncComponent(() => import('./components/empty-result-text/QasEmptyResultText.vue'))
