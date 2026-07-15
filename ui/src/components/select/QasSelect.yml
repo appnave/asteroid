@@ -102,6 +102,11 @@ props:
     default: false
     type: Boolean
 
+  tip:
+    desc: Texto exibido no tip ao lado da label.
+    default: ''
+    type: String
+
   value-key:
     desc: O componente internamente espera receber na propriedade "options" um array de objeto contendo "label" e "value", caso o seu objeto não tenha "value" mas um "uuid" por exemplo, você pode definir esta prop "label-value" como "uuid".
     type: String
