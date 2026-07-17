@@ -22,6 +22,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - Adicionado nova prop `icon` para ícone a esquerda do texto (apenas quando `use-subtle` ativado).
 - `QasCheckbox`, `QasInput`, `QasRadio`, `QasSelect` e `QasToggle`: adicionada nova prop `tip` para exibir conteúdo de ajuda ao lado da label.
 
+### Corrigido
+- `QasMapDraw`: Corrigido problema do mapa não funcionar em produtos vite.
+
 ## [3.20.0-beta.25] - 02-07-2026
 ## BREAKING CHANGES 
 - `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.

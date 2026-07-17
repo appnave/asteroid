@@ -123,7 +123,8 @@ export default async function (api) {
         'hammerjs',
         'lodash-es',
         'date-fns',
-        'date-fns/locale'
+        'date-fns/locale',
+        'leaflet'
       ])
 
       viteConf.plugins = viteConf.plugins || []
