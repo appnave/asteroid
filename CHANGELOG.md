@@ -93,6 +93,54 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   **ESLint (`eslint/package.json`)**
   - `eslint` ^8.8.0 → ^8.57.1
   - `vue-eslint-parser` ^8.2.0 → ^8.3.0
+### Adicionado
+- `QasDialogFilePreview`: adicionado o componente de dialog para visualizar imagens ou pdfs, com funcionalidade de download e zoom.
+- `QasBadge`: 
+  - Adicionado nova prop `use-subtle` para aplicar background sútil e com opacidade.
+  - Adicionado nova prop `icon` para ícone a esquerda do texto (apenas quando `use-subtle` ativado).
+- `QasCheckbox`, `QasInput`, `QasRadio`, `QasSelect` e `QasToggle`: adicionada nova prop `tip` para exibir conteúdo de ajuda ao lado da label.
+
+## [3.20.0-beta.25] - 02-07-2026
+## BREAKING CHANGES 
+- `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
+
+### Adicionado
+- `QasAlert`: 
+  - Adicionado novo status de `warning`;
+  - Adicionado nova prop `use-background` para aplicar cor de fundo.
+- `QasActionsMenu`: Adicionado possibilidade de passar `buttonProps` dentro do `deleteProps`.
+
+### Corrigido
+- `QasField | QasRadio`: Corrigido renderização dos erros no campo do tipo `QasRadio` quando utilizado pelo `QasField` ou em um `QasFormGenerator`. ([#1520](https://github.com/appnave/asteroid/issues/1520))
+
+### Modificado
+- `QasAlert`: Alterado estilo visual dos alertas para não utilizarem `QasBox` e terem cores de background.
+- `Notify`: 
+  - Alterado para os ícones do notify terem a mesma cor do status em questão (`positive` ou `negative`).
+  - Alterado ícone do notify de erro.
+
+### Removido
+- `QasAlert`: Removido prop `use-box`, sendo que a prop `use-background` entrou no lugar, gerando breaking change visual, necessário validar telas na qual utilizam o alert.
+- `QasNestedFields`: Removido input utilizado para adicionar novo item quando for `inline-actions`, pois agora sempre será um botão. ([#1518](https://github.com/appnave/asteroid/issues/1518))
+
+## [3.20.0-beta.24] - 16-06-2026
+### Adicionado
+- `QasMapDraw`: adicionado componente de mapa interativo baseado em Leaflet para desenho e edição de polígonos sobre uma imagem de fundo (ex. planta baixa), com suporte a badges, tooltips customizáveis via slot e integração com `v-model`.
+- `QasAppMenu`: adicionado prop `bottomListItems` podendo passar mais botões para o menu além do chat de ajuda.
+
+### Corrigido
+- `QasInfiniteScroll`: Corrigido `scrollTarget` para usar o container do overlay (`.pv-layout-overlay-drawer__content`) quando o componente é utilizado dentro de um overlay navigation. ([#1490](https://github.com/bildvitta/asteroid/issues/1490))
+
+## [3.20.0-beta.23] - 08-05-2026
+### Adicionado
+- `QasDialog` adicionado validação da prop `disableCloseButton` para desabilitar o botão, onde por padrão, caso tenha uma prop `loading` para o `ok` do dialog, será desabilitado quando o loading estiver ativo.
+
+### Corrigido
+- `QasBoardGenerator`: corrigido o uso do `QasDialog` interno, onde deve ser passado um title, pois é uma prop obrigatória.
+
+## [3.20.0-beta.22] - 06-05-2026
+### Modificado
+- `QasCard`: Modificado internamente para que consiga repassar outras props ou eventos pelo `expansionProps`.
 
 ## [3.20.0-beta.21] - 27-04-2026
 ### Corrigido
@@ -219,12 +267,6 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - CSS: adicionadas classes utilitárias `text-magic-ai`, `bg-magic-ai` e `border-magic-ai` para aplicação do gradiente de magic AI em textos, fundos e bordas respectivamente.
 - `QasDateTimeInput`: adicionado comportamento de setar hora automaticamente após digitar a data. ([#1411](https://github.com/bildvitta/asteroid/issues/1411))
 
-### Modificado
-- `QasListView`: removida lógica que acionava delete automático quando `useStore: false` e `entity` estava definido; o comportamento agora é controlado exclusivamente pelas props `useAutoHandleOnDelete` e `useAutoRefetchOnDelete`.
-- `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
-- `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
-- `filters.js`: modificado label da função booleanLabel para começarem com letras maiúsculas.
-
 ### Corrigido
 - `QasSelect`: corrigido comportamento do texto do input do select sobrepor o item selecionado ao apertar a tecla tab.
 - `QasSelectListDialog`: corrigido mutação direta da prop `options` causada por `filteredOptions` ser inicializado com a mesma referência do array original. Corrigido usando `ref([...props.options])` para garantir uma cópia independente.
@@ -232,6 +274,12 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasStepper`:
   - Corrigido cor da linha quando da step anterior quando uma outra step é finalizada. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
   - Corrigido tamanho das linhas centrais setando proporções na primeira e última linha. ([#1105](https://github.com/bildvitta/asteroid/issues/1105))
+
+### Modificado
+- `QasListView`: removida lógica que acionava delete automático quando `useStore: false` e `entity` estava definido; o comportamento agora é controlado exclusivamente pelas props `useAutoHandleOnDelete` e `useAutoRefetchOnDelete`.
+- `search-filter.js`: modificado lógica dos campos dependentes, quando o campo estiver desabilitado, só o campo só será limpo, não batera a API. ([#1453](https://github.com/bildvitta/asteroid/issues/1453))
+- `QasDateTimeInput`: modificado comportamento do model, ao sair do campo e a data for inválida ou incompleta, vamos limpar o model, mas iremos continuar exibindo o valor incorreto no campo com o aviso de erro.
+- `filters.js`: modificado label da função booleanLabel para começarem com letras maiúsculas.
 
 ### Removido
 - `QasBoardGenerator`: 
@@ -5148,3 +5196,7 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.19]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.18...v3.20.0-beta.19?expand=1
 [3.20.0-beta.20]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.19...v3.20.0-beta.20?expand=1
 [3.20.0-beta.21]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.20...v3.20.0-beta.21?expand=1
+[3.20.0-beta.22]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.21-alpha.0...v3.20.0-beta.22?expand=1
+[3.20.0-beta.23]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.22...v3.20.0-beta.23?expand=1
+[3.20.0-beta.24]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24-alpha.2...v3.20.0-beta.24?expand=1
+[3.20.0-beta.25]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24...v3.20.0-beta.25?expand=1

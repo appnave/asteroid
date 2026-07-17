@@ -5,7 +5,7 @@ title: Usando
 Para a instalação do Asteroid é bem simples, em sua aplicação `Quasar` abra o terminal na raiz do projeto e digite:
 
 ```bash
-quasar ext add @bildvitta/asteroid
+quasar ext add @appnave/asteroid
 ```
 
 Este comando além de instalar o Asteroid, também vai criar os arquivos `quasar.variables.scss` e `asteroid.config.js`, caso já tenha instalado o asteroid no projeto, pode criar manualmente estes arquivos na raiz do projeto.
@@ -15,7 +15,7 @@ Este comando além de instalar o Asteroid, também vai criar os arquivos `quasar
 // Quasar SCSS (& Sass) Variables - Asteroid
 // --------------------------------------------------
 // NÃO MODIFIQUE ESTE ARQUIVO COM AS CONFIGURAÇÕES DO ASTEROID PRÉ DEFINIDAS!
-@import '~@bildvitta/quasar-ui-asteroid/src/index';
+@import '~@appnave/quasar-ui-asteroid/src/index';
 
 $primary   : #0f53af;
 $secondary : #1565C0;

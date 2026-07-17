@@ -15,6 +15,11 @@ props:
     type: String
     required: true
 
+  bottom-list-items:
+    desc: Lista de itens para renderizar na parte inferior do menu, como por exemplo o botão do chat de ajuda.
+    type: Array
+    default: () => []
+
   home-route:
     desc: Rota do item de "home/inicio".
     type: [String, Object]

@@ -146,6 +146,10 @@ export default [
         path: '/components/dialog'
       },
       {
+        name: 'DialogFilePreview',
+        path: '/components/dialog-file-preview'
+      },
+      {
         name: 'DialogRouter',
         path: '/components/dialog-router'
       },
@@ -236,6 +240,10 @@ export default [
       {
         name: 'Map',
         path: '/components/map'
+      },
+      {
+        name: 'MapDraw',
+        path: '/components/map-draw'
       },
       {
         name: 'NestedFields',

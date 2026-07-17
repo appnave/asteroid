@@ -13,7 +13,7 @@ function installNextUi ({ execaSync, ora, nextVersion, packages, retry = false }
 
     // atualiza o package.json do app-extension com a nova versão do "ui"
     const nextDependencies = packageData.dependencies
-    nextDependencies['@bildvitta/quasar-ui-asteroid'] = nextVersion
+    nextDependencies['@appnave/quasar-ui-asteroid'] = nextVersion
 
     jetpack.write(resolvedPackagePath, {
       ...packageData,

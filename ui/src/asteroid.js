@@ -37,6 +37,7 @@ export const QasDebugger = defineAsyncComponent(() => import('./components/debug
 export const QasDelete = defineAsyncComponent(() => import('./components/delete/QasDelete.vue'))
 export const QasSelectFilter = defineAsyncComponent(() => import('./components/select-filter/QasSelectFilter.vue'))
 export const QasDialog = defineAsyncComponent(() => import('./components/dialog/QasDialog.vue'))
+export const QasDialogFilePreview = defineAsyncComponent(() => import('./components/dialog-file-preview/QasDialogFilePreview.vue'))
 export const QasDialogRouter = defineAsyncComponent(() => import('./components/dialog-router/QasDialogRouter.vue'))
 export const QasDrawer = defineAsyncComponent(() => import('./components/drawer/QasDrawer.vue'))
 export const QasEmptyResultText = defineAsyncComponent(() => import('./components/empty-result-text/QasEmptyResultText.vue'))
@@ -97,4 +98,5 @@ export const QasWelcome = defineAsyncComponent(() => import('./components/welcom
 export const QasWhatsappLink = defineAsyncComponent(() => import('./components/whatsapp-link/QasWhatsappLink.vue'))
 export const QasReportsFilters = defineAsyncComponent(() => import('./components/reports-filters/QasReportsFilters.vue'))
 export const QasMap = defineAsyncComponent(() => import('./components/map/QasMap.vue'))
+export const QasMapDraw = defineAsyncComponent(() => import('./components/map-draw/QasMapDraw.vue'))
 export const QasChartView = defineAsyncComponent(() => import('./components/chart-view/QasChartView.vue'))

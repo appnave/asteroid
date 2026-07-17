@@ -25,7 +25,9 @@
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 
 import { ref, computed, inject, nextTick } from 'vue'
+
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
+import { useOverlayNavigation } from '../../composables'
 
 defineOptions({ name: 'QasInfiniteScroll' })
 
@@ -68,13 +70,20 @@ const props = defineProps({
 
 defineExpose({ refresh, remove, fetchList })
 
+// emits
 const emit = defineEmits(['fetch-success', 'fetch-error'])
 
+// models
 const modelList = defineModel('list', { type: Array, default: () => [] })
 const modelFields = defineModel('fields', { type: Object, default: () => ({}) })
 
+// globals
 const axios = inject('axios')
 
+// composables
+const { isOverlay } = useOverlayNavigation()
+
+// refs
 const infiniteScroll = ref(null)
 
 const hasFetchingError = ref(false)
@@ -83,14 +92,27 @@ const hasMadeFirstFetch = ref(false)
 const count = ref(0)
 const offset = ref(0)
 
+// computeds
 const listLength = computed(() => modelList.value.length)
 
-const attributes = computed(() => ({
-  offset: 100,
-  debounce: 0,
-  ...(props.maxHeight && { scrollTarget: '.qas-infinite-scroll' }),
-  ...props.infiniteScrollProps
-}))
+const attributes = computed(() => {
+  /**
+   * Quando o componente é utilizado dentro de um overlay, o scroll target deve ser o container do conteúdo do drawer,
+   * para que o infinite scroll funcione corretamente. Caso contrário, o scroll target é a própria div do infinite
+   * scroll, mas apenas se a prop maxHeight for definida, garantindo que haja um container com scroll.
+   * Se maxHeight não for definido, o infinite scroll irá escutar o scroll da janela por padrão.
+   */
+  const scrollTarget = isOverlay
+    ? '.pv-layout-overlay-drawer__content'
+    : props.maxHeight ? '.qas-infinite-scroll' : undefined
+
+  return {
+    offset: 100,
+    debounce: 0,
+    scrollTarget,
+    ...props.infiniteScrollProps
+  }
+})
 
 const isEmptyList = computed(() => !listLength.value && !isFetching.value)
 
