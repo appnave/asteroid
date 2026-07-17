@@ -15,9 +15,6 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
-### Modificado
-- `api.js`: modificado boot para aceitar parâmetros do tipo `$` vindas da query, para controles internos, como por exemplo URL do back end nos ambientes de preview.
-
 ### Adicionado
 - `QasDialogFilePreview`: adicionado o componente de dialog para visualizar imagens ou pdfs, com funcionalidade de download e zoom.
 - `QasBadge`: 
@@ -27,6 +24,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Corrigido
 - `QasMapDraw`: Corrigido problema do mapa não funcionar em produtos vite.
+
+### Modificado
+- `api.js`: modificado boot para aceitar parâmetros do tipo `$` vindas da query, para controles internos, como por exemplo URL do back end nos ambientes de preview.
 
 ## [3.20.0-beta.25] - 02-07-2026
 ## BREAKING CHANGES 
