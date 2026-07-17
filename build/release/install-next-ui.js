@@ -1,5 +1,6 @@
 function installNextUi ({ execaSync, ora, nextVersion, packages, retry = false }) {
   const jetpack = require('fs-jetpack') // https://github.com/szwacz/fs-jetpack
+  const path = require('path') // https://nodejs.org/api/path.html
   const getAppExtensionPackage = require('./get-app-extension-package')
 
   const installSpinner = ora('Instalando "ui" no "app-extension"...').start()
@@ -34,12 +35,16 @@ function installNextUi ({ execaSync, ora, nextVersion, packages, retry = false }
 
     /*
     * Se der erro ao instalar ele tenta novamente mas desta vez removendo
-    * o package-lock e node_modules antes
+    * o package-lock e node_modules antes.
+    * Usa jetpack.remove() por ser multiplataforma (Windows/Mac/Linux),
+    * ao contrário do "rm -rf" que não existe no Windows.
     */
-    execaSync('rm', ['-rf', 'node_modules'], { cwd: packages['app-extension'].resolved })
-    execaSync('rm', ['-rf', 'package-lock.json'], { cwd: packages['app-extension'].resolved })
+    installSpinner.stop()
 
-    installNextUi({ execaSync, ora, nextVersion, packages, retry: true })
+    jetpack.remove(path.join(packages['app-extension'].resolved, 'node_modules'))
+    jetpack.remove(path.join(packages['app-extension'].resolved, 'package-lock.json'))
+
+    return installNextUi({ execaSync, ora, nextVersion, packages, retry: true })
   }
 }
 
