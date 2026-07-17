@@ -109,7 +109,18 @@ export default async function (api) {
     api.compatibleWith('@quasar/app-vite', '^2.0.0')
 
     api.extendViteConf(viteConf => {
-      Object.assign(viteConf.resolve.alias, alias)
+      /**
+       * Corrige os paths das imagens do Leaflet para que sejam resolvidas corretamente, uma vez que o Leaflet
+       * utiliza imagens que são referenciadas diretamente em seu código, e não é possível alterar isso.
+       * Dessa forma, é necessário configurar os aliases para que o vite consiga resolver os paths corretamente.
+       */
+      const leafletImageAliases = {
+        'images/layers.png': api.resolve.app('node_modules/leaflet/dist/images/layers.png'),
+        'images/layers-2x.png': api.resolve.app('node_modules/leaflet/dist/images/layers-2x.png'),
+        'images/marker-icon.png': api.resolve.app('node_modules/leaflet/dist/images/marker-icon.png')
+      }
+
+      viteConf.resolve.alias = Object.assign(leafletImageAliases, viteConf.resolve.alias, alias)
 
       // optimizeDeps (necessário para funcionamento do QasMap)
       viteConf.optimizeDeps = viteConf.optimizeDeps || {}
