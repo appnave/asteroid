@@ -25,8 +25,7 @@ const getVueComponent = function (source) {
   let rendered = markdown.render(content)
 
   // Convert require('assets/...') to ESM imports for Vite compatibility.
-  // In webpack, require() worked inline in Vue templates.
-  // In Vite, we extract them as imports and reference variables in the template.
+  // In Vite, we extract asset imports and reference variables in the template.
   const imports = []
   let importIndex = 0
 

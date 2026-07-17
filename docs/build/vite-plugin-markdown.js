@@ -2,7 +2,7 @@ import { getVueComponent } from './markdown.js'
 
 /**
  * Vite plugin that transforms .md files into Vue SFC components.
- * Replaces the webpack pipeline: ware-loader (markdown→Vue SFC) + vue-loader.
+ * Replaces the previous markdown pipeline based on loader chaining.
  */
 export const markdownPlugin = {
   name: 'vite-plugin-asteroid-markdown',

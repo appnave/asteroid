@@ -43,11 +43,10 @@ app-extension/
    - **Animações:** slideInDown, rubberBand, fadeIn
    - **Extras:** material-symbols-rounded (icon set)
    - **Lang:** pt-BR
-   - **Transpilação:** (Webpack only) adiciona regexes para transpile
+  - **Transpilação:** adiciona regexes para transpile
 
-### Suporte a bundlers:
+### Suporte de build:
 - **Vite** (`@quasar/app-vite >= v2`): `extendViteConf` + `optimizeDeps.include`
-- **Webpack** (`@quasar/app >= v3 || v4`): `extendWebpack` + `transpileDependencies`
 
 ## Boot Files
 Todos em `app-extension/src/boot/`. Registrados automaticamente pelo `index.js`.
