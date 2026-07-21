@@ -15,6 +15,9 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+## BREAKING CHANGES
+- Necessário alterar `quasar.conf` para utilizar os alias pelo `extendWebpack` ao invés do `chainWebpack`.
+
 ### Corrigido
 - Corrigido problema de build dos produtos que usam vite, onde foi necessário tratar os alias de imagens do leaflet.
 
