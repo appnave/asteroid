@@ -1,5 +1,5 @@
 import jetpack from 'fs-jetpack'
-import yaml from 'js-yaml'
+import { load } from 'js-yaml'
 import path from 'node:path'
 import { rimrafSync } from 'rimraf'
 
@@ -19,7 +19,7 @@ jetpack.dir(`${ui}/dist/api`)
 for (const file of files) {
   const name = path.basename(file, path.extname(file))
 
-  const data = yaml.load(
+  const data = load(
     jetpack.read(file, 'utf8')
   )
 
