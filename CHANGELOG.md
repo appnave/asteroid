@@ -16,7 +16,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ## BREAKING CHANGES
-- Necessário alterar `quasar.conf` para utilizar os alias pelo `extendWebpack` ao invés do `chainWebpack`.
+- Necessário remover o alias `images` no `quasar.conf`, pois isso causará conflito com o alias criado por conta da biblioteca `leaflet` usado no `QasMapDraw`.
 
 ### Corrigido
 - Corrigido problema de build dos produtos que usam vite, onde foi necessário tratar os alias de imagens do leaflet.
