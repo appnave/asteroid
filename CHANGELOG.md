@@ -14,6 +14,13 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+## BREAKING CHANGES
+- Necessário remover o alias `images` no `quasar.conf`, pois isso causará conflito com o alias criado por conta da biblioteca `leaflet` usado no `QasMapDraw`.
+
+### Corrigido
+- Corrigido problema de build dos produtos que usam vite, onde foi necessário tratar os alias de imagens do leaflet.
+
 ## [3.20.0-beta.26] - 17-07-2026
 ### Adicionado
 - `QasDialogFilePreview`: adicionado o componente de dialog para visualizar imagens ou pdfs, com funcionalidade de download e zoom.
