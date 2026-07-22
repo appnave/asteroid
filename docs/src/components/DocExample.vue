@@ -48,7 +48,7 @@
 <script>
 import { markRaw } from 'vue'
 import { openURL } from 'quasar'
-import { fabGithub } from '@quasar/extras/fontawesome-v5'
+import { fabGithub } from '@quasar/extras/fontawesome-v7'
 
 const exampleModules = import.meta.glob('../examples/**/*.vue')
 const exampleRawModules = import.meta.glob('../examples/**/*.vue', { query: '?raw', import: 'default' })

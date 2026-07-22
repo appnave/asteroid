@@ -63,11 +63,11 @@ function setRouteCache (route) {
 }
 
 export default ({ router }) => {
-  router.beforeEach((to, from, next) => {
+  router.beforeEach((to, from) => {
     if (!useHistory().hasPreviousRoute.value) {
       clearAll(to.name)
 
-      return next()
+      return
     }
 
     setRouteCache(from)
@@ -83,11 +83,9 @@ export default ({ router }) => {
 
       isReplacingQuery = true
 
-      next({ ...to, query: cachedQuery })
-    } else {
-      isReplacingQuery = false
-
-      next()
+      return { ...to, query: cachedQuery }
     }
+
+    isReplacingQuery = false
   })
 }

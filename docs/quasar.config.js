@@ -31,6 +31,8 @@ export default configure(function () {
     ],
 
     build: {
+      vueOptionsAPI: true,
+
       env: {
         BUCKET: 'uploader.nave.dev',
         MAPS_API_KEY: 'AIzaSyDl00zRKG51WWBIJa8yVXqX7jFD5xyqe24',
@@ -43,6 +45,12 @@ export default configure(function () {
       publicPath: '/',
 
       alias: {
+        src: path.resolve(__dirname, 'src'),
+        components: path.resolve(__dirname, 'src/components'),
+        layouts: path.resolve(__dirname, 'src/layouts'),
+        pages: path.resolve(__dirname, 'src/pages'),
+        assets: path.resolve(__dirname, 'src/assets'),
+        boot: path.resolve(__dirname, 'src/boot'),
         'asteroid-config': path.resolve(__dirname, './asteroid.config.js'),
         'asteroid-boot': path.resolve(__dirname, '../app-extension/src/boot'),
         asteroid: path.resolve(__dirname, '../ui/src/asteroid.js'),
@@ -50,7 +58,6 @@ export default configure(function () {
         'asteroid-plugins': path.resolve(__dirname, '../ui/src/plugins'),
         examples: path.resolve(__dirname, 'src/examples'),
         uuid: path.resolve(__dirname, './node_modules/uuid/dist/index.js'),
-        'vue-router': path.resolve(__dirname, './node_modules/vue-router/dist/vue-router.esm-bundler.js'),
         vue: path.resolve(__dirname, './node_modules/vue'),
         quasar: path.resolve(__dirname, 'node_modules/quasar')
       },

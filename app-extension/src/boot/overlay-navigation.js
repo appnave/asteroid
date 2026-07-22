@@ -4,19 +4,18 @@ import { useOverlayNavigation } from 'asteroid'
  * @param {import('vue-router').Router} router
  */
 export default async function ({ router }) {
-  router.beforeEach((to, from, next) => onBeforeEach(to, from, next, router))
+  router.beforeEach((to, from) => onBeforeEach(to, from, router))
 }
 
 /**
  * @param {import('vue-router').RouteLocationNormalized} to
  * @param {import('vue-router').RouteLocationNormalized} from
- * @param {Function} next
  * @param {import('vue-router').Router} router
  */
-async function onBeforeEach (to, from, next, router) {
+async function onBeforeEach (to, from, router) {
   const useOverlay = to.matched.some(item => item.meta.useOverlay)
 
-  if (!useOverlay) return next()
+  if (!useOverlay) return
 
   const { addRouteToHistory } = useOverlayNavigation()
 
@@ -82,8 +81,6 @@ async function onBeforeEach (to, from, next, router) {
       default: overlayComponent
     }
   }
-
-  next()
 
   // functions
 

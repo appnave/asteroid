@@ -13,8 +13,8 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@algolia/autocomplete-js": "1.19.8",
-    "@algolia/autocomplete-theme-classic": "1.19.8",
+    "@algolia/autocomplete-js": "1.19.9",
+    "@algolia/autocomplete-theme-classic": "1.19.9",
     "@bildvitta/composables": "1.0.0-beta.12",
     "@appnave/quasar-ui-asteroid": "file:../ui",
     "@bildvitta/store-module": "1.1.0-beta.1",
@@ -23,27 +23,27 @@
     "@docsearch/js": "^4.6.2",
     "@fawmi/vue-google-maps": "0.9.79",
     "@modyfi/vite-plugin-yaml": "^1.1.1",
-    "@quasar/app-vite": "^2.6.0",
-    "@quasar/extras": "1.18.0",
-    "axios": "1.15.0",
+    "@quasar/app-vite": "3.2.0",
+    "@quasar/extras": "2.0.2",
+    "axios": "1.18.1",
     "chart.js": "4.5.1",
     "chartjs-plugin-datalabels": "2.2.0",
     "chartjs-plugin-zoom": "2.2.0",
     "highlight.js": "11.11.1",
     "markdown-it": "^14.1.1",
-    "quasar": "2.19.3",
+    "quasar": "2.22.0",
     "unplugin-vue-components": "^32.0.0",
     "vue": "3.5.40",
     "vue-chartjs": "^5.3.3",
     "vue-router": "^5.0.4",
     "vuex": "4.1.0",
-    "web-vitals": "^5.2.0",
-    "workbox-build": "7.4.0"
+    "web-vitals": "^6.0.0",
+    "workbox-build": "7.4.1"
   },
   "devDependencies": {
     "gray-matter": "4.0.3",
     "markdown-it-container": "^4.0.0",
-    "toml": "^4.1.1"
+    "toml": "^5.0.0"
   },
   "browserslist": [
     "last 10 Chrome versions",

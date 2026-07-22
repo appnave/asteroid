@@ -32,7 +32,7 @@ export default async ({ app, router }) => {
      * Permite que parâmetros de query string iniciados com $ sejam propagados para todas as rotas,
      * útil para ambiente de preview.
      */
-    router.beforeEach((to, from, next) => {
+    router.beforeEach((to, from) => {
       // Extrai os parâmetros de query string iniciados com $ da rota de origem (from).
       const dollarParams = Object.fromEntries(Object.entries(from.query).filter(([key]) => key.startsWith('$')))
 
@@ -43,9 +43,7 @@ export default async ({ app, router }) => {
       const hasMissingDollarParams = Object.keys(dollarParams).some(key => !(key in to.query))
 
       if (hasMissingDollarParams) {
-        next({ ...to, query: { ...dollarParams, ...to.query } })
-      } else {
-        next()
+        return { ...to, query: { ...dollarParams, ...to.query } }
       }
     })
 

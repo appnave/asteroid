@@ -55,5 +55,5 @@ export function reportWebVitals (options) {
 }
 
 export default boot(() => {
-  reportWebVitals({ analyticsId: process.env.VERCEL_ANALYTICS_ID })
+  reportWebVitals({ analyticsId: import.meta.env.VERCEL_ANALYTICS_ID })
 })
