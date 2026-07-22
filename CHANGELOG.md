@@ -93,12 +93,19 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   **ESLint (`eslint/package.json`)**
   - `eslint` ^8.8.0 → ^8.57.1
   - `vue-eslint-parser` ^8.2.0 → ^8.3.0
+## [3.20.0-beta.26] - 17-07-2026
 ### Adicionado
 - `QasDialogFilePreview`: adicionado o componente de dialog para visualizar imagens ou pdfs, com funcionalidade de download e zoom.
 - `QasBadge`: 
   - Adicionado nova prop `use-subtle` para aplicar background sútil e com opacidade.
   - Adicionado nova prop `icon` para ícone a esquerda do texto (apenas quando `use-subtle` ativado).
 - `QasCheckbox`, `QasInput`, `QasRadio`, `QasSelect` e `QasToggle`: adicionada nova prop `tip` para exibir conteúdo de ajuda ao lado da label.
+
+### Corrigido
+- `QasMapDraw`: Corrigido problema do mapa não funcionar em produtos vite.
+
+### Modificado
+- `api.js`: modificado boot para aceitar parâmetros do tipo `$` vindas da query, para controles internos, como por exemplo URL do back end nos ambientes de preview.
 
 ## [3.20.0-beta.25] - 02-07-2026
 ## BREAKING CHANGES 
@@ -5200,3 +5207,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.23]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.22...v3.20.0-beta.23?expand=1
 [3.20.0-beta.24]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24-alpha.2...v3.20.0-beta.24?expand=1
 [3.20.0-beta.25]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24...v3.20.0-beta.25?expand=1
+[3.20.0-beta.26]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.26-alpha.9...v3.20.0-beta.26?expand=1
