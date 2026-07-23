@@ -137,7 +137,7 @@ const companiesModel = ref('')
 const loading = ref(false)
 
 // consts
-const IS_ME_VERSION_2 = process.env.ME_VERSION === 2
+const IS_ME_VERSION_2 = Number(import.meta.env.ME_VERSION) === 2
 
 // computeds
 const defaultCompanyProps = computed(() => {

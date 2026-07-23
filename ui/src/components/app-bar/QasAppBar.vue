@@ -82,7 +82,7 @@ const developmentBadgeLabel = computed(() => {
     '.dev.': 'Develop'
   }
 
-  if (process.env.DEV) return hosts.localhost
+  if (import.meta.env.DEV) return hosts.localhost
 
   const current = Object.keys(hosts).find(host => location.hostname.includes(host))
 

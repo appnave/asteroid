@@ -31,7 +31,7 @@
   },
   "peerDependencies": {
     "@fawmi/vue-google-maps": "0.9.79",
-    "quasar": "^2.18.0"
+    "quasar": "2.22.0"
   },
   "dependencies": {
     "@appnave/quasar-app-extension-asteroid": "file:",
@@ -42,7 +42,7 @@
     "humps": "^2.0.1",
     "laravel-echo": "^1.15.3",
     "ora": "^8.2.0",
-    "pusher-js": "^8.4.0-rc2",
+    "pusher-js": "8.6.0",
     "unplugin-vue-components": "28.5.0"
   }
 }

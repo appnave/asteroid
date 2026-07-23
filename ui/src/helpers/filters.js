@@ -24,7 +24,7 @@ function _formatNumericValues (value, options = {}) {
 
 // Asset
 function asset (value) {
-  const bucketURL = process.env.BUCKET_URL || location.origin
+  const bucketURL = import.meta.env.BUCKET_URL || location.origin
 
   return value ? `${bucketURL}/${value}` : ''
 }

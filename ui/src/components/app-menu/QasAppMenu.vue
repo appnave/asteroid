@@ -394,14 +394,14 @@ function useChatMenu () {
   const { user, hasUser } = useAuthUser()
 
   // consts
-  const isMeVersionTwo = process.env.ME_VERSION === 2
+  const isMeVersionTwo = Number(import.meta.env.ME_VERSION) === 2
 
   // hooks
   onMounted(initializeChat)
 
   // functions
   function initializeChat () {
-    const gleapEnv = handleProcess(() => process.env.GLEAP)
+    const gleapEnv = handleProcess(() => import.meta.env.GLEAP)
 
     if (!props.useChat || !gleapEnv || !hasUser.value) return
 

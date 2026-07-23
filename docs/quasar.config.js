@@ -13,6 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 export default configure(function () {
   return {
     boot: [
+      'store',
       'asteroid',
       'components',
       'redirect',

@@ -40,7 +40,7 @@ export default {
 
     imageParameters () {
       const parameters = {
-        bucket: process.env.BUCKET,
+        bucket: import.meta.env.BUCKET,
         key: this.source,
         edits: {}
       }
