@@ -93,6 +93,14 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   **ESLint (`eslint/package.json`)**
   - `eslint` ^8.8.0 → ^8.57.1
   - `vue-eslint-parser` ^8.2.0 → ^8.3.0
+
+## [3.20.0-beta.27] - 22-07-2026
+## BREAKING CHANGES
+- Necessário remover o alias `images` no `quasar.conf`, pois isso causará conflito com o alias criado por conta da biblioteca `leaflet` usado no `QasMapDraw`.
+
+### Corrigido
+- Corrigido problema de build dos produtos que usam vite, onde foi necessário tratar os alias de imagens do leaflet.
+
 ## [3.20.0-beta.26] - 17-07-2026
 ### Adicionado
 - `QasDialogFilePreview`: adicionado o componente de dialog para visualizar imagens ou pdfs, com funcionalidade de download e zoom.
@@ -5208,3 +5216,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.24]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24-alpha.2...v3.20.0-beta.24?expand=1
 [3.20.0-beta.25]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.24...v3.20.0-beta.25?expand=1
 [3.20.0-beta.26]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.26-alpha.9...v3.20.0-beta.26?expand=1
+[3.20.0-beta.27]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.27-alpha.2...v3.20.0-beta.27?expand=1
