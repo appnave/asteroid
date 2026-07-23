@@ -45,6 +45,7 @@
   "dependencies": {
     "@bildvitta/composables": "1.0.0-beta.12",
     "@bildvitta/store-adapter": "1.0.0",
+    "@panzoom/panzoom": "^4.6.2",
     "autonumeric": "4.10.10",
     "axios": "1.18.1",
     "date-fns": "4.4.0",
@@ -66,7 +67,8 @@
     "chartjs-plugin-zoom": "2.2.0",
     "quasar": "2.22.0",
     "vue-chartjs": "5.3.4",
-    "vue-router": "^                      5.2.0"
+    "leaflet": "1.9.4",
+    "vue-router": "^5.2.0"
   },
   "browserslist": [
     "defaults"

@@ -89,7 +89,10 @@ export default async function (api) {
     'asteroid-config-app': asteroidConfigPath,
     'vue-router': api.resolve.app(vueRouter),
     asteroid: api.resolve.app(asteroid),
-    quasar: api.resolve.app(quasar)
+    quasar: api.resolve.app(quasar),
+    'images/layers.png': api.resolve.app('node_modules/leaflet/dist/images/layers.png'),
+    'images/layers-2x.png': api.resolve.app('node_modules/leaflet/dist/images/layers-2x.png'),
+    'images/marker-icon.png': api.resolve.app('node_modules/leaflet/dist/images/marker-icon.png')
   }
 
   api.compatibleWith('@quasar/app-vite', '^2.0.0')
