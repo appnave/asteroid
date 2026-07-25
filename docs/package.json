@@ -30,7 +30,7 @@
     "core-js": "^3.30.2",
     "highlight.js": "^11.8.0",
     "markdown-it": "^13.0.1",
-    "quasar": "^2.18.1",
+    "quasar": "^2.23.1",
     "unplugin-vue-components": "28.5.0",
     "vue": "3.5.35",
     "vue-chartjs": "^5.3.1",
