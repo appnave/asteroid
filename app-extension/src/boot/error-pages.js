@@ -1,3 +1,5 @@
+import { handleProcess } from 'asteroid'
+
 export default function ({ router }) {
   const routes = [
     {
@@ -12,7 +14,7 @@ export default function ({ router }) {
     }
   ]
 
-  if (process.env.MODE !== 'ssr') {
+  if (handleProcess(() => process.env.MODE, '') !== 'ssr') {
     routes.push({
       name: 'NotFound',
       path: '/:catchAll(.*)*',

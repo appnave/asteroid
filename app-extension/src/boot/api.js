@@ -1,4 +1,5 @@
 import { camelizeKeys, decamelizeKeys } from 'humps'
+import { handleProcess } from 'asteroid'
 
 import asteroidConfig from 'asteroid-config'
 
@@ -17,12 +18,12 @@ function getBaseURL (isProduction) {
   }
 
   // Caso não haja uma URL de preview válida, utiliza a URL base definida nas variáveis de ambiente ou locahost.
-  return process.env.SERVER_BASE_URL || '/'
+  return handleProcess(() => process.env.SERVER_BASE_URL, '/')
 }
 
 export default async ({ app, router }) => {
   const api = app.config.globalProperties.$axios
-  const isProduction = process.env.ENVIRONMENT === 'production'
+  const isProduction = handleProcess(() => process.env.ENVIRONMENT === 'production', false)
 
   // Defaults
   api.defaults.baseURL = getBaseURL(isProduction)

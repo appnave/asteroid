@@ -1,9 +1,11 @@
 import { isLocalDevelopment, handleProcess } from 'asteroid'
 
 import Echo from 'laravel-echo'
-import Pusher from 'pusher-js'
+import * as PusherModule from 'pusher-js'
 
 import { camelizeKeys } from 'humps'
+
+const Pusher = PusherModule.default || PusherModule.Pusher || PusherModule
 
 /**
  * Função para setar configuração do Laravel Echo.
@@ -14,6 +16,10 @@ export function setLaravelEcho (accessToken) {
   window.Pusher = Pusher
 
   const isLocal = isLocalDevelopment()
+  const serverBaseURL = handleProcess(() => process.env.SERVER_BASE_URL, '/')
+  const normalizedServerBaseURL = serverBaseURL === '/'
+    ? ''
+    : serverBaseURL.replace(/\/$/, '')
 
   window.Echo = new Echo({
     broadcaster: 'pusher',
@@ -23,7 +29,7 @@ export function setLaravelEcho (accessToken) {
     disableStats: true,
     encrypted: true,
     cluster: isLocal ? 'mt1' : 'eu',
-    authEndpoint: `${process.env.SERVER_BASE_URL}/broadcasting/auth`,
+    authEndpoint: `${normalizedServerBaseURL}/broadcasting/auth`,
     enabledTransports: ['ws', 'wss'],
     auth: {
       headers: {
