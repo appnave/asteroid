@@ -95,7 +95,7 @@ export default async function (api) {
     'images/marker-icon.png': api.resolve.app('node_modules/leaflet/dist/images/marker-icon.png')
   }
 
-  api.compatibleWith('@quasar/app-vite', '^2.0.0')
+  api.compatibleWith('@quasar/app-vite', '^3.2.0')
 
   api.extendViteConf(viteConf => {
     Object.assign(viteConf.resolve.alias, alias)
