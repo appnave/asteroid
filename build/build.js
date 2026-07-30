@@ -208,7 +208,7 @@ async function main () {
 
     let createdReleaseFromAPI = false
 
-    if (process.env.GITHUB_TOKEN) {
+    if (import.meta.env.GITHUB_TOKEN) {
       const { success } = await createGithubRelease({
         body: changelogContent,
         isBeta,
@@ -225,13 +225,13 @@ async function main () {
       })
     }
 
-    if (process.env.DISCORD_WEBHOOK_CHANGELOG) {
+    if (import.meta.env.DISCORD_WEBHOOK_CHANGELOG) {
       notifyDiscordChat({
         changelogContent,
         ora,
         nextVersion,
         isBeta,
-        hasGithubRelease: !!process.env.GITHUB_TOKEN && createdReleaseFromAPI
+        hasGithubRelease: !!import.meta.env.GITHUB_TOKEN && createdReleaseFromAPI
       })
     }
   }

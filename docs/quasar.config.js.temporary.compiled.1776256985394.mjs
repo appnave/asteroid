@@ -179,7 +179,7 @@ var quasar_config_default = configure(function() {
       env: {
         BUCKET: "uploader.nave.dev",
         MAPS_API_KEY: "AIzaSyDl00zRKG51WWBIJa8yVXqX7jFD5xyqe24",
-        VERCEL_ANALYTICS_ID: process.env.VERCEL_ANALYTICS_ID || "",
+        VERCEL_ANALYTICS_ID: import.meta.env.VERCEL_ANALYTICS_ID || "",
         DEBUGGING: true
       },
       vueRouterMode: "history",

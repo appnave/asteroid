@@ -16,14 +16,14 @@ export function setLaravelEcho (accessToken) {
   window.Pusher = Pusher
 
   const isLocal = isLocalDevelopment()
-  const serverBaseURL = handleProcess(() => process.env.SERVER_BASE_URL, '/')
+  const serverBaseURL = handleProcess(() => import.meta.env.SERVER_BASE_URL, '/')
   const normalizedServerBaseURL = serverBaseURL === '/'
     ? ''
     : serverBaseURL.replace(/\/$/, '')
 
   window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: isLocal ? 'app-key' : handleProcess(() => process.env.ABLY_KEY, ''),
+    key: isLocal ? 'app-key' : handleProcess(() => import.meta.env.ABLY_KEY, ''),
     wsHost: isLocal ? 'localhost' : 'realtime-pusher.ably.io',
     wsPort: isLocal ? 6001 : 443,
     disableStats: true,
