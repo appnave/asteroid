@@ -113,7 +113,8 @@ export default async function (api) {
       'lodash-es',
       'date-fns',
       'date-fns/locale',
-      'leaflet'
+      'leaflet',
+      'fontfaceobserver'
     ])
 
     viteConf.plugins = viteConf.plugins || []
