@@ -299,7 +299,7 @@ export default {
         return true
       }
 
-      return new Promise((resolve) => {
+      return new Promise(resolve => {
         this.handleDialog(() => {
           this.ignoreRouterGuard = true
           resolve(true)
