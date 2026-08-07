@@ -254,6 +254,7 @@ function handleDownload () {
     cursor: grab;
     max-width: 100%;
     user-select: none;
+    max-height: 700px;
 
     &:active {
       cursor: grabbing;
