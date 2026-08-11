@@ -19,13 +19,29 @@ const markdown = new MarkdownIt(markdownOptions)
 import matter from 'gray-matter'
 import toml from 'toml'
 
+/**
+ * Compila um arquivo markdown (com front matter em YAML/TOML) para uma
+ * string de componente Vue de arquivo único (SFC).
+ *
+ * Chamadas `require('assets/...')` deixadas no HTML renderizado do markdown
+ * (ex.: inseridas por uma regra de imagem/asset do markdown-it) são
+ * reescritas como imports ESM, já que o Vite não suporta `require()` em
+ * runtime:
+ *   - cada ocorrência é substituída em `rendered` por uma variável
+ *     placeholder gerada (`__asset_0`, `__asset_1`, ...);
+ *   - um `import __asset_N from '<assetPath>'` correspondente é acumulado
+ *     em `imports`, para ser injetado depois no bloco `<script setup>` do
+ *     SFC, permitindo que o Vite resolva e empacote o asset, com o
+ *     placeholder atuando como a variável usada no template.
+ *
+ * @param {string} source - Conteúdo bruto do arquivo markdown, incluindo o front matter.
+ * @returns {string} Um SFC Vue (`<template>` + `<script setup>`) como string.
+ */
 const getVueComponent = function (source) {
   const { data, content } = parseFrontMatter(source)
 
   let rendered = markdown.render(content)
 
-  // Convert require('assets/...') to ESM imports for Vite compatibility.
-  // In Vite, we extract asset imports and reference variables in the template.
   const imports = []
   let importIndex = 0
 
