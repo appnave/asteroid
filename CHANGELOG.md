@@ -18,6 +18,9 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### BREAKING CHANGES
 - Removido suporte ao webpack; a documentação e o fluxo de desenvolvimento passam a considerar apenas Vite.
 
+### Corrigido
+- `QasDialogFilePreview`: adicionado validação de altura para imagens, pra não ser criado scroll em imagens maiores.
+
 ### Modificado
 - Atualizado `.nvmrc` de `lts/iron` (Node 20) para `lts/jod` (Node 22).
 - Atualizado dependências do projeto para as versões atuais:
