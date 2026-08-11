@@ -2,7 +2,7 @@ import { Octokit } from '@octokit/rest'
 
 async function createGithubRelease ({ body, isBeta, version, ora, onSuccess = () => {} }) {
   const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
+    auth: import.meta.env.GITHUB_TOKEN
   })
 
   const versionTag = `v${version}`

@@ -18,12 +18,12 @@ function getBaseURL (isProduction) {
   }
 
   // Caso não haja uma URL de preview válida, utiliza a URL base definida nas variáveis de ambiente ou locahost.
-  return handleProcess(() => process.env.SERVER_BASE_URL, '/')
+  return handleProcess(() => import.meta.env.SERVER_BASE_URL, '/')
 }
 
 export default async ({ app, router }) => {
   const api = app.config.globalProperties.$axios
-  const isProduction = handleProcess(() => process.env.ENVIRONMENT === 'production', false)
+  const isProduction = handleProcess(() => import.meta.env.ENVIRONMENT === 'production', false)
 
   // Defaults
   api.defaults.baseURL = getBaseURL(isProduction)

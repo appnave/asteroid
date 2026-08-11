@@ -14,7 +14,7 @@ export default function ({ router }) {
     }
   ]
 
-  if (handleProcess(() => process.env.MODE, '') !== 'ssr') {
+  if (handleProcess(() => import.meta.env.MODE, '') !== 'ssr') {
     routes.push({
       name: 'NotFound',
       path: '/:catchAll(.*)*',
