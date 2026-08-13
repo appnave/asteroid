@@ -5,6 +5,36 @@
     </slot>
 
     <q-table v-show="hasResults" ref="table" v-bind="attributes" v-model:selected="selectedModel" class="bg-white text-grey-8">
+      <template v-if="hasGroups" #header="context">
+        <slot :context="context" name="header">
+          <q-tr>
+            <!-- Precisa de um TH vazio para ficar com espaço na primeira coluna -->
+            <th class="qas-table-generator__group-th" />
+
+            <th
+              v-for="(group, key) in groups"
+              :key="key"
+              class="qas-table-generator__group-th text-left"
+              :colspan="group.fields?.length"
+            >
+              <div class="bg-light-blue-1 text-grey-10">
+                {{ group.label }}
+              </div>
+            </th>
+          </q-tr>
+
+          <q-tr>
+            <th
+              v-for="(field, key) in columnsByFields"
+              :key="key"
+              class="qas-table-generator__field-th text-left"
+            >
+              {{ field.label }}
+            </th>
+          </q-tr>
+        </slot>
+      </template>
+
       <template v-if="skeleton" #header-cell="props">
         <q-th :props="props">
           <qas-skeleton v-bind="getThSkeletonProps()" />
@@ -42,7 +72,7 @@
       </template>
 
       <template v-for="(fieldName, index) in bodyCellNameSlots" :key="index" #[`body-cell-${fieldName}`]="context">
-        <q-td :class="getTdClasses(context.row)">
+        <q-td :class="getTdClasses(context)">
           <qas-skeleton v-if="skeleton" v-bind="getTgSkeletonProps(fieldName, context.row)" />
 
           <component :is="tdChildComponent(context.row)" v-else class="qas-table-generator__td-item" v-bind="getTdChildComponentProps(context.row)">
@@ -55,6 +85,24 @@
             </slot>
           </component>
         </q-td>
+      </template>
+
+      <template
+        v-if="useStickyLastRow"
+        #bottom-row="context"
+      >
+        <slot :context="context" name="bottom-row">
+          <q-tr class="qas-table-generator__sticky-total">
+            <td
+              v-for="(col, index) in context.cols"
+              :key="index"
+            >
+              <span>
+                {{ getTotalInfo(col) }}
+              </span>
+            </td>
+          </q-tr>
+        </slot>
       </template>
     </q-table>
 
@@ -134,9 +182,19 @@ export default {
       type: [Object, Function]
     },
 
+    groups: {
+      type: Object,
+      default: () => ({})
+    },
+
     headerProps: {
       default: () => ({}),
       type: Object
+    },
+
+    highlights: {
+      type: Function,
+      default: undefined
     },
 
     maxHeight: {
@@ -199,6 +257,10 @@ export default {
       type: Boolean
     },
 
+    useStickyLastRow: {
+      type: Boolean
+    },
+
     useVirtualScroll: {
       type: Boolean
     }
@@ -257,6 +319,10 @@ export default {
 
           return result
         })
+      }
+
+      if (this.useStickyLastRow) {
+        return this.results.slice(0, this.results.length - 1)
       }
 
       return this.results
@@ -417,7 +483,8 @@ export default {
         'qas-table-generator--mobile': this.$qas.screen.isSmall,
         'qas-table-generator--sticky-header': this.useStickyHeader,
         'qas-table-generator--has-actions': this.hasActionsMenu,
-        'qas-table-generator--multiline': this.useMultiline
+        'qas-table-generator--multiline': this.useMultiline,
+        'qas-table-generator--row-spacing': !!this.highlights || this.useStickyLastRow
       }
     },
 
@@ -482,6 +549,10 @@ export default {
       set (rows) {
         this.$emit('update:selected', this.useObjectSelectedModel ? rows : rows.map(row => row[this.rowKey]))
       }
+    },
+
+    hasGroups () {
+      return !!Object.keys(this.groups).length
     }
   },
 
@@ -584,9 +655,14 @@ export default {
       return isRoutePayloadObject ? !!Object.keys(routePayload).length : !!routePayload
     },
 
-    getTdClasses (row) {
+    getTdClasses (context) {
+      const { row, rowIndex: index } = context
+
+      const hasHighlightsFn = !!this.highlights
+
       return {
-        'qas-table-generator__td--has-action': this.hasRowRoute(row)
+        'qas-table-generator__td--has-action': this.hasRowRoute(row),
+        'qas-table-generator__td--highlighted': hasHighlightsFn && this.highlights?.({ row, index })
       }
     },
 
@@ -693,6 +769,13 @@ export default {
         useContrast: true,
         width: `${width}px`
       }
+    },
+
+    getTotalInfo ({ name }) {
+      // O último resultado é sempre o total geral.
+      const lastResult = this.results.at(-1)
+
+      return humanize(this.fields[name], lastResult[name])
     }
   }
 }
@@ -807,6 +890,13 @@ export default {
     }
   }
 
+  &__td {
+    &--highlighted {
+      background-color: $light-blue-1 !important;
+      color: $grey-10;
+    }
+  }
+
   &--multiline {
     @media (min-width: $breakpoint-sm) {
       .q-table td {
@@ -844,6 +934,52 @@ export default {
           top: 0;
         }
       }
+    }
+  }
+
+  &__sticky-total {
+    background-color: $light-blue-1 !important;
+    bottom: 0;
+    position: sticky;
+    transition: box-shadow var(--qas-generic-transition);
+
+    td {
+      background-color: $light-blue-1 !important;
+      color: $grey-10;
+    }
+  }
+
+  &--row-spacing {
+    .q-table {
+      th:first-child {
+        padding-left: var(--qas-spacing-md);
+      }
+
+      td:first-child {
+        padding-left: var(--qas-spacing-md);
+      }
+    }
+  }
+
+  &__group-th {
+    padding: 0 !important;
+    border: none !important;
+
+    div {
+      margin-bottom: var(--qas-spacing-sm);
+      align-items: center;
+      border-radius: var(--qas-generic-border-radius);
+      display: flex;
+      height: 40px; // mesmo tamanho da linha
+      margin-right: var(--qas-spacing-sm);
+      padding-left: calc(var(--qas-spacing-lg) / 2);
+      padding-right: calc(var(--qas-spacing-lg) / 2);
+    }
+  }
+
+  &:has(#{$root}__group-th) {
+    #{$root}__field-th {
+      padding-top: var(--qas-spacing-sm);
     }
   }
 }

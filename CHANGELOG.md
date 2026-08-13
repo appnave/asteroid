@@ -15,6 +15,12 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Adicionado
+- `QasTableGenerator`:
+  - Adicionado prop `groups`, onde é podemos exibir as informações na tabela de forma agrupada.
+  - Adicionado prop `highlights`, onde é uma função de callback das linhas da tabela, podendo tratar quais linhas terão destaques.
+  - Adicionado prop `useStickyLastRow` para manter a última linha da tabela fixa.
+
 ### Corrigido
 - `QasDialogFilePreview`: adicionado validação de altura para imagens, pra não ser criado scroll em imagens maiores.
 
