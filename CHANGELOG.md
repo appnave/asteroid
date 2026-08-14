@@ -15,8 +15,13 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+## BREAKING CHANGES
+- `mixins/search-filter.js`: os eventos `fetch-options-success` e `fetch-options-error` foram renomeados para `fetchOptionsSuccess` e `fetchOptionsError`. Atualize os listeners para camelCase ao utilizar no script.
+
 ### Corrigido
 - `QasDialogFilePreview`: adicionado validação de altura para imagens, pra não ser criado scroll em imagens maiores.
+- `mixins/search-filter.js`: corrigido forma de utilizar os eventos de `fetch-options-success` e `fetch-options-error`. Da forma que estava sendo emitido/declarado, quando utilizado no script, era obrigado a utilizar em kebab, não em camelCase. ([#1611](https://github.com/appnave/asteroid/issues/1611))
+- `QasExpansionItem`: corrigido bug do componente ao ter um v-model e ele iniciar com valor `true`, não renderizava o expansivo aberto. ([#1561](https://github.com/appnave/asteroid/issues/1561))
 
 ## [3.20.0-beta.27] - 22-07-2026
 ## BREAKING CHANGES

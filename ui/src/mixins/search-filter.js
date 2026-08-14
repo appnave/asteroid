@@ -37,8 +37,8 @@ export default {
     'update:modelValue',
     'update:fetching',
     'update:selectedOptions',
-    'fetch-options-success',
-    'fetch-options-error'
+    'fetchOptionsSuccess',
+    'fetchOptionsError'
   ],
 
   data () {
@@ -218,7 +218,7 @@ export default {
           hasNextPage
         }
 
-        this.$emit('fetch-options-success', data)
+        this.$emit('fetchOptionsSuccess', data)
 
         const options = this.mx_getOptions(results)
 
@@ -227,7 +227,7 @@ export default {
         return this.mx_getNonDuplicatedOptions(options)
       } catch (error) {
         this.mx_hasFetchError = true
-        this.$emit('fetch-options-error', error)
+        this.$emit('fetchOptionsError', error)
 
         return []
       } finally {
