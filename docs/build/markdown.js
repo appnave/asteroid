@@ -20,39 +20,34 @@ import matter from 'gray-matter'
 import toml from 'toml'
 
 /**
- * Compila um arquivo markdown (com front matter em YAML/TOML) para uma
- * string de componente Vue de arquivo único (SFC).
- *
- * Chamadas `require('assets/...')` deixadas no HTML renderizado do markdown
- * (ex.: inseridas por uma regra de imagem/asset do markdown-it) são
- * reescritas como imports ESM, já que o Vite não suporta `require()` em
- * runtime:
- *   - cada ocorrência é substituída em `rendered` por uma variável
- *     placeholder gerada (`__asset_0`, `__asset_1`, ...);
- *   - um `import __asset_N from '<assetPath>'` correspondente é acumulado
- *     em `imports`, para ser injetado depois no bloco `<script setup>` do
- *     SFC, permitindo que o Vite resolva e empacote o asset, com o
- *     placeholder atuando como a variável usada no template.
- *
- * @param {string} source - Conteúdo bruto do arquivo markdown, incluindo o front matter.
- * @returns {string} Um SFC Vue (`<template>` + `<script setup>`) como string.
+ * Compila um arquivo markdown (com front matter) para uma string de SFC Vue.
  */
 const getVueComponent = function (source) {
+  // Separa o front matter (YAML/TOML) do corpo markdown
   const { data, content } = parseFrontMatter(source)
 
+  // Renderiza o markdown para HTML puro; é essa string HTML que vai para dentro do <template> do SFC
   let rendered = markdown.render(content)
 
   const imports = []
   let importIndex = 0
 
-  rendered = rendered.replace(/require\(['"]([^'"]+)['"]\)/g, (match, assetPath) => {
+  /**
+   * Troca cada `require('assets/foo.png')` do HTML por uma variável
+   * placeholder (__asset_N) e registra o import ESM correspondente,
+   * para o Vite resolver o asset no <script setup>.
+   */
+  rendered = rendered.replace(/require\(['"]([^'"]+)['"]\)/g, (_, assetPath) => {
     const varName = `__asset_${importIndex++}`
+
     imports.push(`import ${varName} from '${assetPath}'`)
+
     return varName
   })
 
   const importsBlock = imports.length ? imports.join('\n') + '\n' : ''
 
+  // Monta o SFC - HTML final
   return `
     <template>
       <doc-page v-bind="attrs">${rendered}</doc-page>

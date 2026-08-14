@@ -1,21 +1,12 @@
 /**
  * @file Store Vuex "falso" usado apenas pela aplicação de docs.
  *
- * O site de docs não tem backend real, mas os componentes do Asteroid usados
- * nos exemplos ao vivo (ex.: `qas-delete`, `qas-table`, `qas-chart-view`) são
- * construídos seguindo a convenção do `@bildvitta/store-adapter`: eles leem
- * uma prop `entity` / `storeModule`, resolvem para um módulo Vuex namespaced
- * e chamam as actions `fetchList` / `fetchSingle` / `fetchFilters` /
- * `destroy` e o getter `byId` desse módulo. Sem um store fornecendo módulos
- * com exatamente esses nomes e formato, todo exemplo que busca ou apaga
- * dados quebraria.
- *
- * Este arquivo substitui esse backend: ele monta um módulo namespaced para
- * cada entidade mockada (`charts`, `charts_multiple_results`, `users`) a
- * partir dos fixtures JSON em `./mocks`, para que os exemplos em
- * `src/examples/**` tenham respostas assíncronas realistas sem nenhuma
- * chamada de rede. Ver `docs/src/boot/store.js`, que instala esse store na
- * aplicação.
+ * Monta módulos namespaced mockados (`charts`, `charts_multiple_results`,
+ * `users`) a partir dos fixtures em `./mocks`, seguindo a convenção do
+ * `@bildvitta/store-adapter` (actions `fetchList`/`fetchSingle`/
+ * `fetchFilters`/`destroy`, getter `byId`). Assim os exemplos em
+ * `src/examples/**` funcionam sem backend real. Instalado em
+ * `docs/src/boot/store.js`.
  */
 import { createStore } from 'vuex'
 
@@ -70,11 +61,9 @@ function createResponse (data = {}) {
 }
 
 /**
- * Monta um módulo Vuex namespaced que imita o contrato de API esperado pelos
- * componentes baseados no `@bildvitta/store-adapter` (actions `fetchList`,
- * `fetchSingle`, `fetchFilters`, `destroy` e getter `byId`, todos retornando
- * `{ data: { status, metadata, ... } }`). Usado para transformar cada fixture
- * JSON mockado em uma "entidade" funcional para os exemplos da doc.
+ * Módulo Vuex namespaced que simula a API do `@bildvitta/store-adapter`
+ * (actions `fetchList`, `fetchSingle`, `fetchFilters`, `destroy` e getter
+ * `byId`).
  *
  * @param {object} [options]
  * @param {object} [options.filters] - Definições dos campos de filtro retornadas por `fetchFilters`.
