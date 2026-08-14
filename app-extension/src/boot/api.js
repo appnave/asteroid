@@ -1,4 +1,5 @@
 import { camelizeKeys, decamelizeKeys } from 'humps'
+import { handleProcess } from 'asteroid'
 
 import asteroidConfig from 'asteroid-config'
 
@@ -17,12 +18,12 @@ function getBaseURL (isProduction) {
   }
 
   // Caso não haja uma URL de preview válida, utiliza a URL base definida nas variáveis de ambiente ou locahost.
-  return process.env.SERVER_BASE_URL || '/'
+  return handleProcess(() => import.meta.env.SERVER_BASE_URL, '/')
 }
 
 export default async ({ app, router }) => {
   const api = app.config.globalProperties.$axios
-  const isProduction = process.env.ENVIRONMENT === 'production'
+  const isProduction = handleProcess(() => import.meta.env.ENVIRONMENT === 'production', false)
 
   // Defaults
   api.defaults.baseURL = getBaseURL(isProduction)
@@ -32,7 +33,7 @@ export default async ({ app, router }) => {
      * Permite que parâmetros de query string iniciados com $ sejam propagados para todas as rotas,
      * útil para ambiente de preview.
      */
-    router.beforeEach((to, from, next) => {
+    router.beforeEach((to, from) => {
       // Extrai os parâmetros de query string iniciados com $ da rota de origem (from).
       const dollarParams = Object.fromEntries(Object.entries(from.query).filter(([key]) => key.startsWith('$')))
 
@@ -43,9 +44,7 @@ export default async ({ app, router }) => {
       const hasMissingDollarParams = Object.keys(dollarParams).some(key => !(key in to.query))
 
       if (hasMissingDollarParams) {
-        next({ ...to, query: { ...dollarParams, ...to.query } })
-      } else {
-        next()
+        return { ...to, query: { ...dollarParams, ...to.query } }
       }
     })
 

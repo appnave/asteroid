@@ -2,6 +2,9 @@ const path = require('path')
 const requireIndex = require('requireindex')
 
 module.exports = {
-  rules: requireIndex(path.join(__dirname, '/rules')),
-  configs: requireIndex(path.join(__dirname, '/configs'))
+  meta: {
+    name: 'eslint-plugin-asteroid',
+    version: '2.0.0'
+  },
+  rules: requireIndex(path.join(__dirname, '/rules'))
 }

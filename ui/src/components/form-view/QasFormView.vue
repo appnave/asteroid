@@ -277,7 +277,7 @@ export default {
   },
 
   methods: {
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave (to, from) {
       const clonedModelValue = extend(true, {}, this.modelValue)
       const clonedCachedResult = extend(true, {}, this.cachedResult)
 
@@ -296,12 +296,14 @@ export default {
           this.handleIgnoreKeysInUnsavedChanges
         )
       ) {
-        return next()
+        return true
       }
 
-      this.handleDialog(() => {
-        this.ignoreRouterGuard = true
-        next()
+      return new Promise(resolve => {
+        this.handleDialog(() => {
+          this.ignoreRouterGuard = true
+          resolve(true)
+        })
       })
     },
 

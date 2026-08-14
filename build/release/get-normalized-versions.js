@@ -21,4 +21,4 @@ function getNormalizedVersions (versions = {}) {
   return normalizedVersion
 }
 
-module.exports = getNormalizedVersions
+export default getNormalizedVersions

@@ -37,7 +37,7 @@
 import { version } from 'asteroid'
 import packageInfo from '../../package.json'
 
-export default ({
+export default {
   computed: {
     version () {
       return `Asteroid - v${version}`
@@ -49,5 +49,5 @@ export default ({
       return `Quasar - v${version}`
     }
   }
-})
+}
 </script>

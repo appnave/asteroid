@@ -22,7 +22,6 @@ const props = defineProps({
 
   field: {
     type: Object,
-    required: true,
     default: () => ({})
   },
 

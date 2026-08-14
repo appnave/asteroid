@@ -52,9 +52,8 @@ const props = defineProps({
   },
 
   tabs: {
-    default: () => ({}),
-    required: true,
-    type: [Object, Array]
+    type: [Object, Array],
+    default: () => ({})
   },
 
   querySlug: {

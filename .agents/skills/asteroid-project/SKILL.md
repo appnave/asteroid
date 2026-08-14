@@ -45,7 +45,7 @@ asteroid/
 | **@bildvitta/store-adapter** | Abstração de state management (Vuex/Pinia agnóstico) |
 | **Axios** | HTTP client com transformers camelCase/snake_case |
 | **date-fns** | Manipulação de datas (locale pt-BR) |
-| **unplugin-vue-components** | Auto-import de componentes (Vite e Webpack) |
+| **unplugin-vue-components** | Auto-import de componentes (Vite) |
 
 ## Variáveis de Ambiente
 

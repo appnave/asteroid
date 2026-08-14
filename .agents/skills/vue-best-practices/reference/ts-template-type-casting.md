@@ -15,7 +15,7 @@ tags: [typescript, templates, type-casting, union-types, script-setup]
 - [ ] Use `(value as Type)` syntax for type casting in templates
 - [ ] Consider narrowing types in script before using in template
 - [ ] Remember template type checking requires `lang="ts"` attribute
-- [ ] For Vue CLI/webpack: ensure vue-loader >= 16.8.0
+- [ ] Ensure tooling is configured with Volar + vue-tsc for template type checking
 
 ## The Problem
 
@@ -199,7 +199,7 @@ const items = ref<(string | number)[]>([1, 'two', 3])
 Template type checking is enabled when:
 1. `<script lang="ts">` or `<script setup lang="ts">` is used
 2. Vue Language Server (Volar) is active in your IDE
-3. For webpack: vue-loader >= 16.8.0 is required
+3. Keep Vue tooling updated in your project (Volar + vue-tsc)
 
 ### Avoid Excessive Casting
 
