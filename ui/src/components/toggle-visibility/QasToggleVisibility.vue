@@ -97,6 +97,7 @@ const tooltipText = computed(() => isVisible.value ? props.visibleTooltip : prop
 
   &__content {
     flex-grow: 1;
+    user-select: none;
   }
 
   &__button {
