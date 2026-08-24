@@ -44,7 +44,7 @@ const tooltipProps = {
 function onBeforeShow () {
   if (activeTooltip.value && activeTooltip.value !== tooltipRef.value) {
     suppressed = activeTooltip.value
-    suppressed.hide()
+    suppressed?.hide()
   }
 
   activeTooltip.value = tooltipRef.value
