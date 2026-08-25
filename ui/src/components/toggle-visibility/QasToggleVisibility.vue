@@ -2,12 +2,11 @@
   <!-- "data-no-grab" para prevenir o click drag  -->
   <div class="qas-toggle-visibility" data-no-grab>
     <!-- "data-table-ignore-tr-hover" é para desabilitar o hover do tr no QasTableGenerator -->
-    <div :aria-expanded="isVisible" aria-label="Alternar visibilidade do conteúdo" class="cursor-pointer items-center no-wrap qas-toggle-visibility__container row" data-table-ignore-tr-hover role="button" :style @click.prevent.stop="toggleVisibility">
+    <div :aria-expanded="isVisible" aria-label="Alternar visibilidade do conteúdo" class="cursor-pointer items-center no-wrap qas-toggle-visibility__container row" data-table-ignore-tr-hover role="button" :style @click.prevent.stop="onToggleVisibility">
       <div class="ellipsis qas-toggle-visibility__content">
         <div
           v-if="isVisible"
           class="ellipsis full-width"
-          :title="props.text"
         >
           <slot>
             {{ props.text }}
@@ -33,6 +32,10 @@ import QasBtn from '../btn/QasBtn.vue'
 import QasTooltip from '../tooltip/QasTooltip.vue'
 
 import { useToggleVisibility } from '../../composables/private'
+
+import NotifyError from '../../plugins/notify-error/NotifyError'
+
+import useRateLimit from './composables/use-rate-limit.js'
 
 import { uid } from 'quasar'
 import { computed } from 'vue'
@@ -71,14 +74,56 @@ const props = defineProps({
   }
 })
 
+const group = props.group || 'default'
+
 const {
   isVisible,
   toggleVisibility
-} = useToggleVisibility({ group: props.group, uuid: props.uuid || uid() })
+} = useToggleVisibility({ group, uuid: props.uuid || uid() })
+
+const {
+  canReveal,
+  registerReveal,
+  remainingCooldown
+} = useRateLimit({ group, limit: 5 })
 
 const icon = computed(() => isVisible.value ? 'sym_r_visibility' : 'sym_r_visibility_off')
 const style = computed(() => ({ width: props.width }))
 const tooltipText = computed(() => isVisible.value ? props.visibleTooltip : props.hiddenTooltip)
+
+function onToggleVisibility (event) {
+  /**
+   * Só alterna se o clique for um gesto real do usuário. Eventos disparados por script
+   * (ex.: element.click() ou dispatchEvent num scraper) têm isTrusted === false e são
+   * ignorados aqui — é uma fricção contra automação ingênua, não uma barreira absoluta.
+   */
+  if (!event.isTrusted) return
+
+  // Esconder é sempre permitido e não consome rate limit.
+  if (isVisible.value) {
+    toggleVisibility()
+
+    return
+  }
+
+  // Revelar: respeita o limite de visualizações por minuto (quando revealLimit > 0).
+  if (!canReveal()) {
+    notifyRevealLimit()
+
+    return
+  }
+
+  // Incrementa +1 no rate limit.
+  registerReveal()
+
+  toggleVisibility()
+}
+
+function notifyRevealLimit () {
+  const seconds = Math.ceil(remainingCooldown() / 1000)
+
+  NotifyError(`Limite de visualizações atingido. Tente novamente em ${seconds}s.`)
+}
 </script>
 
 <style lang="scss">
