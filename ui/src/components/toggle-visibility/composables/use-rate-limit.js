@@ -1,62 +1,74 @@
-import { ref } from 'vue'
+import { LocalStorage } from 'quasar'
+
+// Prefixo do nome no localStorage
+const STORAGE_PREFIX = 'qasTv:'
 
 /**
- * Lista de horários das ações, um por "group".
- * É module-level de propósito: o limite precisa valer para a página/tabela inteira,
- * compartilhado entre todas as instâncias de QasToggleVisibility, e não por célula.
+ * Controla quantas vezes uma ação pode ocorrer dentro de uma janela de tempo, guardando o
+ * contador no localStorage (por scope). Retorna duas funções:
  *
- * Formato: { [group]: number[] } — cada number é um Date.now() de quando a ação ocorreu.
- */
-const timestampsByGroup = ref({})
-
-/**
- * Rate limit de ações (ex.: "10 por minuto").
+ *  - getStatusRateLimit(): lê a situação atual (se pode ou não, e quanto falta pra liberar);
+ *  - incrementRateLimit(): registra +1 no contador.
+ *
+ * A cada incremento o contador sobe. Ao atingir "limit", entra em cooldown por "windowMs"
+ * (contado a partir do incremento que atingiu o limite); enquanto o cooldown não expira,
+ * getStatusRateLimit() retorna allowed: false. Quando expira, o contador zera.
  *
  * @param {{
- *  group?: string,   // identificador do item; instâncias com o mesmo group compartilham o limite (ex.: uma tabela)
- *  limit?: number,   // máximo de ações permitidas dentro da janela (0 ou menos desativa)
- *  windowMs?: number // duração da janela de tempo. Ex.: limit 10 + windowMs 60000 = 10/min
+ *  scope?: string,   // separa o contador por contexto (ex.: uma tabela/tela)
+ *  limit?: number,   // máximo de ações dentro da janela (0 ou menos desativa)
+ *  windowMs?: number // duração do cooldown. Ex.: limit 10 + windowMs 60000 = 10 a cada 1 min
  * }}
  */
-export default function useRateLimit ({ group = 'default', limit = 0, windowMs = 60000 } = {}) {
-  timestampsByGroup.value[group] = timestampsByGroup.value[group] || []
+export default function useRateLimit ({ scope = 'default', limit = 0, windowMs = 60000 } = {}) {
+  const storageKey = `${STORAGE_PREFIX}${scope}`
 
-  // Retorna (e limpa) apenas os horários dentro da janela de tempo atual.
-  function activeTimestamps () {
-    const threshold = Date.now() - windowMs
+  // Estado atual já tratando a expiração do cooldown (se acabou, volta zerado).
+  function getState () {
+    const stored = LocalStorage.getItem(storageKey)
 
-    timestampsByGroup.value[group] = timestampsByGroup.value[group].filter(timestamp => timestamp > threshold)
+    // Verifica se o contador atingiu o limite E o cooldown já passou (resetAt no passado).
+    const cooldownEnded = stored?.count >= limit && stored.resetAt <= Date.now()
 
-    return timestampsByGroup.value[group]
+    if (!stored || cooldownEnded) return { count: 0, resetAt: 0 }
+
+    return stored
   }
 
-  // Ainda há cota para revelar dentro da janela? Com limit <= 0 o controle fica desligado.
-  function canReveal () {
-    return limit <= 0 || activeTimestamps().length < limit
+  /**
+   * Situação atual do contador (só leitura, não incrementa):
+   *  - { allowed: true }                      → pode revelar
+   *  - { allowed: false, retryAfterSeconds }  → em cooldown (segundos até liberar)
+   */
+  function getStatusRateLimit () {
+    if (limit <= 0) return { allowed: true }
+
+    const { count, resetAt } = getState()
+
+    if (count >= limit) {
+      return { allowed: false, retryAfterSeconds: Math.ceil((resetAt - Date.now()) / 1000) }
+    }
+
+    return { allowed: true }
   }
 
-  // Registra uma revelação (não deve ser chamado ao esconder).
-  function registerReveal () {
+  /**
+   * Incrementa o contador. O cooldown começa quando o limite é atingido,
+   * contado a partir do momento que o limite é atingido.
+   */
+  function incrementRateLimit () {
     if (limit <= 0) return
 
-    activeTimestamps().push(Date.now())
-  }
+    const { count } = getState()
 
-  // Quanto falta (ms) para liberar a próxima revelação quando o limite foi atingido.
-  function remainingCooldown () {
-    if (limit <= 0) return 0
+    const nextCount = count + 1
+    const resetAt = nextCount >= limit ? Date.now() + windowMs : 0
 
-    const active = activeTimestamps()
-
-    if (active.length < limit) return 0
-
-    // libera quando o registro mais antigo sair da janela
-    return Math.max(0, windowMs - (Date.now() - Math.min(...active)))
+    LocalStorage.set(storageKey, { count: nextCount, resetAt })
   }
 
   return {
-    canReveal,
-    registerReveal,
-    remainingCooldown
+    getStatusRateLimit,
+    incrementRateLimit
   }
 }

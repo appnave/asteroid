@@ -81,11 +81,7 @@ const {
   toggleVisibility
 } = useToggleVisibility({ group, uuid: props.uuid || uid() })
 
-const {
-  canReveal,
-  registerReveal,
-  remainingCooldown
-} = useRateLimit({ group, limit: 5 })
+const { getStatusRateLimit, incrementRateLimit } = useRateLimit({ scope: group, limit: 10 })
 
 const icon = computed(() => isVisible.value ? 'sym_r_visibility' : 'sym_r_visibility_off')
 const style = computed(() => ({ width: props.width }))
@@ -99,30 +95,26 @@ function onToggleVisibility (event) {
    */
   if (!event.isTrusted) return
 
-  // Esconder é sempre permitido e não consome rate limit.
+  // Esconder é sempre permitido e não consome cota.
   if (isVisible.value) {
     toggleVisibility()
 
     return
   }
 
-  // Revelar: respeita o limite de visualizações por minuto (quando revealLimit > 0).
-  if (!canReveal()) {
-    notifyRevealLimit()
+  // Verifica a situação do rate limit (só leitura).
+  const { allowed, retryAfterSeconds } = getStatusRateLimit()
+
+  if (!allowed) {
+    NotifyError(`Limite de visualizações atingido. Tente novamente em ${retryAfterSeconds}s.`)
 
     return
   }
 
-  // Incrementa +1 no rate limit.
-  registerReveal()
+  // Incrementa o contador do rate limit.
+  incrementRateLimit()
 
   toggleVisibility()
-}
-
-function notifyRevealLimit () {
-  const seconds = Math.ceil(remainingCooldown() / 1000)
-
-  NotifyError(`Limite de visualizações atingido. Tente novamente em ${seconds}s.`)
 }
 </script>
 
