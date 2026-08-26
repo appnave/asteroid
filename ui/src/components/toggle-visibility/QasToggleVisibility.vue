@@ -35,7 +35,7 @@ import { useToggleVisibility } from '../../composables/private'
 
 import NotifyError from '../../plugins/notify-error/NotifyError'
 
-import useRateLimit from './composables/use-rate-limit.js'
+import { createRateLimit } from './helpers/create-rate-limit.js'
 
 import { uid } from 'quasar'
 import { computed } from 'vue'
@@ -81,7 +81,7 @@ const {
   toggleVisibility
 } = useToggleVisibility({ group, uuid: props.uuid || uid() })
 
-const { getStatusRateLimit, incrementRateLimit } = useRateLimit({ scope: group, limit: 10 })
+const { getStatusRateLimit, incrementRateLimit } = createRateLimit({ scope: group, limit: 10 })
 
 const icon = computed(() => isVisible.value ? 'sym_r_visibility' : 'sym_r_visibility_off')
 const style = computed(() => ({ width: props.width }))

@@ -12,7 +12,7 @@ const STORAGE_PREFIX = 'qasTV:'
  *  windowMs?: number // duração do cooldown. Ex.: limit 10 + windowMs 60000 = 10 a cada 1 min
  * }}
  */
-export default function useRateLimit ({ scope = 'default', limit = 0, windowMs = 60000 } = {}) {
+export function createRateLimit ({ scope = 'default', limit = 0, windowMs = 60000 } = {}) {
   const storageKey = `${STORAGE_PREFIX}${scope}`
 
   // Estado atual já tratando a expiração do cooldown (se acabou, volta zerado).
