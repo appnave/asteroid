@@ -14,6 +14,10 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `QasToggleVisibility`: adicionado rate limit para as visualizações do conteúdo. Ao atingir o limite, novas exibições ficam bloqueadas até a janela expirar.
+
 ## [3.20.0-beta.28] - 24-08-2026
 ## BREAKING CHANGES
 - `mixins/search-filter.js`: os eventos `fetch-options-success` e `fetch-options-error` foram renomeados para `fetchOptionsSuccess` e `fetchOptionsError`. Atualize os listeners para camelCase ao utilizar no script.
