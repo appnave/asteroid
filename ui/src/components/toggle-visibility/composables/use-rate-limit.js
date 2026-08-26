@@ -1,7 +1,7 @@
 import { LocalStorage } from 'quasar'
 
 // Prefixo do nome no localStorage
-const STORAGE_PREFIX = 'qasTv:'
+const STORAGE_PREFIX = 'qasTV:'
 
 /**
  * Controla quantas vezes uma ação pode ocorrer dentro de uma janela de tempo.
