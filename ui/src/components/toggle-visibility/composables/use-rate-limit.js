@@ -4,15 +4,7 @@ import { LocalStorage } from 'quasar'
 const STORAGE_PREFIX = 'qasTv:'
 
 /**
- * Controla quantas vezes uma ação pode ocorrer dentro de uma janela de tempo, guardando o
- * contador no localStorage (por scope). Retorna duas funções:
- *
- *  - getStatusRateLimit(): lê a situação atual (se pode ou não, e quanto falta pra liberar);
- *  - incrementRateLimit(): registra +1 no contador.
- *
- * A cada incremento o contador sobe. Ao atingir "limit", entra em cooldown por "windowMs"
- * (contado a partir do incremento que atingiu o limite); enquanto o cooldown não expira,
- * getStatusRateLimit() retorna allowed: false. Quando expira, o contador zera.
+ * Controla quantas vezes uma ação pode ocorrer dentro de uma janela de tempo.
  *
  * @param {{
  *  scope?: string,   // separa o contador por contexto (ex.: uma tabela/tela)

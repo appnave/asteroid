@@ -7,12 +7,7 @@
 <script>
 import { ref } from 'vue' // eslint-disable-line import/no-duplicates
 
-/**
- * Estado compartilhado por TODAS as instâncias de QasTooltip (module-level: existe
- * uma única vez, não uma por componente). Guarda a ref do QTooltip que está visível
- * no momento. É o que garante a regra "somente um tooltip por vez": antes de exibir
- * um novo, escondemos o que estiver aqui.
- */
+// Guarda a ref do QTooltip visível no momento, compartilhada por TODAS as instâncias.
 export const activeTooltip = ref(null)
 </script>
 
@@ -33,11 +28,8 @@ const props = defineProps({
 const tooltipRef = ref(null)
 
 /**
- * Guarda a REFERÊNCIA de outro QTooltip (o mesmo tipo de valor de activeTooltip): o
- * tooltip que ESTE precisou esconder para aparecer. Guardamos essa referência para,
- * quando este sumir, poder chamar .show() nele de novo — reexibindo o anterior caso o
- * mouse tenha voltado para a área dele. É local (uma por instância) para que o onHide
- * de um tooltip não apague o "previousTooltip" de outro.
+ * Guarda a ref do tooltip que ESTE escondeu para aparecer, para reexibi-lo (.show()) quando
+ * este sumir e o mouse tiver voltado para a área dele.
  */
 let previousTooltip = null
 
@@ -92,9 +84,8 @@ function onHide (evt) {
   const triggerElement = previous?.$el?.parentNode
 
   /**
-   * relatedTarget = elemento para onde o mouse foi ao sair daqui. Se ele está dentro do
-   * elemento que dispara o previous, o mouse voltou para a área dele (ex.: saí do tooltip
-   * A, fui para o B e voltei para o A), então reexibo o previous.
+   * Se o mouse (relatedTarget = para onde ele foi) voltou para dentro do elemento que dispara
+   * o previous, reexibo o previous (ex.: saí do tooltip A, fui para o B e voltei para o A).
    */
   if (triggerElement?.contains(evt?.relatedTarget)) {
     previous.show()
@@ -102,9 +93,8 @@ function onHide (evt) {
 }
 
 /**
- * Ao desmontar, se este tooltip ainda constava como o ativo, limpo a referência
- * compartilhada para não deixar um ponteiro "pendurado" para um componente que já
- * não existe mais.
+ * Ao desmontar, limpo a referência compartilhada se este ainda era o ativo, para não
+ * deixar o activeTooltip apontando para um componente que não existe mais.
  */
 onUnmounted(() => {
   if (activeTooltip.value === tooltipRef.value) {

@@ -88,11 +88,7 @@ const style = computed(() => ({ width: props.width }))
 const tooltipText = computed(() => isVisible.value ? props.visibleTooltip : props.hiddenTooltip)
 
 function onToggleVisibility (event) {
-  /**
-   * Só alterna se o clique for um gesto real do usuário. Eventos disparados por script
-   * (ex.: element.click() ou dispatchEvent num scraper) têm isTrusted === false e são
-   * ignorados aqui — é uma fricção contra automação ingênua, não uma barreira absoluta.
-   */
+  // Só alterna se o clique for um gesto real do usuário.
   if (!event.isTrusted) return
 
   // Esconder é sempre permitido e não consome cota.
