@@ -48,6 +48,11 @@ const props = defineProps({
     default: ''
   },
 
+  scope: {
+    type: String,
+    default: 'default'
+  },
+
   text: {
     type: String,
     default: ''
@@ -74,14 +79,15 @@ const props = defineProps({
   }
 })
 
-const group = props.group || 'default'
-
 const {
   isVisible,
   toggleVisibility
-} = useToggleVisibility({ group, uuid: props.uuid || uid() })
+} = useToggleVisibility({ group: props.group, uuid: props.uuid || uid() })
 
-const { getStatusRateLimit, incrementRateLimit } = createRateLimit({ scope: group, limit: 10 })
+const {
+  getStatusRateLimit,
+  incrementRateLimit
+} = createRateLimit({ scope: props.scope, limit: 10 })
 
 const icon = computed(() => isVisible.value ? 'sym_r_visibility' : 'sym_r_visibility_off')
 const style = computed(() => ({ width: props.width }))
