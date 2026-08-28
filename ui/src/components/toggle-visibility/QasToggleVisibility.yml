@@ -10,6 +10,12 @@ props:
     type: String
     examples: ["name", "document", "users"]
 
+  scope:
+    desc: Separa o contador de limite de visualizações por contexto. Componentes que compartilham o mesmo scope somam suas visualizações no mesmo limite (10 a cada 1 minuto).
+    default: 'default'
+    type: String
+    examples: ["email", "phone", "document"]
+
   text:
     desc: Texto a ser oculto/exibido.
     default: ''
