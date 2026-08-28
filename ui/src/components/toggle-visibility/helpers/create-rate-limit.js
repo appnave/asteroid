@@ -6,14 +6,12 @@ const STORAGE_KEY = 'qasTV'
 /**
  * Controla quantas vezes uma ação pode ocorrer dentro de um período de tempo.
  *
- * @param {{
- *  scope?: string,   // separa o contador por contexto (ex.: e-mail, telefone)
- *  limit?: number,   // máximo de ações dentro do período (0 ou menos desativa)
- *  windowMs?: number // duração do período. Ex.: limit 10 + windowMs 60000 = 10 a cada 1 min
- * }}
+ * @param {Object} config
+ * @param {string} config.scope - separa o contador por contexto (ex.: e-mail, telefone)
+ * @param {number} config.limit - máximo de ações dentro do período.
+ * @param {number} config.windowMs - período do rate limit.
  */
 export function createRateLimit ({ scope = 'default', limit = 0, windowMs = 60000 } = {}) {
-  // Lê o objeto raiz com todos os scopes: { [scope]: { count, resetAt } }.
   function getStore () {
     return LocalStorage.getItem(STORAGE_KEY) || {}
   }
@@ -22,7 +20,6 @@ export function createRateLimit ({ scope = 'default', limit = 0, windowMs = 6000
   function getState () {
     const stored = getStore()[scope]
 
-    // resetAt guarda quando o período de 1 minuto acaba; se já passou, reinicia zerado.
     if (!stored || stored.resetAt <= Date.now()) return { count: 0, resetAt: 0 }
 
     return stored
