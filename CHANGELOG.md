@@ -14,6 +14,9 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+- `QasToggleVisibility`: adicionados os eventos `show` e `hide`, emitidos ao exibir e ocultar o conteúdo, respectivamente.
+
 ## [3.20.0-beta.30] - 28-08-2026
 ### Adicionado
 - `QasToggleVisibility`: adicionado prop `scope` para tratamento de rate limit por escopo.
