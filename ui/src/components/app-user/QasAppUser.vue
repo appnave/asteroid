@@ -227,6 +227,7 @@ function useAvatarNotifications () {
     const classes = [
       'qas-app-user__notification-avatar',
       'animated',
+      'absolute',
       {
         rubberBand: hasAnimated.value
       }

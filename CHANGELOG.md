@@ -15,7 +15,13 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Adicionado
 - `QasToggleVisibility`: adicionados os eventos `show` e `hide`, emitidos ao exibir e ocultar o conteúdo, respectivamente.
+
+### Corrigido
+- `QasAppUser`: corrigido posicionamento do avatar de notificação, adicionando position: absolute.
+- `QasTimeline`: corrigido especificidade do CSS do subtitle, que dependia da ordem não determinística de extração dos chunks no build.
+
 
 ## [3.20.0-beta.30] - 28-08-2026
 ### Adicionado
