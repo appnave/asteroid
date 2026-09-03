@@ -14,7 +14,7 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## [3.20.0-beta.31] - 03-09-2026
 ### Adicionado
 - `QasToggleVisibility`: adicionados os eventos `show` e `hide`, emitidos ao exibir e ocultar o conteúdo, respectivamente.
 
@@ -5172,3 +5172,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.28]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.28-alpha.6...v3.20.0-beta.28?expand=1
 [3.20.0-beta.29]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.28...v3.20.0-beta.29?expand=1
 [3.20.0-beta.30]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.29...v3.20.0-beta.30?expand=1
+[3.20.0-beta.31]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.31-alpha.1...v3.20.0-beta.31?expand=1
