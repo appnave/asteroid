@@ -41,6 +41,13 @@ props:
     default: 'Exibir conteúdo'
     type: String
 
+events:
+  '@show -> function()':
+    desc: Dispara quando o conteúdo é exibido.
+
+  '@hide -> function()':
+    desc: Dispara quando o conteúdo é oculto.
+
 slots:
   default:
     desc: Slot para inserir conteúdo a ser oculto/exibido.

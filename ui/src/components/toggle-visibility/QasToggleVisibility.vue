@@ -38,7 +38,7 @@ import NotifyError from '../../plugins/notify-error/NotifyError'
 import { createRateLimit } from './helpers/create-rate-limit.js'
 
 import { uid } from 'quasar'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 defineOptions({ name: 'QasToggleVisibility' })
 
@@ -79,6 +79,10 @@ const props = defineProps({
   }
 })
 
+// emits
+const emit = defineEmits(['show', 'hide'])
+
+// composables
 const {
   isVisible,
   toggleVisibility
@@ -89,10 +93,15 @@ const {
   incrementRateLimit
 } = createRateLimit({ scope: props.scope, limit: 10 })
 
+// computeds
 const icon = computed(() => isVisible.value ? 'sym_r_visibility' : 'sym_r_visibility_off')
 const style = computed(() => ({ width: props.width }))
 const tooltipText = computed(() => isVisible.value ? props.visibleTooltip : props.hiddenTooltip)
 
+// watch
+watch(isVisible, value => emit(value ? 'show' : 'hide'))
+
+// functions
 function onToggleVisibility (event) {
   // Só alterna se o clique for um gesto real do usuário.
   if (!event.isTrusted) return
