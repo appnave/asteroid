@@ -9,6 +9,7 @@ export default function (config = {}) {
     dialogProps = {},
     deleteActionParams = {},
     useAutoDeleteRoute,
+    useResponseNotifyError,
     redirectRoute,
 
     // callbacks
@@ -77,12 +78,24 @@ export default function (config = {}) {
     } catch (error) {
       onDeleteError(error)
 
-      NotifyError(defaultNotifyMessages.error)
+      NotifyError(getErrorMessage(error))
     } finally {
       onDelete(false)
 
       setLoadingStateOnDialog(false)
     }
+  }
+
+  /**
+   * Quando "useResponseNotifyError" é true e o back retorna uma mensagem de erro,
+   * usamos essa mensagem no notify; caso contrário, usamos a mensagem padrão.
+   */
+  function getErrorMessage (error) {
+    const responseMessage = error?.response?.data?.status?.text
+
+    return useResponseNotifyError && responseMessage
+      ? responseMessage
+      : defaultNotifyMessages.error
   }
 
   function replaceRoute (context) {
