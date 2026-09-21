@@ -15,6 +15,9 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+## BREAKING CHANGES
+- `filter-object.js`: validar os locais que é usado, pois pode acontecer de retornar dados diferentes com essa correção, que antes não retornava.
+
 ### Corrigido
 - `filter-object.js`: corrigido problema onde chaves com valores falsy (como `false`, `0` ou `''`) não eram filtradas, pois a verificação considerava o valor ao invés da existência da chave no objeto.
 
