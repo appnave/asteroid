@@ -14,6 +14,13 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+## BREAKING CHANGES
+- `filter-object.js`: validar os locais que é usado, pois pode acontecer de retornar dados diferentes com essa correção, que antes não retornava.
+
+### Corrigido
+- `filter-object.js`: corrigido problema onde chaves com valores falsy (como `false`, `0` ou `''`) não eram filtradas, pois a verificação considerava o valor ao invés da existência da chave no objeto.
+
 ## [3.20.0-beta.32] - 16-09-2026
 ### Adicionado
 - `Delete.js`: adicionado prop `useResponseNotifyError` pra exibir a mensagem de erro vinda do back ao invés da mensagem padrão.
