@@ -39,6 +39,11 @@ props:
     default: false
     type: Boolean
 
+  tip:
+    desc: Texto exibido no tip ao lado da label.
+    default: ''
+    type: String
+
 events:
   '@update:model-value -> function(value)':
     desc: Dispara quando o model-value altera, também usado para v-model.

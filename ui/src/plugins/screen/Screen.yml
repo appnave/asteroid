@@ -3,7 +3,7 @@ type: component
 meta:
   desc: Plugin que implementa o "Screen" do quasar.
 
-inject:
+provide:
   'this.$qas.screen':
     type: Object
     debugger: true
@@ -11,6 +11,10 @@ inject:
       isSmall: false
       isMedium: false
       isLarge: false
+      isXLarge: false
+      is2XLarge: false
       untilMedium: false
       untilLarge: false
+      untilXLarge: false
+      until2XLarge: false
       isMobile: false

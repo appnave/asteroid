@@ -15,18 +15,19 @@
         </slot>
       </div>
 
-      <q-inner-loading :showing="isFetching">
-        <q-spinner color="grey" size="3em" />
-      </q-inner-loading>
+      <qas-skeleton v-if="isFetching" use-overlay />
     </div>
   </component>
 </template>
 
 <script>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasBox from '../box/QasBox.vue'
 import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import QasFilters from '../filters/QasFilters.vue'
 import QasHeader from '../header/QasHeader.vue'
+
+import { useOverlayNavigation } from '../../composables'
 
 // Importações do chart.js
 import {
@@ -72,6 +73,7 @@ export default {
     QasBox,
     QasEmptyResultText,
     QasFilters,
+    QasSkeleton,
     QasHeader
   },
 
@@ -163,12 +165,15 @@ export default {
   ],
 
   data () {
+    const { isBackgroundOverlay } = useOverlayNavigation()
+
     return {
       cancelBeforeFetch: false,
       data: [],
       filters: {},
       isFetched: false,
-      isFetching: false
+      isFetching: false,
+      isBackgroundOverlay
     }
   },
 
@@ -334,6 +339,7 @@ export default {
       return {
         alignColumns: 'end',
         description: this.subtitle,
+        skeleton: this.isFetching,
         labelProps: {
           label: this.title
         }
@@ -365,6 +371,8 @@ export default {
     },
 
     $route (to, from) {
+      if (this.isBackgroundOverlay) return
+
       this.onRouteChange(to, from)
     }
   },

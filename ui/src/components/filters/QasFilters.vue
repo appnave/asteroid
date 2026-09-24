@@ -5,9 +5,9 @@
         <slot :filter="filter" name="search">
           <q-form v-if="useSearch" @submit.prevent="filter()">
             <qas-search-input v-model="internalSearch" :placeholder="searchPlaceholder" :use-search-on-type="useSearchOnType" @clear="clearSearch" @filter="filter()" @update:model-value="onSearch">
-              <template v-if="showFilterButton" #after-clear>
+              <template v-if="showFilterActions" #after-clear>
                 <slot :context="mx_context" :filter="filter" :filters="activeFilters" name="filter-button" :remove-filter="removeFilter">
-                  <pv-filters-button v-if="useFilterButton" ref="filtersButton" v-model="internalFilters" v-bind="filterButtonProps" />
+                  <pv-filters-actions ref="filtersActions" v-model:filtersButton="internalFilters" v-bind="filtersActionsProps" />
                 </slot>
               </template>
             </qas-search-input>
@@ -15,14 +15,20 @@
         </slot>
       </div>
 
-      <div v-else-if="showFilterButton" class="col-12">
+      <div v-else-if="showFilterActions" class="col-12">
         <slot :context="mx_context" :filter="filter" :filters="activeFilters" name="filter-button" :remove-filter="removeFilter">
-          <pv-filters-button v-if="useFilterButton" ref="filtersButton" v-model="internalFilters" v-bind="filterButtonProps" />
+          <pv-filters-actions ref="filtersActions" v-model:filtersButton="internalFilters" v-bind="filtersActionsProps" />
         </slot>
       </div>
     </div>
 
     <div v-if="hasChip" class="q-mt-md">
+      <qas-badge v-if="hasOrderByChip" color="grey-4" removable text-color="black" @remove="changeOrderBy(undefined)">
+        <div class="ellipsis qas-filters__badge-content" :title="orderByLabel">
+          Ordenar por: "{{ orderByLabel }}"
+        </div>
+      </qas-badge>
+
       <qas-badge v-for="(filterItem, key) in activeFilters" :key="key" :data-cy="`filters-${filterItem.value}-chip`" removable @remove="removeFilter(filterItem)">
         <div class="ellipsis qas-filters__badge-content" :title="getChipValue(filterItem.value)">
           {{ filterItem.label }}: "{{ getChipValue(filterItem.value) }}"
@@ -37,7 +43,9 @@
 <script>
 import QasBadge from '../badge/QasBadge.vue'
 import QasSearchInput from '../search-input/QasSearchInput.vue'
-import PvFiltersButton from './private/PvFiltersButton.vue'
+import PvFiltersActions from './private/PvFiltersActions.vue'
+
+import { useOverlayNavigation } from '../../composables'
 
 import debug from 'debug'
 
@@ -52,9 +60,9 @@ export default {
   name: 'QasFilters',
 
   components: {
-    PvFiltersButton,
     QasBadge,
-    QasSearchInput
+    QasSearchInput,
+    PvFiltersActions
   },
 
   mixins: [contextMixin],
@@ -70,9 +78,19 @@ export default {
       type: Object
     },
 
+    fieldsProps: {
+      default: () => ({}),
+      type: Object
+    },
+
     listenerQueryKeys: {
       type: Array,
       default: () => []
+    },
+
+    orderByOptions: {
+      default: () => ([]),
+      type: Array
     },
 
     searchPlaceholder: {
@@ -121,11 +139,6 @@ export default {
     useUpdateRoute: {
       default: true,
       type: Boolean
-    },
-
-    fieldsProps: {
-      default: () => ({}),
-      type: Object
     }
   },
 
@@ -137,12 +150,15 @@ export default {
   ],
 
   data () {
+    const { isBackgroundOverlay } = useOverlayNavigation()
+
     return {
       currentFilters: {},
       hasFetchError: false,
       internalFilters: {},
       internalSearch: '',
       isFetching: false,
+      isBackgroundOverlay,
       /**
        * O objeto funciona como um auxiliar para armazenar opções selecionadas do lazy loading.
        * Isso é necessário porque, por padrão, não há opções no campo. As opções selecionadas servem
@@ -228,25 +244,31 @@ export default {
       return this.hasActiveFilters ? 'primary' : 'grey-10'
     },
 
-    filterButtonProps () {
+    filtersActionsProps () {
       return {
-        color: this.filterButtonColor,
-        error: this.hasFetchError,
-        fields: this.fields,
-        fieldsProps: this.formattedFieldsProps,
-        loading: this.isFetching,
-        menuProps: {
-          /**
-           * O tratamento no onHide do menu é que como o menu é recriado toda vez que o filtro é aberto, ocorre que as
-           * opções selecionadas anteriormente (e que não foram filtradas) não ficam salvas na memória, ocasionando em
-           * campos lazy loading um problema de exibir o uuid da opção por não achar essa opção no array de options do field.
-           * Para solucionar esse problema, sempre ao fechar os filtros as opções não filtradas são removidas,
-           * voltando o filtro para o seu estado anterior.
-          */
-          onHide: this.setInternalFilters
+        orderByOptions: this.orderByOptions,
+        useOrderBy: this.hasOrderByOptions,
+        useFilterButton: this.useFilterButton,
+        isFetchingFilters: this.isFetching,
+
+        filtersButtonProps: {
+          color: this.filterButtonColor,
+          error: this.hasFetchError,
+          fields: this.fields,
+          fieldsProps: this.formattedFieldsProps,
+          skeleton: this.isFetching
         },
 
-        onClear: this.clearFilters,
+        /**
+         * O tratamento no onHide do menu é que como o menu é recriado toda vez que o filtro é aberto, ocorre que as
+         * opções selecionadas anteriormente (e que não foram filtradas) não ficam salvas na memória, ocasionando em
+         * campos lazy loading um problema de exibir o uuid da opção por não achar essa opção no array de options do field.
+         * Para solucionar esse problema, sempre ao fechar os filtros as opções não filtradas são removidas,
+         * voltando o filtro para o seu estado anterior.
+        */
+        onHideFiltersMenu: this.setInternalFilters,
+        onClearFilters: this.clearFilters,
+        onChangeOrder: this.changeOrderBy,
         onFilter: () => this.filter()
       }
     },
@@ -259,12 +281,12 @@ export default {
       return !!Object.keys(this.fields || {}).length
     },
 
-    showFilterButton () {
-      return !!this.$slots.filterButton || this.useFilterButton
+    showFilterActions () {
+      return !!this.$slots.filterButton || this.useFilterButton || this.hasOrderByOptions
     },
 
     showFilters () {
-      return this.useFilterButton || this.showSearch
+      return this.useFilterButton || this.showSearch || this.hasOrderByOptions
     },
 
     showSearch () {
@@ -272,12 +294,30 @@ export default {
     },
 
     hasChip () {
-      return this.useChip && this.hasActiveFilters
+      return this.useChip && (this.hasActiveFilters || this.orderBy)
+    },
+
+    hasOrderByOptions () {
+      return !!this.orderByOptions.length
+    },
+
+    hasOrderByChip () {
+      return !!this.orderBy && this.hasOrderByOptions
+    },
+
+    orderBy () {
+      return this.$route.query.order_by
+    },
+
+    orderByLabel () {
+      return this.orderByOptions.find(option => option.value === this.orderBy)?.label
     }
   },
 
   watch: {
     $route (to, from) {
+      if (this.isBackgroundOverlay) return
+
       if (to.name === from.name) {
         /**
          * Verifica se alguma chave da query que está no "listenerQueryKeys" mudou,
@@ -315,6 +355,7 @@ export default {
     async clearFilters () {
       const { filters } = this.mx_context
       const query = { ...this.$route.query }
+
       const activeFilters = {
         ...filters,
         ...this.internalFilters
@@ -411,7 +452,7 @@ export default {
     },
 
     hideFiltersMenu () {
-      this.$refs.filtersButton?.hideMenu()
+      this.$refs.filtersActions?.hideFiltersMenu()
     },
 
     setInternalFilters () {
@@ -484,6 +525,10 @@ export default {
       for (const key in filters) {
         this.internalFilters[key] = parseValue(this.normalizeValues(filters[key], this.fields[key]?.multiple))
       }
+    },
+
+    changeOrderBy (value) {
+      this.filter({ order_by: value })
     }
   }
 }

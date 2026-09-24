@@ -54,6 +54,12 @@
     display: none;
   }
 
+  &:not(.disabled):hover .text-magic-ai {
+    background: none !important;
+    color: $deep-purple-6 !important;
+    -webkit-text-fill-color: $deep-purple-6 !important;
+  }
+
   &__section--side {
     padding-right: var(--qas-spacing-sm);
   }

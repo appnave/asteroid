@@ -206,6 +206,27 @@ function previous () {
         border-radius: var(--qas-generic-border-radius);
       }
 
+      .q-stepper__tab {
+        /*
+         * Por padrão o quasar sempre deixa as demais linhas com o mesmo tamanho, exceto a primeira e a última, que são
+         * maiores devido terem alinhamento inicial e final respectivamente, enquanto as demais possuem alinhamento
+         * central. Para equalizar visualmente os tamanhos, é necessário setar uma proporção de flex diferente para a
+         * primeira/última tab e para as tabs do meio.
+         *
+         * Proporção 2:3 para equalizar visualmente os tamanhos:
+         * - Primeira/última tab: flex 2 (possuem apenas meia linha)
+         * - Tabs do meio: flex 3 (possuem linha completa dos dois lados)
+         */
+        &:first-child,
+        &:last-child {
+          flex: 2;
+        }
+
+        &:not(:first-child):not(:last-child) {
+          flex: 3;
+        }
+      }
+
       .q-stepper {
         &__tab {
           &--done {
@@ -223,9 +244,10 @@ function previous () {
               }
             }
 
-            // Seta a cor do after da linha quando a step está finalizada, é a primeira step ou a próxima é ativa.
+            // Seta a cor do after da linha quando a step está finalizada, é a primeira step ou a próxima é ativa ou finalizada.
             &:first-child,
-            &:has(+ .q-stepper__tab.q-stepper__tab--active) {
+            &:has(+ .q-stepper__tab.q-stepper__tab--active),
+            &:has(+ .q-stepper__tab.q-stepper__tab--done) {
               .q-stepper__line::after {
                  background-color: var(--q-primary);
               }

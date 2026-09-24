@@ -18,6 +18,7 @@ export default function useOk (config = {}) {
     return {
       label: 'Ok',
       type: (props.ok?.type || props.useForm) ? 'submit' : 'button',
+      'data-cy': 'dialog-ok-btn',
 
       ...attrs,
 

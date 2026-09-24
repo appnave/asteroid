@@ -6,14 +6,14 @@ function getLatestVersions ({ execaSync, ora }) {
 
   const appExtensionVersions = JSON.parse(execaSync('npm', [
     'show',
-    '@bildvitta/quasar-app-extension-asteroid',
+    '@appnave/quasar-app-extension-asteroid',
     'time',
     '--json'
   ]).stdout)
 
   const uiVersions = JSON.parse(execaSync('npm', [
     'show',
-    '@bildvitta/quasar-ui-asteroid',
+    '@appnave/quasar-ui-asteroid',
     'time',
     '--json'
   ]).stdout)

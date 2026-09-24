@@ -2,6 +2,20 @@
   <div class="q-pa-md">
     <div>
       <div class="q-gutter-y-md">
+        <div>
+          <qas-box>
+            <qas-label label="Tamanhos default dentro do QasBox" typography="h5" />
+
+            <div class="q-gutter-sm">
+              <qas-btn icon="sym_r_person" label="Tamanho default" variant="primary" />
+
+              <qas-btn icon="sym_r_person" label="Tamanho default" variant="secondary" />
+
+              <qas-btn icon="sym_r_person" label="Tamanho default" variant="tertiary" />
+            </div>
+          </qas-box>
+        </div>
+
         <qas-label label="Primary" typography="h5" />
 
         <div class="q-gutter-sm">

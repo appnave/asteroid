@@ -21,3 +21,8 @@ props:
   raw-text:
     desc: Caso o texto a ser copiado precise ser diferente do texto a ser exibido, utilize esta propriedade.
     type: String
+
+  button-props:
+    desc: Propriedades adicionais que serão repassadas ao botão.
+    type: Object
+    default: () => ({})

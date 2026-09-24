@@ -2,7 +2,7 @@ const fs = require('fs')
 const { camelCase, kebabCase, upperFirst } = require('lodash')
 const path = require('path')
 
-const uiPackage = '@bildvitta/quasar-ui-asteroid'
+const uiPackage = '@appnave/quasar-ui-asteroid'
 const apiCache = {}
 
 function getApi (name) {
@@ -16,7 +16,7 @@ function getApi (name) {
         try {
           const { props } = require(
             mixin.startsWith('quasar')
-              ? '@bildvitta/quasar-ui-asteroid/node_modules/' + mixin
+              ? '@appnave/quasar-ui-asteroid/node_modules/' + mixin
               : mixin
           )
           Object.assign(api.props, props)
@@ -33,7 +33,7 @@ function getApi (name) {
 }
 
 function getComponentList (modifier = string => string) {
-  const api = path.resolve('node_modules/@bildvitta/quasar-ui-asteroid/dist/api')
+  const api = path.resolve('node_modules/@appnave/quasar-ui-asteroid/dist/api')
   return fs.readdirSync(api).map(file => modifier(path.parse(file).name))
 }
 

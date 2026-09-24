@@ -49,6 +49,11 @@ props:
     type: String
     examples: [visibility]
 
+  use-dropdown-always:
+    desc: Força o uso do dropdown mesmo caso tenha apenas 1 item na lista de ações.
+    default: false
+    type: Boolean
+
   use-tooltip:
     desc: Controla se vai ter o tooltip caso passe nas regras de exibição de tooltip
 

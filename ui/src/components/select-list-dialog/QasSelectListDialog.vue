@@ -1,28 +1,32 @@
 <template>
   <div class="app-select-list-dialog full-width">
-    <qas-header v-bind="headerProps" />
+    <slot name="container-header" :toggle-dialog>
+      <qas-header v-bind="headerProps" />
+    </slot>
 
     <component
       :is="containerListComponent"
       v-if="canShowContainerList"
       class="q-mt-md relative-position"
     >
-      <span class="text-grey-10 text-subtitle1">
-        {{ props.listLabel }}
-      </span>
-
       <slot name="selected-content">
-        <q-virtual-scroll #default="{ item, index }" class="app-select-list-dialog__list q-mt-md" :items="selectedOptions" separator>
-          <q-item class="q-px-none text-body1 text-grey-8">
-            <q-item-section>
-              {{ item.label }}
-            </q-item-section>
+        <qas-search-box v-model:results="searchedResults" v-bind="searchSelectedItemsBoxProps" class="q-mt-md">
+          <span class="text-grey-10 text-subtitle1">
+            {{ props.listLabel }}
+          </span>
 
-            <q-item-section avatar>
-              <qas-btn v-bind="getRemoveButtonProps({ index, option: item })" />
-            </q-item-section>
-          </q-item>
-        </q-virtual-scroll>
+          <q-virtual-scroll #default="{ item, index }" class="app-select-list-dialog__list" :items="searchedResults" separator>
+            <q-item class="q-px-none text-body1 text-grey-8">
+              <q-item-section>
+                {{ item.label }}
+              </q-item-section>
+
+              <q-item-section avatar>
+                <qas-btn v-bind="getRemoveButtonProps({ index, option: item })" />
+              </q-item-section>
+            </q-item>
+          </q-virtual-scroll>
+        </qas-search-box>
       </slot>
 
       <q-inner-loading :showing="props.loading">
@@ -50,7 +54,7 @@
 
       <template #description>
         <slot name="dialog-description">
-          <div v-if="dialogDescription" class="q-mb-xl text-center">
+          <div v-if="dialogDescription" class="q-mb-md">
             {{ dialogDescription }}
           </div>
 
@@ -69,6 +73,7 @@ import QasHeader from '../header/QasHeader.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasDialog from '../dialog/QasDialog.vue'
 import QasSelectList from '../select-list/QasSelectList.vue'
+import QasSearchBox from '../search-box/QasSearchBox.vue'
 
 import { computed, ref, watch, useSlots, inject } from 'vue'
 
@@ -130,6 +135,11 @@ const props = defineProps({
 
   useLazyLoading: {
     type: Boolean
+  },
+
+  searchPlaceholder: {
+    default: 'Pesquisar...',
+    type: String
   }
 })
 
@@ -172,6 +182,7 @@ defineExpose({ add, removeAll, remove, toggleDialog })
 
 // refs
 const model = ref([...props.modelValue])
+const searchedResults = ref([])
 
 // computeds
 const hasError = computed(() => Array.isArray(props.error) ? !!props.error.length : !!props.error)
@@ -208,6 +219,15 @@ const hasLazyLoading = computed(() => {
   return props.useLazyLoading || !!props.selectListProps?.searchBoxProps?.useLazyLoading
 })
 
+const searchSelectedItemsBoxProps = computed(() => {
+  return {
+    fuseOptions: { keys: ['label'] },
+    list: selectedOptions.value,
+    useEmptyResults: false,
+    placeholder: props.searchPlaceholder
+  }
+})
+
 watch(() => props.modelValue, newValue => {
   model.value = [...newValue]
 })
@@ -227,7 +247,7 @@ function getDialogSlot (name) {
 
 // ------------------------- composable functions ------------------------------
 function useList () {
-  const filteredOptions = ref(props.options)
+  const filteredOptions = ref([...props.options])
 
   const selectedOptions = computed(() => {
     const options = []
@@ -323,8 +343,8 @@ function useSelectDialog () {
 
   const defaultDialogProps = computed(() => {
     return {
-      useFullMaxWidth: true,
-
+      size: 'md',
+      title: 'Adicionar itens',
       ...props.dialogProps,
 
       onBeforeShow: event => {

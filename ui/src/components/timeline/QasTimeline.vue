@@ -88,7 +88,11 @@ function getFormattedValue (item, mask) {
     min-height: 100px;
   }
 
-  .q-timeline__subtitle {
+  // Especificidade precisa ser maior que a de ".q-timeline--comfortable .q-timeline__subtitle"
+  // (definida pelo próprio Quasar), senão o resultado passa a depender da ordem de extração
+  // dos chunks CSS no build, que não é determinística quando o mesmo CSS é referenciado por
+  // múltiplos chunks assíncronos.
+  .q-timeline__entry .q-timeline__subtitle {
     color: $grey-10;
     opacity: initial;
     padding-right: 0;

@@ -24,6 +24,8 @@
     </qas-input>
 
     <qas-input v-model="model" class="col-4" label="Meu input readonly" readonly />
+
+    <qas-input v-model="model" class="col-4" label="Com tip" tip="Exemplo com tip" />
   </div>
 </template>
 

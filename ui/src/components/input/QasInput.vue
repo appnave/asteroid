@@ -11,6 +11,16 @@
       />
     </template>
 
+    <template v-if="tip" #label>
+      <div class="items-center no-wrap q-gutter-x-xs row">
+        <div>
+          {{ formattedLabel }}
+        </div>
+
+        <qas-tip v-bind="tipProps" />
+      </div>
+    </template>
+
     <template v-for="(_, name) in $slots" #[name]="context">
       <slot :name="name" v-bind="context || {}" />
     </template>
@@ -34,7 +44,8 @@ export default {
   name: 'QasInput',
 
   components: {
-    QasCopy: defineAsyncComponent(() => import('../copy/QasCopy.vue'))
+    QasCopy: defineAsyncComponent(() => import('../copy/QasCopy.vue')),
+    QasTip: defineAsyncComponent(() => import('../tip/QasTip.vue'))
   },
 
   provide () {
@@ -89,6 +100,11 @@ export default {
 
     required: {
       type: Boolean
+    },
+
+    tip: {
+      type: String,
+      default: ''
     },
 
     unmaskedValue: {
@@ -234,6 +250,14 @@ export default {
             size: 'xs'
           })
         }
+      }
+    },
+
+    tipProps () {
+      return {
+        text: this.tip,
+
+        ...(this.hasError && { color: 'negative' })
       }
     }
   },

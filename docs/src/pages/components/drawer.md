@@ -21,3 +21,4 @@ Como é um componente wrapper do QasDialog, é possível repassar props diretame
 
 <doc-example file="QasDrawer/Basic" title="Básico" />
 
+<doc-example file="QasDrawer/Size" title="Tamanho do drawer" />

@@ -9,3 +9,8 @@ props:
     default: ''
     desc: Título exibido acima do toggle.
 
+  tip:
+    type: String
+    default: ''
+    desc: Texto exibido no tip ao lado da label.
+

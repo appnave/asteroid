@@ -62,6 +62,11 @@ slots:
   content:
     desc: Slot para substituir o conteúdo principal do card.
 
+provide:
+  is-expansion-item:
+    desc: Identificador booleano que indica quando um componente está dentro do contexto de um QasExpansionItem.
+    type: Boolean
+
 events:
   '@update:model-value -> function(value)':
     desc: Dispara quando o model-value altera, também usado para v-model.

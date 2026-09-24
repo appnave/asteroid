@@ -4,6 +4,11 @@ export const baseProps = {
     default: 'light-blue-2'
   },
 
+  icon: {
+    type: String,
+    default: ''
+  },
+
   label: {
     type: String,
     default: ''
@@ -25,5 +30,9 @@ export const baseProps = {
   tabindex: {
     type: [String, Number],
     default: undefined
+  },
+
+  useSubtle: {
+    type: Boolean
   }
 }

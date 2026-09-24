@@ -51,6 +51,11 @@ props:
     default: []
     type: Array
 
+  useAlwaysSeeMore:
+    desc: Sempre exibe o botão "ver mais", mesmo que o texto não esteja truncado.
+    default: false
+    type: Boolean
+
   use-badge:
     desc: Habilita badges para cada item da lista.
     default: false

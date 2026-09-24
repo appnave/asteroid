@@ -1,7 +1,7 @@
 <template>
   <div class="container spaced">
     <div>
-      <qas-radio v-model="model" label="Com opções" :options />
+      <qas-radio v-model="model" label="Com opções" :options tip="Exemplo com tip" />
     </div>
 
     <div class="q-mt-lg">

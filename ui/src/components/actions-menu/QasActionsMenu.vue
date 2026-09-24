@@ -6,11 +6,11 @@
           <q-item v-bind="getItemProps(item)" :key="key" active-class="primary" clickable data-cy="actions-menu-list-item" @click="setClickHandler(item)">
             <q-item-section avatar>
               <q-spinner v-if="item.loading" size="sm" />
-              <q-icon v-else :name="item.icon" />
+              <q-icon v-else :class="getMagicAiClasses(item)" :name="item.icon" />
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>
+              <q-item-label :class="getMagicAiClasses(item)">
                 {{ item.label }}
               </q-item-label>
             </q-item-section>
@@ -49,8 +49,6 @@ const SPLIT_SIZE = 2
 
 defineOptions({ name: 'QasActionsMenu' })
 
-const qas = inject('qas')
-
 const props = defineProps({
   buttonProps: {
     default: () => ({}),
@@ -81,9 +79,17 @@ const props = defineProps({
     type: Object
   },
 
+  skeleton: {
+    type: Boolean
+  },
+
   splitName: {
     default: '',
     type: String
+  },
+
+  useDropdownAlways: {
+    type: Boolean
   },
 
   useLabel: {
@@ -95,6 +101,10 @@ const props = defineProps({
     type: Boolean
   }
 })
+
+// globals
+const qas = inject('qas')
+const isInsideTableGenerator = inject('isTableGenerator', false)
 
 // refs
 const menuModel = ref(false)
@@ -148,7 +158,9 @@ const primaryKey = computed(() => {
 const defaultButtonPropsList = computed(() => {
   const defaultButtonPropsList = {
     useHoverOnWhiteColor: true,
-    useLabelOnSmallScreen: false
+
+    // se estiver dentro do QasTableGenerator, sempre mostra o label.
+    useLabelOnSmallScreen: isInsideTableGenerator
   }
 
   const normalizedButtonPropsList = {}
@@ -177,6 +189,7 @@ const btnDropdownProps = computed(() => {
   return {
     buttonsPropsList: defaultButtonPropsList.value,
     disable: props.disable,
+    skeleton: props.skeleton,
     useSplit: hasSplit.value,
     useAutoClose: !hasActiveLoading.value
   }
@@ -209,7 +222,13 @@ const formattedList = computed(() => {
    */
   const payload = { dropdownList: {}, buttonsList: {} }
 
-  if ((!hasSplitName.value || screen.isSmall) && !isSingle.value) {
+  /**
+   * Se a prop "useDropdownAlways" for true, significa que sempre usaremos o dropdown,
+   * mesmo que tenha apenas 1 item na lista ou que não tenha splitName.
+   * Também se não tiver splitName e a tela for pequena (mobile/tablet) e não for
+   * single, usaremos o dropdown.
+   */
+  if (props.useDropdownAlways || ((!hasSplitName.value || screen.isSmall) && !isSingle.value)) {
     const { buttonsList } = useOptionsActions({ color: DEFAULT_COLOR, props })
 
     payload.buttonsList = buttonsList.value
@@ -265,6 +284,10 @@ function getItemProps (item) {
     to,
     ...itemProps
   }
+}
+
+function getMagicAiClasses ({ useMagicAiColor }) {
+  return { 'text-magic-ai': useMagicAiColor }
 }
 
 function handleMenuModel (newValue, oldValue) {

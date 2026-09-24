@@ -1,7 +1,7 @@
 type: component
 
 mixins:
-  - '@bildvitta/quasar-ui-asteroid/dist/api/QasInput.json'
+  - '@appnave/quasar-ui-asteroid/dist/api/QasInput.json'
 
 meta:
   desc: Componente de input data e hora, implementa o "QasInput".

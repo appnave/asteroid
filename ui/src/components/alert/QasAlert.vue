@@ -1,8 +1,8 @@
 <template>
   <div v-if="displayAlert" class="inline-block qas-alert">
-    <qas-box v-bind="defaultBoxProps">
+    <div :class="containerClasses">
       <div class="flex items-center no-wrap">
-        <div class="flex items-center no-wrap text-body1 text-grey-8">
+        <div class="flex items-center no-wrap text-body1 text-grey-10">
           <q-icon v-bind="iconProps" />
 
           <component
@@ -21,14 +21,13 @@
           </span>
         </div>
 
-        <qas-btn v-if="useCloseButton" class="q-ml-sm" color="grey-10" icon="sym_r_close" variant="tertiary" @click="close" />
+        <qas-btn v-if="canUseCloseButton" class="q-ml-sm" color="grey-10" icon="sym_r_close" variant="tertiary" @click="close" />
       </div>
-    </qas-box>
+    </div>
   </div>
 </template>
 
 <script setup>
-import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
 
 import { Status, StatusColor } from '../../enums/Status'
@@ -66,7 +65,7 @@ const props = defineProps({
     default: ''
   },
 
-  useBox: {
+  useBackground: {
     type: Boolean,
     default: undefined
   },
@@ -97,113 +96,166 @@ const { displayAlert, close } = useStorageClosed()
 // computeds
 const iconProps = computed(() => {
   const status = Object.keys(Status).find(key => Status[key] === props.status)
-  const isErrorStatus = props.status === Status.Error
+
+  const statusList = {
+    [Status.Info]: {
+      icon: 'sym_r_info'
+    },
+
+    [Status.Error]: {
+      icon: 'sym_r_dangerous'
+    },
+
+    [Status.Success]: {
+      icon: 'sym_r_check_circle'
+    },
+
+    [Status.Warning]: {
+      icon: 'sym_r_warning'
+    }
+  }
 
   return {
     color: StatusColor[status],
-    name: isErrorStatus ? 'sym_r_error' : 'sym_r_info',
+    name: statusList[props.status].icon,
     size: 'sm'
   }
 })
 
 /**
- * Por padrão, quando este componente estiver dentro de um QasBox ou QasDialog, ele não terá
- * shadow, terá padding e não terá margin.
+ * Caso a prop useBackground não seja fornecida, assume que deve usar background quando não estiver dentro de um
+ * QasBox ou QasDialog por padrão.
  */
-const defaultBoxProps = computed(() => {
-  const hasBoxProps = props.useBox !== undefined
+const canUseBackground = computed(() => {
+  if (props.useBackground !== undefined) return props.useBackground
 
-  // Se não tiver a prop useBox, assume que está dentro de um QasBox ou QasDialog
-  const useBox = hasBoxProps ? props.useBox : !isBox && !isDialog
+  return !isBox && !isDialog
+})
+
+const containerClasses = computed(() => {
+  if (!canUseBackground.value) return {}
 
   return {
-    unelevated: !useBox,
-    useSpacing: useBox
+    'q-pa-md': true,
+    'qas-alert--info': props.status === Status.Info,
+    'qas-alert--error': props.status === Status.Error,
+    'qas-alert--success': props.status === Status.Success,
+    'qas-alert--warning': props.status === Status.Warning
   }
 })
 
 const textComponent = computed(() => {
-  // Regex para encontrar caracteres que estiverem dentro de [].
-  const regex = /\[.*?\]/g
+  // Configuração dos tokens suportados
+  const tokens = [
+    {
+      type: 'LINK',
+      regex: /\[(.*?)\]/g,
+      extractContent: match => match.replace(/\[(.*?)\]/, '$1'),
+      render: (content, index) => {
+        const isButtonPropsArray = Array.isArray(props.buttonProps)
+        const isRouterPropsArray = Array.isArray(props.routerLinkProps)
 
-  const matches = props.text.match(regex) || []
+        const buttonPropsForIndex = isButtonPropsArray
+          ? props.buttonProps[index]
+          : props.buttonProps
 
-  if (!matches.length) return h('span', props.text)
+        const routerLinkPropsForIndex = isRouterPropsArray
+          ? props.routerLinkProps[index]
+          : props.routerLinkProps
+
+        const hasButtonProps = buttonPropsForIndex && !!Object.keys(buttonPropsForIndex).length
+
+        if (hasButtonProps) {
+          return h(QasBtn, {
+            variant: 'tertiary',
+            label: content,
+            ...buttonPropsForIndex
+          })
+        }
+
+        return h(RouterLink, {
+          ...routerLinkPropsForIndex,
+          class: 'text-primary text-subtitle1 qas-alert__link'
+        }, {
+          default: () => content
+        })
+      }
+    },
+    {
+      type: 'BOLD',
+      regex: /\*\*(.*?)\*\*/g,
+      extractContent: match => match.replace(/\*\*(.*?)\*\*/, '$1'),
+      render: content => h('strong', { class: 'text-weight-bold' }, content)
+    }
+  ]
+
+  // Encontra todos os matches de todos os tipos de token
+  const allMatches = []
+
+  tokens.forEach(token => {
+    const matches = props.text.match(token.regex) || []
+
+    matches.forEach(match => {
+      allMatches.push({
+        type: token.type,
+        match,
+        content: token.extractContent(match),
+        render: token.render
+      })
+    })
+  })
+
+  // Se não há matches, retorna texto simples
+  if (!allMatches.length) {
+    return h('span', props.text)
+  }
 
   let processedText = props.text
 
-  /**
-   * Substitui cada match por um placeholder único na ordem correta
-   * Exemplo: "Clique [aqui] para [ver mais]" vira "Clique $0 para $1"
-   */
-  matches.forEach((match, index) => {
-    processedText = processedText.replace(match, `$${index}`)
+  // Substitui cada match por um placeholder único
+  allMatches.forEach((matchData, index) => {
+    processedText = processedText.replace(matchData.match, `$${matchData.type}_${index}`)
   })
 
-  // Divide o texto pelos placeholders
-  const parts = processedText.split(/\$\d+/)
-
-  const placeholders = processedText.match(/\$\d+/g) || []
-
+  // Separa o texto em partes
+  const parts = processedText.split(/(\$\w+_\d+)/)
   const result = []
 
-  parts.forEach((part, index) => {
-    if (part) result.push(part)
-
-    if (index < placeholders.length) {
-      // Pega o índice do placeholder para encontrar o match correto
-      const placeholderIndex = parseInt(placeholders[index].replace('$', ''))
-
-      // Pega o texto original do match. Ex: '[Clique aqui]'
-      const match = matches[placeholderIndex]
-
-      // Remove os colchetes do match. Ex: [Clique aqui] para Clique aqui
-      const routerLabel = match.replaceAll(/[[\]]/g, '')
-
-      // Determina as props do botão/link baseado no índice
-      const isButtonPropsArray = Array.isArray(props.buttonProps)
-      const isRouterPropsArray = Array.isArray(props.routerLinkProps)
-
-      const buttonPropsForIndex = isButtonPropsArray
-        ? props.buttonProps[placeholderIndex]
-        : props.buttonProps
-
-      const routerLinkPropsForIndex = isRouterPropsArray
-        ? props.routerLinkProps[placeholderIndex]
-        : props.routerLinkProps
-
-      const hasButtonProps = buttonPropsForIndex && !!Object.keys(buttonPropsForIndex).length
-
-      const getRouterLinkRender = () => {
-        return h(
-          RouterLink,
-          {
-            ...routerLinkPropsForIndex,
-            class: 'text-primary text-subtitle1 qas-alert__link'
-          },
-          {
-            default: () => routerLabel
-          }
-        )
-      }
-
-      const getQasBtnRender = () => {
-        return h(
-          QasBtn,
-          {
-            variant: 'tertiary',
-            label: routerLabel,
-            ...buttonPropsForIndex
-          }
-        )
-      }
-
-      result.push(hasButtonProps ? getQasBtnRender() : getRouterLinkRender())
+  parts.forEach(part => {
+    // Se a parte é texto normal, adiciona como string
+    if (!part.startsWith('$')) {
+      if (part) result.push(part)
+      return
     }
+
+    // Se é um placeholder, encontra o match correspondente
+    const placeholderMatch = part.match(/\$(\w+)_(\d+)/)
+    if (!placeholderMatch) return
+
+    const [, type, indexStr] = placeholderMatch
+    const index = parseInt(indexStr)
+
+    // Encontra o match data correspondente
+    const matchData = allMatches[index]
+    if (!matchData || matchData.type !== type) return
+
+    // Conta quantos matches do mesmo tipo vieram antes (para o índice das props)
+    const typeIndex = allMatches
+      .slice(0, index)
+      .filter(m => m.type === type)
+      .length
+
+    // Renderiza o componente
+    result.push(matchData.render(matchData.content, typeIndex))
   })
 
   return h('span', result)
 })
+
+/**
+ * Não é possível ter botão de fechar se o alerta não tiver background.
+ */
+const canUseCloseButton = computed(() => props.useCloseButton && canUseBackground.value)
 
 // composable definitions
 function useStorageClosed () {
@@ -231,9 +283,40 @@ function useStorageClosed () {
 </script>
 
 <style lang="scss">
+@mixin qas-alert-variant($color) {
+  border-color: rgba($color, 0.5);
+  background-color: rgba($color, 0.1);
+}
+
 .qas-alert {
   &__link {
     text-decoration: none;
   }
+
+  &--info,
+  &--error,
+  &--success,
+  &--warning {
+    border-radius: $generic-border-radius;
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  &--info {
+    @include qas-alert-variant($blue-11);
+  }
+
+  &--error {
+    @include qas-alert-variant($red-11);
+  }
+
+  &--success {
+    @include qas-alert-variant($green-12);
+  }
+
+  &--warning {
+    @include qas-alert-variant($orange-11);
+  }
 }
+
 </style>

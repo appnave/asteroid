@@ -138,6 +138,12 @@ props:
     default: true
     type: Boolean
 
+  use-loading:
+    desc: Controla se o componente vai exibir um loading quando estiver fazendo fetch dos dados.
+    default: true
+    type: Boolean
+
+
   use-notify-success:
     desc: Controla se vai ter ou não notificação de sucesso ao finalizar o submit.
     default: true

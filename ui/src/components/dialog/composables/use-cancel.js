@@ -15,7 +15,7 @@ export default function useCancel (config = {}) {
   const defaultCancel = computed(() => {
     return {
       label: 'Cancelar',
-      outline: true,
+      'data-cy': 'dialog-cancel-btn',
 
       ...props.cancel,
 

@@ -6,7 +6,10 @@ function releaseUi ({ execaSync, ora, publishCommands, packages }) {
     execaSync('npm', ['cache', 'clean', '--force'])
     execaSync('npm', ['install'], { cwd: packages.ui.resolved })
 
-    execaSync('npm', publishCommands, { cwd: packages.ui.resolved })
+    // libera o terminal para o fluxo interativo de autenticação do npm
+    publishSpinner.stop()
+    execaSync('npm', publishCommands, { cwd: packages.ui.resolved, stdio: 'inherit' })
+
     publishSpinner.succeed('"ui" publicada')
 
     return { success: true, error: false }

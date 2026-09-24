@@ -13,3 +13,12 @@
 .text-no-decoration {
   text-decoration: none !important;
 }
+
+// Colors
+.text-magic-ai {
+  background: var(--qas-magic-ai-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

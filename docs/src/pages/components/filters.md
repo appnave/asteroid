@@ -28,6 +28,7 @@ Este componente serve para lidar com **filtros dinâmicos**, e normalmente utili
 
 ## Uso
 <doc-example file="QasFilters/Basic" title="Básico" />
+<doc-example file="QasFilters/OrderBy" title="Com ordenação" />
 <doc-example file="QasFilters/ExNoUseSearchOnType" title="Sem pesquisa automática ao digitar" />
 
 Normalmente este componente é utilizando junto ao `QasListView` para filtrar os dados.

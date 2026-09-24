@@ -7,7 +7,7 @@
       </slot>
     </span>
 
-    <qas-btn class="q-ml-xs" color="primary" :icon="props.icon" :loading="isLoading" variant="tertiary" @click.stop.prevent="copy">
+    <qas-btn class="q-ml-xs" color="primary" :icon="props.icon" :loading="isLoading" variant="tertiary" v-bind="props.buttonProps" @click.stop.prevent="copy">
       <qas-tooltip text="Copiar" />
     </qas-btn>
   </span>
@@ -41,6 +41,11 @@ const props = defineProps({
   rawText: {
     default: '',
     type: String
+  },
+
+  buttonProps: {
+    type: Object,
+    default: () => ({})
   }
 })
 

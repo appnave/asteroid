@@ -9,3 +9,4 @@ Componente de card.
 ## Uso
 
 <doc-example file="QasCardImage/Basic" title="Básico" />
+<doc-example file="QasCardImage/Skeleton" title="Skeleton" />

@@ -1,4 +1,6 @@
-import { Dialog, NotifySuccess, NotifyError } from 'asteroid'
+import Dialog from '../dialog/Dialog.js'
+import NotifySuccess from '../notify-success/NotifySuccess.js'
+import NotifyError from '../notify-error/NotifyError.js'
 import { getAction } from '@bildvitta/store-adapter'
 import { useHistory } from '../../composables'
 
@@ -7,6 +9,7 @@ export default function (config = {}) {
     dialogProps = {},
     deleteActionParams = {},
     useAutoDeleteRoute,
+    useResponseNotifyError,
     redirectRoute,
 
     // callbacks
@@ -19,16 +22,12 @@ export default function (config = {}) {
   const { entity, id, url } = deleteActionParams
 
   const defaultDialogProps = {
-    useForm: true,
+    useAutoCloseOnOk: false,
+
+    title: 'Excluir',
+    description: 'Tem certeza que deseja excluir este item?',
 
     ...dialogProps,
-
-    card: {
-      title: 'Excluir',
-      description: 'Tem certeza que deseja excluir este item?',
-
-      ...dialogProps.card
-    },
 
     ok: {
       label: 'Excluir',
@@ -79,12 +78,24 @@ export default function (config = {}) {
     } catch (error) {
       onDeleteError(error)
 
-      NotifyError(defaultNotifyMessages.error)
+      NotifyError(getErrorMessage(error))
     } finally {
       onDelete(false)
 
       setLoadingStateOnDialog(false)
     }
+  }
+
+  /**
+   * Quando "useResponseNotifyError" é true e o back retorna uma mensagem de erro,
+   * usamos essa mensagem no notify; caso contrário, usamos a mensagem padrão.
+   */
+  function getErrorMessage (error) {
+    const responseMessage = error?.response?.data?.status?.text
+
+    return useResponseNotifyError && responseMessage
+      ? responseMessage
+      : defaultNotifyMessages.error
   }
 
   function replaceRoute (context) {

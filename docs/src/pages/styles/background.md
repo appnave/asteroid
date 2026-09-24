@@ -20,3 +20,8 @@ A propriedade background-position define a posição inicial de uma imagem de fu
 |`bg-position-left`  | Posiciona a imagem de fundo na parte esquerda do container |`background-position: left`  |
 |`bg-position-right` | Posiciona a imagem de fundo na parte direita do container  |`background-position: right` |
 |`bg-position-top`   | Posiciona a imagem de fundo na parte superior do container |`background-position: top`   |
+### Colors
+
+| **Nome da Classe** |                      **Descrição**                     |           **Adiciona**           |
+|--------------------|--------------------------------------------------------|----------------------------------|
+|`bg-magic-ai`       | Aplica o gradiente de magic AI como cor de fundo       |`background: linear-gradient(90deg, #0F54AE 0%, #C51162 100%)`|

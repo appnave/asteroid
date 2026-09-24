@@ -9,6 +9,7 @@ export default (message, caption) => {
     classes: 'qas-notification qas-notification--success',
     message,
     type: 'success',
-    icon: 'sym_r_check_circle'
+    icon: 'sym_r_check_circle',
+    iconColor: 'positive'
   })
 }

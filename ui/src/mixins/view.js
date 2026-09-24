@@ -1,4 +1,5 @@
 import { camelizeFieldsName } from '../helpers'
+
 import { markRaw } from 'vue'
 
 export default {
@@ -68,10 +69,6 @@ export default {
   },
 
   computed: {
-    mx_componentClass () {
-      return this.useBoundary && 'container spaced'
-    },
-
     mx_hasFooterSlot () {
       return !!(this.$slots.footer)
     },

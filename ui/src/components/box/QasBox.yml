@@ -12,6 +12,11 @@ props:
     desc: Remove a sombra do componente.
     type: Boolean
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   spacing-x:
     desc: Espaçamento horizontal do componente.
     type: String
@@ -26,4 +31,9 @@ props:
 
   use-spacing:
     desc: Controla espaçamento do componente.
+    type: Boolean
+
+provide:
+  is-box:
+    desc: Identificador booleano que indica quando um componente está dentro do contexto de um QasBox.
     type: Boolean

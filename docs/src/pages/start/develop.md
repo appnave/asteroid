@@ -26,7 +26,7 @@ Este passo **não** é um `npm link` e funciona apenas para alterações feitas 
 
 Primeiro, você precisa pegar o caminho relativo que se encontra o `asteroid` localmente na sua maquina, vamos supor que o nosso seja: `~/Documents/bild/asteroid`.
 
-Dentro do seu projeto que está usando asteroid, no terminal, vá até `node_modules/@bildvitta/quasar-app-extension-asteroid`, e digite este comando:
+Dentro do seu projeto que está usando asteroid, no terminal, vá até `node_modules/@appnave/quasar-app-extension-asteroid`, e digite este comando:
 
 ```js
 npm add file:~/Documents/bild/asteroid/ui
