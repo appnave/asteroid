@@ -114,7 +114,8 @@ export default async function (api) {
       'date-fns',
       'date-fns/locale',
       'leaflet',
-      'fontfaceobserver'
+      'fontfaceobserver',
+      'autonumeric'
     ])
 
     viteConf.plugins = viteConf.plugins || []
