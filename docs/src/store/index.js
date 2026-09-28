@@ -92,12 +92,20 @@ function createCollectionModule ({
     }),
 
     getters: {
+      list: state => state.list,
+      filters: state => state.filters,
       byId: state => id => state.list.find(item => item[idKey] === id)
     },
 
     mutations: {
       removeById (state, id) {
         state.list = state.list.filter(item => item[idKey] !== id)
+      },
+
+      replaceById (state, item) {
+        const index = state.list.findIndex(({ [idKey]: id }) => id === item[idKey])
+
+        if (~index) state.list.splice(index, 1, item)
       }
     },
 
@@ -117,8 +125,10 @@ function createCollectionModule ({
         })
       },
 
-      async fetchSingle ({ getters, state }, payload = {}) {
+      async fetchSingle ({ commit, getters, state }, payload = {}) {
         const result = clone(getters.byId(payload.id))
+
+        if (result) commit('replaceById', clone(result))
 
         return createResponse({
           fields: clone(state.fields),
