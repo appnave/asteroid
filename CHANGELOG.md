@@ -14,7 +14,7 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## [3.20.0] - 28-09-2026
 ## BREAKING CHANGES
 - `filter-object.js`: validar os locais que é usado, pois pode acontecer de retornar dados diferentes com essa correção, que antes não retornava.
 - `mixins/search-filter.js`: os eventos `fetch-options-success` e `fetch-options-error` foram renomeados para `fetchOptionsSuccess` e `fetchOptionsError`. Atualize os listeners para camelCase ao utilizar no script.
@@ -5471,3 +5471,4 @@ Adicionado suporte para Pinia/Vuex Seguindo os padrões da biblioteca `@bildvitt
 [3.20.0-beta.31]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.31-alpha.1...v3.20.0-beta.31?expand=1
 [3.20.0-beta.32]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.32-alpha.4...v3.20.0-beta.32?expand=1
 [3.20.0-beta.33]: https://github.com/bildvitta/asteroid/compare/v3.20.0-beta.32...v3.20.0-beta.33?expand=1
+[3.20.0]: https://github.com/bildvitta/asteroid/compare/v-1...v3.20.0?expand=1
