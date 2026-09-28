@@ -3,7 +3,7 @@ type: component
 meta:
   desc: Plugin que implementa o "QNotify" do quasar para notificações de sucesso.
 
-inject:
+provide:
   'this.$qas.success(msg)':
     params:
       msg:

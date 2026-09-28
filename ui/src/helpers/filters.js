@@ -88,6 +88,8 @@ function formatCompanyDocument (value) {
 }
 
 function formatDocument (value) {
+  if (!value) return ''
+
   return value.length < 12
     ? formatPersonalDocument(value)
     : formatCompanyDocument(value)
@@ -158,7 +160,7 @@ function parseValue (value) {
   try { return JSON.parse(value) } catch { return value }
 }
 
-function booleanLabel (value, trueLabel = 'sim', falseLabel = 'não') {
+function booleanLabel (value, trueLabel = 'Sim', falseLabel = 'Não') {
   try { return JSON.parse(value) ? trueLabel : falseLabel } catch { return value }
 }
 

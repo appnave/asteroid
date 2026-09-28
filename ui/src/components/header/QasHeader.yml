@@ -12,7 +12,7 @@ props:
   badges:
     desc: Adiciona badges ao lado do titulo (QasLabel), caso não tenha titulo fica somente as bages acima da descrição.
     default: []
-    type: Array
+    type: [Array, Object]
 
   button-props:
     desc: Propriedades do QasBtn.
@@ -33,16 +33,31 @@ props:
     type: Object
     default: {}
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   spacing:
     desc: Espaçamento entre o componente e o conteúdo abaixo.
     default: xl
     type: String
     examples: [none, xs, sm, md, lg, xl, '2xl', '3xl', '4xl', '5xl']
 
+  tip-props:
+    desc: Propriedades repassadas para o componente do QasTip ficando ao lado do título (label).
+    type: Object
+    default: {}
+
   use-ellipsis:
     desc: Adiciona ellipsis ao título (label).
     type: Boolean
     default: false
+
+provide:
+  is-header:
+    desc: Identificador booleano que indica quando um componente está dentro do contexto de um QasHeader.
+    type: Boolean
 
 slots:
   actions:

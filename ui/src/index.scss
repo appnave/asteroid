@@ -13,6 +13,7 @@ $accent: var(--q-accent);
   --qas-border-grey: #{$grey-4};
   --qas-generic-border-radius: 4px;
   --qas-generic-transition: 300ms;
+  --qas-magic-ai-gradient: linear-gradient(90deg, #0F54AE 0%, #C51162 100%);
 }
 
 $background-color: var(--qas-background-color);

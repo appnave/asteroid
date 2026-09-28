@@ -105,7 +105,7 @@ const slots = defineSlots()
 
 // refs
 const expansionItem = ref(null)
-const showContent = ref(false)
+const showContent = ref(!!modelValue.value)
 
 // consts
 // TODO-ISSUE: rever quando a issue #1377 para ter um inject geral for resolvida.

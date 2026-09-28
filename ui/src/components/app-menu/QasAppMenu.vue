@@ -82,26 +82,26 @@
           </template>
         </q-list>
 
-        <!-- usuário + chat ajuda -->
         <div v-if="showAppUser" class="column justify-end no-wrap qas-app-menu__user-chat" @mouseenter="onMouseEvent" @mouseleave="onMouseEvent">
-          <!-- Chat Ajuda -->
-          <q-list v-if="useChat" class="q-mt-md">
-            <q-item class="q-pb-none qas-app-menu__chat-item" clickable @click="toggleChat">
-              <q-item-section avatar class="qas-app-menu__chat-item-section text-primary">
-                <q-icon name="sym_r_chat" />
+          <!-- chat ajuda e outros botões podendo vir via prop -->
+          <q-list v-for="(item, itemIndex) in formattedBottomListItems" :key="itemIndex" class="q-mt-md">
+            <q-item class="q-pb-none qas-app-menu__bottom-list-item" clickable @click="item.onClick">
+              <q-item-section avatar class="qas-app-menu__bottom-list-item-section text-primary">
+                <q-img v-if="item.useImage" height="24px" :src="item.image" width="24px" />
+                <q-icon v-else :name="item.icon" />
               </q-item-section>
 
-              <q-item-section class="qas-app-menu__chat-item-section text-primary">
+              <q-item-section class="qas-app-menu__bottom-list-item-section text-primary">
                 <q-item-label>
                   <div class="ellipsis text-subtitle2">
-                    Solicitar ajuda
+                    {{ item.label }}
                   </div>
                 </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
 
-          <!-- User -->
+          <!-- usuário -->
           <div class="full-width q-mt-md q-pb-lg q-px-lg">
             <qas-app-user v-bind="defaultAppUserProps" />
           </div>
@@ -138,6 +138,11 @@ const props = defineProps({
     type: Object,
     required: true,
     default: () => ({})
+  },
+
+  bottomListItems: {
+    type: Array,
+    default: () => []
   },
 
   brand: {
@@ -269,6 +274,21 @@ const classes = computed(() => {
       'qas-app-menu__label--spaced': !isMiniMode.value
     }
   }
+})
+
+/**
+ * Botões como Chat de ajuda, e outros à mais como por exemplo NaveZap.
+ */
+const formattedBottomListItems = computed(() => {
+  return [
+    ...props.bottomListItems,
+
+    ...(props.useChat ? [{
+      onClick: toggleChat,
+      icon: 'sym_r_chat',
+      label: 'Solicitar ajuda'
+    }] : [])
+  ]
 })
 
 /**
@@ -484,11 +504,11 @@ function useChatMenu () {
     flex: 1 1 auto;
   }
 
-  &__chat-item:hover &__chat-item-section {
+  &__bottom-list-item:hover &__bottom-list-item-section {
     color: var(--qas-primary-contrast) !important;
   }
 
-  &__chat-item-section {
+  &__bottom-list-item-section {
     transition: color var(--qas-generic-transition);
   }
 

@@ -70,7 +70,7 @@ props:
   row-route-fn:
     desc: Usado quando há a necessidade de alteração de rota ao clicar em um item da tabela(a linha passa ser um <a> habilitando a opção de abrir em uma nova aba).
     type: Function
-    examples: ["(row) => ({ path: 'table-generator', params: { id: row.uuid } })"]
+    examples: ["row => ({ path: 'table-generator', params: { id: row.uuid } })", "row => undefined", "row => {}"]
 
   selected:
     desc: Usado como model das linhas selecionadas.
@@ -78,6 +78,11 @@ props:
     type: Array
     model: true
     examples: ["['uuid1', 'uuid2']"]
+
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
 
   use-box:
     desc: Controla se o componente vai usar QasBox ou div.
@@ -97,6 +102,11 @@ props:
   use-scroll-on-grab:
     desc: Adiciona scroll pelo mouse ao arrastar tabela em todas as telas (Celular, Desktop).
     default: true
+    type: Boolean
+
+  use-multiline:
+    desc: Usado para permitir que o conteúdo da célula quebre linha (não permite scroll na tabela a partir de tablet).
+    default: false
     type: Boolean
 
   use-object-selected-model:

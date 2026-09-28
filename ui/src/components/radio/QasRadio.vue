@@ -1,6 +1,10 @@
 <template>
   <div class="qas-radio">
-    <qas-label v-if="canShowOptionGroupLabel" :color :label="props.label" margin="sm" typography="h5" />
+    <div v-if="canShowOptionGroupLabel" class="items-center no-wrap q-gutter-x-xs q-mb-sm row">
+      <qas-label :color :label="props.label" margin="none" typography="h5" />
+
+      <qas-tip v-if="props.tip" v-bind="tipProps" />
+    </div>
 
     <component :is="component.is" v-bind="component.props" />
 
@@ -11,6 +15,7 @@
 <script setup>
 import QasLabel from '../label/QasLabel.vue'
 import QasErrorMessage from '../error-message/QasErrorMessage.vue'
+import QasTip from '../tip/QasTip.vue'
 
 import useErrorMessage, { baseErrorProps } from '../../composables/private/use-error-message'
 import useScreen from '../../composables/use-screen'
@@ -27,6 +32,11 @@ const props = defineProps({
   ...baseErrorProps,
 
   label: {
+    default: '',
+    type: String
+  },
+
+  tip: {
     default: '',
     type: String
   }
@@ -46,6 +56,14 @@ const isOptionGroup = computed(() => !!attrs.options?.length)
  * Só mostra a label caso for q-option-group e tenha label vindo nas props
  */
 const canShowOptionGroupLabel = computed(() => isOptionGroup.value && !!props.label)
+
+const tipProps = computed(() => {
+  return {
+    text: props.tip,
+
+    ...(props.error && { color: 'negative' })
+  }
+})
 
 /**
  * - quando é um grupo de opções, o componente é 'QOptionGroup', caso contrário,

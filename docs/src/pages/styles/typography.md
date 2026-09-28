@@ -77,3 +77,9 @@ title: Tipografia
 |`text-break`        | Quebras de linha podem ser inseridas entre quaisquer caracteres de texto |`word-break: break-all`     |
 |`text-underline`    | Decora o texto com um traçado na base                                    |`text-decoration: underline`|
 |`text-no-decoration`| Remove toda decoração existente no texto                                 |`text-decoration: none`     |
+
+## Colors
+
+| **Nome da Classe** |                             **Descrição**                       |           **Adiciona**           |
+|--------------------|-----------------------------------------------------------------|----------------------------------|
+|`text-magic-ai`     | Aplica o gradiente de magic AI como cor de texto                |`background: linear-gradient(90deg, #0F54AE 0%, #C51162 100%); background-clip: text; -webkit-text-fill-color: transparent`|

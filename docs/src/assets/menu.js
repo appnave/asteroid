@@ -6,6 +6,12 @@ module.exports = [
   },
 
   {
+    icon: 'sym_r_arrow_menu_open',
+    name: 'Navegação em overlay (drawer)',
+    path: '/overlay-navigation'
+  },
+
+  {
     icon: 'sym_r_flight_takeoff',
     name: 'Começando',
     children: [
@@ -116,6 +122,10 @@ module.exports = [
         path: '/components/checkbox'
       },
       {
+        name: 'Container',
+        path: '/components/container'
+      },
+      {
         name: 'Date',
         path: '/components/date'
       },
@@ -134,6 +144,10 @@ module.exports = [
       {
         name: 'Dialog',
         path: '/components/dialog'
+      },
+      {
+        name: 'DialogFilePreview',
+        path: '/components/dialog-file-preview'
       },
       {
         name: 'DialogRouter',
@@ -212,6 +226,10 @@ module.exports = [
         path: '/components/layout'
       },
       {
+        name: 'LazyLoadingComponents',
+        path: '/components/lazy-loading-components'
+      },
+      {
         name: 'ListItems',
         path: '/components/list-items'
       },
@@ -222,6 +240,10 @@ module.exports = [
       {
         name: 'Map',
         path: '/components/map'
+      },
+      {
+        name: 'MapDraw',
+        path: '/components/map-draw'
       },
       {
         name: 'NestedFields',
@@ -270,6 +292,10 @@ module.exports = [
       {
         name: 'Resizer',
         path: '/components/resizer'
+      },
+      {
+        name: 'RouterLink',
+        path: '/components/router-link'
       },
       {
         name: 'SearchBox',
@@ -322,6 +348,10 @@ module.exports = [
       {
         name: 'StepperFormView',
         path: '/components/stepper-form-view'
+      },
+      {
+        name: 'Skeleton ',
+        path: '/components/skeleton'
       },
       {
         name: 'TableGenerator',
@@ -594,6 +624,10 @@ module.exports = [
       {
         name: 'useNotifications',
         path: '/composables/use-notifications'
+      },
+      {
+        name: 'useOverlayNavigation',
+        path: '/composables/use-overlay-navigation'
       },
       {
         name: 'useQueryCache',

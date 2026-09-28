@@ -4,12 +4,24 @@
       {{ props.title }}
     </span>
 
-    <q-toggle class="col-12 qas-toggle" v-bind="attrs" dense />
+    <q-toggle class="col-12 qas-toggle" v-bind="toggleAttrs" dense>
+      <template v-if="hasLabelTip" #default>
+        <div class="items-center no-wrap q-gutter-x-xs row">
+          <div>
+            {{ attrs.label }}
+          </div>
+
+          <qas-tip :text="props.tip" />
+        </div>
+      </template>
+    </q-toggle>
   </div>
 </template>
 
 <script setup>
-import { useAttrs } from 'vue'
+import QasTip from '../tip/QasTip.vue'
+
+import { computed, useAttrs } from 'vue'
 
 defineOptions({
   name: 'QasToggle',
@@ -20,11 +32,28 @@ const props = defineProps({
   title: {
     type: String,
     default: ''
+  },
+
+  tip: {
+    type: String,
+    default: ''
   }
 })
 
 // composables
 const attrs = useAttrs()
+
+const hasLabelTip = computed(() => !!(props.tip && attrs.label))
+
+const toggleAttrs = computed(() => {
+  const payload = { ...attrs }
+
+  if (hasLabelTip.value) {
+    payload.label = undefined
+  }
+
+  return payload
+})
 </script>
 
 <style lang="scss">

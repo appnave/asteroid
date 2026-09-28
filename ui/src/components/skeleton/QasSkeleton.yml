@@ -1,0 +1,48 @@
+type: component
+
+meta:
+  desc: Componente wrapper do "QSkeleton" que facilita a criação de skeletons com padrões pré-definidos para componentes do Asteroid.
+
+props:
+  gutter:
+    desc: Adiciona espaçamento (padding) no skeleton quando usado como overlay.
+    type: String
+    examples: ['sm', 'md', 'lg', 'xl']
+
+  height:
+    desc: Altura do skeleton.
+    type: String
+    examples: ['50px']
+
+  max-width:
+    desc: Largura máxima do skeleton.
+    type: String
+    examples: ['300px']
+
+  min-height:
+    desc: Altura mínima do skeleton.
+    type: String
+    examples: ['200px']
+
+  size:
+    desc: Tamanho do skeleton (usado para tipos circulares ou quadrados).
+    type: String
+    examples: ['50px']
+
+  type:
+    desc: Tipo do skeleton. Pode ser um tipo padrão do Quasar ou um dos tipos personalizados do Asteroid ("QasBadge", "QasActionsMenu", "QasCheckbox", "QasBtn", "QasToggleVisibility", "QasTextTruncate", "QasStatus").
+    type: String
+    examples: ['text', 'QasBtn', 'rect']
+
+  use-overlay:
+    desc: Define se o skeleton deve se comportar como um overlay (posicionamento absoluto cobrindo o pai).
+    type: Boolean
+
+  use-contrast:
+    desc: Define se o skeleton deve ter a cor de fundo mais escura ("bg-blue-grey-4"), geralmente usado para títulos ou botões.
+    type: Boolean
+
+  width:
+    desc: Largura do skeleton.
+    type: String
+    examples: ['100px', '100%']

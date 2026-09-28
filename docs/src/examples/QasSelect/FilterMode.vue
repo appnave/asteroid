@@ -11,9 +11,9 @@
     <qas-box class="q-mb-lg">
       <qas-label label="Dentro de box" />
 
-      <qas-select v-model="model" v-bind="selectProps" use-filter-mode />
+      <qas-select v-model="model" v-bind="selectProps" tip="Exemplo com tip" use-filter-mode />
 
-      <qas-select v-model="model" class="q-mt-lg" error error-message="Mensagem de erro" v-bind="selectProps" use-filter-mode />
+      <qas-select v-model="model" class="q-mt-lg" error error-message="Mensagem de erro" v-bind="selectProps" tip="Exemplo com tip" use-filter-mode />
     </qas-box>
 
     <div>
@@ -128,9 +128,7 @@ const selectProps = {
 }
 
 const dialogProps = {
-  card: {
-    title: 'Selecione uma opção'
-  }
+  title: 'Selecione uma opção'
 }
 
 function toggleDialog () {

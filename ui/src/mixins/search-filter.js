@@ -37,8 +37,8 @@ export default {
     'update:modelValue',
     'update:fetching',
     'update:selectedOptions',
-    'fetch-options-success',
-    'fetch-options-error'
+    'fetchOptionsSuccess',
+    'fetchOptionsError'
   ],
 
   data () {
@@ -86,6 +86,12 @@ export default {
       return !!this.mx_filteredOptions.length
     },
 
+    mx_hasNextPage () {
+      const { lastPage, page, hasCount, hasNextPage } = this.mx_pagination
+
+      return hasCount ? !!(lastPage && page <= lastPage) : hasNextPage
+    },
+
     mx_hasOptionsToExclude () {
       return !!this.optionsToExclude.length
     }
@@ -98,7 +104,7 @@ export default {
 
         this.mx_cachedOptions = []
 
-        this.mx_filterOptionsByStore('')
+        if (!this.disable) this.mx_filterOptionsByStore('')
 
         setTimeout(() => this.$emit('update:modelValue', undefined))
       }
@@ -212,7 +218,7 @@ export default {
           hasNextPage
         }
 
-        this.$emit('fetch-options-success', data)
+        this.$emit('fetchOptionsSuccess', data)
 
         const options = this.mx_getOptions(results)
 
@@ -221,7 +227,7 @@ export default {
         return this.mx_getNonDuplicatedOptions(options)
       } catch (error) {
         this.mx_hasFetchError = true
-        this.$emit('fetch-options-error', error)
+        this.$emit('fetchOptionsError', error)
 
         return []
       } finally {

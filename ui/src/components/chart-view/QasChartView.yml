@@ -52,6 +52,11 @@ props:
     default: {}
     type: Object
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   subtitle:
     desc: Define um subtítulo para o gráfico.
     type: String

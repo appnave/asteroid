@@ -14,5 +14,10 @@ props:
     default: ''
     type: String
 
+  tip:
+    desc: Texto exibido no tip ao lado da label.
+    default: ''
+    type: String
+
 meta:
   desc: Componente wrapper do QRadio.

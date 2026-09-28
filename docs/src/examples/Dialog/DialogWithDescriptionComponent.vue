@@ -11,9 +11,7 @@ export default {
   computed: {
     dialogConfig () {
       return {
-        card: {
-          description: DescriptionComponent
-        }
+        description: DescriptionComponent
       }
     }
   }

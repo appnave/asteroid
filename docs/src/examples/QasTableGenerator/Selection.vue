@@ -30,8 +30,17 @@ const tableGeneratorProps = computed(() => {
   return {
     fields: viewState.value.fields,
     results: viewState.value.results,
-    rowKey: 'uuid',
-    useSelection: true
+    useSelection: true,
+    columns: [
+      'isActive',
+      'document',
+      'companies',
+      'createdAt',
+      'company',
+      'date',
+      'email',
+      'observation'
+    ]
   }
 })
 

@@ -14,10 +14,13 @@ export default function useDelete ({ color, props, qas }) {
     return {
       ...(hasDelete.value && {
         delete: {
-          color,
-          icon: props.deleteIcon,
           label: props.deleteLabel,
-          handler: () => qas.delete(props.deleteProps)
+
+          ...props.deleteProps.buttonProps,
+
+          handler: () => qas.delete(props.deleteProps),
+          color,
+          icon: props.deleteIcon
         }
       })
     }

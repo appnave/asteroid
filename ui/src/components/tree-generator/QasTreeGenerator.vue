@@ -186,9 +186,9 @@ export default {
 
     destroyDialogConfig () {
       return {
-        card: {
-          description: 'Todas as informações serão perdidas. Deseja realmente continuar?'
-        },
+        title: 'Excluir',
+        description: 'Todas as informações serão perdidas. Deseja realmente continuar?',
+        size: 'md',
         ok: {
           label: 'Excluir',
           onClick: this.destroy
@@ -201,9 +201,7 @@ export default {
 
     formDialogConfig () {
       return {
-        card: {
-          title: this.isAdd ? 'Adicionar ramo' : 'Editar ramo'
-        },
+        title: this.isAdd ? 'Adicionar ramo' : 'Editar ramo',
         ok: {
           label: 'Salvar',
           loading: this.isSubmitting

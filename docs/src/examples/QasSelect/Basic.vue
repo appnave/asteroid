@@ -11,6 +11,10 @@
     <div class="col-6">
       <qas-select v-model="model2" error error-message="Com erro" label="Meu select multiple" multiple :options />
     </div>
+
+    <div class="col-6">
+      <qas-select v-model="model2" error error-message="Com erro" label="Meu select multiple" :options tip="Exemplo com tip" />
+    </div>
   </div>
 </template>
 

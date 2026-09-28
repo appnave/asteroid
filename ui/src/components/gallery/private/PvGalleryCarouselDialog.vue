@@ -1,12 +1,6 @@
 <template>
   <div class="pv-gallery-carousel-dialog">
-    <qas-dialog v-model="model" :cancel="false" class="q-pa-xl" max-width="1100px" :ok="false" :persistent="false" use-full-max-width>
-      <template #header>
-        <div class="text-right">
-          <qas-btn v-close-popup color="grey-10" icon="sym_r_close" variant="tertiary" @click="close" />
-        </div>
-      </template>
-
+    <qas-dialog v-model="model" v-bind="dialogProps">
       <template #description>
         <q-carousel v-model="imageIndexModel" animated :arrows="!screen.isSmall" class="pv-gallery-carousel-dialog__carousel" control-text-color="primary" data-cy="gallery-carousel" :fullscreen="screen.isSmall" :height="carouselImageHeight" next-icon="sym_r_chevron_right" prev-icon="sym_r_chevron_left" swipeable :thumbnails="!isSingleImage">
           <q-carousel-slide v-for="(image, index) in props.images" :key="index" class="bg-no-repeat bg-size-contain" :data-cy="`gallery-carousel-slide-${index}`" :img-src="image.url" :name="index">
@@ -51,6 +45,13 @@ const emit = defineEmits(['update:modelValue', 'update:imageIndex'])
 const screen = useScreen()
 
 const carouselImageHeight = 'calc((500/976) * 100vh)'
+
+const dialogProps = {
+  cancel: false,
+  ok: false,
+  size: 'xl',
+  title: 'Galeria de imagens'
+}
 
 const model = computed({
   get () {

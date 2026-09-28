@@ -138,7 +138,7 @@ export default {
     },
 
     hasNoOptionsOnFirstFetch () {
-      return this.mx_fetchCount === 1 && !this.mx_hasFilteredOptions
+      return this.mx_fetchCount === 1 && !this.mx_hasFilteredOptions && !this.mx_hasNextPage
     },
 
     containerHeight () {

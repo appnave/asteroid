@@ -4,13 +4,14 @@ import ComponentsVite from 'unplugin-vue-components/vite'
 import ComponentsWebpack from 'unplugin-vue-components/webpack'
 import { pathToFileURL } from 'url'
 
-const sourcePath = '~@bildvitta/quasar-app-extension-asteroid/src/'
+const sourcePath = '~@appnave/quasar-app-extension-asteroid/src/'
 const resolve = (...paths) => paths.map(path => sourcePath + path)
 
 function extendQuasar (quasar, api, asteroidConfigFile) {
   // Arquivos de boot
   // https://quasar.dev/quasar-cli-vite/boot-files#introduction
   quasar.boot.push(...resolve(
+    'boot/overlay-navigation.js',
     'boot/api.js',
     'boot/debug.js',
     'boot/error-pages.js',
@@ -56,7 +57,8 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
   // https://animate.style/
   const animations = [
     'slideInDown',
-    'rubberBand'
+    'rubberBand',
+    'fadeIn'
   ]
 
   animations.forEach(animation => quasar.animations.push(animation))
@@ -74,9 +76,9 @@ export default async function (api) {
   api.compatibleWith('quasar', '^2.0.0')
   api.compatibleWith('date-fns', '^2.3.0')
 
-  const asteroid = 'node_modules/@bildvitta/quasar-ui-asteroid/src/asteroid.js'
-  const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'
-  const asteroidConfig = 'node_modules/@bildvitta/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
+  const asteroid = 'node_modules/@appnave/quasar-ui-asteroid/src/asteroid.js'
+  const asteroidComponents = 'node_modules/@appnave/quasar-ui-asteroid/src/components'
+  const asteroidConfig = 'node_modules/@appnave/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
   const vueRouter = 'node_modules/vue-router/dist/vue-router.esm-bundler.js'
   const quasar = 'node_modules/quasar'
 
@@ -100,7 +102,10 @@ export default async function (api) {
     'asteroid-config-app': asteroidConfigPath,
     'vue-router': api.resolve.app(vueRouter),
     asteroid: api.resolve.app(asteroid),
-    quasar: api.resolve.app(quasar)
+    quasar: api.resolve.app(quasar),
+    'images/layers.png': api.resolve.app('node_modules/leaflet/dist/images/layers.png'),
+    'images/layers-2x.png': api.resolve.app('node_modules/leaflet/dist/images/layers-2x.png'),
+    'images/marker-icon.png': api.resolve.app('node_modules/leaflet/dist/images/marker-icon.png')
   }
 
   if (api.hasVite) {
@@ -121,7 +126,8 @@ export default async function (api) {
         'hammerjs',
         'lodash-es',
         'date-fns',
-        'date-fns/locale'
+        'date-fns/locale',
+        'leaflet'
       ])
 
       viteConf.plugins = viteConf.plugins || []

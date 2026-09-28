@@ -9,7 +9,7 @@ import { Loading, extend } from 'quasar'
 import Sortable from 'sortablejs'
 import { getAction } from '@bildvitta/store-adapter'
 
-import { NotifyError } from '../../plugins'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
 
 export default {
   name: 'QasSortable',
