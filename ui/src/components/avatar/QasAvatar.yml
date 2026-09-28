@@ -33,6 +33,5 @@ props:
   title:
     desc: Caso não tenha imagem, o avatar vai aparecer com a inicial do titulo.
     type: String
-    examples: [
-      'John Doe'
-    ]
+    examples:
+      - 'John Doe'

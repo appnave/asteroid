@@ -18,14 +18,10 @@ export default function (fields = {}, models) {
     return {}
   }
 
-  if (!Object.keys(fields).length) {
-    return {}
-  }
-
   const object = {}
 
   models.forEach(model => {
-    if (fields[model]) {
+    if (Object.hasOwn(fields, model)) {
       object[model] = fields[model]
     }
   })

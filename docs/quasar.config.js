@@ -74,13 +74,7 @@ export default configure(function () {
       ],
 
       viteVuePluginOptions: {
-        include: [/\.vue$/, /\.md$/],
-
-        template: {
-          compilerOptions: {
-            whitespace: 'preserve'
-          }
-        }
+        include: [/\.vue$/, /\.md$/]
       },
 
       extendViteConf (viteConf) {

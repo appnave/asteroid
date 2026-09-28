@@ -73,3 +73,8 @@ provide:
           redirectRoute:
             desc: Espera receber um objeto de rota ou um path na qual vai ser redirecionado após o item ser deletado.
             type: [String, Object]
+
+          useResponseNotifyError:
+            desc: Quando "true" e a API retornar uma mensagem de erro ("response.data.status.text"), o notify de erro exibe essa mensagem do back ao invés da mensagem padrão.
+            type: Boolean
+            default: false

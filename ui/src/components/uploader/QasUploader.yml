@@ -25,14 +25,13 @@ props:
     desc: Tipos de arquivos aceitos para fazer o redimensionamento antes de upar.
     type: Array
     debugger: true
-    default: [
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'image/bmp',
-      'image/webp',
-      'image/jpg'
-    ]
+    default:
+      - 'image/jpeg'
+      - 'image/png'
+      - 'image/gif'
+      - 'image/bmp'
+      - 'image/webp'
+      - 'image/jpg'
 
   columns:
     desc: Seta as colunas (grid cols), valor default depende se o componente é múltiplo ou não.
