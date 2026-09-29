@@ -57,6 +57,7 @@
     "last 5 Opera versions"
   ],
   "optionalDependencies": {
+    "lightningcss-win32-x64-msvc": "1.33.0",
     "sass-embedded-darwin-arm64": "1.100.0",
     "sass-embedded-linux-arm64": "1.100.0",
     "sass-embedded-linux-musl-x64": "1.100.0",
