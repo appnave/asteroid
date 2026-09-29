@@ -1,4 +1,4 @@
-module.exports = function (markdown) {
+export default function (markdown) {
   const tag = 'doc-heading'
   // const contentReduce = (acc, token) => acc + token.content
 

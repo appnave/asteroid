@@ -1,6 +1,6 @@
-function releaseAppExtension ({ execaSync, ora, nextVersion, publishCommands, packages }) {
-  const installNextUi = require('./install-next-ui')
+import installNextUi from './install-next-ui.js'
 
+function releaseAppExtension ({ execaSync, ora, nextVersion, publishCommands, packages }) {
   const { error } = installNextUi({ execaSync, ora, nextVersion, packages })
 
   if (error) return { success: false, error: true }
@@ -22,4 +22,4 @@ function releaseAppExtension ({ execaSync, ora, nextVersion, publishCommands, pa
   }
 }
 
-module.exports = releaseAppExtension
+export default releaseAppExtension

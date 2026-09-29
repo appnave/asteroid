@@ -93,7 +93,7 @@ async function initializeMap () {
   // Importa o plugin dinamicamente
   const { default: VueGoogleMaps } = await import('@fawmi/vue-google-maps')
 
-  const key = handleProcess(() => process.env.MAPS_API_KEY)
+  const key = handleProcess(() => import.meta.env.MAPS_API_KEY)
 
   app.use(VueGoogleMaps, {
     load: { libraries: 'places', key }

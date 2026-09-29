@@ -1,6 +1,6 @@
 <template>
   <div class="container q-py-lg">
-    <qas-password-input v-model="password" v-model:currentLevel="currentLevel" label="Senha" />
+    <qas-password-input v-model="password" v-model:current-level="currentLevel" label="Senha" />
 
     <div>
       Senha: {{ password }}

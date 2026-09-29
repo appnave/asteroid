@@ -36,10 +36,14 @@ Agora o `quasar-app-extension-asteroid` dentro do `node_modules` do seu projeto 
 
 :::warning
 
-Caso esteja utilizando a versão do Asteroid superior à **3.11.0-beta.0**, deverá ser incluído este alias dentro do `chainWebpack` em seu `quasar.conf.js`.
+Caso esteja utilizando a versão do Asteroid superior à **3.11.0-beta.0**, deverá ser incluído este alias no `build.alias` do seu `quasar.config.js`.
 
 ```js
-chain.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
+build: {
+  alias: {
+    vue: path.resolve('./node_modules/vue')
+  }
+}
 ```
 :::
 

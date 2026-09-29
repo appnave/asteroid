@@ -19,4 +19,4 @@ function releaseUi ({ execaSync, ora, publishCommands, packages }) {
   }
 }
 
-module.exports = releaseUi
+export default releaseUi

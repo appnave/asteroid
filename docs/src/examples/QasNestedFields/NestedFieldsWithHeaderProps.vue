@@ -74,10 +74,10 @@ const nestedProps = {
   headerProps: ({ index, row }) => {
     return {
       labelProps: {
-        label: `Label personalizada ${index++} / nome: ${row.name}`
+        label: `Label personalizada ${index} / nome: ${row.name}`
       },
 
-      description: `Descrição personalizada ${index++}`,
+      description: `Descrição personalizada ${index + 1}`,
 
       badges: [
         {

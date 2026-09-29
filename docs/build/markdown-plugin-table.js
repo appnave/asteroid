@@ -2,7 +2,7 @@
  * Converte tabela do markdown em QMarkupTable
  */
 
-module.exports = function (markdown) {
+export default function (markdown) {
   markdown.renderer.rules.table_open = (tokens, idx, options, env, self) => {
     const token = tokens[idx]
 

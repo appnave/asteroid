@@ -1,5 +1,7 @@
-import FontFaceObserver from 'fontfaceobserver'
+import * as FontFaceObserverModule from 'fontfaceobserver'
 import asteroidConfig from 'asteroid-config'
+
+const FontFaceObserver = FontFaceObserverModule.default || FontFaceObserverModule.FontFaceObserver || FontFaceObserverModule
 
 export default async () => {
   function setFontFaceObserver () {

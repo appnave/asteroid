@@ -109,9 +109,8 @@ const props = defineProps({
   },
 
   modelValue: {
-    default: () => ({}),
-    required: true,
-    type: Object
+    type: Object,
+    default: () => ({})
   },
 
   order: {

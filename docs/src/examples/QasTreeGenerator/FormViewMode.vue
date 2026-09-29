@@ -1,7 +1,7 @@
 <template>
   <div class="container spaced">
     <div>
-      <qas-tree-generator v-model:lazyNodes="lazyNodes" :form-view-props="formViewProps" :nodes="nodes" resource="tree-nodes" use-form-view-add use-form-view-edit />
+      <qas-tree-generator v-model:lazy-nodes="lazyNodes" :form-view-props="formViewProps" :nodes="nodes" resource="tree-nodes" use-form-view-add use-form-view-edit />
     </div>
 
     <div class="q-my-lg">

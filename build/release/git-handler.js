@@ -23,4 +23,4 @@ function gitHandler ({ ora, execaSync, nextVersion, packages }) {
   pushSpinner.succeed('Push enviado!')
 }
 
-module.exports = gitHandler
+export default gitHandler

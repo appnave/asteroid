@@ -1,5 +1,6 @@
+import open from 'open'
+
 async function createGithubReleaseFromBrowser ({ changelogContent, nextVersion, ora }) {
-  const open = require('open')
   const tag = `v${nextVersion}`
 
   // query
@@ -18,4 +19,4 @@ async function createGithubReleaseFromBrowser ({ changelogContent, nextVersion, 
   }
 }
 
-module.exports = createGithubReleaseFromBrowser
+export default createGithubReleaseFromBrowser

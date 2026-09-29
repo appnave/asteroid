@@ -106,9 +106,8 @@ const props = defineProps({
   },
 
   user: {
-    default: () => ({}),
-    required: true,
-    type: Object
+    type: Object,
+    default: () => ({})
   },
 
   useDataOnSmallScreen: {
@@ -138,7 +137,7 @@ const companiesModel = ref('')
 const loading = ref(false)
 
 // consts
-const IS_ME_VERSION_2 = process.env.ME_VERSION === 2
+const IS_ME_VERSION_2 = Number(import.meta.env.ME_VERSION) === 2
 
 // computeds
 const defaultCompanyProps = computed(() => {
@@ -177,9 +176,11 @@ async function setCompanies (value) {
   loading.value = true
 
   try {
-    await axios.patch('users/me', {
+    const response = await axios.patch('users/me', {
       [IS_ME_VERSION_2 ? 'currentMainCompany' : 'companies']: value
     })
+
+    window.postMessage({ type: 'setUser', user: response.data.result })
 
     setTimeout(() => location.reload(), 1500)
 

@@ -149,6 +149,11 @@ export default {
 
     &__input {
       width: 90%;
+
+      & button {
+        width: 100%;
+        margin-left: 6px;
+      }
     }
 
     &__input-element {

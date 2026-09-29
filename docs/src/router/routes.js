@@ -4,7 +4,7 @@ const routes = [
   {
     path: '/',
     name: 'Root',
-    component: () => import('src/layouts/DocLayout.vue'),
+    component: () => import('../layouts/DocLayout.vue'),
     meta: { useOverlay: true },
     children: getPages()
   },

@@ -3,6 +3,11 @@
 @mixin set-error-message ($important: false) {
   @include set-typography($caption, $important);
 
-  padding-top: if($important, var(--qas-spacing-sm) !important, var(--qas-spacing-sm));
-  color: if($important, $negative !important, $negative);
+  @if $important {
+    padding-top: var(--qas-spacing-sm) !important;
+    color: $negative !important;
+  } @else {
+    padding-top: var(--qas-spacing-sm);
+    color: $negative;
+  }
 }

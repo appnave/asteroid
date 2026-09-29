@@ -7,7 +7,7 @@ Aplicação Quasar dedicada à documentação do Asteroid, hospedada como PWA em
 ```
 docs/
 ├── package.json             # @appnave/asteroid-docs (privado)
-├── quasar.conf.js           # Config do Quasar (Webpack)
+├── quasar.config.js         # Config do Quasar (Vite)
 ├── asteroid.config.js       # Config do Asteroid para a própria doc
 ├── babel.config.js
 ├── build/                   # Plugins de build para Markdown
@@ -95,7 +95,7 @@ O `quasar.conf.js` utiliza plugins `markdown-it` customizados para:
 - **Headings:** Auto-geração de anchors
 - **Tables:** Wrapper responsivo
 
-Arquivos `.md` são tratados como componentes Vue via webpack loader customizado usando `getVueComponent()`.
+Arquivos `.md` são tratados como componentes Vue via plugin Vite customizado usando `getVueComponent()`.
 
 ## Como Adicionar Documentação de um Novo Componente
 

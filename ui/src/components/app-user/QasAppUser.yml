@@ -29,15 +29,14 @@ props:
     required: true
     type: Object
     default: {}
-    examples: [
-      "
-      {
-        photo: 'minha-img',
-        name: 'Eduardo Lima',
-        email: 'eduardolima@gmail.com'
-      }
-      "
-    ]
+    examples:
+      - "
+        {
+          photo: 'minha-img',
+          name: 'Eduardo Lima',
+          email: 'eduardolima@gmail.com'
+        }
+        "
 
   use-data-on-small-screen:
     desc: Habilita os dados do usuário como nome/email em telas pequenas/ (mobile).

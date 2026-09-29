@@ -276,9 +276,9 @@ function getNormalizedYear ({ isNext, isPrevious, month, year }) {
 }
 
 function getNormalizedMonth ({ month, isPrevious, isNext }) {
-  if (isPrevious) return isJanuary(month) ? (month = 12) : month - 1
+  if (isPrevious) return isJanuary(month) ? 12 : month - 1
 
-  if (isNext) return isDecember(month) ? (month = 1) : month + 1
+  if (isNext) return isDecember(month) ? 1 : month + 1
 
   return month
 }

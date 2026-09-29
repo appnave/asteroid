@@ -1,12 +1,12 @@
 /**
- * @param {function} processEnv função que retorna o process.env.
- * @param {string} defaultValue valor default caso não exista a process.env
+ * @param {function} envGetter função que retorna o valor da env.
+ * @param {string} defaultValue valor default caso a env não exista
  *
- * @example handleProcess(() => process.env.MY_ENV, 'meu-valor-default')
+ * @example handleProcess(() => import.meta.env.MY_ENV, 'meu-valor-default')
  */
-export default (processEnv = () => {}, defaultValue) => {
+export default (envGetter = () => {}, defaultValue) => {
   try {
-    return processEnv() || defaultValue
+    return envGetter() || defaultValue
   } catch {
     return defaultValue
   }

@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     icon: 'sym_r_room',
     name: 'Por que o Asteroid existe?',

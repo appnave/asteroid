@@ -33,15 +33,14 @@ props:
     desc: Lista de items que vão ser criados dentro do menu de ações.
     default: '{}'
     type: Object
-    examples: [
-      "{
-        visibility: {
-          icon: 'sym_r_visibility',
-          label: 'Visualizar',
-          handler: () => alert('handler ativado')
-        }
-      }"
-    ]
+    examples:
+      - "{
+          visibility: {
+            icon: 'sym_r_visibility',
+            label: 'Visualizar',
+            handler: () => alert('handler ativado')
+          }
+        }"
 
   split-name:
     desc: propriedade para definir o useSplit, habilita 2 ações diferentes no mesmo componente, separando o mesmo por uma barra, o valor deve ser alguma chave (key) existente na propriedade "list".
@@ -71,14 +70,13 @@ slots:
         desc: Escopo que retorna o item atual, valor depende do que foi passado na prop list.
         default: '{}'
         type: Object
-        examples: [
-          "
-          {
-            icon: 'sym_r_delete',
-            label: 'Delete',
-            }
-          "
-        ]
+        examples:
+          - "
+            {
+              icon: 'sym_r_delete',
+              label: 'Delete',
+              }
+            "
 
 selectors:
   'actions-menu':

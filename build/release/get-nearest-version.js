@@ -24,4 +24,4 @@ function getNearestVersion (dates, target) {
   return winner
 }
 
-module.exports = getNearestVersion
+export default getNearestVersion
