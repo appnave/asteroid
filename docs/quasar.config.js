@@ -60,6 +60,7 @@ export default configure(function () {
         examples: path.resolve(__dirname, 'src/examples'),
         uuid: path.resolve(__dirname, './node_modules/uuid/dist/index.js'),
         vue: path.resolve(__dirname, './node_modules/vue'),
+        'vue-router': path.resolve(__dirname, './node_modules/vue-router'),
         quasar: path.resolve(__dirname, 'node_modules/quasar')
       },
 
