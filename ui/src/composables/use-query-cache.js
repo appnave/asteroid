@@ -9,6 +9,8 @@ function updateSessionStorage () {
 
 export default function () {
   function addOne (key, { label, value }) {
+    if (!cachedFilters[key]) cachedFilters[key] = {}
+
     cachedFilters[key][label] = value
     updateSessionStorage()
   }
@@ -27,6 +29,8 @@ export default function () {
   }
 
   function clearOne (key, filter) {
+    if (!cachedFilters[key]) return
+
     delete cachedFilters[key][filter]
     updateSessionStorage()
   }

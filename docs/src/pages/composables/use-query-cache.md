@@ -8,7 +8,7 @@ Composable para manipular a persistência de query através da `SessionStorage`.
 import { useQueryCache } from 'asteroid'
 
 const {
-  addOnde,
+  addOne,
   addMany,
   findOne,
   findAll,
