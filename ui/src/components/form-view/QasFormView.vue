@@ -40,8 +40,7 @@ import QasBtn from '../btn/QasBtn.vue'
 import QasContainer from '../container/QasContainer.vue'
 import QasDialog from '../dialog/QasDialog.vue'
 
-import NotifyError from '../../plugins/notify-error/NotifyError.js'
-import NotifySuccess from '../../plugins/notify-success/NotifySuccess.js'
+import promiseHandler from '../../helpers/promise-handler.js'
 import { useHistory, useOverlayNavigation } from '../../composables'
 import { viewMixin } from '../../mixins'
 
@@ -232,14 +231,6 @@ export default {
       }
 
       return this.$route
-    },
-
-    defaultNotifyMessages () {
-      return {
-        validationError: 'Não conseguimos salvar as informações. Por favor, revise os campos e tente novamente.',
-        error: 'Não conseguimos salvar as informações. Por favor, tente novamente em alguns minutos.',
-        success: 'Informações salvas com sucesso.'
-      }
     },
 
     defaultFormProps () {
@@ -434,60 +425,57 @@ export default {
     async submit (externalPayload = {}) {
       if (this.disable) return null
 
-      this.isSubmitting = true
+      const defaultNotifyMessages = {
+        error: 'Não conseguimos salvar as informações. Por favor, tente novamente em alguns minutos.',
+        success: 'Informações salvas com sucesso.'
+      }
 
-      this.toggleCanLeaveOverlay(false)
+      const payload = {
+        id: this.id,
+        payload: this.modelValue,
+        url: this.url,
+        ...externalPayload
+      }
 
-      try {
-        const payload = {
-          id: this.id,
-          payload: this.modelValue,
-          url: this.url,
-          ...externalPayload
+      const { data: response, error } = await promiseHandler(
+        () => this.handleSubmitAction(payload),
+        {
+          errorMessage: defaultNotifyMessages.error,
+          successMessage: this.useNotifySuccess && defaultNotifyMessages.success,
+          useLoading: false,
+          onLoading: isLoading => {
+            this.isSubmitting = isLoading
+            this.toggleCanLeaveOverlay(!isLoading)
+          }
         }
+      )
 
-        const response = await this.handleSubmitAction(payload)
-
-        const modelValue = { ...this.modelValue, ...response.data.result }
-
-        if (this.useDialogOnUnsavedChanges) {
-          this.updateUnsavedChangesCache(modelValue)
-        }
-
-        this.mx_setErrors()
+      if (error) {
+        this.mx_setErrors(error?.response?.data?.errors)
         this.$emit('update:errors', this.mx_errors)
-
-        this.$emit('update:modelValue', modelValue)
-        this.$emit('submit-success', response, this.modelValue)
-
-        this.createSubmitSuccessEvent({ ...payload, entity: this.entity })
-
-        if (this.useNotifySuccess) {
-          NotifySuccess(response.data.status.text || this.defaultNotifyMessages.success)
-        }
-
-        log(`[${this.entity}]:submit:success`, { response, modelValue })
-      } catch (error) {
-        const errors = error?.response?.data?.errors
-        const message = error?.response?.data?.status?.text
-        const hasFieldError = !!Object.keys(errors || {})?.length
-
-        const defaultMessage = hasFieldError
-          ? this.defaultNotifyMessages.validationError
-          : this.defaultNotifyMessages.error
-
-        this.mx_setErrors(errors)
-        this.$emit('update:errors', this.mx_errors)
-
-        NotifyError(message || defaultMessage)
 
         this.$emit('submit-error', error)
 
         log(`[${this.entity}]:submit:error`, error)
-      } finally {
-        this.isSubmitting = false
-        this.toggleCanLeaveOverlay(true)
+
+        return
       }
+
+      const modelValue = { ...this.modelValue, ...response.data.result }
+
+      if (this.useDialogOnUnsavedChanges) {
+        this.updateUnsavedChangesCache(modelValue)
+      }
+
+      this.mx_setErrors()
+      this.$emit('update:errors', this.mx_errors)
+
+      this.$emit('update:modelValue', modelValue)
+      this.$emit('submit-success', response, this.modelValue)
+
+      this.createSubmitSuccessEvent({ ...payload, entity: this.entity })
+
+      log(`[${this.entity}]:submit:success`, { response, modelValue })
     },
 
     createSubmitSuccessEvent (detail = {}) {
