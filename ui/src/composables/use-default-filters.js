@@ -25,17 +25,17 @@ const defaultFiltersHooks = {
  *
  * @param {object} to - Rota de destino.
  * @param {object} _from - Rota de origem.
- * @param {function} next - Função de redirecionamento.
  * @param {array|object} queryList='company' - Lista de filtros a serem aplicados.
+ * @returns {object|boolean} - Rota para redirecionar com os filtros aplicados, ou true para seguir a navegação.
  *
  * @example
  * ```js
- * setDefaultFiltersBeforeEnter(to, from, next)
- * setDefaultFiltersBeforeEnter(to, from, next, ['company', 'properties'])
- * setDefaultFiltersBeforeEnter(to, from, next, { company: false, properties: true // multiple })
+ * beforeEnter: setDefaultFiltersBeforeEnter
+ * beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company', 'properties'])
+ * beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, { company: false, properties: true // multiple })
  * ```
  */
-export function setDefaultFiltersBeforeEnter (to, _from, next, queryList = ['company']) {
+export function setDefaultFiltersBeforeEnter (to, _from, queryList = ['company']) {
   const { getDefaultFiltersFromStorage, setFilterQuery } = useDefaultFilters()
 
   const { query } = to
@@ -96,9 +96,9 @@ export function setDefaultFiltersBeforeEnter (to, _from, next, queryList = ['com
    * Verifica se houve mudanças na query antes de redirecionar, sem essa validação
    * o redirecionamento ocorre mesmo que a query seja a mesma, gerando loop infinito.
    */
-  if (!is.deepEqual(newQuery, query)) return next({ ...to, query: newQuery, replace: true })
+  if (!is.deepEqual(newQuery, query)) return { ...to, query: newQuery, replace: true }
 
-  next()
+  return true
 }
 
 /**
@@ -114,9 +114,9 @@ export function setDefaultFiltersBeforeEnter (to, _from, next, queryList = ['com
  *
  * @param {object} to - Rota de destino.
  * @param {object} from - Rota de origem.
- * @param {function} next - Função de redirecionamento.
+ * @returns {object|boolean} - Rota para redirecionar com os filtros aplicados, ou true para seguir a navegação.
  */
-export function setDefaultFiltersBeforeEach (to, from, next) {
+export function setDefaultFiltersBeforeEach (to, from) {
   const isSameRoute = to.name === from.name
   const hasBeforeEnter = () => to.matched.some(record => record.beforeEnter)
   const defaultFiltersFromQuery = from.meta.defaultFilters
@@ -136,10 +136,10 @@ export function setDefaultFiltersBeforeEach (to, from, next) {
     const hasQuery = !!Object.keys(to.query).length
 
     // Se a rota de destino nao tem query, eu redireciono para ela com os filtros padrões aplicados.
-    if (!hasQuery) return next({ ...to, query: defaultFilters, replace: true })
+    if (!hasQuery) return { ...to, query: defaultFilters, replace: true }
   }
 
-  next()
+  return true
 }
 
 /**
