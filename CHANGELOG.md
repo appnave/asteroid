@@ -14,6 +14,14 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### BREAKING CHANGES
+- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: removido o parâmetro `next` (deprecated no Vue Router 5), caso utilize o `queryList`, altere para `beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company'])`.
+
+### Modificado
+- `QasFormView`: utiliza o `promiseHandler` no `submit`, centralizando nele a lógica de notify.
+- `promiseHandler`: o notify passa a priorizar a mensagem retornada pelo back e, em caso de erros de campo, exibe a mensagem padrão de validação no lugar da `errorMessage`.
+
 ## [4.0.0-beta.0] - 29-09-2026
 ### BREAKING CHANGES
 - Removido suporte ao webpack; a documentação e o fluxo de desenvolvimento passam a considerar apenas Vite.
