@@ -516,6 +516,10 @@ export default [
         path: '/helpers/promise-handler'
       },
       {
+        name: 'requestHandler',
+        path: '/helpers/request-handler'
+      },
+      {
         name: 'rules',
         path: '/helpers/rules'
       },
