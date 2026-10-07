@@ -6,11 +6,7 @@ import NotifyError from '../plugins/notify-error/NotifyError.js'
 import NotifySuccess from '../plugins/notify-success/NotifySuccess.js'
 
 /**
- * Composable para lidar com requisições do axios feitas manualmente (fora dos componentes de view), utilizando o
- * promiseHandler e exibindo a mensagem de erro retornada pelo back (ver helper "getErrorMessage").
- * Para outros tipos de promise, utilize o promiseHandler.
- *
- * Pode ser utilizado no "setup" ou no "data" de componentes Options API.
+ * Composable para lidar com requisições
  *
  * @param {object} [request] - Config do axios (ex.: { method, url, params, data }).
  * @param {object} [config]
