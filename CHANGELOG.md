@@ -17,12 +17,15 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ## Não publicado
 ### BREAKING CHANGES
 - `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: removido o parâmetro `next` (deprecated no Vue Router 5), caso utilize o `queryList`, altere para `beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company'])`.
+- `Delete`: removida a prop `useResponseNotifyError`, o comportamento dela passa a ser o padrão: o notify de erro exibe a mensagem retornada pelo back (`status.text`). Caso utilize `useResponseNotifyError: true`, basta removê-la.
 
 ### Adicionado
-- `requestHandler`: novo helper para requisições HTTP que utiliza o `promiseHandler` e prioriza a mensagem retornada pelo back (`status.text`). Em erros 5xx ou sem resposta, exibe uma mensagem genérica de instabilidade, e com `useForm: true` exibe a mensagem padrão de validação quando há erros de campo.
+- `getErrorMessage`: novo helper que retorna a mensagem de erro de uma requisição priorizando a mensagem retornada pelo back (`status.text`). Em erros 5xx ou sem resposta, retorna uma mensagem genérica de instabilidade; em requisições canceladas ou 401, não retorna mensagem; com `useForm: true`, retorna a mensagem padrão de validação quando há erros de campo.
+- `useRequestHandler`: novo composable para requisições feitas manualmente, que recebe a config do axios, utiliza o `promiseHandler` e exibe a mensagem do `getErrorMessage`. Retorna `data`, `error`, `isLoading` e `execute`.
 
 ### Modificado
-- `QasFormView`: o `submit` passa a utilizar o `requestHandler` com `useForm: true`. Em erros 5xx, o notify exibe a mensagem genérica de instabilidade no lugar do texto do back.
+- `QasFormView`: o notify de erro do `submit` passa a utilizar o `getErrorMessage` com `useForm: true`. Em erros 5xx, exibe a mensagem genérica de instabilidade no lugar do texto do back.
+- `viewMixin`: removido o computed `mx_fetchErrorMessage`, a mensagem de erro do fetch passa a vir de `errorMessages.fetch` (shared).
 
 ## [4.0.0-beta.0] - 29-09-2026
 ### BREAKING CHANGES

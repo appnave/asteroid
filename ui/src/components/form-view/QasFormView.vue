@@ -40,7 +40,10 @@ import QasBtn from '../btn/QasBtn.vue'
 import QasContainer from '../container/QasContainer.vue'
 import QasDialog from '../dialog/QasDialog.vue'
 
-import requestHandler from '../../helpers/request-handler.js'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
+import NotifySuccess from '../../plugins/notify-success/NotifySuccess.js'
+import getErrorMessage from '../../helpers/get-error-message.js'
+import errorMessages from '../../shared/error-messages.js'
 import { useHistory, useOverlayNavigation } from '../../composables'
 import { viewMixin } from '../../mixins'
 
@@ -235,7 +238,6 @@ export default {
 
     defaultNotifyMessages () {
       return {
-        error: 'Não conseguimos salvar as informações. Por favor, tente novamente em alguns minutos.',
         success: 'Informações salvas com sucesso.'
       }
     },
@@ -432,54 +434,55 @@ export default {
     async submit (externalPayload = {}) {
       if (this.disable) return null
 
-      const payload = {
-        id: this.id,
-        payload: this.modelValue,
-        url: this.url,
-        ...externalPayload
-      }
+      this.isSubmitting = true
 
-      const { data: response, error } = await requestHandler(
-        () => this.handleSubmitAction(payload),
-        {
-          errorMessage: this.defaultNotifyMessages.error,
-          successMessage: this.useNotifySuccess && this.defaultNotifyMessages.success,
-          useForm: true,
-          useLoading: false,
+      this.toggleCanLeaveOverlay(false)
 
-          onLoading: isLoading => {
-            this.isSubmitting = isLoading
-            this.toggleCanLeaveOverlay(!isLoading)
-          }
+      try {
+        const payload = {
+          id: this.id,
+          payload: this.modelValue,
+          url: this.url,
+          ...externalPayload
         }
-      )
 
-      if (error) {
-        this.mx_setErrors(error?.response?.data?.errors)
+        const response = await this.handleSubmitAction(payload)
+
+        const modelValue = { ...this.modelValue, ...response.data.result }
+
+        if (this.useDialogOnUnsavedChanges) {
+          this.updateUnsavedChangesCache(modelValue)
+        }
+
+        this.mx_setErrors()
         this.$emit('update:errors', this.mx_errors)
+
+        this.$emit('update:modelValue', modelValue)
+        this.$emit('submit-success', response, this.modelValue)
+
+        this.createSubmitSuccessEvent({ ...payload, entity: this.entity })
+
+        if (this.useNotifySuccess) {
+          NotifySuccess(response.data.status.text || this.defaultNotifyMessages.success)
+        }
+
+        log(`[${this.entity}]:submit:success`, { response, modelValue })
+      } catch (error) {
+        const errors = error?.response?.data?.errors
+        const message = getErrorMessage(error, { fallback: errorMessages.save, useForm: true })
+
+        this.mx_setErrors(errors)
+        this.$emit('update:errors', this.mx_errors)
+
+        if (message) NotifyError(message)
 
         this.$emit('submit-error', error)
 
         log(`[${this.entity}]:submit:error`, error)
-
-        return
+      } finally {
+        this.isSubmitting = false
+        this.toggleCanLeaveOverlay(true)
       }
-
-      const modelValue = { ...this.modelValue, ...response.data.result }
-
-      if (this.useDialogOnUnsavedChanges) {
-        this.updateUnsavedChangesCache(modelValue)
-      }
-
-      this.mx_setErrors()
-      this.$emit('update:errors', this.mx_errors)
-
-      this.$emit('update:modelValue', modelValue)
-      this.$emit('submit-success', response, this.modelValue)
-
-      this.createSubmitSuccessEvent({ ...payload, entity: this.entity })
-
-      log(`[${this.entity}]:submit:success`, { response, modelValue })
     },
 
     createSubmitSuccessEvent (detail = {}) {

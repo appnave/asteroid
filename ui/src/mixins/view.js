@@ -1,4 +1,5 @@
 import { camelizeFieldsName } from '../helpers'
+import errorMessages from '../shared/error-messages.js'
 
 import { markRaw } from 'vue'
 
@@ -81,10 +82,6 @@ export default {
       return !!(this.$slots['fetch-error'])
     },
 
-    mx_fetchErrorMessage () {
-      return 'Ops… Não conseguimos acessar as informações. Por favor, tente novamente em alguns minutos.'
-    },
-
     mx_canShowFetchErrorSlot () {
       return this.mx_hasFetchError && this.mx_hasFetchErrorSlot
     }
@@ -109,7 +106,7 @@ export default {
 
       this.mx_hasFetchError = true
 
-      this.$qas.error(this.mx_fetchErrorMessage)
+      this.$qas.error(errorMessages.fetch)
     },
 
     mx_setErrors (errors = {}) {

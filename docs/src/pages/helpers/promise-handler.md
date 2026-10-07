@@ -4,7 +4,7 @@ title: promiseHandler
 
 Função para lidar com promises, por exemplo requests.
 
-Para requisições HTTP em que a mensagem de erro deve priorizar o retorno do back, utilize o [requestHandler](/helpers/request-handler).
+Para requisições HTTP em que a mensagem de erro deve priorizar o retorno do back, utilize o [useRequestHandler](/composables/use-request-handler).
 
 #### Definição
 ```js

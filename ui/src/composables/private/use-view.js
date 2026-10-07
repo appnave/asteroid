@@ -1,4 +1,5 @@
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
+import errorMessages from '../../shared/error-messages.js'
 import { camelizeFieldsName } from '../../helpers'
 
 import { useView as useViewComposable } from '@bildvitta/composables'
@@ -82,9 +83,6 @@ export default function useView (config) {
   const cancelBeforeFetch = ref(false)
   const hasFetchError = ref(false)
 
-  // constants
-  const fetchErrorMessage = 'Ops… Não conseguimos acessar as informações. Por favor, tente novamente em alguns minutos.'
-
   // computed
   const hasFooterSlot = computed(() => !!slots.footer)
   const hasHeaderSlot = computed(() => !!slots.header)
@@ -115,7 +113,7 @@ export default function useView (config) {
 
     hasFetchError.value = true
 
-    NotifyError(fetchErrorMessage)
+    NotifyError(errorMessages.fetch)
   }
 
   function setErrors (errors = {}) {
@@ -163,9 +161,6 @@ export default function useView (config) {
   return {
     // state
     viewState,
-
-    // constants
-    fetchErrorMessage,
 
     // computed
     hasFooterSlot,
