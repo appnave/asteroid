@@ -2,7 +2,6 @@ import { inject, ref, shallowRef } from 'vue'
 
 import promiseHandler from '../helpers/promise-handler.js'
 import getErrorMessage from '../helpers/get-error-message.js'
-import errorMessages from '../shared/error-messages.js'
 import NotifyError from '../plugins/notify-error/NotifyError.js'
 import NotifySuccess from '../plugins/notify-success/NotifySuccess.js'
 
@@ -70,8 +69,7 @@ export default function useRequestHandler (request = {}, config = {}) {
     error.value = response.error
 
     if (response.error) {
-      const fallback = errorMessage || getDefaultErrorMessage(normalizedRequestConfig.method)
-      const message = getErrorMessage(response.error, { fallback, useForm })
+      const message = getErrorMessage(response.error, { fallback: errorMessage, useForm })
 
       if (useNotifyError && message) NotifyError(message)
 
@@ -89,19 +87,4 @@ export default function useRequestHandler (request = {}, config = {}) {
     isLoading,
     execute
   }
-}
-
-/**
- * Mensagem de erro padrão com base na ação da requisição, utilizada quando "errorMessage" não é informada.
- *
- * @param {string} [method='get'] - Método HTTP da requisição (o axios utiliza "get" por padrão).
- * @returns {string}
- */
-function getDefaultErrorMessage (method = 'get') {
-  const messages = {
-    get: errorMessages.fetch,
-    delete: errorMessages.delete
-  }
-
-  return messages[method.toLowerCase()] || errorMessages.save
 }
