@@ -65,7 +65,7 @@ export default function useRequestHandler (request = {}, config = {}) {
     error.value = response.error
 
     if (response.error) {
-      const message = getErrorMessage(response.error, { fallback: errorMessage, useForm })
+      const message = getErrorMessage(response.error, { defaultMessage: errorMessage, useForm })
 
       if (useNotifyError && message) NotifyError(message)
 

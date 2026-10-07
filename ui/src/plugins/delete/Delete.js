@@ -74,7 +74,7 @@ export default function (config = {}) {
     } catch (error) {
       onDeleteError(error)
 
-      NotifyError(getErrorMessage(error, { fallback: errorMessages.delete }))
+      NotifyError(getErrorMessage(error, { defaultMessage: errorMessages.delete }))
     } finally {
       onDelete(false)
 

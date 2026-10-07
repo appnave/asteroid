@@ -469,7 +469,7 @@ export default {
         log(`[${this.entity}]:submit:success`, { response, modelValue })
       } catch (error) {
         const errors = error?.response?.data?.errors
-        const message = getErrorMessage(error, { fallback: errorMessages.save, useForm: true })
+        const message = getErrorMessage(error, { defaultMessage: errorMessages.save, useForm: true })
 
         this.mx_setErrors(errors)
         this.$emit('update:errors', this.mx_errors)

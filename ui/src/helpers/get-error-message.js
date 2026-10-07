@@ -5,14 +5,14 @@ import errorMessages from '../shared/error-messages.js'
  * priorizando a mensagem retornada pelo back ("status.text").
  *
  * @param {object} error - Erro da requisição (axios).
- * @param {{ fallback?: string, useForm?: boolean }} [options]
- * @param {string} [options.fallback] - Mensagem utilizada caso o back não retorne "status.text".
+ * @param {{ defaultMessage?: string, useForm?: boolean }} [options]
+ * @param {string} [options.defaultMessage] - Mensagem utilizada caso o back não retorne "status.text".
  * @param {boolean} [options.useForm=false] - Indica se é um formulário, para exibir a mensagem de validação dos campos.
- * @returns {string|null}
+ * @returns {string|undefined}
  *
- * @example getErrorMessage(error, { fallback: 'Não conseguimos reenviar a proposta.' })
+ * @example getErrorMessage(error, { defaultMessage: 'Não conseguimos reenviar a proposta.' })
  */
-export default function getErrorMessage (error, { fallback, useForm = false } = {}) {
+export default function getErrorMessage (error, { defaultMessage, useForm = false } = {}) {
   const { status, data } = error?.response || {}
 
   // Sem resposta (timeout, rede) ou status 5xx: mensagem genérica de instabilidade.
@@ -23,9 +23,9 @@ export default function getErrorMessage (error, { fallback, useForm = false } = 
 
   const hasFieldError = !!Object.keys(data?.errors || {}).length
 
-  // Caso seja um fomrulário e tenha erros de campo, retorna a mensagem padrão de validação.
+  // Caso seja um formulário e tenha erros de campo, retorna a mensagem padrão de validação.
   if (useForm && hasFieldError) return errorMessages.validation
 
-  // Caso exista um "fallback" ou mostraremos a mensagem default
-  return fallback
+  // Mensagem padrão informada (undefined caso não informada).
+  return defaultMessage
 }
