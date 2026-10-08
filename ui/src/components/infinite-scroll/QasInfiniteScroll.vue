@@ -28,6 +28,7 @@ import { ref, computed, inject, nextTick } from 'vue'
 
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
 import errorMessages from '../../shared/error-messages.js'
+import getErrorMessage from '../../helpers/get-error-message.js'
 import { useOverlayNavigation } from '../../composables'
 
 defineOptions({ name: 'QasInfiniteScroll' })
@@ -161,7 +162,7 @@ async function fetchList () {
 
     emit('fetch-success', { list: newList, fields: modelFields.value, offset: offset.value, count: count.value })
   } catch (error) {
-    NotifyError(errorMessages.fetch)
+    NotifyError(getErrorMessage(error, { defaultMessage: errorMessages.fetch }))
 
     hasFetchingError.value = true
 

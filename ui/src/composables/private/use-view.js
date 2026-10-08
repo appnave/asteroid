@@ -1,5 +1,6 @@
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
 import errorMessages from '../../shared/error-messages.js'
+import getErrorMessage from '../../helpers/get-error-message.js'
 import { camelizeFieldsName } from '../../helpers'
 
 import { useView as useViewComposable } from '@bildvitta/composables'
@@ -113,7 +114,7 @@ export default function useView (config) {
 
     hasFetchError.value = true
 
-    NotifyError(errorMessages.fetch)
+    NotifyError(getErrorMessage(error, { defaultMessage: errorMessages.fetch }))
   }
 
   function setErrors (errors = {}) {
