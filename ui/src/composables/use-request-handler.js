@@ -31,7 +31,6 @@ export default function useRequestHandler (request = {}, config = {}) {
   const {
     errorMessage,
     successMessage,
-    useNotifyError = true,
 
     ...promiseHandlerConfig
   } = config
@@ -51,11 +50,6 @@ export default function useRequestHandler (request = {}, config = {}) {
   async function execute (requestConfig = {}) {
     const normalizedRequestConfig = { ...request, ...requestConfig }
 
-    // O "method" é obrigatório para evitar que uma ação seja feita como GET (padrão do axios) sem perceber.
-    if (!normalizedRequestConfig.method) {
-      throw new Error("[useRequestHandler] informe o 'method' da requisição (ex.: { method: 'post' }).")
-    }
-
     const response = await promiseHandler(() => axios.request(normalizedRequestConfig), {
       ...promiseHandlerConfig,
 
@@ -74,7 +68,7 @@ export default function useRequestHandler (request = {}, config = {}) {
         useForm: isFormRequest(normalizedRequestConfig.method)
       })
 
-      if (useNotifyError && message) NotifyError(message)
+      if (message) NotifyError(message)
 
       return response
     }
