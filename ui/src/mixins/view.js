@@ -107,7 +107,6 @@ export default {
 
       this.mx_hasFetchError = true
 
-      console.log('vou mostrar o erro do fetch')
       this.$qas.error(getErrorMessage(error, { defaultMessage: errorMessages.fetch }))
     },
 
