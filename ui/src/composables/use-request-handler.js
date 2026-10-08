@@ -8,12 +8,12 @@ import NotifySuccess from '../plugins/notify-success/NotifySuccess.js'
 /**
  * Composable para lidar com requisições
  *
- * @param {object} [request] - Config do axios (ex.: { method, url, params, data }).
+ * @param {object} [request] - Config do axios (ex.: { method, url, params, data }). O "method" é obrigatório e pode
+ * ser informado aqui ou na config do "execute".
  * @param {object} [config]
  * @param {string} [config.successMessage] - Mensagem do notify de sucesso, só é exibido caso informada.
  * @param {string} [config.errorMessage] - Mensagem de erro caso o back não retorne "status.text". Quando não
  * informada, utiliza a mensagem padrão da ação ("get": fetch, "delete": delete, demais métodos: save).
- * @param {boolean} [config.useForm=false] - Exibe a mensagem padrão de validação quando há erros de campo.
  * @param {boolean} [config.useNotifyError=true] - Exibe o notify de erro.
  * @param {boolean} [config.useLoading=true] - Exibe o loading do Quasar na tela durante a requisição.
  * @param {object} [config.loadingConfig] - Configurações do loading do Quasar.
@@ -31,7 +31,6 @@ export default function useRequestHandler (request = {}, config = {}) {
   const {
     errorMessage,
     successMessage,
-    useForm = false,
     useNotifyError = true,
 
     ...promiseHandlerConfig
@@ -52,6 +51,11 @@ export default function useRequestHandler (request = {}, config = {}) {
   async function execute (requestConfig = {}) {
     const normalizedRequestConfig = { ...request, ...requestConfig }
 
+    // O "method" é obrigatório para evitar que uma ação seja feita como GET (padrão do axios) sem perceber.
+    if (!normalizedRequestConfig.method) {
+      throw new Error("[useRequestHandler] informe o 'method' da requisição (ex.: { method: 'post' }).")
+    }
+
     const response = await promiseHandler(() => axios.request(normalizedRequestConfig), {
       ...promiseHandlerConfig,
 
@@ -65,7 +69,10 @@ export default function useRequestHandler (request = {}, config = {}) {
     error.value = response.error
 
     if (response.error) {
-      const message = getErrorMessage(response.error, { defaultMessage: errorMessage, useForm })
+      const message = getErrorMessage(response.error, {
+        defaultMessage: errorMessage,
+        useForm: isFormRequest(normalizedRequestConfig.method)
+      })
 
       if (useNotifyError && message) NotifyError(message)
 
@@ -83,4 +90,15 @@ export default function useRequestHandler (request = {}, config = {}) {
     isLoading,
     execute
   }
+}
+
+/**
+ * Requisições que enviam payload (POST, PUT e PATCH) são tratadas como formulário, para exibir a mensagem
+ * padrão de validação quando houver erros de campo.
+ *
+ * @param {string} method - Método HTTP da requisição.
+ * @returns {boolean}
+ */
+function isFormRequest (method) {
+  return ['post', 'put', 'patch'].includes(method.toLowerCase())
 }

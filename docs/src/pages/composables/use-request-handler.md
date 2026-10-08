@@ -11,11 +11,10 @@ A requisição só é feita ao chamar o `execute`.
 #### Definição
 ```js
 const { data, error, isLoading, execute } = useRequestHandler(
-  request, // config do axios (ex.: { method, url, params, data })
+  request, // config do axios (ex.: { method, url, params, data }), o "method" é obrigatório
   {
     successMessage, // mensagem do notify de sucesso, só é exibido caso informada. Prioriza o "status.text" retornado pelo back
     errorMessage, // mensagem de erro caso o back não retorne "status.text"
-    useForm = false, // exibe a mensagem padrão de validação quando o back retornar erros de campo sem "status.text"
     useNotifyError = true, // exibe o notify de erro
     useLoading = true, // adiciona um loading na tela enquanto ocorre a requisição
     loadingConfig = {}, // configurações do loading do Quasar
@@ -31,6 +30,13 @@ execute // função que executa a requisição e retorna { data, error }
 
 #### execute
 Recebe uma config do axios que é mesclada à config inicial, útil para valores que só existem no momento da execução, como o payload ou uma URL com id (ex.: `execute({ data: payload })` ou ``execute({ url: `sales/${id}` })``).
+
+:::warning
+O `method` é obrigatório, informado na config inicial ou na do `execute`. Sem ele, o `execute` lança um erro, evitando que uma ação seja feita como `GET` (padrão do axios) sem perceber.
+:::
+
+#### Mensagem de erro
+A mensagem é definida pelo [getErrorMessage](/helpers/get-error-message). Requisições `POST`, `PUT` e `PATCH` são tratadas como formulário (`useForm: true`): quando o back retornar erros de campo sem `status.text`, é exibida a mensagem padrão de validação.
 
 #### Uso
 ```js
