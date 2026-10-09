@@ -16,16 +16,20 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### BREAKING CHANGES
-- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: removido o parâmetro `next` (deprecated no Vue Router 5), caso utilize o `queryList`, altere para `beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company'])`.
-- `Delete`: removida a prop `useResponseNotifyError`, o comportamento dela passa a ser o padrão: o notify de erro exibe a mensagem retornada pelo back (`status.text`). Caso utilize `useResponseNotifyError: true`, basta removê-la.
+- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: removido o parâmetro `next` (deprecated no Vue Router 5). Caso utilize o `queryList`, altere para `beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company'])`.
+- `Delete`: removida a prop `useResponseNotifyError`, exibir a mensagem do back passa a ser o padrão.
 
 ### Adicionado
-- `getErrorMessage`: novo helper que retorna a mensagem de erro de uma requisição priorizando a mensagem retornada pelo back (`status.text`). Em erros 5xx ou sem resposta, retorna uma mensagem genérica de instabilidade; em requisições canceladas ou 401, não retorna mensagem; com `useForm: true`, retorna a mensagem padrão de validação quando há erros de campo.
-- `useRequestHandler`: novo composable para requisições feitas manualmente, que recebe a config do axios, utiliza o `promiseHandler` e exibe a mensagem do `getErrorMessage`. Retorna `data`, `error`, `isLoading` e `execute`.
+- `getErrorMessage`: helper que retorna a mensagem de erro de uma requisição, priorizando o `status.text` do back e, na falta dele, uma mensagem padrão pelo método (`GET`, `DELETE`, `POST`/`PUT`/`PATCH`).
+- `useRequestHandler`: composable para requisições manuais, com `data`, `error`, `isLoading`, `execute` e opção `immediate`.
 
 ### Modificado
-- `QasFormView`: o notify de erro do `submit` passa a utilizar o `getErrorMessage` com `useForm: true`. Em erros 5xx, exibe a mensagem genérica de instabilidade no lugar do texto do back.
-- `viewMixin`: removido o computed `mx_fetchErrorMessage`, a mensagem de erro do fetch passa a vir de `errorMessages.fetch` (shared).
+- `QasFormView`: notify de erro do `submit` e do fetch passa a utilizar o `getErrorMessage`.
+- `QasListView` e `QasSingleView`: notify de erro do fetch passa a utilizar o `getErrorMessage`.
+- `QasChartView`: notify de erro do fetch passa a utilizar o `getErrorMessage`.
+- `QasInfiniteScroll`: notify de erro do fetch passa a utilizar o `getErrorMessage`.
+- `Delete`: notify de erro passa a utilizar o `getErrorMessage`.
+- `viewMixin`: removido o computed `mx_fetchErrorMessage`.
 
 ## [4.0.0-beta.0] - 29-09-2026
 ### BREAKING CHANGES

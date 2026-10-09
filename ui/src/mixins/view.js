@@ -1,5 +1,4 @@
 import { camelizeFieldsName } from '../helpers'
-import errorMessages from '../shared/error-messages.js'
 import getErrorMessage from '../helpers/get-error-message.js'
 
 import { markRaw } from 'vue'
@@ -107,7 +106,7 @@ export default {
 
       this.mx_hasFetchError = true
 
-      this.$qas.error(getErrorMessage(error, { defaultMessage: errorMessages.fetch }))
+      this.$qas.error(getErrorMessage(error))
     },
 
     mx_setErrors (errors = {}) {

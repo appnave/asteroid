@@ -43,7 +43,6 @@ import QasDialog from '../dialog/QasDialog.vue'
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
 import NotifySuccess from '../../plugins/notify-success/NotifySuccess.js'
 import getErrorMessage from '../../helpers/get-error-message.js'
-import errorMessages from '../../shared/error-messages.js'
 import { useHistory, useOverlayNavigation } from '../../composables'
 import { viewMixin } from '../../mixins'
 
@@ -469,12 +468,11 @@ export default {
         log(`[${this.entity}]:submit:success`, { response, modelValue })
       } catch (error) {
         const errors = error?.response?.data?.errors
-        const message = getErrorMessage(error, { defaultMessage: errorMessages.save, useForm: true })
 
         this.mx_setErrors(errors)
         this.$emit('update:errors', this.mx_errors)
 
-        if (message) NotifyError(message)
+        NotifyError(getErrorMessage(error))
 
         this.$emit('submit-error', error)
 

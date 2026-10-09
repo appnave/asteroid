@@ -6,19 +6,22 @@ Composable para requisições do axios feitas manualmente (fora dos componentes 
 
 Para outros tipos de promise, utilize o [promiseHandler](/helpers/promise-handler).
 
-A requisição só é feita ao chamar o `execute`.
+Por padrão, a requisição só é feita ao chamar o `execute`. Com `immediate: true`, ela é feita ao criar o composable.
 
 #### Definição
 ```js
 const { data, error, isLoading, execute } = useRequestHandler(
-  request, // config do axios (ex.: { method, url, params, data }), o "method" é obrigatório
   {
-    successMessage, // mensagem do notify de sucesso, só é exibido caso informada. Prioriza o "status.text" retornado pelo back
-    errorMessage, // mensagem de erro caso o back não retorne "status.text"
-    useNotifyError = true, // exibe o notify de erro
-    useLoading = true, // adiciona um loading na tela enquanto ocorre a requisição
-    loadingConfig = {}, // configurações do loading do Quasar
-    onLoading // callback que retorna em seu parâmetro se a requisição esta sendo executada ou não
+    axiosConfig, // config do axios (ex.: { method, url, params, data })
+    promiseHandlerConfig: {
+      successMessage, // mensagem do notify de sucesso, só é exibido caso informada. Prioriza o "status.text" retornado pelo back
+      useLoading = true, // adiciona um loading na tela enquanto ocorre a requisição
+      loadingConfig = {}, // configurações do loading do Quasar
+      onLoading // callback que retorna em seu parâmetro se a requisição esta sendo executada ou não
+    }
+  },
+  {
+    immediate = false // executa a requisição ao criar o composable
   }
 )
 
@@ -28,27 +31,31 @@ isLoading // ref indicando se a requisição está em andamento
 execute // função que executa a requisição e retorna { data, error }
 ```
 
+:::tip
+O `successMessage` é tratado pelo próprio composable e não é repassado ao `promiseHandler`. A mensagem de erro é sempre definida pelo [getErrorMessage](/helpers/get-error-message).
+:::
+
 #### execute
-Recebe uma config do axios que é mesclada à config inicial, útil para valores que só existem no momento da execução, como o payload ou uma URL com id (ex.: `execute({ data: payload })` ou ``execute({ url: `sales/${id}` })``).
+Recebe uma config do axios que é mesclada ao `axiosConfig` inicial, útil para valores que só existem no momento da execução, como o payload ou uma URL com id (ex.: `execute({ data: payload })` ou ``execute({ url: `sales/${id}` })``).
 
 :::warning
-O `method` é obrigatório, informado na config inicial ou na do `execute`. Sem ele, o `execute` lança um erro, evitando que uma ação seja feita como `GET` (padrão do axios) sem perceber.
+Quando o `method` não é informado, o axios utiliza `GET` por padrão. Informe sempre o `method` no `axiosConfig` ou na config do `execute`.
 :::
 
 #### Mensagem de erro
-A mensagem é definida pelo [getErrorMessage](/helpers/get-error-message). Requisições `POST`, `PUT` e `PATCH` são tratadas como formulário (`useForm: true`): quando o back retornar erros de campo sem `status.text`, é exibida a mensagem padrão de validação.
+A mensagem é definida pelo [getErrorMessage](/helpers/get-error-message): prioriza o `status.text` retornado pelo back e, caso não exista, utiliza a mensagem padrão com base no método da requisição (`save` para `POST`, `PUT` e `PATCH`, `delete` para `DELETE` e `fetch` para `GET`). Em `POST`, `PUT` e `PATCH` com status 422 sem `status.text`, é exibida a mensagem padrão de validação.
 
 #### Uso
 ```js
 import { useRequestHandler } from 'asteroid'
 
-const { isLoading, execute } = useRequestHandler(
-  { method: 'post', url: `sales/${saleId}/retry` },
-  {
+const { isLoading, execute } = useRequestHandler({
+  axiosConfig: { method: 'post', url: `sales/${saleId}/retry` },
+  promiseHandlerConfig: {
     successMessage: 'Proposta reenviada com sucesso.',
     useLoading: false
   }
-)
+})
 
 async function resendProposal () {
   const { error } = await execute()
@@ -59,13 +66,27 @@ async function resendProposal () {
 }
 ```
 
+###### Executando ao criar o composable (immediate)
+
+```js
+const { data, isLoading } = useRequestHandler(
+  {
+    axiosConfig: { method: 'get', url: `sales/${saleId}/approvers` },
+    promiseHandlerConfig: {
+      useLoading: false
+    }
+  },
+  { immediate: true }
+)
+```
+
 ###### Enviando o payload no momento da execução
 
 ```js
-const { execute } = useRequestHandler(
-  { method: 'post', url: `/sales/${saleId}/justify` },
-  { successMessage: 'Aprovação realizada com sucesso.' }
-)
+const { execute } = useRequestHandler({
+  axiosConfig: { method: 'post', url: `/sales/${saleId}/justify` },
+  promiseHandlerConfig: { successMessage: 'Aprovação realizada com sucesso.' }
+})
 
 const { error } = await execute({ data: viewState.value.values })
 ```
@@ -73,9 +94,9 @@ const { error } = await execute({ data: viewState.value.values })
 ###### URL definida no momento da execução
 
 ```js
-const { execute } = useRequestHandler(
-  { method: 'patch', data: { status: 'canceled' } }
-)
+const { execute } = useRequestHandler({
+  axiosConfig: { method: 'patch', data: { status: 'canceled' } }
+})
 
 await execute({ url: `sales/${saleId}` })
 ```
@@ -88,10 +109,10 @@ O composable pode ser criado no `data`, onde o `inject` do axios também funcion
 export default {
   data () {
     return {
-      cancelRequest: useRequestHandler(
-        { method: 'patch', data: { status: 'canceled' } },
-        { useLoading: false }
-      )
+      cancelRequest: useRequestHandler({
+        axiosConfig: { method: 'patch', data: { status: 'canceled' } },
+        promiseHandlerConfig: { useLoading: false }
+      })
     }
   },
 
@@ -108,3 +129,7 @@ export default {
 ```
 
 No template, os refs são acessados sem o `.value` (ex.: `cancelRequest.isLoading`).
+
+:::warning
+Com `immediate: true` no `data`, a requisição é feita durante o `data`, antes do `created`. Os valores usados no `axiosConfig` (como props) precisam estar disponíveis nesse momento.
+:::

@@ -1,5 +1,4 @@
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
-import errorMessages from '../../shared/error-messages.js'
 import getErrorMessage from '../../helpers/get-error-message.js'
 import { camelizeFieldsName } from '../../helpers'
 
@@ -114,7 +113,7 @@ export default function useView (config) {
 
     hasFetchError.value = true
 
-    NotifyError(getErrorMessage(error, { defaultMessage: errorMessages.fetch }))
+    NotifyError(getErrorMessage(error))
   }
 
   function setErrors (errors = {}) {

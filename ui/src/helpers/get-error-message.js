@@ -1,31 +1,48 @@
 import errorMessages from '../shared/error-messages.js'
 
 /**
- * Retorna a mensagem de erro que deve ser exibida ao usuário a partir do erro de uma requisição,
- * priorizando a mensagem retornada pelo back ("status.text").
+ * Retorna a mensagem de erro que deve ser exibida ao usuário a partir do erro de uma requisição do axios,
+ * priorizando a mensagem retornada pelo back ("status.text"). Quando o back não retorna mensagem, utiliza a
+ * mensagem padrão com base no método da requisição ("error.config.method").
  *
  * @param {object} error - Erro da requisição (axios).
- * @param {{ defaultMessage?: string, useForm?: boolean }} [options]
- * @param {string} [options.defaultMessage] - Mensagem utilizada caso o back não retorne "status.text".
- * @param {boolean} [options.useForm=false] - Indica se é um formulário, para exibir a mensagem de validação dos campos.
- * @returns {string|undefined}
+ * @returns {string}
  *
- * @example getErrorMessage(error, { defaultMessage: 'Não conseguimos reenviar a proposta.' })
+ * @example getErrorMessage(error)
  */
-export default function getErrorMessage (error, { defaultMessage, useForm = false } = {}) {
+export default function getErrorMessage (error) {
   const { status, data } = error?.response || {}
 
-  // Sem resposta (timeout, rede) ou status 5xx: mensagem genérica de instabilidade.
-  if (!status || status >= 500) return errorMessages.serverError
+  const method = error?.config?.method
+  const isFormRequest = ['post', 'put', 'patch'].includes(method)
+  const defaultMessage = getDefaultMessage(method, isFormRequest)
+
+  /**
+   * Sem resposta (timeout, rede) ou status 5xx: mensagem padrão da ação, pois o texto do back nesses casos é
+   * genérico ou técnico (fora de produção retorna a mensagem da exceção).
+   */
+  if (!status || status >= 500) return defaultMessage
 
   // Mensagem retornada pelo back em "status.text".
   if (data?.status?.text) return data.status.text
 
-  const hasFieldError = !!Object.keys(data?.errors || {}).length
+  // Formulário (POST, PUT ou PATCH) com erro de validação: mensagem padrão de validação dos campos.
+  if (isFormRequest && status === 422) return errorMessages.validation
 
-  // Caso seja um formulário e tenha erros de campo, retorna a mensagem padrão de validação.
-  if (useForm && hasFieldError) return errorMessages.validation
-
-  // Mensagem padrão informada (undefined caso não informada).
   return defaultMessage
+}
+
+/**
+ * Mensagem padrão da ação com base no método da requisição.
+ *
+ * @param {string} [method] - Método HTTP da requisição.
+ * @param {boolean} isFormRequest - Indica se é uma requisição de formulário (POST, PUT ou PATCH).
+ * @returns {string}
+ */
+function getDefaultMessage (method, isFormRequest) {
+  if (isFormRequest) return errorMessages.save
+
+  if (method === 'delete') return errorMessages.delete
+
+  return errorMessages.fetch
 }

@@ -53,7 +53,6 @@ import chartDataLabels from 'chartjs-plugin-datalabels'
 
 // Outras importações
 import { filterListByHandle } from '../../helpers'
-import errorMessages from '../../shared/error-messages.js'
 import getErrorMessage from '../../helpers/get-error-message.js'
 
 import { extend, is } from 'quasar'
@@ -425,7 +424,7 @@ export default {
 
         this.$emit('fetch-success', response)
       } catch (error) {
-        this.$qas.error(getErrorMessage(error, { defaultMessage: errorMessages.fetch }))
+        this.$qas.error(getErrorMessage(error))
 
         this.$emit('fetch-error', error)
       } finally {

@@ -1,7 +1,6 @@
 import Dialog from '../dialog/Dialog.js'
 import NotifySuccess from '../notify-success/NotifySuccess.js'
 import NotifyError from '../notify-error/NotifyError.js'
-import errorMessages from '../../shared/error-messages.js'
 import getErrorMessage from '../../helpers/get-error-message.js'
 import { getAction } from '@bildvitta/store-adapter'
 import { useHistory } from '../../composables'
@@ -74,7 +73,7 @@ export default function (config = {}) {
     } catch (error) {
       onDeleteError(error)
 
-      NotifyError(getErrorMessage(error, { defaultMessage: errorMessages.delete }))
+      NotifyError(getErrorMessage(error))
     } finally {
       onDelete(false)
 

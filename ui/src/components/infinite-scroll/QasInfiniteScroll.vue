@@ -27,7 +27,6 @@ import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import { ref, computed, inject, nextTick } from 'vue'
 
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
-import errorMessages from '../../shared/error-messages.js'
 import getErrorMessage from '../../helpers/get-error-message.js'
 import { useOverlayNavigation } from '../../composables'
 
@@ -162,7 +161,7 @@ async function fetchList () {
 
     emit('fetch-success', { list: newList, fields: modelFields.value, offset: offset.value, count: count.value })
   } catch (error) {
-    NotifyError(getErrorMessage(error, { defaultMessage: errorMessages.fetch }))
+    NotifyError(getErrorMessage(error))
 
     hasFetchingError.value = true
 
