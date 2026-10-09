@@ -504,6 +504,10 @@ export default [
         path: '/helpers/get-normalized-options'
       },
       {
+        name: 'getErrorMessage',
+        path: '/helpers/get-error-message'
+      },
+      {
         name: 'getRequiredLabel',
         path: '/helpers/get-required-label'
       },
@@ -632,6 +636,10 @@ export default [
       {
         name: 'useQueryCache',
         path: '/composables/use-query-cache'
+      },
+      {
+        name: 'useRequestHandler',
+        path: '/composables/use-request-handler'
       },
       {
         name: 'useScreen',

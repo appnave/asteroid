@@ -14,6 +14,24 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### BREAKING CHANGES
+- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: removido o parâmetro `next` (deprecated no Vue Router 5). Caso utilize o `queryList`, altere para `beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company'])`.
+- `Delete`: removida a prop `useResponseNotifyError`, exibir a mensagem do back passa a ser o padrão.
+- Mensagens de erro dos componentes de view agora dão prioridade para mensagem de retorno do back.
+
+### Adicionado
+- `getErrorMessage`: helper que retorna a mensagem de erro de uma requisição, priorizando o `status.text` do back e, na falta dele, uma mensagem padrão pelo método (`GET`, `DELETE`, `POST`/`PUT`/`PATCH`).
+- `useRequestHandler`: composable para requisições manuais, com `data`, `error`, `isLoading`, `execute` e opção `immediate`.
+
+### Modificado
+- `QasFormView`: notify de erro do `submit` e do fetch passa a utilizar o `getErrorMessage`.
+- `QasListView` e `QasSingleView`: notify de erro do fetch passa a utilizar o `getErrorMessage`.
+- `QasChartView`: notify de erro do fetch passa a utilizar o `getErrorMessage`.
+- `QasInfiniteScroll`: notify de erro do fetch passa a utilizar o `getErrorMessage`.
+- `Delete`: notify de erro passa a utilizar o `getErrorMessage`.
+- `viewMixin`: removido o computed `mx_fetchErrorMessage`.
+
 ## [4.0.0-beta.0] - 29-09-2026
 ### BREAKING CHANGES
 - Removido suporte ao webpack; a documentação e o fluxo de desenvolvimento passam a considerar apenas Vite.
