@@ -18,6 +18,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### BREAKING CHANGES
 - `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: removido o parâmetro `next` (deprecated no Vue Router 5). Caso utilize o `queryList`, altere para `beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company'])`.
 - `Delete`: removida a prop `useResponseNotifyError`, exibir a mensagem do back passa a ser o padrão.
+- Mensagens de erro dos componentes de view agora dão prioridade para mensagem de retorno do back.
 
 ### Adicionado
 - `getErrorMessage`: helper que retorna a mensagem de erro de uma requisição, priorizando o `status.text` do back e, na falta dele, uma mensagem padrão pelo método (`GET`, `DELETE`, `POST`/`PUT`/`PATCH`).
