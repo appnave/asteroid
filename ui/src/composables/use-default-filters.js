@@ -26,13 +26,10 @@ const defaultFiltersHooks = {
  * @param {object} to - Rota de destino.
  * @param {object} _from - Rota de origem.
  * @param {array|object} queryList='company' - Lista de filtros a serem aplicados.
- * @returns {object|boolean} - Rota para redirecionar com os filtros aplicados, ou true para seguir a navegação.
  *
  * @example
  * ```js
- * beforeEnter: setDefaultFiltersBeforeEnter
  * beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company', 'properties'])
- * beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, { company: false, properties: true // multiple })
  * ```
  */
 export function setDefaultFiltersBeforeEnter (to, _from, queryList = ['company']) {
