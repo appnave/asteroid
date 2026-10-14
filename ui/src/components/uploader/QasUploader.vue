@@ -431,6 +431,15 @@ export default {
 
       filesList.forEach(file => processedFiles.push(this.resizeImage(file)))
 
+      /**
+       * Quando não é multiple, remove o arquivo anterior da lista interna do QUploader antes de adicionar
+       * o novo, senão o "max-files" rejeita o novo arquivo silenciosamente e não é possível trocar a imagem.
+       */
+      if (!this.isMultiple) {
+        this.uploader.removeUploadedFiles()
+        this.uploader.removeQueuedFiles()
+      }
+
       this.uploader.addFiles(await Promise.all(processedFiles))
     },
 
@@ -453,9 +462,12 @@ export default {
       }
 
       const name = `${uid()}.${file.name.split('.').pop()}`
-      const { endpoint } = await this.fetchCredentials(name) || {}
+      const { endpoint, fullPath } = await this.fetchCredentials(name) || {}
 
       if (!endpoint) return
+
+      // guarda o fullPath no arquivo para ser usado na exibição/model após o upload.
+      file.fullPath = fullPath
 
       return {
         headers: [
@@ -491,7 +503,7 @@ export default {
       uploadedFiles = uploadedFiles.map((file, indexToDelete) => {
         return {
           isUploaded: true,
-          url: file.xhr ? this.getURLValue(file.xhr) : '',
+          url: this.isUploaded(file) ? this.getURLValue(file) : '',
           name: file.name,
           indexToDelete,
           isFailed: this.isFailed(file)
@@ -536,13 +548,14 @@ export default {
     },
 
     /**
-     * Caso useUrlPath seja true, retorna de responseURL, senão tenta retornar o response
-     * que pode ser um base64, caso não tenha o response, retorna a responseURL.
+     * Caso useUrlPath seja true, retorna o fullPath (vindo do upload-credentials), senão tenta
+     * retornar o response que pode ser um base64, caso não tenha o response, retorna o fullPath.
+     * Caso não exista fullPath, utiliza a responseURL sem a query como fallback.
     */
-    getURLValue (xhr) {
-      const responseURL = xhr.responseURL.split('?').shift()
+    getURLValue ({ xhr, fullPath }) {
+      const url = fullPath || xhr.responseURL.split('?').shift()
 
-      return this.useUrlPath ? responseURL : (xhr.response || responseURL)
+      return this.useUrlPath ? url : (xhr.response || url)
     },
 
     getModelValue (index) {
@@ -575,6 +588,11 @@ export default {
 
     hasGalleryCardSection (files) {
       return Object.keys(files).length
+    },
+
+    // só considera o arquivo enviado após o PUT no endpoint finalizar com sucesso.
+    isUploaded (file) {
+      return file.__status === 'uploaded'
     },
 
     isFailed (file) {
@@ -712,7 +730,7 @@ export default {
     uploaded (response) {
       this.hasError = false
 
-      const fullPath = this.getURLValue(response.xhr)
+      const fullPath = this.getURLValue({ xhr: response.xhr, fullPath: response.files?.[0]?.fullPath })
 
       const objectValue = {
         format: response.files[0].type,
