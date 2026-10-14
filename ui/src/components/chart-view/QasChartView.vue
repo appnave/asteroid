@@ -53,6 +53,7 @@ import chartDataLabels from 'chartjs-plugin-datalabels'
 
 // Outras importações
 import { filterListByHandle } from '../../helpers'
+import getErrorMessage from '../../helpers/get-error-message.js'
 
 import { extend, is } from 'quasar'
 import { getAction } from '@bildvitta/store-adapter'
@@ -423,7 +424,7 @@ export default {
 
         this.$emit('fetch-success', response)
       } catch (error) {
-        this.$qas.error('Ops… Não conseguimos acessar as informações. Por favor, tente novamente em alguns minutos.')
+        this.$qas.error(getErrorMessage(error))
 
         this.$emit('fetch-error', error)
       } finally {

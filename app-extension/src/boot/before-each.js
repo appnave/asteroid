@@ -6,8 +6,6 @@ export default ({ router }) => {
 
     addRoute(to)
 
-    return new Promise(resolve => {
-      setDefaultFiltersBeforeEach(to, from, result => resolve(result))
-    })
+    return setDefaultFiltersBeforeEach(to, from)
   })
 }

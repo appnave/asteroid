@@ -18,12 +18,13 @@ Obs: a função fica dentro do arquivo do composable `useDefaultFilters`.
 
 **Definição**
 ```js
-setDefaultFiltersBeforeEnter(to, from, next, queryList = ['company'])
+setDefaultFiltersBeforeEnter(to, from, queryList = ['company'])
 
 to // rota de destino
 from // rota de origem
-next // função de redirecionamento
 queryList // chaves que será recuperadas dentro de 'defaultFilter' no localStorage (por padrão company incluído).
+
+// retorno: rota com os filtros aplicados (redireciona) ou true (segue a navegação).
 ```
 
 #### Como Utilizar
@@ -40,6 +41,21 @@ export default [
     path: '/users',
     component: () => import('pages/users/UsersList.vue'),
     beforeEnter: setDefaultFiltersBeforeEnter
+  }
+]
+```
+
+**Passando o `queryList`**
+```js
+// users.js
+import { setDefaultFiltersBeforeEnter } from 'asteroid'
+
+export default [
+  {
+    name: 'UsersList',
+    path: '/users',
+    component: () => import('pages/users/UsersList.vue'),
+    beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company', 'properties'])
   }
 ]
 ```

@@ -27,6 +27,7 @@ import QasEmptyResultText from '../empty-result-text/QasEmptyResultText.vue'
 import { ref, computed, inject, nextTick } from 'vue'
 
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
+import getErrorMessage from '../../helpers/get-error-message.js'
 import { useOverlayNavigation } from '../../composables'
 
 defineOptions({ name: 'QasInfiniteScroll' })
@@ -160,7 +161,7 @@ async function fetchList () {
 
     emit('fetch-success', { list: newList, fields: modelFields.value, offset: offset.value, count: count.value })
   } catch (error) {
-    NotifyError('Ops… Não conseguimos acessar as informações. Por favor, tente novamente em alguns minutos.')
+    NotifyError(getErrorMessage(error))
 
     hasFetchingError.value = true
 

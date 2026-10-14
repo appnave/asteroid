@@ -1,6 +1,7 @@
 import Dialog from '../dialog/Dialog.js'
 import NotifySuccess from '../notify-success/NotifySuccess.js'
 import NotifyError from '../notify-error/NotifyError.js'
+import getErrorMessage from '../../helpers/get-error-message.js'
 import { getAction } from '@bildvitta/store-adapter'
 import { useHistory } from '../../composables'
 
@@ -9,7 +10,6 @@ export default function (config = {}) {
     dialogProps = {},
     deleteActionParams = {},
     useAutoDeleteRoute,
-    useResponseNotifyError,
     redirectRoute,
 
     // callbacks
@@ -37,11 +37,6 @@ export default function (config = {}) {
     }
   }
 
-  const defaultNotifyMessages = {
-    error: 'Não conseguimos excluir as informações. Por favor, tente novamente em alguns minutos.',
-    success: 'Informações excluídas com sucesso.'
-  }
-
   async function destroy () {
     try {
       setLoadingStateOnDialog(true)
@@ -57,7 +52,7 @@ export default function (config = {}) {
         ? await deleteAction(payload)
         : await getAction.call(this, destroyActionParams)
 
-      NotifySuccess(defaultNotifyMessages.success)
+      NotifySuccess('Informações excluídas com sucesso.')
 
       if (useAutoDeleteRoute) {
         const { destroyRoutes, history } = useHistory()
@@ -84,18 +79,6 @@ export default function (config = {}) {
 
       setLoadingStateOnDialog(false)
     }
-  }
-
-  /**
-   * Quando "useResponseNotifyError" é true e o back retorna uma mensagem de erro,
-   * usamos essa mensagem no notify; caso contrário, usamos a mensagem padrão.
-   */
-  function getErrorMessage (error) {
-    const responseMessage = error?.response?.data?.status?.text
-
-    return useResponseNotifyError && responseMessage
-      ? responseMessage
-      : defaultNotifyMessages.error
   }
 
   function replaceRoute (context) {

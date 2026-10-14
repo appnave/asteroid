@@ -42,6 +42,7 @@ import QasDialog from '../dialog/QasDialog.vue'
 
 import NotifyError from '../../plugins/notify-error/NotifyError.js'
 import NotifySuccess from '../../plugins/notify-success/NotifySuccess.js'
+import getErrorMessage from '../../helpers/get-error-message.js'
 import { useHistory, useOverlayNavigation } from '../../composables'
 import { viewMixin } from '../../mixins'
 
@@ -236,8 +237,6 @@ export default {
 
     defaultNotifyMessages () {
       return {
-        validationError: 'Não conseguimos salvar as informações. Por favor, revise os campos e tente novamente.',
-        error: 'Não conseguimos salvar as informações. Por favor, tente novamente em alguns minutos.',
         success: 'Informações salvas com sucesso.'
       }
     },
@@ -469,17 +468,11 @@ export default {
         log(`[${this.entity}]:submit:success`, { response, modelValue })
       } catch (error) {
         const errors = error?.response?.data?.errors
-        const message = error?.response?.data?.status?.text
-        const hasFieldError = !!Object.keys(errors || {})?.length
-
-        const defaultMessage = hasFieldError
-          ? this.defaultNotifyMessages.validationError
-          : this.defaultNotifyMessages.error
 
         this.mx_setErrors(errors)
         this.$emit('update:errors', this.mx_errors)
 
-        NotifyError(message || defaultMessage)
+        NotifyError(getErrorMessage(error))
 
         this.$emit('submit-error', error)
 
