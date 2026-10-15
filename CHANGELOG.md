@@ -20,6 +20,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Corrigido
 - `QasUploader`: Corrigido adicionar uma imagem após já existir uma imagem no upload, antes não acontecia nada por conta da validação interna do `maxFiles`.
+- `build/release`: Corrigido script de release que falhava ao instalar o `ui` no `app-extension` antes da versão ficar disponível no npm.
 
 ## [4.0.0-beta.0] - 29-09-2026
 ### BREAKING CHANGES
