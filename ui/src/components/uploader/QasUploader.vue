@@ -432,8 +432,8 @@ export default {
       filesList.forEach(file => processedFiles.push(this.resizeImage(file)))
 
       /**
-       * Quando não é multiple, remove o arquivo anterior da lista interna do QUploader antes de adicionar
-       * o novo, senão o "max-files" rejeita o novo arquivo silenciosamente e não é possível trocar a imagem.
+       * Sem "multiple", remove o arquivo anterior antes de adicionar o novo,
+       * pois o "max-files" bloquearia a troca.
        */
       if (!this.isMultiple) {
         this.uploader.removeUploadedFiles()
@@ -466,7 +466,6 @@ export default {
 
       if (!endpoint) return
 
-      // guarda o fullPath no arquivo para ser usado na exibição/model após o upload.
       file.fullPath = fullPath
 
       return {
@@ -548,10 +547,9 @@ export default {
     },
 
     /**
-     * Caso useUrlPath seja true, retorna o fullPath (vindo do upload-credentials), senão tenta
-     * retornar o response que pode ser um base64, caso não tenha o response, retorna o fullPath.
-     * Caso não exista fullPath, utiliza a responseURL sem a query como fallback.
-    */
+     * Retorna a URL do arquivo: fullPath (do upload-credentials) ou, na falta dele, a responseURL sem query.
+     * Sem useUrlPath, prioriza o response (ex: base64), se existir.
+     */
     getURLValue ({ xhr, fullPath }) {
       const url = fullPath || xhr.responseURL.split('?').shift()
 
