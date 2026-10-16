@@ -14,7 +14,7 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
 - `QasUploader`: Modificado componente pra exibir o template da imagem do upload com base na chave `full_path` retornada pela API `upload-credentials`.
 
@@ -32,3 +32,4 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Modificado
 - Removido suporte ao webpack; a documentação e o fluxo de desenvolvimento passam a considerar apenas Vite.
 [4.0.0-beta.0]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.0-alpha.0...v4.0.0-beta.0?expand=1
+[4.0.0-beta.1]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.1-alpha.5...v4.0.0-beta.1?expand=1
