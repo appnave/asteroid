@@ -10,6 +10,13 @@ Neste arquivo (CHANGELOG.MD) você encontrará somente as mudanças referentes a
 ### Sobre os "BREAKING CHANGES"
 Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de serem pequenas, podem alterar o comportamento da funcionalidade caso não seja feita uma atualização, **preste muita atenção** nas breaking changes dentro das versões quando existirem.
 
+## Não publicado
+### Modificado
+- `QasUploader`: Modificado componente pra exibir o template da imagem do upload com base na chave `full_path` retornada pela API `upload-credentials`.
+
+### Corrigido
+- `QasUploader`: Corrigido adicionar uma imagem após já existir uma imagem no upload, antes não acontecia nada por conta da validação interna do `maxFiles`.
+
 ## [3.16.4] - 19-02-2025
 ### Corrigido
 - `QasAppMenu`: removido prefixo `+` no phone enviado para o gleap que estava incorreto.
