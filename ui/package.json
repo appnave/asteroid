@@ -1,7 +1,7 @@
 {
   "name": "@bildvitta/quasar-ui-asteroid",
   "description": "Asteroid",
-  "version": "3.16.5-beta.0-alpha.0",
+  "version": "3.16.5-beta.0",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
   "license": "MIT",
   "main": "dist/asteroid.cjs.min.js",
