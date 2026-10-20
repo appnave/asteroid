@@ -1,7 +1,7 @@
 const jetpack = require('fs-jetpack') // https://github.com/szwacz/fs-jetpack
 const path = require('path') // https://nodejs.org/api/path.html
 
-function changelogHandler ({ ora, nextVersion, packages, latestVersions, isBeta }) {
+function changelogHandler ({ ora, nextVersion, packages, latestVersions, isBeta, previousVersion }) {
   const getVersionLinkCompare = require('./get-version-link-compare')
 
   const changelogPath = `${packages.global.path}CHANGELOG.md`
@@ -49,7 +49,7 @@ function changelogHandler ({ ora, nextVersion, packages, latestVersions, isBeta 
           `## [${nextVersion}] - ${publishedDate}`
         ).trimEnd()
 
-        const versionLinkCompare = getVersionLinkCompare({ nextVersion, latestVersions, isBeta })
+        const versionLinkCompare = getVersionLinkCompare({ nextVersion, latestVersions, isBeta, previousVersion })
 
         const normalizedChangelog = (
           replacedChangelog + '\n' + versionLinkCompare

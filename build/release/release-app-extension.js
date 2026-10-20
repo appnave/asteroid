@@ -9,12 +9,13 @@ function releaseAppExtension ({ execaSync, ora, nextVersion, publishCommands, pa
 
   try {
     // publica a nova versão do "app-extension"
-    execaSync('npm', publishCommands, { cwd: packages['app-extension'].resolved })
+    // libera o terminal para o fluxo interativo de autenticação do npm (ex: OTP)
+    execaSync('npm', publishCommands, { cwd: packages['app-extension'].resolved, stdio: 'inherit' })
     publishAppExtensionSpinner.succeed('"app-extension" publicada com sucesso')
 
     return { success: true, error: false }
-  } catch {
-    publishAppExtensionSpinner.fail('Falha ao publicar "app-extension"')
+  } catch (error) {
+    publishAppExtensionSpinner.fail(`Falha ao publicar "app-extension" - ${error.message}`)
     return { success: false, error: true }
   }
 }

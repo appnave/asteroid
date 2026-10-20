@@ -39,6 +39,16 @@ function logError (error) {
   return console.error(error.red)
 }
 
+// retorna a última tag "stable" (sem alpha/beta) alcançável a partir da branch atual, ex: "3.16.4"
+function getLegacyPreviousVersion (execaSync) {
+  try {
+    const { stdout } = execaSync('git', ['describe', '--tags', '--abbrev=0', '--exclude', '*-*'])
+    return stdout.trim().replace(/^v/, '')
+  } catch {
+    return require('../package.json').version
+  }
+}
+
 // Main
 async function main () {
   const { execaSync } = await import('execa') // https://github.com/sindresorhus/execa
@@ -64,11 +74,23 @@ async function main () {
   )
 
   const currentBranch = execaSync('git', ['branch', '--show-current']).stdout
-  const acceptableBranch = ['main', 'develop']
+  const acceptableBranch = ['main', 'develop', /^feature\/.+/]
   const isBeta = currentBranch === 'develop'
 
-  if (!acceptableBranch.includes(currentBranch)) {
-    ora('Só é possível publicar nas branchs "main" e "develop"').fail()
+  /*
+  * Versões legadas (ex: 3.16.x) publicadas direto a partir de uma branch "feature/*", sem merge.
+  * - alpha (ex: 3.16.5-alpha.0): publica com a tag "alpha" no npm, sem alterar o CHANGELOG.md.
+  * - demais (ex: 3.16.5): publica com a tag "legacy" no npm para não sobrescrever a "latest" e atualiza o CHANGELOG.md.
+  * Em ambos os casos é feito commit, tag e push na própria branch, e a release no github é criada manualmente a partir da tag.
+  */
+  const isLegacy = /^feature\/.+/.test(currentBranch)
+
+  const isAcceptableBranch = acceptableBranch.some(branch => {
+    return typeof branch === 'string' ? branch === currentBranch : branch.test(currentBranch)
+  })
+
+  if (!isAcceptableBranch) {
+    ora('Só é possível publicar nas branchs "main", "develop" e "feature/*"').fail()
     return
   }
 
@@ -86,7 +108,13 @@ async function main () {
     validate (value) {
       value = semver.clean(value)
 
-      if (!value || semver.lt(value, currentVersion)) {
+      /*
+      * Remove o sufixo "-alpha" da versão atual, pois para o semver "3.16.5-beta.0" é menor que "3.16.5-beta.0-alpha.0",
+      * o que impediria publicar a beta após a alpha.
+      */
+      const baseVersion = currentVersion.replace(/-alpha.*$/, '')
+
+      if (!value || semver.lt(value, baseVersion)) {
         return logError('\n✘ Informe uma versão válida e superior a atual.')
       }
 
@@ -160,10 +188,14 @@ async function main () {
     nextVersion,
     isBeta,
     packages,
-    latestVersions
+    latestVersions,
+    // na versão legada o compare é feito com a última tag "stable" da branch, e não com a última "stable" do npm
+    previousVersion: isLegacy && getLegacyPreviousVersion(execaSync)
   })
 
-  if (!hasUnreleased) {
+  const isLegacyAlpha = isLegacy && nextVersion.includes('-alpha')
+
+  if (!isLegacyAlpha && !hasUnreleased) {
     ora(
       'Não foi possível encontrar o "## Não publicado" dentro do CHANGELOG.md por favor adicione para continuar'
     ).fail()
@@ -171,10 +203,13 @@ async function main () {
     return
   }
 
-  const changelogContent = getContent()
   const publishCommands = ['publish']
 
-  isBeta && publishCommands.push('--tag', 'beta')
+  if (isBeta) {
+    publishCommands.push('--tag', 'beta')
+  } else if (isLegacy) {
+    publishCommands.push('--tag', isLegacyAlpha ? 'alpha' : 'legacy')
+  }
 
   // Se a proxima versão for diferente da ultima versão publicada, então significa que podemos lançar uma nova versão do ui
   if (nextVersion !== latestVersions.ui[model]) {
@@ -200,16 +235,21 @@ async function main () {
   if (appExtensionError) return
 
   // atualiza o CHANGELOG.md
-  updateContent()
+  if (!isLegacyAlpha) updateContent()
 
-  // commita,faz o push, cria tag e faz push da tag
+  // commita, faz o push, cria tag e faz push da tag
   gitHandler({
     ora,
     execaSync,
     nextVersion,
-    isBeta,
+    currentBranch,
     packages
   })
+
+  // versão legada: a release no github é criada manualmente a partir da tag
+  if (isLegacy) return
+
+  const changelogContent = getContent()
 
   let createdReleaseFromAPI = false
 
