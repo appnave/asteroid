@@ -14,6 +14,8 @@
                 {{ item.label }}
               </q-item-label>
             </q-item-section>
+
+            <qas-tooltip v-if="getItemTooltip(item)" :text="getItemTooltip(item)" />
           </q-item>
         </slot>
       </q-list>
@@ -29,6 +31,7 @@
 
 <script setup>
 import QasBtnDropdown from '../btn-dropdown/QasBtnDropdown.vue'
+import QasTooltip from '../tooltip/QasTooltip.vue'
 
 import useScreen from '../../composables/use-screen'
 
@@ -284,6 +287,16 @@ function getItemProps (item) {
     to,
     ...itemProps
   }
+}
+
+/**
+ * Mesma regra do QasBtn: "disabledTooltip" tem prioridade quando o item estiver desabilitado,
+ * caso contrário, utiliza o "tooltip".
+ */
+function getItemTooltip ({ disable, loading, disabledTooltip, tooltip }) {
+  const isDisabled = disable || loading
+
+  return (isDisabled && disabledTooltip) || tooltip || ''
 }
 
 function getMagicAiClasses ({ useMagicAiColor }) {

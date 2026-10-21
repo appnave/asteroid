@@ -1,5 +1,18 @@
 {
   "eslint.validate": ["javascript", "vue"],
+  "eslint.format.enable": true,
+
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
   "eslint.workingDirectories": ["./app-extension", "/build", "./docs", "/eslint", "./ui"],
 
   "vetur.experimental.templateInterpolationService": true,

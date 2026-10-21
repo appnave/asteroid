@@ -30,7 +30,7 @@ props:
     type: Object
 
   list:
-    desc: Lista de items que vão ser criados dentro do menu de ações.
+    desc: 'Lista de items que vão ser criados dentro do menu de ações. Cada item aceita as chaves "tooltip" e "disabledTooltip" (exibido somente quando o item estiver desabilitado), assim como no QasBtn.'
     default: '{}'
     type: Object
     examples:
@@ -39,6 +39,12 @@ props:
             icon: 'sym_r_visibility',
             label: 'Visualizar',
             handler: () => alert('handler ativado')
+          },
+          edit: {
+            icon: 'sym_r_create',
+            label: 'Editar',
+            disable: true,
+            disabledTooltip: 'Você não tem permissão para editar.'
           }
         }"
 
