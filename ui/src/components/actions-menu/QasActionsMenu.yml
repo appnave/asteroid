@@ -30,7 +30,7 @@ props:
     type: Object
 
   list:
-    desc: 'Lista de items que vão ser criados dentro do menu de ações. Cada item aceita as chaves "tooltip" e "disabledTooltip" (exibido somente quando o item estiver desabilitado), assim como no QasBtn.'
+    desc: Lista de items que vão ser criados dentro do menu de ações. Cada item aceita as chaves "tooltip" e "disabledTooltip" (exibido somente quando o item estiver desabilitado), assim como no QasBtn.
     default: '{}'
     type: Object
     examples:
