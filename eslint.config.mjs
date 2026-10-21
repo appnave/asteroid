@@ -54,7 +54,6 @@ export default [
     rules: {
       // Core
       'arrow-parens': ['error', 'as-needed'],
-      '@stylistic/comma-dangle': ['error', 'never'],
       'one-var': ['error', 'never'],
       'multiline-ternary': 'off',
       '@stylistic/multiline-ternary': 'off',
