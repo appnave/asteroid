@@ -293,10 +293,8 @@ function getItemProps (item) {
  * Mesma regra do QasBtn: "disabledTooltip" tem prioridade quando o item estiver desabilitado,
  * caso contrário, utiliza o "tooltip".
  */
-function getItemTooltip ({ disable, loading, disabledTooltip, tooltip }) {
-  const isDisabled = disable || loading
-
-  return (isDisabled && disabledTooltip) || tooltip || ''
+function getItemTooltip ({ disable, disabledTooltip, tooltip }) {
+  return (disable && disabledTooltip) || tooltip || ''
 }
 
 function getMagicAiClasses ({ useMagicAiColor }) {
