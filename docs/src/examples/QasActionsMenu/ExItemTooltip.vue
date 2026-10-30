@@ -1,6 +1,6 @@
 <template>
   <div class="container q-py-lg">
-    <qas-actions-menu v-bind="props" />
+    <qas-actions-menu :list />
 
     <qas-actions-menu v-bind="props2" />
   </div>
@@ -30,10 +30,6 @@ const list = {
     tooltip: 'Acessa o perfil do responsável.',
     handler: () => alert('handler ativado')
   }
-}
-
-const props = {
-  list
 }
 
 const props2 = {
