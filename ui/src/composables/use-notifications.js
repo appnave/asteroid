@@ -2,7 +2,7 @@ import asteroidConfig from 'asteroid-config'
 import hasParentByClassName from '../helpers/private/has-parent-by-class-name.js'
 
 import { Notify } from 'quasar'
-import { ref } from 'vue'
+import { getCurrentScope, onScopeDispose, ref } from 'vue'
 
 import naveNotificationSound from '../assets/sounds/nave-notification.mp3'
 
@@ -14,13 +14,56 @@ export function onNotificationReceived (callbackFn) {
   callbackFunctions.onNotificationReceived.push(callbackFn)
 }
 
+/**
+ * Callbacks registrados para o evento "process.finished".
+ * O "Set" evita registrar o mesmo callback duas vezes.
+ */
+const processFinishedCallbacks = new Set()
+
+/**
+ * Registra um callback para o evento "process.finished", se chamado dentro de um escopo
+ * (setup/created de componente), o callback é removido automaticamente ao desmontar.
+ *
+ * @param {(data: { identifier: string, isSuccessful: boolean }) => void} callbackFn
+ * @returns {() => void} função para remover o callback manualmente.
+ */
+export function onProcessFinished (callbackFn) {
+  processFinishedCallbacks.add(callbackFn)
+
+  const off = () => processFinishedCallbacks.delete(callbackFn)
+
+  if (getCurrentScope()) onScopeDispose(off)
+
+  return off
+}
+
 const unreadNotificationsCount = ref(0)
+
+/**
+ * Estado da conexão websocket repassado pela aba líder
+ * (unknown, connecting, connected, unavailable, failed, disconnected).
+ * Fica "unknown" até a aba líder responder.
+ */
+const realtimeConnectionState = ref('unknown')
 
 export default function () {
   const isNotificationsEnabled = asteroidConfig.framework.featureToggle?.useNotifications
 
+  const isProcessEventsEnabled = !!(
+    isNotificationsEnabled &&
+    asteroidConfig.framework.featureToggle?.useProcessEvents
+  )
+
   function triggerNotification (notification) {
     callbackFunctions.onNotificationReceived.forEach(fn => fn((notification)))
+  }
+
+  function triggerProcessFinished (data) {
+    processFinishedCallbacks.forEach(fn => fn(data))
+  }
+
+  function setRealtimeConnectionState (state) {
+    realtimeConnectionState.value = state
   }
 
   function setUnreadNotificationsCount (value) {
@@ -115,14 +158,18 @@ export default function () {
   return {
     // const
     isNotificationsEnabled,
+    isProcessEventsEnabled,
 
     // computed
+    realtimeConnectionState,
     unreadNotificationsCount,
 
     // functions
     incrementUnreadNotificationsCount,
     sendNotify,
+    setRealtimeConnectionState,
     setUnreadNotificationsCount,
-    triggerNotification
+    triggerNotification,
+    triggerProcessFinished
   }
 }

@@ -115,7 +115,11 @@ export default async function (api) {
       'date-fns/locale',
       'leaflet',
       'fontfaceobserver',
-      'autonumeric'
+      'autonumeric',
+
+      // necessário para o boot de notificações (evita "Pusher is not a constructor" em dev)
+      'pusher-js',
+      'laravel-echo'
     ])
 
     viteConf.plugins = viteConf.plugins || []
