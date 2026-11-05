@@ -12,7 +12,7 @@ import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 
 // Clean build artifacts
-sync('dist/!(api|vetur)')
+sync('dist/!(api)')
 
 // Setup
 import pkg from './package.json' with { type: 'json' }

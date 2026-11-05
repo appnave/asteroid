@@ -126,7 +126,7 @@ slots:
     desc: "Conteúdo do botão"
 ```
 
-Esses YMLs são processados pelo `build/api.js` para gerar JSON e pelo `build/vetur.js` para gerar arquivos de autocomplete IDE.
+Esses YMLs são processados pelo `build/api.js` para gerar JSON.
 
 ## Composables
 

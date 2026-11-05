@@ -14,6 +14,11 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## [Unreleased]
+### Removido
+- Removido suporte ao Vetur, que já não era utilizado. A extensão recomendada passa a ser a Vue - Official (Volar), oficial para o Vue 3.
+- `docs`: Removida dependência `@bildvitta/vuex-offline`, que não era utilizada.
+
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
 - `QasUploader`: Modificado componente pra exibir o template da imagem do upload com base na chave `full_path` retornada pela API `upload-credentials`.
