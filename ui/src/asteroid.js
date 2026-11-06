@@ -1,4 +1,3 @@
-/// <reference path="./components.d.ts" />
 import { defineAsyncComponent } from 'vue'
 
 export * from './helpers'

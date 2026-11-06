@@ -121,11 +121,6 @@ async function main () {
   // execaSync('node', ['./vetur.js'], { cwd: __dirname })
   // veturSpinner.succeed('Arquivos para o "Vetur" gerados.')
 
-  // Tipos dos componentes globais (autocomplete do editor)
-  const componentsDtsSpinner = ora('Gerando tipos dos componentes...').start()
-  execaSync('npm', ['run', 'build:components-dts'], { cwd: packages.global.resolved })
-  componentsDtsSpinner.succeed('Tipos dos componentes gerados.')
-
   // Lint
   const lintSpinner = ora('Lintando arquivos...').start()
   execaSync('npm', ['run', 'lint'], { cwd: packages.global.resolved })
