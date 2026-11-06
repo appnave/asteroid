@@ -9,6 +9,7 @@
     "test": "vitest",
     "build": "node ./build/build.js",
     "build:docs": "cd docs && npm i && npm run build && cd ..",
+    "build:components-dts": "node ./build/components-dts.js",
     "lint": "npm run lint:scripts",
     "lint:scripts": "npx eslint .",
     "setup": "npm i && npm run setup:app-extension && npm run setup:docs && npm run setup:ui",

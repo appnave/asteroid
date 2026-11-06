@@ -20,6 +20,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `useNotifications`: adicionado hook `onProcessFinished` (removido automaticamente ao desmontar o componente), estado `realtimeConnectionState` com o estado da conexão websocket repassado pela aba líder e a constante `isProcessEventsEnabled`.
 - `asteroid.config.js`: adicionada feature toggle `framework.featureToggle.useProcessEvents` para habilitar a escuta do evento `process.finished` no mesmo canal das notificações (depende do `useNotifications`).
 - `boot/notifications`: adicionado repasse do evento `process.finished` e do estado da conexão para todas as abas através do BroadcastChannel `notifications--process`.
+- Adicionado tipos dos componentes globais, habilitando autocomplete das props dos componentes `Qas*` no editor (Vue - Official).
 
 ### Modificado
 - `boot/api`: a lógica de URL base foi extraída para o helper `get-base-url.js`, que guarda a URL resolvida na primeira chamada para que axios e Laravel Echo utilizem sempre a mesma URL.
