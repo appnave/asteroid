@@ -14,7 +14,7 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## [Unreleased]
+## Não publicado
 ### BREAKING CHANGES
 - `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next`. Agora a rota de redirecionamento é retornada, então quem chama a função dentro de outro guard deve retornar o resultado.
 
