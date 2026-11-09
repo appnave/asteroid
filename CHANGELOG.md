@@ -14,6 +14,13 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## [Unreleased]
+### BREAKING CHANGES
+- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next`. Agora a rota de redirecionamento é retornada, então quem chama a função dentro de outro guard deve retornar o resultado.
+
+### Corrigido
+- Corrigidos avisos de depreciação do `vue-router` no console.
+
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
 - `QasUploader`: Modificado componente pra exibir o template da imagem do upload com base na chave `full_path` retornada pela API `upload-credentials`.

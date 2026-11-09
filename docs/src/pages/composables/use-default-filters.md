@@ -18,11 +18,10 @@ Obs: a função fica dentro do arquivo do composable `useDefaultFilters`.
 
 **Definição**
 ```js
-setDefaultFiltersBeforeEnter(to, from, next, queryList = ['company'])
+setDefaultFiltersBeforeEnter(to, from, queryList = ['company'])
 
 to // rota de destino
 from // rota de origem
-next // função de redirecionamento
 queryList // chaves que será recuperadas dentro de 'defaultFilter' no localStorage (por padrão company incluído).
 ```
 
@@ -42,6 +41,11 @@ export default [
     beforeEnter: setDefaultFiltersBeforeEnter
   }
 ]
+```
+
+**Informando quais filtros utilizar**
+```js
+beforeEnter: (to, from) => setDefaultFiltersBeforeEnter(to, from, ['company', 'properties'])
 ```
 
 ### useDefaultFilters

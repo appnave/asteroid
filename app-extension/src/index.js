@@ -65,7 +65,7 @@ export default async function (api) {
   const asteroid = 'node_modules/@appnave/quasar-ui-asteroid/src/asteroid.js'
   const asteroidComponents = 'node_modules/@appnave/quasar-ui-asteroid/src/components'
   const asteroidConfig = 'node_modules/@appnave/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
-  const vueRouter = 'node_modules/vue-router/dist/vue-router.esm-bundler.js'
+  const vueRouter = 'node_modules/vue-router'
   const quasar = 'node_modules/quasar'
 
   const { validate, getAsteroidConfigPath } = asteroidConfigHandler(api)
