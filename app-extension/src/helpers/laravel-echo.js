@@ -5,6 +5,8 @@ import * as PusherModule from 'pusher-js'
 
 import { camelizeKeys } from 'humps'
 
+import { getBaseURL } from './get-base-url.js'
+
 const Pusher = PusherModule.default || PusherModule.Pusher || PusherModule
 
 export const PROCESS_CHANNEL_NAME = 'notifications--process'
@@ -18,7 +20,9 @@ export function setLaravelEcho (accessToken) {
   window.Pusher = Pusher
 
   const isLocal = isLocalDevelopment()
-  const serverBaseURL = handleProcess(() => import.meta.env.SERVER_BASE_URL, '/')
+
+  // Utiliza a mesma URL base do axios, respeitando o "$base" da query string em ambiente de preview.
+  const serverBaseURL = getBaseURL()
   const normalizedServerBaseURL = serverBaseURL === '/'
     ? ''
     : serverBaseURL.replace(/\/$/, '')
