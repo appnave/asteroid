@@ -49,7 +49,8 @@ import { decamelize } from 'humps'
 import debug from 'debug'
 import { extend } from 'quasar'
 import { getAction } from '@bildvitta/store-adapter'
-import isEqualWith from 'lodash-es/isEqualWith'
+import isEqual from 'lodash-es/isEqual'
+import omit from 'lodash-es/omit'
 import { onBeforeRouteLeave } from 'vue-router'
 
 const log = debug('asteroid-ui:qas-form-view')
@@ -277,24 +278,20 @@ export default {
   },
 
   methods: {
-    beforeRouteLeave (to, from) {
-      const clonedModelValue = extend(true, {}, this.modelValue)
-      const clonedCachedResult = extend(true, {}, this.cachedResult)
+    beforeRouteLeave () {
+      const modelValueToCompare = omit(this.modelValue, this.ignoreKeysInUnsavedChanges)
+      const cachedResultToCompare = omit(this.cachedResult, this.ignoreKeysInUnsavedChanges)
 
       /**
        * Se a propriedade "useDialogOnUnsavedChanges" for false ou a variável
        * "ignoreRouterGuard" for true, então **não** iremos checar se o usuário
-       * alterou algum campo antes de sair da pagina, senão iremos validar pela função isEqualWith
+       * alterou algum campo antes de sair da pagina, senão iremos validar pela função isEqual
        * e mostrar um dialog antes do usuário sair da página.
       */
       if (
         !this.useDialogOnUnsavedChanges ||
         this.ignoreRouterGuard ||
-        isEqualWith(
-          clonedModelValue,
-          clonedCachedResult,
-          this.handleIgnoreKeysInUnsavedChanges
-        )
+        isEqual(modelValueToCompare, cachedResultToCompare)
       ) {
         return true
       }
@@ -396,17 +393,6 @@ export default {
 
     openDialog () {
       this.showDialog = true
-    },
-
-    // ignora chaves na hora de validar quando usuário está saindo da página
-    handleIgnoreKeysInUnsavedChanges (firstValue, secondValue) {
-      if (!this.ignoreKeysInUnsavedChanges.length) return
-
-      this.ignoreKeysInUnsavedChanges.forEach(key => {
-        if (firstValue) delete firstValue[key]
-
-        if (secondValue) delete secondValue[key]
-      })
     },
 
     /**

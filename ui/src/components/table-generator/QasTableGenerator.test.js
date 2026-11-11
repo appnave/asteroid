@@ -34,7 +34,7 @@ function mountTable ({ props = {}, ...options } = {}) {
 
 const getQTable = wrapper => wrapper.findComponent({ name: 'QTable' })
 const getHeaders = wrapper => getQTable(wrapper).props('columns').map(column => column.label)
-const getRows = wrapper => wrapper.findAll('tbody tr').map(row => row.findAll('td').map(td => td.text()))
+const getRows = wrapper => wrapper.findAll('tbody tr').map(row => row.findAll('td').map(cell => cell.text()))
 
 describe('QasTableGenerator', () => {
   describe('colunas', () => {
@@ -250,6 +250,20 @@ describe('QasTableGenerator', () => {
       const removeListener = vi.spyOn(window, 'removeEventListener')
       const { wrapper } = await mountTable()
 
+      wrapper.unmount()
+
+      const removed = removeListener.mock.calls.some(([event]) => event === 'resize')
+
+      removeListener.mockRestore()
+
+      expect(removed).toBe(true)
+    })
+
+    it('remove o que foi criado no mounted mesmo que "use-scroll-on-grab" tenha mudado depois', async () => {
+      const removeListener = vi.spyOn(window, 'removeEventListener')
+      const { wrapper } = await mountTable({ props: { useScrollOnGrab: true } })
+
+      await wrapper.setProps({ useScrollOnGrab: false })
       wrapper.unmount()
 
       const removed = removeListener.mock.calls.some(([event]) => event === 'resize')

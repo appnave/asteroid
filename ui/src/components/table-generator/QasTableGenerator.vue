@@ -498,13 +498,7 @@ export default {
   },
 
   beforeUnmount () {
-    if (!this.hasAutoScrollY) {
-      const scrollElement = this.getScrollElement()
-
-      this.scrollGradientX.removeScrollGradient(scrollElement)
-    }
-
-    if (!this.useScrollOnGrab) return
+    this.scrollGradientX.removeScrollGradient(this.getScrollElement())
 
     this.destroyObserver()
     window.removeEventListener('resize', this.handleScrollOnGrab)
@@ -567,7 +561,7 @@ export default {
     },
 
     destroyObserver () {
-      if (this.elementToObserve) this.resizeObserver?.unobserve(this.elementToObserve)
+      this.resizeObserver?.disconnect()
     },
 
     /**

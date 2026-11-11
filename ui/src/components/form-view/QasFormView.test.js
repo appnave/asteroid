@@ -27,7 +27,7 @@ const fetchResponse = {
   errors: {}
 }
 
-function api ({ fetch = fetchResponse, submit = { result: {}, status: { text: 'Salvo!' } }, submitError } = {}) {
+function createFormAxiosMock ({ fetch = fetchResponse, submit = { result: {}, status: { text: 'Salvo!' } }, submitError } = {}) {
   return createAxiosMock(({ method }) => {
     if (method === 'get') return { data: fetch }
 
@@ -37,7 +37,7 @@ function api ({ fetch = fetchResponse, submit = { result: {}, status: { text: 'S
   })
 }
 
-function submitError ({ errors, text } = {}) {
+function createSubmitError ({ errors, text } = {}) {
   return Object.assign(new Error('Request failed'), {
     response: { status: 400, data: { errors, status: { text } } }
   })
@@ -47,7 +47,7 @@ function submitError ({ errors, text } = {}) {
  * Monta o QasFormView como página de uma rota (necessário para o aviso de alterações não salvas),
  * com o v-model ligado a um ref que o teste pode alterar.
  */
-async function mountForm ({ props = {}, route = '/users/1/edit', axios = api(), slots = {} } = {}) {
+async function mountForm ({ props = {}, route = '/users/1/edit', axios = createFormAxiosMock(), slots = {} } = {}) {
   const model = ref({})
 
   const Page = defineComponent({
@@ -81,7 +81,7 @@ async function mountForm ({ props = {}, route = '/users/1/edit', axios = api(), 
   return { ...mounted, form, model }
 }
 
-const getButton = (form, label) => form.findAllComponents(QasBtn).find(btn => btn.props('label') === label)
+const getButton = (form, label) => form.findAllComponents(QasBtn).find(button => button.props('label') === label)
 
 async function submit (form) {
   await form.find('form').trigger('submit')
@@ -155,7 +155,7 @@ describe('QasFormView', () => {
     })
 
     it('usa a mensagem padrão de sucesso quando a API não envia uma', async () => {
-      const { form } = await mountForm({ axios: api({ submit: { result: {}, status: {} } }) })
+      const { form } = await mountForm({ axios: createFormAxiosMock({ submit: { result: {}, status: {} } }) })
 
       await submit(form)
 
@@ -186,7 +186,7 @@ describe('QasFormView', () => {
     })
 
     it('atualiza o model com o resultado devolvido pelo envio', async () => {
-      const { form, model } = await mountForm({ axios: api({ submit: { result: { uuid: 'abc' }, status: {} } }) })
+      const { form, model } = await mountForm({ axios: createFormAxiosMock({ submit: { result: { uuid: 'abc' }, status: {} } }) })
 
       await submit(form)
 
@@ -213,7 +213,7 @@ describe('QasFormView', () => {
   describe('erros no envio', () => {
     it('com erros de campo, emite "update:errors" e notifica pedindo revisão dos campos', async () => {
       const errors = { name: ['Obrigatório'] }
-      const { form } = await mountForm({ axios: api({ submitError: submitError({ errors }) }) })
+      const { form } = await mountForm({ axios: createFormAxiosMock({ submitError: createSubmitError({ errors }) }) })
 
       await submit(form)
 
@@ -223,7 +223,7 @@ describe('QasFormView', () => {
     })
 
     it('sem erros de campo, notifica com a mensagem genérica', async () => {
-      const { form } = await mountForm({ axios: api({ submitError: submitError() }) })
+      const { form } = await mountForm({ axios: createFormAxiosMock({ submitError: createSubmitError() }) })
 
       await submit(form)
 
@@ -231,7 +231,7 @@ describe('QasFormView', () => {
     })
 
     it('prioriza a mensagem de erro enviada pela API', async () => {
-      const { form } = await mountForm({ axios: api({ submitError: submitError({ text: 'CPF já cadastrado' }) }) })
+      const { form } = await mountForm({ axios: createFormAxiosMock({ submitError: createSubmitError({ text: 'CPF já cadastrado' }) }) })
 
       await submit(form)
 
@@ -239,7 +239,7 @@ describe('QasFormView', () => {
     })
 
     it('volta "submitting" para false mesmo com erro', async () => {
-      const { form } = await mountForm({ axios: api({ submitError: submitError() }) })
+      const { form } = await mountForm({ axios: createFormAxiosMock({ submitError: createSubmitError() }) })
 
       await submit(form)
 
@@ -365,6 +365,18 @@ describe('QasFormView', () => {
       await flushPromises()
 
       expect(router.currentRoute.value.name).toBe('Other')
+    })
+
+    it('ignora as chaves só na raiz do model, alterações aninhadas com o mesmo nome ainda pedem confirmação', async () => {
+      const axios = createFormAxiosMock({ fetch: { ...fetchResponse, result: { name: 'Ana', address: { name: 'Casa' } } } })
+      const { form, router, model } = await mountForm({ props: { ignoreKeysInUnsavedChanges: ['name'] }, axios })
+
+      model.value = { ...model.value, address: { name: 'Trabalho' } }
+      router.push('/other')
+      await flushPromises()
+
+      expect(router.currentRoute.value.name).toBe('UsersEdit')
+      expect(isDialogOpen(form)).toBe(true)
     })
 
     it('com "use-dialog-on-unsaved-changes" false, sai mesmo com alterações', async () => {

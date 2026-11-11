@@ -1,11 +1,27 @@
 import { mount, flushPromises } from '@vue/test-utils'
 import * as QuasarExports from 'quasar'
 import { createRouter, createMemoryHistory } from 'vue-router'
-import { vi } from 'vitest'
+import { getAction, getGetter } from '@bildvitta/store-adapter'
+import { afterEach, vi } from 'vitest'
 
 import Screen from '../../ui/src/plugins/screen/Screen.js'
 
 const { Quasar } = QuasarExports
+
+/**
+ * Componentes montados pelo "mountQas", desmontados depois de cada teste para não acumular instâncias
+ * e listeners globais (ex: "resize", "delete-success") entre os testes.
+ */
+const mountedWrappers = new Set()
+
+afterEach(() => {
+  mountedWrappers.forEach(wrapper => {
+    // alguns testes já desmontam o componente, e desmontar de novo gera aviso do Vue
+    if (!wrapper.vm.$.isUnmounted) wrapper.unmount()
+  })
+
+  mountedWrappers.clear()
+})
 
 // O jsdom não tem ResizeObserver (usado por componentes como o QasTableGenerator)
 globalThis.ResizeObserver ||= class ResizeObserver {
@@ -118,11 +134,13 @@ export async function mountQas (component, {
     screen: Screen()
   }
 
-  // mesmo formato do "qas" fornecido pelo vue-plugin do asteroid, usando o "$piniaStore" falso
+  // mesmo "qas" fornecido pelo vue-plugin do asteroid, usando o store-adapter real com o "$piniaStore" falso
+  const storeContext = { $piniaStore: piniaStore }
+
   const injectedQas = {
     delete: qas.delete,
-    getAction: ({ entity, key, payload }) => piniaStore[entity]?.[key]?.(payload),
-    getGetter: ({ entity, key }) => piniaStore[entity]?.[key]
+    getAction: params => getAction.call(storeContext, params),
+    getGetter: params => getGetter.call(storeContext, params)
   }
 
   const wrapper = mount(component, {
@@ -142,6 +160,8 @@ export async function mountQas (component, {
       }
     }
   })
+
+  mountedWrappers.add(wrapper)
 
   await flushPromises()
 
