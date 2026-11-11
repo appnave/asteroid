@@ -29,7 +29,15 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Corrigido
 - `boot/notifications`: corrigido registro duplicado dos listeners quando o `updateUser` é disparado mais de uma vez para o mesmo usuário na sessão.
 - `app-extension`: adicionado `pusher-js` e `laravel-echo` no `optimizeDeps` do Vite, evitando o erro "Pusher is not a constructor" em desenvolvimento.
+
+### Corrigido
+- `boot/notifications`: corrigido registro duplicado dos listeners quando o `updateUser` é disparado mais de uma vez para o mesmo usuário na sessão.
 - `build/release`: Corrigido erro ao ler as variáveis de ambiente após publicar uma versão beta ou stable.
+- `app-extension`: adicionado `pusher-js` e `laravel-echo` no `optimizeDeps` do Vite, evitando o erro "Pusher is not a constructor" em desenvolvimento.
+
+### Modificado
+- `boot/api`: a lógica de URL base foi extraída para o helper `get-base-url.js`, que guarda a URL resolvida na primeira chamada para que axios e Laravel Echo utilizem sempre a mesma URL.
+- `laravel-echo`: o Laravel Echo passa a utilizar a mesma URL base do axios, respeitando o `$base` da query string em ambiente de preview.
 
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
