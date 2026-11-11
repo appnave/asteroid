@@ -181,12 +181,13 @@ export default {
     },
 
     async mx_fetchOptions () {
+      // Valida antes do try, pois dentro dele o erro seria capturado pelo catch e a mensagem nunca apareceria.
+      if (!this.entity) this.mx_setMissingPropsMessage('entity')
+      if (!this.name) this.mx_setMissingPropsMessage('name')
+
       this.mx_fetchCount++
 
       try {
-        if (!this.entity) this.mx_setMissingPropsMessage('entity')
-        if (!this.name) this.mx_setMissingPropsMessage('name')
-
         this.mx_hasFetchError = false
         this.mx_isFetching = true
 

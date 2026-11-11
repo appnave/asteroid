@@ -49,7 +49,7 @@ import { decamelize } from 'humps'
 import debug from 'debug'
 import { extend } from 'quasar'
 import { getAction } from '@bildvitta/store-adapter'
-import isEqualWith from 'lodash-es/isEqual'
+import isEqualWith from 'lodash-es/isEqualWith'
 import { onBeforeRouteLeave } from 'vue-router'
 
 const log = debug('asteroid-ui:qas-form-view')
@@ -272,7 +272,7 @@ export default {
     this.mx_fetchHandler({ form: true, id: this.id, url: this.fetchURL }, this.fetchSingle)
   },
 
-  onUnmounted () {
+  unmounted () {
     window.removeEventListener('delete-success', this.setIgnoreRouterGuard)
   },
 

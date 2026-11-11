@@ -7,12 +7,6 @@ import Vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [Vue()],
 
-  resolve: {
-    alias: {
-      vue: path.resolve(__dirname, 'docs/node_modules/vue')
-    }
-  },
-
   test: {
     globals: true,
     environment: 'jsdom',
@@ -24,8 +18,8 @@ export default defineConfig({
     alias: {
       asteroid: path.resolve(__dirname, 'ui/src/asteroid.js'),
       'asteroid-config': path.resolve(__dirname, 'docs/asteroid.config.js'),
-      'vue-router': path.resolve(__dirname, 'docs/node_modules/vue-loader'),
-      quasar: path.resolve(__dirname, 'docs/node_modules/quasar/dist/quasar.client.js')
+      // build do quasar para o navegador, já que os testes rodam no jsdom
+      quasar: path.resolve(__dirname, 'node_modules/quasar/dist/quasar.client.js')
     }
   }
 })

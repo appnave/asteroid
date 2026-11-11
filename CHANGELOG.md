@@ -14,6 +14,15 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Corrigido
+- `QasFilters`: Corrigido erro ao abrir ou navegar em uma tela com filtros na URL quando a entidade não tem store (ex: `QasListView` com `use-store` false).
+- `QasFormView`: Corrigida a prop `ignore-keys-in-unsaved-changes`, que não ignorava as chaves ao verificar se havia alterações não salvas.
+- `QasFormView`: Corrigido o evento `delete-success`, que continuava sendo ouvido após o componente ser desmontado.
+- `QasSelect`, `QasSearchBox`, `QasSelectList` e `QasSelectListDialog`: Corrigido o aviso de prop obrigatória (`entity` e `name`) no lazy loading, que nunca era exibido. Agora a mensagem aparece no console e a requisição não é feita.
+- `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.
+- `QasTableGenerator` e `QasGridGenerator`: Corrigido erro que quebrava o componente quando um campo `select` com `multiple` vinha sem valor.
+
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
 - `QasUploader`: Modificado componente pra exibir o template da imagem do upload com base na chave `full_path` retornada pela API `upload-credentials`.

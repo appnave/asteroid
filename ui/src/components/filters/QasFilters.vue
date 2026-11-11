@@ -523,7 +523,7 @@ export default {
       const { filters } = this.mx_context
 
       for (const key in filters) {
-        this.internalFilters[key] = parseValue(this.normalizeValues(filters[key], this.fields[key]?.multiple))
+        this.internalFilters[key] = parseValue(this.normalizeValues(filters[key], this.fields?.[key]?.multiple))
       }
     },
 

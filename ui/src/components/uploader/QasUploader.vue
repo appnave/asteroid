@@ -638,6 +638,8 @@ export default {
         return this.getFileName(file) === key
       })
 
+      if (numberIndex === -1) return
+
       clonedValue.splice(numberIndex, 1)
 
       this.$emit('update:modelValue', clonedValue)

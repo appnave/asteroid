@@ -150,6 +150,8 @@ function selectLabel (options, value, multiple) {
 }
 
 function multipleOptionsLabel (options, value) {
+  if (!Array.isArray(value)) return value
+
   return value.map(itemValue => optionLabel(options, itemValue))
 }
 
