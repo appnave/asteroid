@@ -25,6 +25,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Corrigido
 - `boot/notifications`: corrigido registro duplicado dos listeners quando o `updateUser` é disparado mais de uma vez para o mesmo usuário na sessão.
+- `app-extension`: adicionado `pusher-js` e `laravel-echo` no `optimizeDeps` do Vite, evitando o erro "Pusher is not a constructor" em desenvolvimento.
 - `build/release`: Corrigido erro ao ler as variáveis de ambiente após publicar uma versão beta ou stable.
 
 ### Modificado
