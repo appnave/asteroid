@@ -34,6 +34,7 @@ import { useOverlayNavigation } from '../../composables'
 import debug from 'debug'
 import { decamelize } from 'humps'
 import { markRaw, computed, watch, inject } from 'vue'
+import { useRoute } from 'vue-router'
 
 const log = debug('asteroid-ui:qas-single-view')
 
@@ -68,7 +69,9 @@ const axios = inject('axios')
 const qas = inject('qas')
 
 // composables
-const { route: overlayRoute } = useOverlayNavigation()
+const route = useRoute()
+
+const { isBackgroundOverlay, route: overlayRoute } = useOverlayNavigation()
 
 const {
   // state
@@ -104,6 +107,14 @@ const resultModel = computed(() => {
 const hasResult = computed(() => !!resultModel.value)
 
 // watch
+watch(() => route, (to, from) => {
+  if (isBackgroundOverlay.value) return
+
+  if (to.name === from.name) {
+    fetchHandler({ id: id.value, url: props.url }, fetchSingle)
+  }
+})
+
 watch(() => resultModel.value, value => emit('update:result', markRaw({ ...value })))
 
 // created
