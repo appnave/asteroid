@@ -1,7 +1,7 @@
 {
   "name": "@appnave/asteroid-docs",
   "description": "Asteroid",
-  "version": "4.0.0-beta.2-alpha.3",
+  "version": "4.0.0-beta.2",
   "author": "Bild & Vitta <systemteam@bild.com.br>",
   "license": "MIT",
   "productName": "Asteroid Docs",

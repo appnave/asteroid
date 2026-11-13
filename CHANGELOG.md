@@ -14,7 +14,7 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## [4.0.0-beta.2] - 13-11-2026
 ### Adicionado
 - `useProcessListener`: adicionado composable para escutar o evento `process.finished` (fim de processos assíncronos) via websocket, filtrando por `identifiers` (ou `match`) e disparando `onSuccess`/`onError`. Quando a conexão é restabelecida ou o usuário volta para a aba, chama o `onSync` caso exista processo em andamento (`isWaiting`).
 - `useNotifications`: adicionado hook `onProcessFinished` (removido automaticamente ao desmontar o componente), estado `realtimeConnectionState` com o estado da conexão websocket repassado pela aba líder e a constante `isProcessEventsEnabled`.
@@ -53,3 +53,4 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - Removido suporte ao webpack; a documentação e o fluxo de desenvolvimento passam a considerar apenas Vite.
 [4.0.0-beta.0]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.0-alpha.0...v4.0.0-beta.0?expand=1
 [4.0.0-beta.1]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.1-alpha.5...v4.0.0-beta.1?expand=1
+[4.0.0-beta.2]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.2-alpha.3...v4.0.0-beta.2?expand=1
