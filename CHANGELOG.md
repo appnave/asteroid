@@ -15,7 +15,11 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### BREAKING CHANGES
+- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next`. Agora a rota de redirecionamento é retornada, então quem chama a função dentro de outro guard deve retornar o resultado.
+
 ### Corrigido
+- Corrigidos avisos de depreciação do `vue-router` no console.
 - `build/release`: Corrigido erro ao ler as variáveis de ambiente após publicar uma versão beta ou stable.
 
 ## [4.0.0-beta.1] - 16-10-2026
