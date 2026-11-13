@@ -5,7 +5,11 @@ import * as PusherModule from 'pusher-js'
 
 import { camelizeKeys } from 'humps'
 
+import { getBaseURL } from './get-base-url.js'
+
 const Pusher = PusherModule.default || PusherModule.Pusher || PusherModule
+
+export const PROCESS_CHANNEL_NAME = 'notifications--process'
 
 /**
  * Função para setar configuração do Laravel Echo.
@@ -16,7 +20,9 @@ export function setLaravelEcho (accessToken) {
   window.Pusher = Pusher
 
   const isLocal = isLocalDevelopment()
-  const serverBaseURL = handleProcess(() => import.meta.env.SERVER_BASE_URL, '/')
+
+  // Utiliza a mesma URL base do axios, respeitando o "$base" da query string em ambiente de preview.
+  const serverBaseURL = getBaseURL()
   const normalizedServerBaseURL = serverBaseURL === '/'
     ? ''
     : serverBaseURL.replace(/\/$/, '')
@@ -48,15 +54,46 @@ export function setLaravelEcho (accessToken) {
  *
  * @param {{
  *  user: { uuid: string },
- *  channel: BroadcastChannel
+ *  channel: BroadcastChannel,
+ *  useProcessEvents?: boolean
  * }} options
  */
-export function setLaravelEchoListener ({ user, channel } = {}) {
-  window.Echo.private(`notifications.${user.uuid}`).listen('.notification', message => {
+export function setLaravelEchoListener ({ user, channel, useProcessEvents } = {}) {
+  const echoChannel = window.Echo.private(`notifications.${user.uuid}`).listen('.notification', message => {
     /**
      * Como é um websocket, não passa pelo axios interceptor, logo é necessário
      * transformar a resposta em camelCase manualmente.
      */
     channel.postMessage({ notification: camelizeKeys(message) })
   })
+
+  if (useProcessEvents) setProcessEventsListener(echoChannel)
+}
+
+/**
+ * Função para escutar o evento "process.finished" e o estado da conexão, repassando
+ * para as demais abas via BroadcastChannel "notifications--process".
+ *
+ * @param {import('laravel-echo').Channel} echoChannel
+ */
+function setProcessEventsListener (echoChannel) {
+  const processChannel = new BroadcastChannel(PROCESS_CHANNEL_NAME)
+
+  echoChannel.listen('.process.finished', data => {
+    processChannel.postMessage({ type: 'processFinished', payload: camelizeKeys(data) })
+  })
+
+  // Estado da conexão (connecting, connected, unavailable, failed, disconnected).
+  const { connection } = window.Echo.connector.pusher
+
+  const postConnectionState = () => {
+    processChannel.postMessage({ type: 'connectionState', payload: connection.state })
+  }
+
+  connection.bind('state_change', postConnectionState)
+
+  // Abas abertas depois da conexão perguntam o estado atual, e a aba líder responde.
+  processChannel.onmessage = ({ data }) => {
+    if (data.type === 'requestConnectionState') postConnectionState()
+  }
 }
