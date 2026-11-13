@@ -20,16 +20,14 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `useNotifications`: adicionado hook `onProcessFinished` (removido automaticamente ao desmontar o componente), estado `realtimeConnectionState` com o estado da conexão websocket repassado pela aba líder e a constante `isProcessEventsEnabled`.
 - `asteroid.config.js`: adicionada feature toggle `framework.featureToggle.useProcessEvents` para habilitar a escuta do evento `process.finished` no mesmo canal das notificações (depende do `useNotifications`).
 - `boot/notifications`: adicionado repasse do evento `process.finished` e do estado da conexão para todas as abas através do BroadcastChannel `notifications--process`.
-- `app-extension`: adicionado `pusher-js` e `laravel-echo` no `optimizeDeps` do Vite, evitando o erro "Pusher is not a constructor" em desenvolvimento.
-- Adicionado tipos dos componentes globais, habilitando autocomplete das props dos componentes `Qas*` no editor (Vue - Official).
+
+### Modificado
+- `boot/api`: a lógica de URL base foi extraída para o helper `get-base-url.js`, que guarda a URL resolvida na primeira chamada para que axios e Laravel Echo utilizem sempre a mesma URL.
+- `laravel-echo`: o Laravel Echo passa a utilizar a mesma URL base do axios, respeitando o `$base` da query string em ambiente de preview.
 
 ### Corrigido
 - `boot/notifications`: corrigido registro duplicado dos listeners quando o `updateUser` é disparado mais de uma vez para o mesmo usuário na sessão.
 - `app-extension`: adicionado `pusher-js` e `laravel-echo` no `optimizeDeps` do Vite, evitando o erro "Pusher is not a constructor" em desenvolvimento.
-- Adicionado tipos dos componentes globais, habilitando autocomplete das props dos componentes `Qas*` no editor (Vue - Official).
-
-### Corrigido
-- `boot/notifications`: corrigido registro duplicado dos listeners quando o `updateUser` é disparado mais de uma vez para o mesmo usuário na sessão.
 - `build/release`: Corrigido erro ao ler as variáveis de ambiente após publicar uma versão beta ou stable.
 
 ## [4.0.0-beta.1] - 16-10-2026
