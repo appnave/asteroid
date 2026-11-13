@@ -26,9 +26,6 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Corrigido
 - `boot/notifications`: corrigido registro duplicado dos listeners quando o `updateUser` é disparado mais de uma vez para o mesmo usuário na sessão.
 - `build/release`: Corrigido erro ao ler as variáveis de ambiente após publicar uma versão beta ou stable.
-### Modificado
-- `boot/api`: a lógica de URL base foi extraída para o helper `get-base-url.js`, que guarda a URL resolvida na primeira chamada para que axios e Laravel Echo utilizem sempre a mesma URL.
-- `laravel-echo`: o Laravel Echo passa a utilizar a mesma URL base do axios, respeitando o `$base` da query string em ambiente de preview.
 
 ### Modificado
 - `boot/api`: a lógica de URL base foi extraída para o helper `get-base-url.js`, que guarda a URL resolvida na primeira chamada para que axios e Laravel Echo utilizem sempre a mesma URL.
