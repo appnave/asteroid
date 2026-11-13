@@ -2,9 +2,6 @@
   "eslint.validate": ["javascript", "vue"],
   "eslint.workingDirectories": ["./app-extension", "/build", "./docs", "/eslint", "./ui"],
 
-  "vetur.experimental.templateInterpolationService": true,
-  "vetur.format.enable": false,
-  "vetur.validation.template": false,
   "conventionalCommits.scopes": [
     "QasSearchBox",
     "QasSelect",

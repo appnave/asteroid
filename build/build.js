@@ -116,11 +116,6 @@ async function main () {
   // execaSync('node', ['./api.js'], { cwd: __dirname })
   // apiSpinner.succeed('Arquivos da "API" gerados.')
 
-  // TODO: "Vetur" não usado por hora
-  // const veturSpinner = ora('Gerando arquivos para o "Vetur"...').start()
-  // execaSync('node', ['./vetur.js'], { cwd: __dirname })
-  // veturSpinner.succeed('Arquivos para o "Vetur" gerados.')
-
   // Lint
   const lintSpinner = ora('Lintando arquivos...').start()
   execaSync('npm', ['run', 'lint'], { cwd: packages.global.resolved })

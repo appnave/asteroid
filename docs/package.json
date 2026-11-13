@@ -18,7 +18,6 @@
     "@appnave/quasar-ui-asteroid": "file:../ui",
     "@bildvitta/composables": "1.0.0-beta.12",
     "@bildvitta/store-module": "1.1.0-beta.1",
-    "@bildvitta/vuex-offline": "3.2.1",
     "@docsearch/css": "^4.6.2",
     "@docsearch/js": "^4.6.2",
     "@fawmi/vue-google-maps": "0.9.79",

@@ -15,6 +15,10 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### Removido
+- Removido suporte ao Vetur, que já não era utilizado. A extensão recomendada passa a ser a Vue - Official (Volar), oficial para o Vue 3.
+- `docs`: Removida dependência `@bildvitta/vuex-offline`, que não era utilizada.
+
 ### Adicionado
 - `useProcessListener`: adicionado composable para escutar o evento `process.finished` (fim de processos assíncronos) via websocket, filtrando por `identifiers` (ou `match`) e disparando `onSuccess`/`onError`. Quando a conexão é restabelecida ou o usuário volta para a aba, chama o `onSync` caso exista processo em andamento (`isWaiting`).
 - `useNotifications`: adicionado hook `onProcessFinished` (removido automaticamente ao desmontar o componente), estado `realtimeConnectionState` com o estado da conexão websocket repassado pela aba líder e a constante `isProcessEventsEnabled`.
