@@ -20,6 +20,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ### Corrigido
 - Corrigidos avisos de depreciação do `vue-router` no console.
+- `build/release`: Corrigido erro ao ler as variáveis de ambiente após publicar uma versão beta ou stable.
 
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
