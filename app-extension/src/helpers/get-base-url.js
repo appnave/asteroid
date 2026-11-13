@@ -22,7 +22,6 @@ export function getBaseURL () {
 }
 
 function resolveBaseURL () {
-  // TODO: Validar variavel de ambiente se é produção.
   const isProduction = handleProcess(() => import.meta.env.ENVIRONMENT === 'production', false)
   const previewURL = new URLSearchParams(window.location.search).get('$base')
 
