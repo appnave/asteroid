@@ -8,7 +8,9 @@ Boot que controla a central de notificação da aplicação, para que este boot 
 - Toast de notificação em real time;
 - Ícone de notificação no menu em real time.
 
-É utilizado o *pattern* de [leader election](https://en.wikipedia.org/wiki/Leader_election), após eleger uma aba como líder, apenas esta aba irá fazer a conexão com o servidor *websocket*, a comunicação entre outras abas será feita via [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API), o motivo desta implementação é para economia de recursos, uma vez que estamos utilizando um serviço pago, o [Ably](https://ably.com/).
+É utilizado o *pattern* de [leader election](https://en.wikipedia.org/wiki/Leader_election), após eleger uma aba como líder, apenas esta aba irá fazer a conexão com o servidor *websocket*, a comunicação entre outras abas será feita via [BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API), o motivo desta implementação é para economia de recursos, mantendo uma única conexão por usuário.
+
+O servidor de *websocket* é o [Laravel Reverb](https://reverb.laravel.com/) do `nave-hub-server` (`wss://ws.nave.app.br` em produção e `wss://ws.nave.dev.br` em staging). Enquanto todas as aplicações não migrarem, o [Ably](https://ably.com/) continua disponível como *fallback*: sem a env `REVERB_APP_KEY`, a conexão é feita no Ably.
 
 :::info
 Lembre-se de passar a propriedade "initialUnreadNotificationsCount" para o componente `QasLayout`, esta propriedade vem no `/me` como `unreadNotificationsCount`.
@@ -35,8 +37,41 @@ Lembre-se de passar a propriedade "initialUnreadNotificationsCount" para o compo
 }
 ```
 
-##### 2. Configure a env `ABLY_KEY` no `quasar.config.js`
-É necessário configurar a env para que funcione em `development` e `production`, não é necessário configurar para `localhost`, uma vez que neste caso é utilizado o [soketi](https://docs.soketi.app/) como servidor de *websocket* local.
+##### 2. Configure as envs do Reverb no `quasar.config.js`
+Exponha as envs em `build.defineEnv`:
+
+```js
+// quasar.config.js
+build: {
+  defineEnv: {
+    REVERB_APP_KEY: process.env.REVERB_APP_KEY || '',
+    REVERB_HOST: process.env.REVERB_HOST || 'localhost',
+    REVERB_PORT: process.env.REVERB_PORT || '8080',
+    REVERB_SCHEME: process.env.REVERB_SCHEME || 'http'
+  }
+}
+```
+
+Valores por ambiente:
+
+| Variável | Local | Staging | Produção |
+| --- | --- | --- | --- |
+| `REVERB_APP_KEY` | `hub-local-key` | key do app `hub` (staging) | key do app `hub` (produção) |
+| `REVERB_HOST` | `localhost` | `ws.nave.dev.br` | `ws.nave.app.br` |
+| `REVERB_PORT` | `8080` | `443` | `443` |
+| `REVERB_SCHEME` | `http` | `https` | `https` |
+
+:::warning
+Vai **somente a key** (a mesma `REVERB_APP_KEY` configurada no `nave-hub-server` do ambiente), **nunca** o `REVERB_APP_SECRET`, já que o valor fica exposto no *bundle* do front.
+:::
+
+A autenticação dos canais continua em `${SERVER_BASE_URL}/broadcasting/auth`, então o `SERVER_BASE_URL` não muda.
+
+Em `localhost`, a conexão só é estabelecida quando a `REVERB_APP_KEY` está definida, utilizando o Reverb que o `nave-hub-server` sobe localmente (`localhost:8080`). Sem ela, não há conexão local.
+
+:::info
+**Ably (depreciado):** sem a `REVERB_APP_KEY`, a conexão é feita no Ably utilizando a env `ABLY_KEY` (somente a parte pública, antes do `:`). Este *fallback* será removido quando todas as aplicações migrarem para o Reverb.
+:::
 
 ##### 3. Certifique-se que exista o evento "updateUser" no window
 Este evento dispara toda vez que a aplicação é iniciada e exista um `user` setado no *localStorage*, assim garante que o usuário esteja logado, e após isto, é feito todo o controle de notificações.

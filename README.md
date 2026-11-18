@@ -67,7 +67,11 @@ Observação: Alguns componentes do Quasar precisam ser importados manualmente d
 | `SERVER_BASE_URL` | Endereço base de acesso do servidor |
 | `DEBUGGING` | Habilita os loggers dos componentes |
 | `MAPS_API_KEY` | Key do google maps |
-| `ABLY_KEY` | Key do Ably (notificações) |
+| `REVERB_APP_KEY` | Key pública do Reverb (notificações), nunca o secret |
+| `REVERB_HOST` | Host do Reverb (notificações) |
+| `REVERB_PORT` | Porta do Reverb (notificações) |
+| `REVERB_SCHEME` | Protocolo do Reverb (`http` ou `https`) |
+| `ABLY_KEY` | Key do Ably (notificações), usada só sem `REVERB_APP_KEY` (depreciada) |
 | `ME_VERSION` | Versão do endpoint /me |
 
 ## Roadmap:
