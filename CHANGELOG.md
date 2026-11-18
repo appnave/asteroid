@@ -29,6 +29,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasHeader`: Corrigido o slot `actions`, que não era exibido quando o header não tinha label nem descrição.
 - `QasPasswordStrengthChecker`: Corrigido erro que quebrava o componente quando a senha não atendia nenhum critério (ex: só "ç" ou espaço). Agora exibe "Muito fraco".
 - `QasSelect`, `QasSearchBox`, `QasSelectList` e `QasSelectListDialog`: Corrigido o aviso de prop obrigatória (`entity` e `name`) no lazy loading, que nunca era exibido. Agora a mensagem aparece no console e a requisição não é feita.
+- `QasTransfer`: Corrigida a quantidade de itens, que não aparecia nos títulos das colunas, e a sincronização com `options` e `v-model`: os selecionados não duplicam mais quando as `options` mudam, e limpar o model por fora limpa as selecionadas.
 - `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.
 - `QasTableGenerator` e `QasGridGenerator`: Corrigido erro que quebrava o componente quando um campo `select` com `multiple` vinha sem valor.
 

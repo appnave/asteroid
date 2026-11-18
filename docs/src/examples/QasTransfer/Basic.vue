@@ -1,5 +1,10 @@
 <template>
   <div class="container q-py-lg">
+    <div class="q-gutter-sm q-mb-md">
+      <qas-btn label="Recarregar options" variant="secondary" @click="reloadOptions" />
+      <qas-btn label="Limpar model" variant="secondary" @click="clearModel" />
+    </div>
+
     <qas-transfer v-model="model" label="Selecionar" :options="list" />
 
     <div>
@@ -24,13 +29,8 @@ export default {
           email: 'email1@example.com',
           value: 'uuid1'
         }
-      ]
-    }
-  },
-
-  computed: {
-    list () {
-      return [
+      ],
+      list: [
         {
           label: 'item 1',
           email: 'email1@example.com',
@@ -47,6 +47,17 @@ export default {
           value: 'uuid3'
         }
       ]
+    }
+  },
+
+  methods: {
+    // simula um refetch: mesma lista em um array novo
+    reloadOptions () {
+      this.list = this.list.map(item => ({ ...item }))
+    },
+
+    clearModel () {
+      this.model = []
     }
   }
 }

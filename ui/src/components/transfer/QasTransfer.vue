@@ -2,7 +2,7 @@
   <div class="qas-transfer row" :class="gutterClass">
     <div class="col-12" />
     <div class="col-12 col-sm">
-      <qas-label :label="label" :quantity="optionsList.length" />
+      <qas-label :count="optionsList.length" :label="label" />
 
       <qas-search-box v-model:results="firstResults" :list="optionsList" outlined v-bind="searchBoxProps">
         <template #default>
@@ -33,7 +33,7 @@
     </div>
 
     <div class="col-12 col-sm">
-      <qas-label label="Selecionadas" :quantity="selectedList.length" />
+      <qas-label :count="selectedList.length" label="Selecionadas" />
 
       <qas-search-box v-model:results="secondResults" v-bind="searchBoxProps" empty-list-height="300px" label="Selecionadas" :list="selectedList" outlined>
         <template #default>
@@ -145,9 +145,8 @@ export default {
 
   watch: {
     options: {
-      handler (value) {
-        this.optionsList = extend(true, [], value)
-        this.setSelectedFromValue(true)
+      handler () {
+        this.setLists()
       },
 
       immediate: true
@@ -155,7 +154,7 @@ export default {
 
     modelValue: {
       handler () {
-        this.setSelectedFromValue(true)
+        this.setLists()
       },
 
       immediate: true
@@ -212,18 +211,22 @@ export default {
       this.updateModelValue()
     },
 
-    setSelectedFromValue (isFirst) {
-      this.optionsList.length && this.modelValue.forEach(item => {
-        const selected = this.optionsList.find(option => {
-          return option[this.valueKey] === (this.emitValue ? item : item[this.valueKey])
-        })
+    /**
+     * Monta as duas colunas a partir das "options" e do model: as opções que estão no model
+     * vão para "Selecionadas" e o restante fica nas disponíveis.
+     */
+    setLists () {
+      const options = extend(true, [], this.options)
+      const selectedValues = this.modelValue.map(item => this.emitValue ? item : item[this.valueKey])
 
-        if (selected) {
-          this.firstQueue.push(extend(true, {}, selected))
-        }
-      })
+      this.optionsList = options.filter(option => !selectedValues.includes(option[this.valueKey]))
 
-      this.handleSelectedList(isFirst)
+      this.selectedList = selectedValues
+        .map(value => options.find(option => option[this.valueKey] === value))
+        .filter(Boolean)
+
+      this.firstQueue = []
+      this.secondQueue = []
     },
 
     updateModelValue () {
