@@ -14,6 +14,17 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `boot/notifications`: adicionado suporte ao Laravel Reverb como servidor de websocket. Quando a env `REVERB_APP_KEY` estiver definida, a conexão é feita no Reverb (`REVERB_HOST`, `REVERB_PORT` e `REVERB_SCHEME`); sem ela, continua conectando no Ably (`ABLY_KEY`), sem mudanças para as aplicações que ainda não migraram.
+- `boot/notifications`: em desenvolvimento local (`localhost`), a conexão passa a ser estabelecida quando o Reverb estiver configurado (`REVERB_APP_KEY`). Sem ela, o comportamento continua o mesmo (sem conexão).
+
+### Modificado
+- `app-extension`: atualizado `laravel-echo` de `^1.15.3` para `^1.16.0`, versão que introduz o broadcaster `reverb`.
+
+### Removido
+- `laravel-echo`: removida configuração local do soketi (`localhost:6001`, key `app-key`), que nunca era utilizada, já que o boot não conectava em `localhost`.
+
 ## [4.0.0-beta.3] - 26-11-2026
 ### BREAKING CHANGES
 - `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next` (depreciado no `vue-router` 5), agora a rota de redirecionamento é retornada. Guards que repassam o `next` para essas funções devem removê-lo e retornar o resultado.

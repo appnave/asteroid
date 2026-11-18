@@ -104,5 +104,9 @@ Abaixo temos uma lista de variáveis de ambiente, as que estão marcadas como `o
 | `SERVER_BASE_URL` * | Endereço base de acesso do servidor **(OBRIGATÓRIO)** |
 | `DEBUGGING` * | Habilita os loggers dos componentes **(OBRIGATÓRIO)** |
 | `MAPS_API_KEY` | Key do google maps **(OBRIGATÓRIO SE ESPECIFICADO NO "thirdPartyComponents")** |
-| `ABLY_KEY` | Key do Ably (notificações) |
+| `REVERB_APP_KEY` | Key pública do Reverb (notificações). Quando definida, o websocket conecta no Reverb em vez do Ably. **Nunca** expor o `REVERB_APP_SECRET` |
+| `REVERB_HOST` | Host do Reverb (notificações), default `localhost` |
+| `REVERB_PORT` | Porta do Reverb (notificações), default `8080` (`ws`) ou `443` (`wss`) |
+| `REVERB_SCHEME` | Protocolo do Reverb (notificações), `http` ou `https`, default `https` |
+| `ABLY_KEY` | Key do Ably (notificações), utilizada apenas quando `REVERB_APP_KEY` não está definida. **Depreciada**, será removida quando todas as aplicações migrarem para o Reverb |
 | `ME_VERSION` * | Versão do endpoint `users/me` **(OBRIGATÓRIO)** |
