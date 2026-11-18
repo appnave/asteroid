@@ -27,6 +27,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasFormView`: Corrigido o evento `delete-success`, que continuava sendo ouvido após o componente ser desmontado.
 - `QasGridGenerator`: Corrigida a prop `use-empty-result`, que não tinha efeito. Com `false`, os campos vazios são escondidos. No padrão (`true`), campos com lista ou objeto vazio, que antes eram escondidos, agora aparecem com "-".
 - `QasHeader`: Corrigido o slot `actions`, que não era exibido quando o header não tinha label nem descrição.
+- `QasPasswordStrengthChecker`: Corrigido erro que quebrava o componente quando a senha não atendia nenhum critério (ex: só "ç" ou espaço). Agora exibe "Muito fraco".
 - `QasSelect`, `QasSearchBox`, `QasSelectList` e `QasSelectListDialog`: Corrigido o aviso de prop obrigatória (`entity` e `name`) no lazy loading, que nunca era exibido. Agora a mensagem aparece no console e a requisição não é feita.
 - `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.
 - `QasTableGenerator` e `QasGridGenerator`: Corrigido erro que quebrava o componente quando um campo `select` com `multiple` vinha sem valor.

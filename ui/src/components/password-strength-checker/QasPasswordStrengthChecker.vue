@@ -54,7 +54,7 @@ export default {
 
       score += this.length >= parseInt(this.minlength) ? 1 : 0
 
-      return score
+      return Math.max(score, 0)
     }
   },
 

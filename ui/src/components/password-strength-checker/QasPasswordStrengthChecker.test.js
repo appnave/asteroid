@@ -44,8 +44,7 @@ describe('QasPasswordStrengthChecker', () => {
     expect(getLabel(wrapper)).toBe('Muito forte')
   })
 
-  // Problema listado no documento: uma senha sem nenhum critério atendido tem score -1 e quebra o componente.
-  it.fails.each([' ', 'ç', 'é'])('"%s" é "Muito fraco"', async password => {
+  it.each([' ', 'ç', 'é'])('"%s" é "Muito fraco"', async password => {
     const wrapper = await mountStrengthChecker({ password })
 
     expect(getLabel(wrapper)).toBe('Muito fraco')
