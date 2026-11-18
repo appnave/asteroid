@@ -226,9 +226,9 @@ const hasHeaderContent = computed(() => {
 /**
  * Só exibo a seção de descrição com a seção de ações ao lado quando:
  * - Tenha descrição;
- * - OU não tenha seção da label E tenha componente de ações.
+ * - OU não tenha seção da label E tenha ações (slot "actions" ou componente de ações).
  */
 const hasDescriptionOrOnlyActionsSection = computed(() => {
-  return hasDescriptionSection.value || (!hasLabelSection.value && hasActionsComponent.value)
+  return hasDescriptionSection.value || (!hasLabelSection.value && hasActionsSection.value)
 })
 </script>

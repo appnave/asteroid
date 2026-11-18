@@ -248,7 +248,20 @@ function updateModelValue (value) {
 function validateDateOnly (value = '') {
   const [day, month] = value.split('/')
 
-  return day > 31 || month > 12
+  return day > 31 || month > 12 || isNonExistentDate(value)
+}
+
+/**
+ * Datas como "31/04" ou "29/02" em ano não bissexto passam pela validação de dia e mês,
+ * mas o Quasar ajusta para a data seguinte. Formatando de volta, se mudou, a data não existe.
+ * Só valida com a data completa, para não acusar erro enquanto o usuário digita.
+ */
+function isNonExistentDate (value) {
+  if (value.length !== props.dateMask.length) return false
+
+  const extractedDate = date.extractDate(value, props.dateMask)
+
+  return date.formatDate(extractedDate, props.dateMask) !== value
 }
 
 function validateTimeOnly (value = '') {

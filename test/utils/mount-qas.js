@@ -30,6 +30,27 @@ globalThis.ResizeObserver ||= class ResizeObserver {
   disconnect () {}
 }
 
+// O jsdom não tem IntersectionObserver (usado pelo QasLazyLoadingComponents), aqui todo elemento observado é visível
+globalThis.IntersectionObserver ||= class IntersectionObserver {
+  constructor (callback) {
+    this.callback = callback
+  }
+
+  observe (element) {
+    queueMicrotask(() => this.callback([{ isIntersecting: true, target: element }], this))
+  }
+
+  unobserve () {}
+  disconnect () {}
+}
+
+// O jsdom não implementa o scroll da janela (usado pelo Quasar ao abrir dialogs e menus)
+window.scrollTo = () => {}
+
+// O jsdom não tem as animações de SVG (usadas pelo QInfiniteScroll para pausar o spinner)
+SVGSVGElement.prototype.pauseAnimations ||= () => {}
+SVGSVGElement.prototype.unpauseAnimations ||= () => {}
+
 const EmptyPage = { template: '<div />' }
 
 /**

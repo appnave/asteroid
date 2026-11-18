@@ -30,6 +30,7 @@ por completo.
 <doc-example file="QasGridGenerator/ExGridCommonColumns" title="Common Columns" />
 <doc-example file="QasGridGenerator/Slots" title="Slots" />
 <doc-example file="QasGridGenerator/UseInline" title="Inline" />
+<doc-example file="QasGridGenerator/UseEmptyResult" title="Resultado vazio" />
 
 :::info
 Por padrão, entre `subsets` terá separadores, mas é possível controlar passando um `useSeparator: false` caso não seja necessário. Para o `fieldset`, o padrão é que não tenha separadores entre eles, mas é possível passar um `useSeparator: true`.

@@ -15,10 +15,18 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### BREAKING CHANGES
+- `QasGridGenerator`: `use-empty-result` agora funciona. Campos com lista ou objeto vazio passam a exibir "-" e, com `false`, campos vazios são escondidos.
+
 ### Corrigido
+- `QasDateTimeInput`: Corrigida a validação de datas que não existem (ex: `31/04` ou `29/02` em ano não bissexto), que eram salvas como a data seguinte sem aviso. Agora exibe "Data inválida.".
+- `QasDialog`: Corrigido o evento `validate` com `use-form`, que emitia uma Promise no lugar do boolean.
+- `QasDialogFilePreview`: Corrigido o aviso "Erro ao carregar imagem.", que continuava aparecendo ao abrir outra imagem depois de uma falha.
 - `QasFilters`: Corrigido erro ao abrir ou navegar em uma tela com filtros na URL quando a entidade não tem store (ex: `QasListView` com `use-store` false).
 - `QasFormView`: Corrigida a prop `ignore-keys-in-unsaved-changes`, que não ignorava as chaves ao verificar se havia alterações não salvas.
 - `QasFormView`: Corrigido o evento `delete-success`, que continuava sendo ouvido após o componente ser desmontado.
+- `QasGridGenerator`: Corrigida a prop `use-empty-result`, que não tinha efeito. Com `false`, os campos vazios são escondidos. No padrão (`true`), campos com lista ou objeto vazio, que antes eram escondidos, agora aparecem com "-".
+- `QasHeader`: Corrigido o slot `actions`, que não era exibido quando o header não tinha label nem descrição.
 - `QasSelect`, `QasSearchBox`, `QasSelectList` e `QasSelectListDialog`: Corrigido o aviso de prop obrigatória (`entity` e `name`) no lazy loading, que nunca era exibido. Agora a mensagem aparece no console e a requisição não é feita.
 - `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.
 - `QasTableGenerator` e `QasGridGenerator`: Corrigido erro que quebrava o componente quando um campo `select` com `multiple` vinha sem valor.

@@ -215,6 +215,7 @@ function onDialogOpen (isOpen) {
   if (!isOpen || isPdf.value) return
 
   resetZoom()
+  hasError.value = false
   isLoading.value = true
 }
 

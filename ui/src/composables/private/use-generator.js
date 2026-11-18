@@ -250,7 +250,8 @@ export default function ({ props = {}, isGrid = false }) {
       // Formata o result com base no "type", exemplo tipo date: "2025-08-20" -> "20/08/2025"
       const humanizedResult = humanize(field, unformattedResult[key])
 
-      const formattedResult = isEmpty({ value: humanizedResult }) ? props.emptyResultText : humanizedResult
+      const hasEmptyResult = isEmptyResult(unformattedResult[key]) || isEmpty({ value: humanizedResult })
+      const formattedResult = hasEmptyResult ? props.emptyResultText : humanizedResult
 
       fieldsByResult[key] = {
         ...field,
@@ -283,19 +284,28 @@ export default function ({ props = {}, isGrid = false }) {
     const formattedFields = {}
 
     for (const key in fields) {
-      const currentResult = result[key]
-
       // Verifica se o field tem result, caso tenha, adiciona no "formattedFields"
-      const validate = Array.isArray(currentResult)
-        ? currentResult.length
-        : isObject(currentResult) ? Object.keys(currentResult).length : result
-
-      if (validate) {
+      if (!isEmptyResult(result[key])) {
         formattedFields[key] = fields[key]
       }
     }
 
     return formattedFields
+  }
+
+  /**
+   * @private
+   *
+   * Considera vazio: null, undefined, "", lista vazia e objeto vazio. Valores como 0 e false não são vazios.
+   *
+   * @param {*} value - Valor do campo no result
+   * @returns {boolean}
+   */
+  function isEmptyResult (value) {
+    if (Array.isArray(value)) return !value.length
+    if (isObject(value)) return !Object.keys(value).length
+
+    return isEmpty({ value })
   }
 
   /**

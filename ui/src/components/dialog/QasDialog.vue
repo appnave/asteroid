@@ -331,7 +331,7 @@ function useDynamicComponents () {
   const descriptionComponent = computed(() => hasRenderFunction.value ? props.description : 'div')
 
   // functions
-  function submitHandler () {
+  async function submitHandler () {
     if (!props.useForm) return
 
     if (props.useValidationAllAtOnce) {
@@ -351,7 +351,7 @@ function useDynamicComponents () {
       return
     }
 
-    emit('validate', form.value.validate())
+    emit('validate', await form.value.validate())
   }
 
   /**

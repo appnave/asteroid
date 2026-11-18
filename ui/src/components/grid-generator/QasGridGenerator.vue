@@ -187,7 +187,11 @@ const normalizedFields = computed(() => {
   if (!hasFieldset) {
     return {
       default: {
-        fields: getFieldsByResult({ fields: props.fields, result: props.result }),
+        fields: getFieldsByResult({
+          fields: props.fields,
+          result: props.result,
+          useEmptyResult: props.useEmptyResult
+        }),
         headerProps: props.headerProps,
         __hasHeader: Object.keys(props.headerProps).length
       }
@@ -199,6 +203,7 @@ const normalizedFields = computed(() => {
     items: props.fieldset,
     fields: props.fields,
     result: props.result,
+    useEmptyResult: props.useEmptyResult,
     isGrid: true
   })
 })
