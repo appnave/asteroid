@@ -7,7 +7,7 @@ import asteroidConfig from 'asteroid-config'
 import { isLocalDevelopment } from 'asteroid'
 
 import onLeaderElectionChannel from '../helpers/on-leader-election-channel.js'
-import { setLaravelEcho, setLaravelEchoListener } from '../helpers/laravel-echo.js'
+import { isReverbEnabled, setLaravelEcho, setLaravelEchoListener } from '../helpers/laravel-echo.js'
 import {
   setNotificationsChannelListener,
   setNotificationsUtilsChannel,
@@ -29,9 +29,11 @@ let initializedUserUuid = null
 
 export default () => {
   /**
-   * Se estivermos em desenvolvimento local, não vamos estabelecer conexão com o servidor.
+   * Em desenvolvimento local só estabelecemos conexão se o Reverb estiver configurado
+   * ("REVERB_APP_KEY"), já que o servidor local sobe o Reverb. Sem ele, não há servidor
+   * de websocket local para conectar.
    */
-  if (isLocalDevelopment()) return
+  if (isLocalDevelopment() && !isReverbEnabled()) return
 
   window.addEventListener('message', ({ data }) => {
     if (data.type !== 'updateUser') return

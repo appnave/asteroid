@@ -1,4 +1,4 @@
-import { isLocalDevelopment, handleProcess } from 'asteroid'
+import { handleProcess } from 'asteroid'
 
 import Echo from 'laravel-echo'
 import * as PusherModule from 'pusher-js'
@@ -12,14 +12,64 @@ const Pusher = PusherModule.default || PusherModule.Pusher || PusherModule
 export const PROCESS_CHANNEL_NAME = 'notifications--process'
 
 /**
+ * Retorna a key pública do Reverb ("REVERB_APP_KEY"), ou string vazia caso não exista.
+ *
+ * @returns {string}
+ */
+export function getReverbKey () {
+  return handleProcess(() => import.meta.env.REVERB_APP_KEY, '')
+}
+
+/**
+ * Indica se a aplicação está configurada para utilizar o Reverb ("REVERB_APP_KEY" definida).
+ *
+ * @returns {boolean}
+ */
+export function isReverbEnabled () {
+  return !!getReverbKey()
+}
+
+/**
+ * Retorna as opções de conexão do provedor de websocket.
+ *
+ * - Com "REVERB_APP_KEY": conecta no Reverb, com host, porta e TLS vindos do env.
+ * - Sem "REVERB_APP_KEY": conecta no Ably (fallback para as aplicações que ainda não migraram).
+ *
+ * TODO: remover o ramo do Ably quando todas as aplicações migrarem para o Reverb.
+ *
+ * @returns {object}
+ */
+export function getConnectionOptions () {
+  const reverbKey = getReverbKey()
+
+  if (reverbKey) {
+    return {
+      broadcaster: 'reverb',
+      key: reverbKey,
+      wsHost: handleProcess(() => import.meta.env.REVERB_HOST, 'localhost'),
+      wsPort: Number(handleProcess(() => import.meta.env.REVERB_PORT, 8080)),
+      wssPort: Number(handleProcess(() => import.meta.env.REVERB_PORT, 443)),
+      forceTLS: handleProcess(() => import.meta.env.REVERB_SCHEME, 'https') === 'https'
+    }
+  }
+
+  return {
+    broadcaster: 'pusher',
+    key: handleProcess(() => import.meta.env.ABLY_KEY, ''),
+    wsHost: 'realtime-pusher.ably.io',
+    wsPort: 443,
+    encrypted: true,
+    cluster: 'eu'
+  }
+}
+
+/**
  * Função para setar configuração do Laravel Echo.
  *
  * @param {string} accessToken
  */
 export function setLaravelEcho (accessToken) {
   window.Pusher = Pusher
-
-  const isLocal = isLocalDevelopment()
 
   // Utiliza a mesma URL base do axios, respeitando o "$base" da query string em ambiente de preview.
   const serverBaseURL = getBaseURL()
@@ -28,23 +78,15 @@ export function setLaravelEcho (accessToken) {
     : serverBaseURL.replace(/\/$/, '')
 
   window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: isLocal ? 'app-key' : handleProcess(() => import.meta.env.ABLY_KEY, ''),
-    wsHost: isLocal ? 'localhost' : 'realtime-pusher.ably.io',
-    wsPort: isLocal ? 6001 : 443,
+    ...getConnectionOptions(),
     disableStats: true,
-    encrypted: true,
-    cluster: isLocal ? 'mt1' : 'eu',
-    authEndpoint: `${normalizedServerBaseURL}/broadcasting/auth`,
     enabledTransports: ['ws', 'wss'],
+    authEndpoint: `${normalizedServerBaseURL}/broadcasting/auth`,
     auth: {
       headers: {
         Authorization: accessToken
       }
-    },
-
-    // Propriedades que só devem ser adicionas em localhost
-    ...(isLocal && { wssPort: 6001, forceTLS: false })
+    }
   })
 }
 
