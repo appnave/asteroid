@@ -51,7 +51,7 @@ import QasFormGenerator from '../form-generator/QasFormGenerator.vue'
 import QasActions from '../actions/QasActions.vue'
 import QasBtn from '../btn/QasBtn.vue'
 
-import { parseValue, promiseHandler, camelizeFieldsName } from '../../helpers'
+import { parseValue, promiseHandler, camelizeFieldsName, isEmpty } from '../../helpers'
 import { useContext } from '../../composables'
 
 import { camelize, decamelizeKeys, decamelize } from 'humps'
@@ -268,13 +268,13 @@ function setHasSettledDefaultFilters (value) {
 }
 
 /**
- * Valores como null, '', 0 são considerados falsy, mas não undefined, então
- * é necessário fazer essa verificação.
+ * Considera vazio: undefined, null, '' e lista vazia.
+ * Valores como 0 e false são considerados preenchidos.
  *
  * @param value {any} - Valor a ser verificado
  */
 function hasValue (value) {
-  return value !== undefined
+  return Array.isArray(value) ? !!value.length : !isEmpty({ value })
 }
 
 function clearForm () {

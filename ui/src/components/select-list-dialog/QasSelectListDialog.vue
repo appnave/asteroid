@@ -215,10 +215,6 @@ const headerProps = computed(() => {
   }
 })
 
-const hasLazyLoading = computed(() => {
-  return props.useLazyLoading || !!props.selectListProps?.searchBoxProps?.useLazyLoading
-})
-
 const searchSelectedItemsBoxProps = computed(() => {
   return {
     fuseOptions: { keys: ['label'] },
@@ -280,12 +276,14 @@ function useList () {
     const normalizedItems = Array.isArray(options) ? options : [options]
 
     /*
-     * Validação necessária pois se não estiver com lazyloading e adicionar mais opções, as options vai vir duplicadas
-     * com as opções que já foram adicionadas
+     * Adiciona somente as opções que ainda não existem, para não duplicar e para recuperar o label
+     * das opções que foram removidas antes (remove também tira a opção de "filteredOptions").
     */
-    if (hasLazyLoading.value) {
-      filteredOptions.value.push(...normalizedItems)
-    }
+    const newOptions = normalizedItems.filter(item => {
+      return !filteredOptions.value.some(option => option.value === item.value)
+    })
+
+    filteredOptions.value.push(...newOptions)
 
     const newModel = value || normalizedItems.map(item => item.value)
 

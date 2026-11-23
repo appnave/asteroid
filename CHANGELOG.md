@@ -28,10 +28,12 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasGridGenerator`: Corrigida a prop `use-empty-result`, que não tinha efeito. Com `false`, os campos vazios são escondidos. No padrão (`true`), campos com lista ou objeto vazio, que antes eram escondidos, agora aparecem com "-".
 - `QasHeader`: Corrigido o slot `actions`, que não era exibido quando o header não tinha label nem descrição.
 - `QasPasswordStrengthChecker`: Corrigido erro que quebrava o componente quando a senha não atendia nenhum critério (ex: só "ç" ou espaço). Agora exibe "Muito fraco".
+- `QasReportsFilters`: Corrigido o botão "Filtrar", que ficava habilitado quando um filtro obrigatório era limpo.
 - `QasSelect`, `QasSearchBox`, `QasSelectList` e `QasSelectListDialog`: Corrigido o aviso de prop obrigatória (`entity` e `name`) no lazy loading, que nunca era exibido. Agora a mensagem aparece no console e a requisição não é feita.
-- `QasTransfer`: Corrigida a quantidade de itens, que não aparecia nos títulos das colunas, e a sincronização com `options` e `v-model`: os selecionados não duplicam mais quando as `options` mudam, e limpar o model por fora limpa as selecionadas.
+- `QasSelectListDialog`: Corrigido o item que, removido e adicionado de novo sem lazy loading, aparecia com o `value` no lugar do `label`.
 - `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.
 - `QasTableGenerator` e `QasGridGenerator`: Corrigido erro que quebrava o componente quando um campo `select` com `multiple` vinha sem valor.
+- `QasTransfer`: Corrigida a quantidade de itens, que não aparecia nos títulos das colunas, e a sincronização com `options` e `v-model`: os selecionados não duplicam mais quando as `options` mudam, e limpar o model por fora limpa as selecionadas.
 
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado

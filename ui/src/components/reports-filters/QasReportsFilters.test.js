@@ -86,6 +86,17 @@ describe('QasReportsFilters', () => {
       expect(getModel(wrapper).startDate).toBe('2026-05-01')
     })
 
+    it('aplica "default" 0 e ignora o vazio', async () => {
+      const fields = {
+        floor: { name: 'floor', type: 'number', default: 0 },
+        notes: { name: 'notes', type: 'text', default: '' }
+      }
+
+      const { wrapper } = await mountReportsFilters({ store: createStore({ fields }) })
+
+      expect(getModel(wrapper)).toEqual({ floor: 0 })
+    })
+
     it('com "use-default-filters" false, não aplica o "default"', async () => {
       const { wrapper, router } = await mountReportsFilters({ props: { useDefaultFilters: false } })
 
@@ -129,14 +140,17 @@ describe('QasReportsFilters', () => {
       expect(wrapper.find('.relatorio').exists()).toBe(true)
     })
 
-    // Problema listado no documento: só "undefined" conta como vazio, então "null" e "" liberam o botão.
-    it.fails('fica desabilitado quando o campo obrigatório é limpo', async () => {
+    it.each([
+      [null, true],
+      ['', true],
+      [0, false]
+    ])('com o campo obrigatório %j, desabilitado é %s', async (company, disabled) => {
       const { wrapper } = await mountReportsFilters({ route: '/?company=a' })
 
-      wrapper.findComponent(QasFormGenerator).vm.$emit('update:modelValue', { ...getModel(wrapper), company: null })
+      wrapper.findComponent(QasFormGenerator).vm.$emit('update:modelValue', { ...getModel(wrapper), company })
       await flushPromises()
 
-      expect(isFilterDisabled(wrapper)).toBe(true)
+      expect(isFilterDisabled(wrapper)).toBe(disabled)
     })
   })
 

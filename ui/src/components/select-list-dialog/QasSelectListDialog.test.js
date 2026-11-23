@@ -133,9 +133,8 @@ describe('QasSelectListDialog', () => {
     })
   })
 
-  describe('problemas', () => {
-    // Problema listado no documento: um item removido e adicionado de novo aparece com o value no lugar do label.
-    it.fails('um item removido e adicionado de novo aparece com o label', async () => {
+  describe('adicionar de novo', () => {
+    it('um item removido e adicionado de novo aparece com o label', async () => {
       const { wrapper } = await mountSelectListDialog({ props: { modelValue: ['ana'] } })
 
       wrapper.vm.remove('ana')
