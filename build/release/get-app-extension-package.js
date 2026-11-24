@@ -1,7 +1,7 @@
-function getAppExtensionPackage (packages) {
-  const jetpack = require('fs-jetpack') // https://github.com/szwacz/fs-jetpack
-  const path = require('path') // https://nodejs.org/api/path.html
+import jetpack from 'fs-jetpack' // https://github.com/szwacz/fs-jetpack
+import path from 'node:path' // https://nodejs.org/api/path.html
 
+function getAppExtensionPackage (packages) {
   // recupera o package.json
   const appExtensionPackage = packages['app-extension']
   const packagePath = `${appExtensionPackage.path}package.json`
@@ -13,4 +13,4 @@ function getAppExtensionPackage (packages) {
   }
 }
 
-module.exports = getAppExtensionPackage
+export default getAppExtensionPackage

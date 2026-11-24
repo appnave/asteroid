@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { useOverlayNavigation } from '@bildvitta/quasar-ui-asteroid/src/composables'
+import { useOverlayNavigation } from '@appnave/quasar-ui-asteroid/src/composables'
 
 export default {
   props: {

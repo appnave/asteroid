@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import PvLayoutOverlayDrawer from '@bildvitta/quasar-ui-asteroid/src/components/layout/private/PvLayoutOverlayDrawer.vue'
+import PvLayoutOverlayDrawer from '@appnave/quasar-ui-asteroid/src/components/layout/private/PvLayoutOverlayDrawer.vue'
 
 import { version } from 'asteroid'
 import { createMetaMixin } from 'quasar'
@@ -149,6 +149,11 @@ export default {
 
     &__input {
       width: 90%;
+
+      & button {
+        width: 100%;
+        margin-left: 6px;
+      }
     }
 
     &__input-element {

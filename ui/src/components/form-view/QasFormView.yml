@@ -25,12 +25,11 @@ props:
     desc: Configuração do botão de "cancelar", caso seja "false", não exibe o botão, caso precise passar uma path direto use como string, caso precisar passar uma configuração como "name" ou "params" passe como objeto, agora se precisar de uma logica especifica quando clicar no botão de cancelar, você pode passar uma função que ela será executado.
     default: "''"
     type: [Boolean, Object, String, Function]
-    examples: [
-      /users,
-      false,
-      "{ name: 'UsersForm', params: { id: 'uuid-1' } }",
-      () => alert('Lógica especifica.')
-    ]
+    examples:
+      - /users
+      - false
+      - "{ name: 'UsersForm', params: { id: 'uuid-1' } }"
+      - () => alert('Lógica especifica.')
 
   custom-id:
     desc: Por padrão, o componente vai pegar o "id" que vem como parâmetro na url, caso queira que o id seja diferente da url, use esta prop.

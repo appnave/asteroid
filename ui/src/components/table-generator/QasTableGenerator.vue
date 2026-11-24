@@ -203,9 +203,8 @@ export default {
     },
 
     results: {
-      default: () => [],
-      required: true,
-      type: Array
+      type: Array,
+      default: () => []
     },
 
     rowKey: {

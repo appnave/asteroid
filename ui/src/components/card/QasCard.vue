@@ -33,9 +33,9 @@
         </header>
 
         <div class="qas-card__content relative-position" :class="contentClasses">
-          <qas-skeleton v-if="props.skeleton" use-overlay />
+          <qas-skeleton v-if="props.skeleton" height="100px" />
 
-          <slot name="default" />
+          <slot v-else name="default" />
         </div>
 
         <div class="full-width q-mt-auto">
@@ -49,7 +49,7 @@
             </div>
 
             <slot v-else name="footer">
-              <q-expansion-item v-if="hasExpansion" class="full-width" dense expand-icon-class="text-grey-10" header-class="qas-card__expansion-header q-mt-sm q-pa-none" :label="props.expansionProps.label">
+              <q-expansion-item v-if="hasExpansion" class="full-width" v-bind="expansionItemProps">
                 <div class="q-mt-xs">
                   <q-separator vertical />
 
@@ -67,6 +67,7 @@
 </template>
 
 <script setup>
+import QasRouterLink from '../router-link/QasRouterLink.vue'
 import QasTooltip from '../tooltip/QasTooltip.vue'
 import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasCheckbox from '../checkbox/QasCheckbox.vue'
@@ -128,6 +129,10 @@ const props = defineProps({
     default: true
   },
 
+  useOverlayRoute: {
+    type: Boolean
+  },
+
   useSelection: {
     type: Boolean
   }
@@ -172,11 +177,13 @@ const titleComponent = computed(() => {
   const hasRoute = !!Object.keys(props.route).length && !props.skeleton
 
   return {
-    is: hasRoute ? 'router-link' : 'h5',
+    is: hasRoute ? QasRouterLink : 'h5',
+
     props: {
       ...(hasRoute && {
-        to: props.route,
-        class: 'qas-card__router'
+        route: props.route,
+        useOverlayRoute: props.useOverlayRoute,
+        title: props.title
       })
     }
   }
@@ -215,6 +222,16 @@ const formattedActionsMenuProps = computed(() => {
     useLabel: false
   }
 })
+
+const expansionItemProps = computed(() => {
+  return {
+    ...props.expansionProps,
+    dense: true,
+    expandIconClass: 'text-grey-10',
+    headerClass: 'qas-card__expansion-header q-mt-sm q-pa-none',
+    label: props.expansionProps.label
+  }
+})
 </script>
 
 <style lang="scss">
@@ -227,12 +244,6 @@ const formattedActionsMenuProps = computed(() => {
 
   .q-card {
     background-color: transparent;
-  }
-
-  &__router {
-    &:hover {
-      color: $primary;
-    }
   }
 
   &__expansion-header {

@@ -20,6 +20,11 @@ props:
     examples: [v-model="value"]
     model: true
 
+  persistent:
+    desc: Define se o drawer pode ser fechado clicando fora dele ou pressionando a tecla ESC.
+    default: false
+    type: Boolean
+
   position:
     desc: 'Posição do drawer, sendo possível apenas 2 opções: [left, right].'
     default: left
@@ -27,6 +32,11 @@ props:
 
   title:
     desc: Titulo do drawer.
+    type: String
+
+  size:
+    desc: Tamanho do drawer.
+    default: sm
     type: String
 
 slots:

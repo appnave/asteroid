@@ -1,4 +1,4 @@
-import { install } from '@bildvitta/quasar-ui-asteroid/src/asteroid'
+import { install } from '@appnave/quasar-ui-asteroid/src/asteroid'
 import fontFace from 'asteroid-boot/font-face.js'
 import debug from 'asteroid-boot/debug.js'
 import overlayNavigation from 'asteroid-boot/overlay-navigation.js'

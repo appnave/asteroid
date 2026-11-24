@@ -34,8 +34,8 @@ props:
     type: String
     default: ''
 
-  use-box:
-    desc: Controla se vai ter ou não box (componente tem um controle interno que lida automaticamente, serve para a maioria dos casos).
+  use-background:
+    desc: Controla se vai ter ou não background (componente tem um controle interno que lida automaticamente, serve para a maioria dos casos).
     type: Boolean
     default: undefined
 

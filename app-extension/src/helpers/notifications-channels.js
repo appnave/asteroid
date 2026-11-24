@@ -1,5 +1,7 @@
 import { useNotifications } from 'asteroid'
 
+import { PROCESS_CHANNEL_NAME } from './laravel-echo.js'
+
 export function setNotificationsChannelListener () {
   const {
     incrementUnreadNotificationsCount,
@@ -19,6 +21,29 @@ export function setNotificationsChannelListener () {
     // incrementa o contador "unreadNotificationsCount".
     incrementUnreadNotificationsCount()
   }
+}
+
+export function setProcessChannelListener () {
+  const { setRealtimeConnectionState, triggerProcessFinished } = useNotifications()
+
+  /**
+   * É outro objeto com o mesmo nome do canal usado pela aba líder, então a aba líder
+   * também recebe as mensagens (um BroadcastChannel não recebe as próprias mensagens).
+   */
+  const processChannel = new BroadcastChannel(PROCESS_CHANNEL_NAME)
+
+  const handlers = {
+    // aciona o hook "onProcessFinished".
+    processFinished: triggerProcessFinished,
+
+    // atualiza o "realtimeConnectionState".
+    connectionState: setRealtimeConnectionState
+  }
+
+  processChannel.onmessage = ({ data: { type, payload } }) => handlers[type]?.(payload)
+
+  // pergunta à aba líder o estado atual da conexão.
+  processChannel.postMessage({ type: 'requestConnectionState' })
 }
 
 export function setNotificationsUtilsChannel () {

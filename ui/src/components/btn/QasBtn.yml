@@ -64,6 +64,11 @@ props:
     desc: Texto do tooltip que aparecerá ao passar o mouse sobre o botão.
     type: String
 
+  use-magic-ai-color:
+    desc: Aplica o estilo de cores de inteligência artificial (magic AI) ao botão, usando um gradiente como cor principal. O comportamento varia conforme a variante do botão. Na variante "primary", o gradiente substitui a cor de fundo. Na "secondary", o gradiente é aplicado na cor do texto e na borda. Na "tertiary", o gradiente é aplicado apenas na cor do texto. O hover em todas as variantes utiliza a cor "$secondary-contrast".
+    default: false
+    type: Boolean
+
   variant:
     desc: Variantes do botão, que define para qual comportamento o botão será usado, podendo ser "primary", "secondary" ou "tertiary".
     default: tertiary

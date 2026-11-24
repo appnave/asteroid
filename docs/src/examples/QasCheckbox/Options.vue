@@ -1,12 +1,12 @@
 <template>
   <div class="container q-gutter-y-lg spaced">
-    <qas-checkbox v-model="model" label="Checkbox com opções" :options />
+    <qas-checkbox v-model="model" label="Checkbox com opções" :options tip="Exemplo com tip" />
 
     <qas-checkbox v-model="model" disable label="Checkbox com opções" :options />
 
     <qas-checkbox v-model="model" error label="Checkbox com opções" :options />
 
-    <qas-checkbox v-model="model" error error-message="Mensagem de erro" label="Checkbox com opções" :options />
+    <qas-checkbox v-model="model" error error-message="Mensagem de erro" label="Checkbox com opções" :options tip="Exemplo com tip" />
 
     <qas-debugger :inspect="[model]" />
   </div>

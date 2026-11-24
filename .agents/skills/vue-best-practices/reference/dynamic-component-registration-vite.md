@@ -1,14 +1,14 @@
 ---
 title: Use import.meta.glob for Dynamic Component Registration in Vite
 impact: MEDIUM
-impactDescription: require.context from Webpack doesn't work in Vite projects
+impactDescription: require.context does not work in Vite projects
 type: gotcha
-tags: [vue3, component-registration, vite, dynamic-import, migration, webpack]
+tags: [vue3, component-registration, vite, dynamic-import, migration]
 ---
 
 # Use import.meta.glob for Dynamic Component Registration in Vite
 
-**Impact: MEDIUM** - When migrating from Webpack to Vite or starting a new Vite project, the `require.context` pattern for dynamically registering components won't work. Vite uses `import.meta.glob` instead. Using the wrong approach will cause build errors or runtime failures.
+**Impact: MEDIUM** - When migrating to Vite or starting a new Vite project, the `require.context` pattern for dynamically registering components won't work. Vite uses `import.meta.glob` instead. Using the wrong approach will cause build errors or runtime failures.
 
 ## Task Checklist
 
@@ -17,7 +17,7 @@ tags: [vue3, component-registration, vite, dynamic-import, migration, webpack]
 - [ ] Use `{ eager: true }` for synchronous loading when needed
 - [ ] Handle async components appropriately with `defineAsyncComponent`
 
-**Incorrect (Webpack pattern - doesn't work in Vite):**
+**Incorrect (legacy require.context pattern - doesn't work in Vite):**
 ```javascript
 // main.js - WRONG for Vite
 import { createApp } from 'vue'
@@ -25,7 +25,7 @@ import App from './App.vue'
 
 const app = createApp(App)
 
-// This Webpack-specific API doesn't exist in Vite
+// This API doesn't exist in Vite
 const requireComponent = require.context(
   './components/base',
   false,
@@ -133,9 +133,9 @@ for (const path in modules) {
 app.mount('#app')
 ```
 
-## Migration Checklist (Webpack to Vite)
+## Migration Checklist (require.context to Vite)
 
-| Webpack | Vite |
+| Legacy pattern | Vite |
 |---------|------|
 | `require.context(dir, recursive, regex)` | `import.meta.glob(pattern, options)` |
 | Synchronous by default | Use `{ eager: true }` for sync |

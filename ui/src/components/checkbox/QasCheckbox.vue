@@ -7,7 +7,11 @@
 
     <!-- Group -->
     <div v-else>
-      <qas-label v-if="props.label" :color="labelColor" :label="formattedLabel" margin="sm" typography="h5" />
+      <div v-if="props.label" class="items-center no-wrap q-gutter-x-xs q-mb-sm row">
+        <qas-label :color="labelColor" :label="formattedLabel" margin="none" typography="h5" />
+
+        <qas-tip v-if="props.tip" v-bind="tipProps" />
+      </div>
 
       <div class="flex q-col-gutter-md" :class="contentClasses">
         <div v-for="(option, index) in props.options" :key="index">
@@ -30,13 +34,14 @@
 <script setup>
 import QasLabel from '../label/QasLabel.vue'
 import QasErrorMessage from '../error-message/QasErrorMessage.vue'
+import QasTip from '../tip/QasTip.vue'
 
 import useErrorMessage, { baseErrorProps } from '../../composables/private/use-error-message'
 import useScreen from '../../composables/use-screen'
 
 import { getRequiredLabel } from '../../helpers'
 
-import { watch, computed, ref, onMounted, useAttrs } from 'vue'
+import { watch, computed, ref, onMounted, useAttrs, useSlots } from 'vue'
 
 defineOptions({
   name: 'QasCheckbox',
@@ -74,6 +79,11 @@ const props = defineProps({
     type: Boolean
   },
 
+  tip: {
+    type: String,
+    default: ''
+  },
+
   useAsTitle: {
     type: Boolean,
     default: false
@@ -85,6 +95,7 @@ const emit = defineEmits(['update:modelValue'])
 
 // globals
 const attrs = useAttrs()
+const slots = useSlots()
 
 // composables
 const { color } = useErrorMessage(props)
@@ -113,6 +124,7 @@ const contentClasses = computed(() => !isInline.value && 'column')
 const gutterClasses = computed(() => isInline.value ? 'q-gutter-x-md' : 'q-gutter-y-md')
 
 const hasErrorMessage = computed(() => props.errorMessage && !isSingle.value)
+const hasDefaultSlot = computed(() => !!slots.default)
 
 const model = computed({
   get () {
@@ -125,15 +137,25 @@ const model = computed({
 })
 
 const singleAttributes = computed(() => {
+  const label = !props.tip && !hasDefaultSlot.value ? props.label : undefined
+
   return {
     ...attrs,
     disable: props.disable,
-    label: props.label
+    label
   }
 })
 
 const formattedLabel = computed(() => {
   return getRequiredLabel({ label: props.label, required: props.required })
+})
+
+const tipProps = computed(() => {
+  return {
+    text: props.tip,
+
+    ...(props.error && { color: 'negative' })
+  }
 })
 
 // watch

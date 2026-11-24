@@ -32,3 +32,8 @@ props:
   use-spacing:
     desc: Controla espaçamento do componente.
     type: Boolean
+
+provide:
+  is-box:
+    desc: Identificador booleano que indica quando um componente está dentro do contexto de um QasBox.
+    type: Boolean

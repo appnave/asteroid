@@ -1,9 +1,9 @@
-const MarkdownIt = require('markdown-it')
+import MarkdownIt from 'markdown-it'
 
-const markdownPluginCode = require('./markdown-plugin-code.js')
-const markdownPluginContainer = require('./markdown-plugin-container.js')
-const markdownPluginHeading = require('./markdown-plugin-heading.js')
-const markdownPluginTable = require('./markdown-plugin-table.js')
+import markdownPluginCode from './markdown-plugin-code.js'
+import markdownPluginContainer from './markdown-plugin-container.js'
+import markdownPluginHeading from './markdown-plugin-heading.js'
+import markdownPluginTable from './markdown-plugin-table.js'
 
 const markdownOptions = {
   html: true,
@@ -16,23 +16,46 @@ const markdown = new MarkdownIt(markdownOptions)
   .use(markdownPluginHeading)
   .use(markdownPluginTable)
 
-const matter = require('gray-matter')
-const toml = require('toml')
+import matter from 'gray-matter'
+import toml from 'toml'
 
+/**
+ * Compila um arquivo markdown (com front matter) para uma string de SFC Vue.
+ */
 const getVueComponent = function (source) {
+  // Separa o front matter (YAML/TOML) do corpo markdown
   const { data, content } = parseFrontMatter(source)
 
+  // Renderiza o markdown para HTML puro; é essa string HTML que vai para dentro do <template> do SFC
+  let rendered = markdown.render(content)
+
+  const imports = []
+  let importIndex = 0
+
+  /**
+   * Troca cada `require('assets/foo.png')` do HTML por uma variável
+   * placeholder (__asset_N) e registra o import ESM correspondente,
+   * para o Vite resolver o asset no <script setup>.
+   */
+  rendered = rendered.replace(/require\(['"]([^'"]+)['"]\)/g, (_, assetPath) => {
+    const varName = `__asset_${importIndex++}`
+
+    imports.push(`import ${varName} from '${assetPath}'`)
+
+    return varName
+  })
+
+  const importsBlock = imports.length ? imports.join('\n') + '\n' : ''
+
+  // Monta o SFC - HTML final
   return `
     <template>
-      <doc-page v-bind="attrs">${markdown.render(content)}</doc-page>
+      <doc-page v-bind="attrs">${rendered}</doc-page>
     </template>
 
-    <script>
-      export default {
-        computed: {
-          attrs () { return ${JSON.stringify(data)} }
-        }
-      }
+    <script setup>
+      ${importsBlock}import { computed } from 'vue'
+      const attrs = computed(() => (${JSON.stringify(data)}))
     </script>
   `
 }
@@ -48,5 +71,4 @@ const parseFrontMatter = function (content) {
   })
 }
 
-module.exports.getVueComponent = getVueComponent
-module.exports.parseFrontMatter = parseFrontMatter
+export { getVueComponent, parseFrontMatter }

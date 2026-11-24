@@ -1,0 +1,30 @@
+type: component
+
+meta:
+  desc: Componente visual para exibir a transferência de itens entre duas colunas.
+
+props:
+  from:
+    desc: Lista de itens exibida na coluna da esquerda (ou superior em telas pequenas).
+    default: []
+    type: Array
+
+  to:
+    desc: Lista de itens exibida na coluna da direita (ou inferior em telas pequenas).
+    default: []
+    type: Array
+
+slots:
+  from-column:
+    desc: Slot para renderizar cada item da coluna da esquerda.
+    scope:
+      item:
+        desc: Item atual da lista from.
+        type: Any
+
+  to-column:
+    desc: Slot para renderizar cada item da coluna da direita.
+    scope:
+      item:
+        desc: Item atual da lista to.
+        type: Any

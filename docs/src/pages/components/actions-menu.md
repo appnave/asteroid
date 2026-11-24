@@ -36,6 +36,9 @@ Componente wrapper do `QasBtnDropdown` que implementa regras de negocio.
       icon: 'sym_r_visibility', // este ícone tem prioridade ao ícone passado através da prop "buttonProps".
       color: 'grey-10' // propriedade color sobrescreve a propriedade do componente `color` porém só é usada quando existe apenas um item na listagem
       disable: true, // desabilita o botão e quando ele esta dentro do dropdown (QItem).
+      tooltip: 'Texto do tooltip', // exibe um tooltip no item, tanto no botão quanto dentro do dropdown (QItem).
+      disabledTooltip: 'Texto quando desabilitado', // tem prioridade sobre o "tooltip" quando o item estiver desabilitado ("disable").
+      useMagicAiColor: true, // aplica o estilo de cores de inteligência artificial (magic AI) no ícone e no texto do item dentro do dropdown. Quando o item se torna um botão externo (via splitName), as cores são aplicadas automaticamente ao QasBtn.
       props: {
         // Propriedades do q-item: https://quasar.dev/vue-components/list-and-list-items#api--qitem
       },
@@ -54,6 +57,12 @@ Componente wrapper do `QasBtnDropdown` que implementa regras de negocio.
   - Propriedade `useTooltip` for `true`.
   - O componente QasActionsMenu tenha apenas 1 opção (Modo QasBtn e não QasBtnDropdown).
 - As labels dos tooltips vão ser as labels dentro da prop `list`.
+
+###### Tooltip por item (`tooltip` / `disabledTooltip`)
+- Cada item da prop `list` aceita as chaves `tooltip` e `disabledTooltip`, seguindo o mesmo comportamento do `QasBtn`.
+- Funciona tanto para os itens renderizados como botão quanto para os itens dentro do dropdown.
+- O `disabledTooltip` tem prioridade sobre o `tooltip` quando o item estiver desabilitado (`disable`).
+- Independe das props `useLabel` e `useTooltip`.
 :::
 
 <doc-example file="QasActionsMenu/Basic" title="Básico" />
@@ -65,5 +74,13 @@ Componente wrapper do `QasBtnDropdown` que implementa regras de negocio.
 <doc-example file="QasActionsMenu/ExDelete" title="Com deleção" />
 <doc-example file="QasActionsMenu/ExNoLabel" title="Sem label" />
 <doc-example file="QasActionsMenu/ExTooltip" title="Sem label com tooltip" />
+<doc-example file="QasActionsMenu/ExItemTooltip" title="Tooltip por item" />
 <doc-example file="QasActionsMenu/ExWithLoading" title="Com loading" />
 <doc-example file="QasActionsMenu/ExUseDropdownAlways" title="Sempre dropdown" />
+
+:::info
+#### Magic AI Color (`useMagicAiColor`)
+É possível aplicar o estilo de cores de inteligência artificial em um item da prop `list`, passando `useMagicAiColor: true` no objeto do item. O ícone e o texto do item dentro do dropdown receberão o gradiente de magic AI. Quando o item se torna um botão externo (em cenários com `splitName`), as cores de magic AI são aplicadas automaticamente ao `QasBtn` correspondente.
+:::
+
+<doc-example file="QasActionsMenu/ExMagicAi" title="Magic AI Color" />

@@ -1,35 +1,28 @@
 <template>
   <div class="container q-py-lg">
-    <qas-btn @click="toggle">Abrir Dialog</qas-btn>
+    <qas-btn label="Abrir Dialog" @click="toggle" />
 
     <qas-dialog v-model="isDialogOpened" v-bind="dialogProps" />
   </div>
 </template>
 
-<script>
-import DescriptionComponent from './DescriptionComponent'
+<script setup>
+import { ref } from 'vue'
+import DescriptionComponent from './DescriptionComponent.vue'
 
-export default {
-  data () {
-    return {
-      isDialogOpened: false
-    }
-  },
+defineOptions({ name: 'DialogWithDescriptionComponent' })
 
-  computed: {
-    dialogProps () {
-      return {
-        card: {
-          description: DescriptionComponent
-        }
-      }
-    }
-  },
+// refs
+const isDialogOpened = ref(false)
 
-  methods: {
-    toggle () {
-      this.isDialogOpened = !this.isDialogOpened
-    }
-  }
+// consts
+const dialogProps = {
+  title: 'Título do dialog',
+  description: DescriptionComponent
+}
+
+// functions
+function toggle () {
+  isDialogOpened.value = !isDialogOpened.value
 }
 </script>

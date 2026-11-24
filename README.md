@@ -73,7 +73,7 @@ Observação: Alguns componentes do Quasar precisam ser importados manualmente d
 ## Roadmap:
 
 - [ ] Finalizar `eslint-plugin-asteroid`;
-- [ ] Desenvolver um novo `asteroid-starter-kit` para o Quasar v2 + Asteroid v3, com suporte ao Webpack e Vite;
+- [ ] Desenvolver um novo `asteroid-starter-kit` para o Quasar v2 + Asteroid v3, com suporte ao Vite;
 - [ ] Adicionar componentes específicos criados nos projetos e que fazem sentido estar no Asteroid;
 - [ ] Melhoria geral na documentação (adicionar mais exemplos, links etc);
 - [ ] Refatoração de código dos componentes para uma melhorar a performance;

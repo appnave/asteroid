@@ -6,14 +6,16 @@
           <q-item v-bind="getItemProps(item)" :key="key" active-class="primary" clickable data-cy="actions-menu-list-item" @click="setClickHandler(item)">
             <q-item-section avatar>
               <q-spinner v-if="item.loading" size="sm" />
-              <q-icon v-else :name="item.icon" />
+              <q-icon v-else :class="getMagicAiClasses(item)" :name="item.icon" />
             </q-item-section>
 
             <q-item-section>
-              <q-item-label>
+              <q-item-label :class="getMagicAiClasses(item)">
                 {{ item.label }}
               </q-item-label>
             </q-item-section>
+
+            <qas-tooltip v-if="getItemTooltip(item)" :text="getItemTooltip(item)" />
           </q-item>
         </slot>
       </q-list>
@@ -29,6 +31,7 @@
 
 <script setup>
 import QasBtnDropdown from '../btn-dropdown/QasBtnDropdown.vue'
+import QasTooltip from '../tooltip/QasTooltip.vue'
 
 import useScreen from '../../composables/use-screen'
 
@@ -284,6 +287,18 @@ function getItemProps (item) {
     to,
     ...itemProps
   }
+}
+
+/**
+ * Mesma regra do QasBtn: "disabledTooltip" tem prioridade quando o item estiver desabilitado,
+ * caso contrário, utiliza o "tooltip".
+ */
+function getItemTooltip ({ disable, disabledTooltip, tooltip }) {
+  return (disable && disabledTooltip) || tooltip || ''
+}
+
+function getMagicAiClasses ({ useMagicAiColor }) {
+  return { 'text-magic-ai': useMagicAiColor }
 }
 
 function handleMenuModel (newValue, oldValue) {
