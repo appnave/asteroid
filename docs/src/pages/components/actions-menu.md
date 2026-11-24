@@ -37,7 +37,7 @@ Componente wrapper do `QasBtnDropdown` que implementa regras de negocio.
       color: 'grey-10' // propriedade color sobrescreve a propriedade do componente `color` porém só é usada quando existe apenas um item na listagem
       disable: true, // desabilita o botão e quando ele esta dentro do dropdown (QItem).
       tooltip: 'Texto do tooltip', // exibe um tooltip no item, tanto no botão quanto dentro do dropdown (QItem).
-      disabledTooltip: 'Texto quando desabilitado', // tem prioridade sobre o "tooltip" quando o item estiver desabilitado ("disable" ou "loading").
+      disabledTooltip: 'Texto quando desabilitado', // tem prioridade sobre o "tooltip" quando o item estiver desabilitado ("disable").
       useMagicAiColor: true, // aplica o estilo de cores de inteligência artificial (magic AI) no ícone e no texto do item dentro do dropdown. Quando o item se torna um botão externo (via splitName), as cores são aplicadas automaticamente ao QasBtn.
       props: {
         // Propriedades do q-item: https://quasar.dev/vue-components/list-and-list-items#api--qitem
@@ -61,7 +61,7 @@ Componente wrapper do `QasBtnDropdown` que implementa regras de negocio.
 ###### Tooltip por item (`tooltip` / `disabledTooltip`)
 - Cada item da prop `list` aceita as chaves `tooltip` e `disabledTooltip`, seguindo o mesmo comportamento do `QasBtn`.
 - Funciona tanto para os itens renderizados como botão quanto para os itens dentro do dropdown.
-- O `disabledTooltip` tem prioridade sobre o `tooltip` quando o item estiver desabilitado (`disable` ou `loading`).
+- O `disabledTooltip` tem prioridade sobre o `tooltip` quando o item estiver desabilitado (`disable`).
 - Independe das props `useLabel` e `useTooltip`.
 :::
 
