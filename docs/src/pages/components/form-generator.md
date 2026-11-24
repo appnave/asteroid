@@ -103,6 +103,8 @@ Exemplo:
 <doc-example file="QasFormGenerator/WithSubsets" title="Usando com subseções" />
 <doc-example file="QasFormGenerator/WithSubsetsSlots" title="Acessando slots de subseções" />
 
+<doc-example file="QasFormGenerator/WithLegend" title="Acessando slots do fieldset" />
+
 Em alguns casos, queremos acessar todo o conteúdo de um campo especifico para fazer uma logica um pouco mais detalhada, neste caso conseguimos acessar o slot de cada campo individualmente.
 <doc-example file="QasFormGenerator/CustomSlot" title="Acessando slots" />
 <doc-example file="QasFormGenerator/CustomProps" title="Custom props" />

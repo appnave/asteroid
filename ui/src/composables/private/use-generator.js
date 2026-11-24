@@ -4,7 +4,7 @@ import { gutterValidator } from '../../helpers/private/gutter-validator'
 import useScreen from '../use-screen'
 import { isEmpty, humanize, filterObject } from '../../helpers'
 
-import { computed } from 'vue'
+import { computed, useSlots } from 'vue'
 
 const IRREGULAR_CLASSES = ['col', 'col-auto', 'fit']
 
@@ -46,6 +46,8 @@ export const baseProps = {
  */
 export default function ({ props = {}, isGrid = false }) {
   const screen = useScreen()
+
+  const slots = useSlots()
 
   /**
    * Se a propriedade gutter não for passada, será calculada automaticamente.
@@ -388,6 +390,20 @@ export default function ({ props = {}, isGrid = false }) {
     return _getBreakpoint(props.columns[index])
   }
 
+  /**
+   * Verifica se o slot legend-bottom está sendo utilizado para o fieldset ou subset
+   * @param {Object} params - Parâmetros da função
+   * @param {string} params.fieldset - Nome do fieldset
+   * @param {string} [params.subset] - Nome do subset (opcional)
+   * @param {string} params.type - Tipo do slot (top ou bottom)
+   * @returns {boolean} true se o slot legend-bottom estiver sendo utilizado
+   */
+  function hasLegendSectionSlot ({ fieldset, subset, type }) {
+    return subset
+      ? !!slots[`legend-${type}-${fieldset}-${subset}`]
+      : !!slots[`legend-${type}-${fieldset}`]
+  }
+
   return {
     classes,
 
@@ -396,6 +412,8 @@ export default function ({ props = {}, isGrid = false }) {
 
     getHeaderProps,
     getNormalizedFields,
-    getFieldsByResult
+    getFieldsByResult,
+
+    hasLegendSectionSlot
   }
 }

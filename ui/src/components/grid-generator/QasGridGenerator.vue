@@ -6,6 +6,10 @@
 
         <qas-header v-if="fieldsetItem.__hasHeader" v-bind="getHeaderProps({ values: fieldsetItem })" />
 
+        <div v-if="hasLegendSectionSlot({ fieldset: fieldsetItemKey, type: 'top' })" class="col-12 q-mb-md">
+          <slot :name="`legend-top-${fieldsetItemKey}`" />
+        </div>
+
         <div :class="classes">
           <div v-for="(field, key) in fieldsetItem.fields" :key="key" :class="getContainerClasses({ key })">
             <slot :field="field" :name="`field-${field.name}`">
@@ -42,6 +46,10 @@
 
             <qas-header v-if="subsetItem.__hasHeader" v-bind="getHeaderProps({ values: subsetItem, isSubset: true })" />
 
+            <div v-if="hasLegendSectionSlot({ fieldset: fieldsetItemKey, subset: subsetKey, type: 'top' })" class="col-12 q-mb-md">
+              <slot :name="`legend-top-${fieldsetItemKey}-${subsetKey}`" />
+            </div>
+
             <div :class="classes">
               <div v-for="(field, key) in subsetItem.fields" :key="key" :class="getContainerClasses({ key })">
                 <slot :field="field" :name="`field-${field.name}`">
@@ -69,7 +77,15 @@
                 </slot>
               </div>
             </div>
+
+            <div v-if="hasLegendSectionSlot({ fieldset: fieldsetItemKey, subset: subsetKey, type: 'bottom' })" class="q-mt-md">
+              <slot :name="`legend-bottom-${fieldsetItemKey}-${subsetKey}`" />
+            </div>
           </div>
+        </div>
+
+        <div v-if="hasLegendSectionSlot({ fieldset: fieldsetItemKey, type: 'bottom' })" class="col-12 q-mt-md">
+          <slot :name="`legend-bottom-${fieldsetItemKey}`" />
         </div>
       </div>
     </div>
@@ -159,7 +175,8 @@ const {
   getFieldClass,
   getHeaderProps,
   getNormalizedFields,
-  getFieldsByResult
+  getFieldsByResult,
+  hasLegendSectionSlot
 } = useGenerator({ props, isGrid: true })
 
 // computeds

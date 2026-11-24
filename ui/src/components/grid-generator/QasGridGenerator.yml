@@ -77,13 +77,8 @@ props:
     type: Boolean
 
 slots:
-  content:
-    desc: Slot para o conteúdo (valor) de todas os campos de uma vez.
-    scope:
-      field:
-        desc: Conteúdo do field atual mais o resultado formatado.
-        default: {}
-        type: Object
+  'legend-top-[nome-da-chave]':
+      desc: Acessa o slot abaixo do conteúdo do header de um fieldset.
 
   'field-[nome-da-chave]':
     desc: Slot para todo o conteúdo dentro de cada grid (header e content).
@@ -109,6 +104,14 @@ slots:
         default: {}
         type: Object
 
+  content:
+    desc: Slot para o conteúdo (valor) de todas os campos de uma vez.
+    scope:
+      field:
+        desc: Conteúdo do field atual mais o resultado formatado.
+        default: {}
+        type: Object
+
   'content-field-[nome-da-chave]':
     desc: Slot para o conteúdo (valor) especifico de um field.
     scope:
@@ -116,6 +119,15 @@ slots:
         desc: Conteúdo do field atual mais o resultado formatado.
         default: {}
         type: Object
+
+  'legend-bottom-[nome-da-chave]':
+    desc: Acessa o slot da seção abaixo do conteúdo do grid de um fieldset específico.
+
+  'legend-top-[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
+      desc: Acessa o slot abaixo do conteúdo do header de um subset.
+
+  'legend-bottom-[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
+    desc: Acessa o slot da seção abaixo do conteúdo do grid de um subset específico
 
 selectors:
   'grid-generator-[fieldName]-field':

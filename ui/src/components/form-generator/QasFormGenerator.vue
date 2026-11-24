@@ -8,6 +8,10 @@
           <qas-header v-if="fieldsetItem.__hasHeader" v-bind="getHeaderProps({ values: fieldsetItem })" />
         </slot>
 
+        <div v-if="hasLegendSectionSlot({ fieldset: fieldsetItemKey, type: 'top' })" class="col-12 q-mb-md">
+          <slot :name="`legend-top-${fieldsetItemKey}`" />
+        </div>
+
         <div>
           <slot :fields="getVisibleFields(fieldsetItem)" :name="`legend-section-${fieldsetItemKey}`">
             <div class="q-col-gutter-md row">
@@ -32,6 +36,10 @@
                   <qas-header v-if="subsetItem.__hasHeader" v-bind="getHeaderProps({ values: subsetItem, isSubset: true} )" />
                 </slot>
 
+                <div v-if="hasLegendSectionSlot({ fieldset: fieldsetItemKey, subset: subsetKey, type: 'top' })" class="col-12 q-mb-md">
+                  <slot :name="`legend-top-${fieldsetItemKey}-${subsetKey}`" />
+                </div>
+
                 <slot :fields="subsetItem.fields" :name="`legend-section-${fieldsetItemKey}-${subsetKey}`">
                   <div :class="fieldContainerClasses">
                     <div v-for="(field, key) in subsetItem.fields" :key="key" :class="getFieldClass({ index: key, fields: fieldsetItem.subset })">
@@ -42,7 +50,9 @@
                   </div>
                 </slot>
 
-                <slot :name="`legend-bottom-${fieldsetItemKey}-${subsetKey}`" />
+                <div v-if="hasLegendSectionSlot({ fieldset: fieldsetItemKey, subset: subsetKey, type: 'bottom' })" class="q-mt-md">
+                  <slot :name="`legend-bottom-${fieldsetItemKey}-${subsetKey}`" />
+                </div>
               </div>
             </div>
 
@@ -54,7 +64,9 @@
           </slot>
         </div>
 
-        <slot v-if="fieldsetItem.__hasFieldset" :name="`legend-bottom-${fieldsetItemKey}`" />
+        <div v-if="hasLegendSectionSlot({ fieldset: fieldsetItemKey, type: 'bottom' })" class="col-12 q-mt-md">
+          <slot :name="`legend-bottom-${fieldsetItemKey}`" />
+        </div>
       </component>
     </div>
   </div>
@@ -138,7 +150,8 @@ const {
   getFieldClass,
   getFieldSetColumnClass,
   getHeaderProps,
-  getNormalizedFields
+  getNormalizedFields,
+  hasLegendSectionSlot
 } = useGenerator({ props })
 
 const { fieldsetClasses, hasFieldset } = useFieldset({ props })

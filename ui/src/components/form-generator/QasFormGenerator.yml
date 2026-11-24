@@ -94,6 +94,9 @@ slots:
   'legend-[nome-da-chave]':
       desc: Acessa o slot de um rótulo (label).
 
+  'legend-top-[nome-da-chave]':
+      desc: Acessa o slot abaixo do conteúdo do header de um fieldset.
+
   'legend-section-[nome-da-chave]':
     desc: Acessa o slot da seção de fields daquele fieldset.
     scope:
@@ -105,9 +108,11 @@ slots:
   'legend-bottom-[nome-da-chave]':
     desc: Acessa o slot da seção abaixo do conteúdo do form de um fieldset específico.
 
-
   'legend-[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
     desc: Acessa o slot de um rótulo (label) de um subset.
+
+  'legend-top-[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
+      desc: Acessa o slot abaixo do conteúdo do header de um subset.
 
   'legend-section-[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
     desc: Acessa o slot da seção de fields daquele subset.
@@ -117,7 +122,7 @@ slots:
         default: {}
         type: Object
 
-  'legend-bottom[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
+  'legend-bottom-[nome-da-chave-do-fieldset]-[nome-da-chave-do-subset]':
     desc: Acessa o slot da seção abaixo do conteúdo do form de um subset específico.
 
 provide:
