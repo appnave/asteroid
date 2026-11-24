@@ -1,6 +1,12 @@
 <template>
-  <div class="container q-py-lg">
+  <div class="container q-gutter-y-md q-py-lg">
     <qas-alert v-bind="alertProps" />
+
+    <qas-alert v-bind="alertProps" status="warning" />
+
+    <qas-alert v-bind="alertProps" status="error" />
+
+    <qas-alert v-bind="alertProps" status="success" />
   </div>
 </template>
 

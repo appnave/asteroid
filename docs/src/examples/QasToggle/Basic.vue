@@ -5,7 +5,7 @@
     </div>
 
     <div>
-      <qas-toggle v-model="model2" label="Aceitar" />
+      <qas-toggle v-model="model2" label="Aceitar" tip="Exemplo com tip" />
     </div>
 
     <div>

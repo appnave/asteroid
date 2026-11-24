@@ -73,6 +73,7 @@ import QasHeader from '../header/QasHeader.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasDialog from '../dialog/QasDialog.vue'
 import QasSelectList from '../select-list/QasSelectList.vue'
+import QasSearchBox from '../search-box/QasSearchBox.vue'
 
 import { computed, ref, watch, useSlots, inject } from 'vue'
 

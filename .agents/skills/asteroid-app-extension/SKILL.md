@@ -1,6 +1,6 @@
 # Módulo App Extension (`app-extension/`)
 
-O pacote `@bildvitta/quasar-app-extension-asteroid` é a **Quasar App Extension** que integra o Asteroid em qualquer projeto Quasar. Ao instalar via `quasar ext add @bildvitta/asteroid`, ele configura automaticamente boots, aliases, plugins, CSS, e transpilações necessárias.
+O pacote `@bildvitta/quasar-app-extension-asteroid` é a **Quasar App Extension** que integra o Asteroid em qualquer projeto Quasar. Ao instalar via `quasar ext add @appnave/asteroid`, ele configura automaticamente boots, aliases, plugins, CSS, e transpilações necessárias.
 
 ## Estrutura
 
@@ -43,11 +43,10 @@ app-extension/
    - **Animações:** slideInDown, rubberBand, fadeIn
    - **Extras:** material-symbols-rounded (icon set)
    - **Lang:** pt-BR
-   - **Transpilação:** (Webpack only) adiciona regexes para transpile
+  - **Transpilação:** adiciona regexes para transpile
 
-### Suporte a bundlers:
+### Suporte de build:
 - **Vite** (`@quasar/app-vite >= v2`): `extendViteConf` + `optimizeDeps.include`
-- **Webpack** (`@quasar/app >= v3 || v4`): `extendWebpack` + `transpileDependencies`
 
 ## Boot Files
 Todos em `app-extension/src/boot/`. Registrados automaticamente pelo `index.js`.

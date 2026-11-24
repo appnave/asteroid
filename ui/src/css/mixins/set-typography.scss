@@ -1,8 +1,15 @@
 @use 'sass:map';
 
 @mixin set-typography($name, $important: false) {
-  font-size: if($important, map.get($name, 'size') !important, map.get($name, 'size'));
-  font-weight: if($important, map.get($name, 'weight') !important, map.get($name, 'weight'));
-  letter-spacing: if($important, map.get($name, 'letter-spacing') !important, map.get($name, 'letter-spacing'));
-  line-height: if($important, map.get($name, 'line-height') !important, map.get($name, 'line-height'));
+  @if $important {
+    font-size: map.get($name, 'size') !important;
+    font-weight: map.get($name, 'weight') !important;
+    letter-spacing: map.get($name, 'letter-spacing') !important;
+    line-height: map.get($name, 'line-height') !important;
+  } @else {
+    font-size: map.get($name, 'size');
+    font-weight: map.get($name, 'weight');
+    letter-spacing: map.get($name, 'letter-spacing');
+    line-height: map.get($name, 'line-height');
+  }
 }

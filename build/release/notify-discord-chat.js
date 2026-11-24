@@ -1,5 +1,6 @@
+import axios from 'axios'
+
 async function notifyDiscordChat ({ changelogContent, ora, nextVersion, isBeta, hasGithubRelease }) {
-  const axios = require('axios')
   const tag = `v${nextVersion}`
 
   const discordSpinner = ora('Notificando chat do discord...').start()
@@ -24,4 +25,4 @@ async function notifyDiscordChat ({ changelogContent, ora, nextVersion, isBeta, 
   }
 }
 
-module.exports = notifyDiscordChat
+export default notifyDiscordChat

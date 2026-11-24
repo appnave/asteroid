@@ -1,6 +1,6 @@
-const { escapeHtml, unescapeAll } = require('markdown-it/lib/common/utils')
+import { escapeHtml, unescapeAll } from 'markdown-it/lib/common/utils.mjs'
 
-module.exports = function (markdown) {
+export default function (markdown) {
   markdown.renderer.rules.fence = (tokens, idx) => {
     const token = tokens[idx]
     const info = token.info ? unescapeAll(token.info).trim() : ''

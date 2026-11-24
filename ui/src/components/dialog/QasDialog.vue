@@ -57,7 +57,8 @@ const props = defineProps({
   },
 
   disableCloseButton: {
-    type: Boolean
+    type: Boolean,
+    default: undefined
   },
 
   ok: {
@@ -202,7 +203,7 @@ const headerProps = computed(() => {
     buttonProps: {
       ...(props.useCloseButton && {
         color: 'grey-10',
-        disable: props.disableCloseButton,
+        disable: props.disableCloseButton ?? props.ok.loading,
         icon: 'sym_r_close',
         variant: 'tertiary',
         'data-cy': 'dialog-close-btn',
@@ -253,7 +254,7 @@ function useOk () {
     }
   })
 
-  const hasOk = computed(() => typeof props.ok === 'boolean' ? props.ok : !!Object.keys(props.ok)?.length)
+  const hasOk = computed(() => typeof props.ok === 'boolean' ? props.ok : !!Object.keys(props.ok))
 
   // functions
   function onOk () {
@@ -286,7 +287,7 @@ function useCancel () {
     }
   })
 
-  const hasCancel = computed(() => typeof props.cancel === 'boolean' ? props.cancel : !!Object.keys(props.cancel)?.length)
+  const hasCancel = computed(() => typeof props.cancel === 'boolean' ? props.cancel : !!Object.keys(props.cancel))
 
   // functions
   function onCancel () {

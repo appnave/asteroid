@@ -5,7 +5,7 @@
       @click="openDialog"
     />
 
-    <qas-dialog v-model="showDialog">
+    <qas-dialog v-model="showDialog" title="Título">
       <template #description>
         <div class="q-mb-md">
           Este é um exemplo de um QasCard dentro de um QasDialog.

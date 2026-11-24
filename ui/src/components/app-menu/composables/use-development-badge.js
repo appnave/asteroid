@@ -7,7 +7,7 @@ export default function useDevelopmentBadge () {
       '.dev.': 'Develop'
     }
 
-    if (process.env.DEV) return hosts.localhost
+    if (import.meta.env.DEV) return hosts.localhost
 
     const current = Object.keys(hosts).find(host => window.location.hostname.includes(host))
 

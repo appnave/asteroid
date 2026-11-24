@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     icon: 'sym_r_room',
     name: 'Por que o Asteroid existe?',
@@ -146,6 +146,10 @@ module.exports = [
         path: '/components/dialog'
       },
       {
+        name: 'DialogFilePreview',
+        path: '/components/dialog-file-preview'
+      },
+      {
         name: 'DialogRouter',
         path: '/components/dialog-router'
       },
@@ -236,6 +240,10 @@ module.exports = [
       {
         name: 'Map',
         path: '/components/map'
+      },
+      {
+        name: 'MapDraw',
+        path: '/components/map-draw'
       },
       {
         name: 'NestedFields',
@@ -380,6 +388,10 @@ module.exports = [
       {
         name: 'Transfer',
         path: '/components/transfer'
+      },
+      {
+        name: 'TransferList',
+        path: '/components/transfer-list'
       },
       {
         name: 'TreeGenerator',

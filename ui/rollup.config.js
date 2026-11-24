@@ -4,7 +4,7 @@ import json from '@rollup/plugin-json'
 import replace from '@rollup/plugin-replace'
 import localResolve from 'rollup-plugin-local-resolve'
 import scss from 'rollup-plugin-scss'
-import { terser } from 'rollup-plugin-terser'
+import terser from '@rollup/plugin-terser'
 import url from '@rollup/plugin-url'
 import vue from 'rollup-plugin-vue'
 
@@ -12,10 +12,11 @@ import postcss from 'postcss'
 import autoprefixer from 'autoprefixer'
 
 // Clean build artifacts
-sync('dist/!(api|vetur)')
+sync('dist/!(api)')
 
 // Setup
-import { name, author, version } from './package.json'
+import pkg from './package.json' with { type: 'json' }
+const { name, author, version } = pkg
 const year = (new Date()).getFullYear()
 
 const banner = `/*!
@@ -35,6 +36,7 @@ const scssOptions = {
 }
 
 const urlOptions = {
+  include: ['**/*.svg', '**/*.png', '**/*.jp?(e)g', '**/*.gif', '**/*.webp', '**/*.mp3'],
   limit: Infinity
 }
 

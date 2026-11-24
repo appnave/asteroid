@@ -233,7 +233,7 @@ asteroid-config-app (asteroid.config.js do projeto host)
 ## Ciclo de Vida do Componente na Aplicação Host
 
 ```
-1. quasar ext add @bildvitta/asteroid
+1. quasar ext add @appnave/asteroid
    └── install.js copia templates (asteroid.config.js, quasar.variables.scss)
 
 2. quasar dev / quasar build

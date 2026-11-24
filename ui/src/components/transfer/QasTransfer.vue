@@ -79,7 +79,6 @@ export default {
     },
 
     label: {
-      default: '',
       required: true,
       type: String
     },

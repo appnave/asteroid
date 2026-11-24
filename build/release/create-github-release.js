@@ -1,6 +1,6 @@
-async function createGithubRelease ({ body, isBeta, version, ora, onSuccess = () => {} }) {
-  const { Octokit } = require('@octokit/rest')
+import { Octokit } from '@octokit/rest'
 
+async function createGithubRelease ({ body, isBeta, version, ora, onSuccess = () => {} }) {
   const octokit = new Octokit({
     auth: process.env.GITHUB_TOKEN
   })
@@ -31,4 +31,4 @@ async function createGithubRelease ({ body, isBeta, version, ora, onSuccess = ()
   }
 }
 
-module.exports = createGithubRelease
+export default createGithubRelease

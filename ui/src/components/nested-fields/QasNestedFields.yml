@@ -34,10 +34,9 @@ props:
           row:
             desc: Valores contendo na linha atual.
             type: Object
-    examples: [
-      "{ label: 'Excluir este item', icon: 'sym_r_delete' }",
-      "({ index, row }) => ({ label: 'Teste', disable: !row.status })"
-    ]
+    examples:
+      - "{ label: 'Excluir este item', icon: 'sym_r_delete' }"
+      - "({ index, row }) => ({ label: 'Teste', disable: !row.status })"
     type: [Object, Function]
 
   button-duplicate-props:
@@ -78,10 +77,9 @@ props:
     desc: Propriedade para repassar propriedades para cada campo individualmente. Ao utilizar uma função de callback, você recebe como parâmetro o "index" e "row" de cada linha do nested.
     default: {}
     type: [Object, Function]
-    examples: [
-      "{ name: { dense: true, onClick: () => alert('Estou sendo clicado') } }",
-      "({ index, row }) => ({ name: { disable: !row.status })"
-    ]
+    examples:
+      - "{ name: { dense: true, onClick: () => alert('Estou sendo clicado') } }"
+      - "({ index, row }) => ({ name: { disable: !row.status })"
 
   form-columns:
     desc: Colunas do grid de cada campo.

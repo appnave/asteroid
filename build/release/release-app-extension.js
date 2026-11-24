@@ -1,6 +1,6 @@
-function releaseAppExtension ({ execaSync, ora, nextVersion, publishCommands, packages }) {
-  const installNextUi = require('./install-next-ui')
+import installNextUi from './install-next-ui.js'
 
+function releaseAppExtension ({ execaSync, ora, nextVersion, publishCommands, packages }) {
   const { error } = installNextUi({ execaSync, ora, nextVersion, packages })
 
   if (error) return { success: false, error: true }
@@ -12,7 +12,7 @@ function releaseAppExtension ({ execaSync, ora, nextVersion, publishCommands, pa
     execaSync('npm', ['cache', 'clean', '--force'])
 
     // publica a nova versão do "app-extension"
-    execaSync('npm', publishCommands, { cwd: packages['app-extension'].resolved })
+    execaSync('npm', publishCommands, { cwd: packages['app-extension'].resolved, stdio: 'inherit' })
     publishAppExtensionSpinner.succeed('"app-extension" publicada com sucesso')
 
     return { success: true, error: false }
@@ -22,4 +22,4 @@ function releaseAppExtension ({ execaSync, ora, nextVersion, publishCommands, pa
   }
 }
 
-module.exports = releaseAppExtension
+export default releaseAppExtension
