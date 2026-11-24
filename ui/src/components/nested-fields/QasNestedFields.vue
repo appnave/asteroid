@@ -35,17 +35,7 @@
         <div v-if="useAdd" :class="addButtonClass">
           <slot :add="add" name="add-input">
             <div v-if="showAddFirstInputButton" class="text-left">
-              <qas-btn class="q-px-sm" color="primary" data-cy="nested-fields-add-btn" :label="addFirstInputLabel" variant="tertiary" @click="add()" />
-            </div>
-
-            <div v-else-if="useInlineActions" class="items-center q-col-gutter-x-md q-mt-md row" :class="inlineActionClasses" data-cy="nested-fields-add-btn" :disable="disable" @click="handleInlineAdd">
-              <div class="col">
-                <qas-input class="disabled no-pointer-events" :disable="disable" hide-bottom-space :label="addInputLabel" @focus="add()" />
-              </div>
-
-              <div class="col-auto">
-                <qas-btn color="primary" :disable="disable" icon="sym_r_add_circle_outline" variant="tertiary" />
-              </div>
+              <qas-btn class="q-px-sm" color="primary" data-cy="nested-fields-add-btn" :disable="disable" :label="addFirstInputLabel" variant="tertiary" @click="add()" />
             </div>
 
             <div v-else class="text-left">
@@ -338,13 +328,6 @@ export default {
 
     isButtonDestroyPropsFunction () {
       return typeof this.buttonDestroyProps === 'function'
-    },
-
-    inlineActionClasses () {
-      return {
-        'cursor-pointer': !this.disable,
-        'cursor-not-allowed': this.disable
-      }
     }
   },
 
@@ -608,12 +591,6 @@ export default {
           }
         })
       }
-    },
-
-    handleInlineAdd () {
-      if (this.disable) return
-
-      this.add()
     }
   }
 }
