@@ -10,7 +10,7 @@
 
       <q-icon v-if="hasIcon" :class="iconClasses" :name="props.icon" />
 
-      <div v-if="showLabel" :class="labelClasses">
+      <div v-if="showLabel" class="qas-btn__label" :class="labelClasses">
         {{ props.label }}
       </div>
 
@@ -22,10 +22,13 @@
     <slot />
 
     <qas-tooltip v-if="hasTooltip" :text="tooltipText" />
+
+    <qas-skeleton v-if="props.skeleton" use-contrast use-overlay />
   </q-btn>
 </template>
 
 <script setup>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 import QasTooltip from '../tooltip/QasTooltip.vue'
 
 import { useScreen } from '../../composables'
@@ -83,6 +86,10 @@ const props = defineProps({
     type: Boolean
   },
 
+  skeleton: {
+    type: Boolean
+  },
+
   variant: {
     default: undefined,
     type: String,
@@ -105,12 +112,17 @@ const props = defineProps({
   useHoverOnWhiteColor: {
     default: true,
     type: Boolean
+  },
+
+  useMagicAiColor: {
+    type: Boolean
   }
 })
 
 // globals
 const injectedDefaults = inject('btnPropsDefaults', {}) // Inject reativo ou não reativo com fallback vazio
 const isInsideBox = inject('isBox', false)
+const isInsideHeader = inject('isHeader', false)
 
 // composables
 const attrs = useAttrs()
@@ -121,9 +133,10 @@ const screen = useScreen()
 /**
  * Seta os valores padrões, dando prioridade:
  *  1. Props
- *  2. Injetado (pode ser reativo ou não reativo)
- *  3. Caso esteja dentro do QasBox, seta o size para 'sm' se for primary ou secondary.
- *  4. Hardcoded (tertiary, md, primary)
+ *  2. Caso esteja dentro do QasHeader, seta o size para 'lg'.
+ *  3. Injetado (pode ser reativo ou não reativo)
+ *  4. Caso esteja dentro do QasBox, seta o size para 'sm' se for primary ou secondary.
+ *  5. Hardcoded (tertiary, lg, primary)
  */
 const btnPropsDefaults = computed(() => {
   const defaultProps = isRef(injectedDefaults) ? injectedDefaults.value : injectedDefaults
@@ -134,7 +147,10 @@ const btnPropsDefaults = computed(() => {
     size: isInsideBox && isSmallVariant ? 'sm' : 'lg',
     variant: 'tertiary',
     color: 'primary',
-    ...defaultProps
+    ...defaultProps,
+
+    // Header tem prioridade sobre o injetado
+    ...(isInsideHeader && { size: 'lg' })
   }
 })
 
@@ -177,6 +193,9 @@ const classes = computed(() => {
       'qas-btn--secondary': isSecondary.value,
       'qas-btn--tertiary': isTertiary.value,
 
+      // skeleton
+      'overflow-hidden': props.skeleton,
+
       // color
       [`qas-btn--tertiary-${defaultColor.value}`]: isTertiary.value,
       [`qas-btn--primary-${defaultColor.value}`]: isPrimary.value,
@@ -193,6 +212,9 @@ const classes = computed(() => {
 
       // loading
       'qas-btn--loading': props.loading,
+
+      // magic ai
+      'qas-btn--magic-ai': props.useMagicAiColor,
 
       // ellipsis
       'full-width': props.useEllipsis

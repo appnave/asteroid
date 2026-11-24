@@ -15,9 +15,8 @@ defineOptions({ name: 'QasDebugger' })
 
 const props = defineProps({
   inspect: {
-    default: () => [],
-    required: true,
-    type: Array
+    type: Array,
+    default: () => []
   }
 })
 </script>

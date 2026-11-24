@@ -1,13 +1,14 @@
-import { format, parseISO, isMatch } from 'date-fns'
+import { format, parseISO, isMatch, isValid } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 // Private
 function __format (value, token, options = {}) {
-  if (!value) {
-    return ''
-  }
+  if (!value) return ''
 
   value = value instanceof Date ? value : parseISO(value)
+
+  if (!isValid(value)) return ''
+
   return format(value, token, { locale: ptBR, ...options })
 }
 
@@ -23,7 +24,7 @@ function _formatNumericValues (value, options = {}) {
 
 // Asset
 function asset (value) {
-  const bucketURL = process.env.BUCKET_URL || location.origin
+  const bucketURL = import.meta.env.BUCKET_URL || location.origin
 
   return value ? `${bucketURL}/${value}` : ''
 }
@@ -88,6 +89,8 @@ function formatCompanyDocument (value) {
 }
 
 function formatDocument (value) {
+  if (!value) return ''
+
   return value.length < 12
     ? formatPersonalDocument(value)
     : formatCompanyDocument(value)
@@ -158,7 +161,7 @@ function parseValue (value) {
   try { return JSON.parse(value) } catch { return value }
 }
 
-function booleanLabel (value, trueLabel = 'sim', falseLabel = 'não') {
+function booleanLabel (value, trueLabel = 'Sim', falseLabel = 'Não') {
   try { return JSON.parse(value) ? trueLabel : falseLabel } catch { return value }
 }
 

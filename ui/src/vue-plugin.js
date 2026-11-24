@@ -1,13 +1,11 @@
 import { getAction, getGetter } from '@bildvitta/store-adapter'
 
 // Plugins
-import {
-  Delete,
-  Dialog,
-  NotifyError,
-  NotifySuccess,
-  Screen
-} from './plugins'
+import Delete from './plugins/delete/Delete.js'
+import Dialog from './plugins/dialog/Dialog.js'
+import NotifyError from './plugins/notify-error/NotifyError.js'
+import NotifySuccess from './plugins/notify-success/NotifySuccess.js'
+import Screen from './plugins/screen/Screen.js'
 
 import packageInfo from '../package.json'
 

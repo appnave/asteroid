@@ -6,4 +6,4 @@ function getVersionLinkCompare ({ nextVersion, latestVersions, isBeta }) {
   )
 }
 
-module.exports = getVersionLinkCompare
+export default getVersionLinkCompare

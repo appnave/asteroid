@@ -13,7 +13,8 @@
 export const StatusColor = {
   Info: 'primary',
   Error: 'negative',
-  Success: 'positive'
+  Success: 'positive',
+  Warning: 'orange-8'
 }
 
 /**
@@ -31,5 +32,6 @@ export const StatusColor = {
 export const Status = {
   Info: 'info',
   Error: 'error',
-  Success: 'success'
+  Success: 'success',
+  Warning: 'warning'
 }

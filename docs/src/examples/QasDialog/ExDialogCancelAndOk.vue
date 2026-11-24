@@ -1,6 +1,6 @@
 <template>
   <div class="container q-py-lg">
-    <qas-btn @click="toggle">Abrir Dialog</qas-btn>
+    <qas-btn label="Abrir Dialog" @click="toggle" />
 
     <qas-dialog v-model="isDialogOpened" v-bind="dialogProps">
       <template #description>
@@ -10,63 +10,53 @@
   </div>
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      isDialogOpened: false,
-      isLoading: false,
-      description: ''
-    }
+<script setup>
+import { ref, computed, inject } from 'vue'
+
+defineOptions({ name: 'ExDialogCancelAndOk' })
+
+// composables
+const qas = inject('qas')
+
+// refs
+const isDialogOpened = ref(false)
+const isLoading = ref(false)
+const description = ref('')
+
+// computed
+const dialogProps = computed(() => ({
+  useForm: true,
+  title: 'Título do dialog',
+  ok: {
+    label: 'Fechar',
+    loading: isLoading.value
   },
+  onCancel,
+  onOk
+}))
 
-  computed: {
-    dialogProps () {
-      return {
-        useForm: true,
+const field = {
+  name: 'description',
+  type: 'text',
+  label: 'Descrição'
+}
 
-        card: {
-          title: 'Título do dialog'
-        },
+// functions
+function toggle () {
+  isDialogOpened.value = !isDialogOpened.value
+}
 
-        ok: {
-          label: 'Fechar',
-          loading: this.isLoading
-        },
+function onCancel () {
+  isDialogOpened.value = false
+  qas.error('Evento cancel finalizado.')
+}
 
-        onCancel: this.onCancel,
-        onOk: this.onOk
-      }
-    },
+function onOk () {
+  isLoading.value = true
 
-    field () {
-      return {
-        name: 'description',
-        type: 'text',
-        label: 'Descrição'
-      }
-    }
-  },
-
-  methods: {
-    toggle () {
-      this.isDialogOpened = !this.isDialogOpened
-    },
-
-    onCancel () {
-      this.isDialogOpened = false
-      this.$qas.error('Evento cancel finalizado.')
-    },
-
-    onOk () {
-      this.isLoading = true
-
-      setTimeout(() => {
-        this.isLoading = false
-        this.isDialogOpened = false
-        this.$qas.success('Evento ok finalizado.')
-      }, 2000)
-    }
-  }
+  setTimeout(() => {
+    isLoading.value = false
+    isDialogOpened.value = false
+  }, 2000)
 }
 </script>

@@ -76,7 +76,8 @@ import useNotifications from '../../composables/use-notifications'
 import useQueryCache from '../../composables/use-query-cache'
 import useScreen from '../../composables/use-screen'
 
-import { NotifySuccess, NotifyError } from '../../plugins'
+import NotifySuccess from '../../plugins/notify-success/NotifySuccess.js'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
 
 import { ref, computed, watch, inject } from 'vue'
 import { useRouter } from 'vue-router'
@@ -105,9 +106,8 @@ const props = defineProps({
   },
 
   user: {
-    default: () => ({}),
-    required: true,
-    type: Object
+    type: Object,
+    default: () => ({})
   },
 
   useDataOnSmallScreen: {
@@ -137,7 +137,7 @@ const companiesModel = ref('')
 const loading = ref(false)
 
 // consts
-const IS_ME_VERSION_2 = process.env.ME_VERSION === 2
+const IS_ME_VERSION_2 = Number(import.meta.env.ME_VERSION) === 2
 
 // computeds
 const defaultCompanyProps = computed(() => {
@@ -176,9 +176,11 @@ async function setCompanies (value) {
   loading.value = true
 
   try {
-    await axios.patch('users/me', {
+    const response = await axios.patch('users/me', {
       [IS_ME_VERSION_2 ? 'currentMainCompany' : 'companies']: value
     })
+
+    window.postMessage({ type: 'setUser', user: response.data.result })
 
     setTimeout(() => location.reload(), 1500)
 
@@ -226,6 +228,7 @@ function useAvatarNotifications () {
     const classes = [
       'qas-app-user__notification-avatar',
       'animated',
+      'absolute',
       {
         rubberBand: hasAnimated.value
       }

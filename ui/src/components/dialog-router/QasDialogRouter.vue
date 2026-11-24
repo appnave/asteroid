@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { NotifyError } from '../../plugins'
+import NotifyError from '../../plugins/notify-error/NotifyError.js'
 
 import { Loading, extend } from 'quasar'
 import { ref, markRaw } from 'vue'

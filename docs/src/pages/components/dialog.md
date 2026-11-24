@@ -7,15 +7,38 @@ Componente de dialog.
 <doc-api file="dialog/QasDialog" name="QasDialog" />
 
 :::info
-Recomendamos a utilização do evento `@ok|onOk` e `@cancel|onCancel` ao invés de utilizar diretamente o `onClick` na prop `ok` e `cancel`.
+##### Tamanhos
+A prop "size" altera os tamanhos do dialog.
+
+- sm: -> 450px (default)
+- md: -> 550px
+- lg: -> 800px
+- xl: -> 1100px
+:::
+
+:::info
+##### Boas práticas
+**Fechamento automático dos botões:**
+- Por padrão, os botões de ação fecham o dialog automaticamente
+- Se precisar desabilitar esse comportamento, use `useAutoCloseOnActions: false`
+- ⚠️ **Evite usar** `useForm: true` só para isso - essa prop adiciona um `QForm` ao redor do conteúdo e deve ser usada apenas quando houver validação de formulário
+
+**Modo persistent:**
+- O dialog se torna persistent (não fecha ao clicar fora) automaticamente quando há botões de ação
+- Isso evita que o usuário feche o dialog acidentalmente durante uma ação importante
+
+**Botão de fechar (X):**
+- Use `useCloseButton` apenas em casos específicos e alinhados com o time de design
 :::
 
 ## Uso
 
 <doc-example file="QasDialog/Basic" title="Básico" />
+<doc-example file="QasDialog/DialogWithTertiary" title="Com botão terciário" />
+<doc-example file="QasDialog/DialogWithHtmlDescription" title="Com HTML na descrição" />
+<doc-example file="QasDialog/DialogInfoOnly" title="Sem ações" />
 <doc-example file="QasDialog/ExDialogCancelAndOk" title="Eventos Ok e Cancel" />
 <doc-example file="QasDialog/ExDialogForm" title="Com formulário" />
-<doc-example file="QasDialog/ExWithActions" title="Com ações" />
 <doc-example file="QasDialog/ExWithSingleAction" title="Com uma única ação" />
 
 É possível passar um componente para a descrição, caso precise que a descrição seja diferente do padrão.

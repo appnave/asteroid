@@ -4,7 +4,13 @@ export * from './helpers'
 export * from './mixins'
 export * from './vue-plugin'
 export * from './composables'
-export * from './plugins'
+
+// plugins
+export { default as Delete } from './plugins/delete/Delete.js'
+export { default as Dialog } from './plugins/dialog/Dialog.js'
+export { default as NotifyError } from './plugins/notify-error/NotifyError.js'
+export { default as NotifySuccess } from './plugins/notify-success/NotifySuccess.js'
+export { default as Screen } from './plugins/screen/Screen.js'
 
 // components
 export const QasActions = defineAsyncComponent(() => import('./components/actions/QasActions.vue'))
@@ -31,6 +37,7 @@ export const QasDebugger = defineAsyncComponent(() => import('./components/debug
 export const QasDelete = defineAsyncComponent(() => import('./components/delete/QasDelete.vue'))
 export const QasSelectFilter = defineAsyncComponent(() => import('./components/select-filter/QasSelectFilter.vue'))
 export const QasDialog = defineAsyncComponent(() => import('./components/dialog/QasDialog.vue'))
+export const QasDialogFilePreview = defineAsyncComponent(() => import('./components/dialog-file-preview/QasDialogFilePreview.vue'))
 export const QasDialogRouter = defineAsyncComponent(() => import('./components/dialog-router/QasDialogRouter.vue'))
 export const QasDrawer = defineAsyncComponent(() => import('./components/drawer/QasDrawer.vue'))
 export const QasEmptyResultText = defineAsyncComponent(() => import('./components/empty-result-text/QasEmptyResultText.vue'))
@@ -72,6 +79,7 @@ export const QasSignaturePad = defineAsyncComponent(() => import('./components/s
 export const QasSignatureUploader = defineAsyncComponent(() => import('./components/signature-uploader/QasSignatureUploader.vue'))
 export const QasSingleView = defineAsyncComponent(() => import('./components/single-view/QasSingleView.vue'))
 export const QasSortable = defineAsyncComponent(() => import('./components/sortable/QasSortable.vue'))
+export const QasSkeleton = defineAsyncComponent(() => import('./components/skeleton/QasSkeleton.vue'))
 export const QasStatus = defineAsyncComponent(() => import('./components/status/QasStatus.vue'))
 export const QasStepper = defineAsyncComponent(() => import('./components/stepper/QasStepper.vue'))
 export const QasStepperFormView = defineAsyncComponent(() => import('./components/stepper-form-view/QasStepperFormView.vue'))
@@ -84,10 +92,12 @@ export const QasToggle = defineAsyncComponent(() => import('./components/toggle/
 export const QasToggleVisibility = defineAsyncComponent(() => import('./components/toggle-visibility/QasToggleVisibility.vue'))
 export const QasTooltip = defineAsyncComponent(() => import('./components/tooltip/QasTooltip.vue'))
 export const QasTransfer = defineAsyncComponent(() => import('./components/transfer/QasTransfer.vue'))
+export const QasTransferList = defineAsyncComponent(() => import('./components/transfer-list/QasTransferList.vue'))
 export const QasTreeGenerator = defineAsyncComponent(() => import('./components/tree-generator/QasTreeGenerator.vue'))
 export const QasUploader = defineAsyncComponent(() => import('./components/uploader/QasUploader.vue'))
 export const QasWelcome = defineAsyncComponent(() => import('./components/welcome/QasWelcome.vue'))
 export const QasWhatsappLink = defineAsyncComponent(() => import('./components/whatsapp-link/QasWhatsappLink.vue'))
 export const QasReportsFilters = defineAsyncComponent(() => import('./components/reports-filters/QasReportsFilters.vue'))
 export const QasMap = defineAsyncComponent(() => import('./components/map/QasMap.vue'))
+export const QasMapDraw = defineAsyncComponent(() => import('./components/map-draw/QasMapDraw.vue'))
 export const QasChartView = defineAsyncComponent(() => import('./components/chart-view/QasChartView.vue'))

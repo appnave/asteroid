@@ -5,15 +5,13 @@
 </template>
 
 <script>
-import DescriptionComponent from './DescriptionComponent'
+import DescriptionComponent from './DescriptionComponent.vue'
 
 export default {
   computed: {
     dialogConfig () {
       return {
-        card: {
-          description: DescriptionComponent
-        }
+        description: DescriptionComponent
       }
     }
   }

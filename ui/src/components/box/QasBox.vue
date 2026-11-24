@@ -1,14 +1,20 @@
 <template>
-  <div class="bg-white rounded-borders" :class="boxClasses">
-    <slot />
+  <div class="bg-white qas-box rounded-borders" :class="boxClasses">
+    <div ref="content" class="relative-position">
+      <slot />
+
+      <qas-skeleton v-if="props.skeleton" use-overlay />
+    </div>
   </div>
 </template>
 
 <script setup>
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
+
 import { Spacing } from '../../enums/Spacing'
 import { useOverlayNavigation } from '../../composables'
 
-import { computed, provide } from 'vue'
+import { computed, provide, ref } from 'vue'
 
 defineOptions({ name: 'QasBox' })
 
@@ -21,6 +27,10 @@ const props = defineProps({
   unelevated: {
     type: Boolean,
     default: undefined
+  },
+
+  skeleton: {
+    type: Boolean
   },
 
   spacingX: {
@@ -46,6 +56,9 @@ provide('isBox', true)
 
 // composables
 const { isOverlay } = useOverlayNavigation()
+
+// template refs
+const content = ref(null)
 
 // computed
 const defaultOutlined = computed(() => props.outlined ?? isOverlay)

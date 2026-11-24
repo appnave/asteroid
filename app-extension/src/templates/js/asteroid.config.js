@@ -35,10 +35,15 @@ export default {
      * - Toast de notificação em real time;
      * - Ícone de notificação no menu em real time.
      *
-     * @type {{ useNotifications: boolean }}
+     * O "useProcessEvents" controla a escuta do evento "process.finished" (fim de processos
+     * assíncronos) no mesmo canal das notificações, disponibilizando o "useProcessListener".
+     * Depende do "useNotifications" estar ativado.
+     *
+     * @type {{ useNotifications: boolean, useProcessEvents: boolean }}
      */
     featureToggle: {
-      useNotifications: false
+      useNotifications: false,
+      useProcessEvents: false
     }
   }
 }

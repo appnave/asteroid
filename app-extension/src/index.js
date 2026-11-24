@@ -1,10 +1,9 @@
 import asteroidConfigHandler from './helpers/asteroid-config-handler.js'
 
 import ComponentsVite from 'unplugin-vue-components/vite'
-import ComponentsWebpack from 'unplugin-vue-components/webpack'
 import { pathToFileURL } from 'url'
 
-const sourcePath = '~@bildvitta/quasar-app-extension-asteroid/src/'
+const sourcePath = '~@appnave/quasar-app-extension-asteroid/src/'
 const resolve = (...paths) => paths.map(path => sourcePath + path)
 
 function extendQuasar (quasar, api, asteroidConfigFile) {
@@ -28,19 +27,6 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
     quasar.boot.push(...resolve('boot/notifications'))
   }
 
-  // Transpilação de arquivos!
-  if (api.hasWebpack) {
-    const transpileTarget = (
-      quasar.build.webpackTranspileDependencies || // q/app-webpack >= v4
-      quasar.build.transpileDependencies // q/app-webpack v3
-    )
-
-    transpileTarget.push(
-      /quasar-app-extension-asteroid[\\/]src/,
-      /@bildvitta[\\/]quasar-ui-asteroid[\\/]src/
-    )
-  }
-
   // Adiciona todas classes do asteroid
   quasar.css.push(...resolve('index.scss'))
 
@@ -57,7 +43,8 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
   // https://animate.style/
   const animations = [
     'slideInDown',
-    'rubberBand'
+    'rubberBand',
+    'fadeIn'
   ]
 
   animations.forEach(animation => quasar.animations.push(animation))
@@ -73,11 +60,11 @@ function extendQuasar (quasar, api, asteroidConfigFile) {
 
 export default async function (api) {
   api.compatibleWith('quasar', '^2.0.0')
-  api.compatibleWith('date-fns', '^2.3.0')
+  api.compatibleWith('date-fns', '^4.1.0')
 
-  const asteroid = 'node_modules/@bildvitta/quasar-ui-asteroid/src/asteroid.js'
-  const asteroidComponents = 'node_modules/@bildvitta/quasar-ui-asteroid/src/components'
-  const asteroidConfig = 'node_modules/@bildvitta/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
+  const asteroid = 'node_modules/@appnave/quasar-ui-asteroid/src/asteroid.js'
+  const asteroidComponents = 'node_modules/@appnave/quasar-ui-asteroid/src/components'
+  const asteroidConfig = 'node_modules/@appnave/quasar-app-extension-asteroid/src/defaults/default-asteroid-config.js'
   const vueRouter = 'node_modules/vue-router/dist/vue-router.esm-bundler.js'
   const quasar = 'node_modules/quasar'
 
@@ -90,10 +77,11 @@ export default async function (api) {
   const { default: asteroidConfigFile } = await import(pathToFileURL(asteroidConfigPath).href)
 
   const unpluginVueComponentsConfig = {
-    dirs: [api.resolve.app(asteroidComponents)], // ajusta o path para a lib
+    dirs: [api.resolve.app(asteroidComponents)],
     extensions: ['vue'],
     deep: true,
-    dts: false // desativa geração de types
+    dts: false,
+    include: [/\.vue$/, /\.vue\?vue/]
   }
 
   const alias = {
@@ -101,47 +89,41 @@ export default async function (api) {
     'asteroid-config-app': asteroidConfigPath,
     'vue-router': api.resolve.app(vueRouter),
     asteroid: api.resolve.app(asteroid),
-    quasar: api.resolve.app(quasar)
+    quasar: api.resolve.app(quasar),
+    'images/layers.png': api.resolve.app('node_modules/leaflet/dist/images/layers.png'),
+    'images/layers-2x.png': api.resolve.app('node_modules/leaflet/dist/images/layers-2x.png'),
+    'images/marker-icon.png': api.resolve.app('node_modules/leaflet/dist/images/marker-icon.png')
   }
 
-  if (api.hasVite) {
-    api.compatibleWith('@quasar/app-vite', '^2.0.0')
+  api.compatibleWith('@quasar/app-vite', '^3.2.0')
 
-    api.extendViteConf(viteConf => {
-      Object.assign(viteConf.resolve.alias, alias)
+  api.extendViteConf(viteConf => {
+    Object.assign(viteConf.resolve.alias, alias)
 
-      // optimizeDeps (necessário para funcionamento do QasMap)
-      viteConf.optimizeDeps = viteConf.optimizeDeps || {}
-      viteConf.optimizeDeps.include = viteConf.optimizeDeps.include || []
-      viteConf.optimizeDeps.include.push(...[
-        '@fawmi/vue-google-maps',
-        'fast-deep-equal',
-        'humps',
-        'debug',
-        'pica',
-        'hammerjs',
-        'lodash-es',
-        'date-fns',
-        'date-fns/locale'
-      ])
+    // optimizeDeps (necessário para funcionamento do QasMap)
+    viteConf.optimizeDeps = viteConf.optimizeDeps || {}
+    viteConf.optimizeDeps.include = viteConf.optimizeDeps.include || []
+    viteConf.optimizeDeps.include.push(...[
+      '@fawmi/vue-google-maps',
+      'fast-deep-equal',
+      'humps',
+      'debug',
+      'pica',
+      'hammerjs',
+      'lodash-es',
+      'date-fns',
+      'date-fns/locale',
+      'leaflet',
+      'fontfaceobserver',
+      'autonumeric',
 
-      viteConf.plugins = viteConf.plugins || []
-      viteConf.plugins.push(ComponentsVite(unpluginVueComponentsConfig))
-    })
+      // necessário para o boot de notificações (evita "Pusher is not a constructor" em dev)
+      'pusher-js',
+      'laravel-echo'
+    ])
 
-    api.extendQuasarConf(quasar => extendQuasar(quasar, api, asteroidConfigFile))
-
-    return
-  }
-
-  api.compatibleWith('@quasar/app', '^3.10.0 || ^4.0.0')
-
-  api.extendWebpack(webpack => {
-    Object.assign(webpack.resolve.alias, alias)
-
-    // Adiciona o plugin de componentes
-    webpack.plugins = webpack.plugins || []
-    webpack.plugins.push(ComponentsWebpack(unpluginVueComponentsConfig))
+    viteConf.plugins = viteConf.plugins || []
+    viteConf.plugins.push(ComponentsVite(unpluginVueComponentsConfig))
   })
 
   api.extendQuasarConf(quasar => extendQuasar(quasar, api, asteroidConfigFile))

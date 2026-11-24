@@ -52,6 +52,11 @@ props:
     default: false
     type: Boolean
 
+  tip:
+    desc: Texto exibido no tip ao lado da label.
+    default: ''
+    type: String
+
   use-remove-error-on-type:
     desc: Limpa os erros do campo caso os mesmos existam toda vez que o model atualiza.
     type: Boolean

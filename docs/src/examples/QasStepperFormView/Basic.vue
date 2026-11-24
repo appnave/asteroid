@@ -7,7 +7,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import FirstStep from './FirstStep.vue'
-import SecondStep from './SecondStep'
+import SecondStep from './SecondStep.vue'
 
 defineOptions({ name: 'Basic' })
 

@@ -24,6 +24,11 @@ props:
     desc: Rota raiz do breadcrumbs.
     type: [Object, String]
 
+  skeleton:
+    desc: Exibe um esqueleto de carregamento no lugar do conteúdo.
+    default: false
+    type: Boolean
+
   use-breadcrumbs:
     desc: Habilita ou não o breadcrumbs.
     default: true

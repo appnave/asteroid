@@ -1,5 +1,5 @@
 <template>
-  <qas-btn :href="whatsappLink" :icon="fabWhatsapp" target="_blank" />
+  <qas-btn :href="whatsappLink" :icon="fabWhatsapp" target="_blank" tooltip="Enviar mensagem" />
 </template>
 
 <script setup>

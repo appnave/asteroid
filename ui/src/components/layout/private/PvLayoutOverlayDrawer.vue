@@ -17,7 +17,9 @@
     </template>
 
     <template #default>
-      <router-view name="overlay" />
+      <div class="pv-layout-overlay-drawer__content">
+        <router-view name="overlay" />
+      </div>
     </template>
   </qas-drawer>
 </template>
@@ -60,8 +62,8 @@ const isForwardButtonDisabled = computed(() => !hasNextRoute.value || isDisabled
 const drawerProps = computed(() => {
   return {
     position: 'right',
-    maxWidth: '90%',
     dialogProps: {
+      class: 'pv-layout-overlay-drawer',
       onHide: closeOverlay,
       noRouteDismiss: true,
       persistent: isDisabled.value

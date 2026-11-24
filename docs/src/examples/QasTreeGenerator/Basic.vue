@@ -1,7 +1,7 @@
 <template>
   <div class="container spaced">
     <div>
-      <qas-tree-generator v-model:lazyNodes="lazyNodes" :nodes="nodes" resource="endpoint-da-api" />
+      <qas-tree-generator v-model:lazy-nodes="lazyNodes" :nodes="nodes" resource="endpoint-da-api" />
     </div>
 
     <div class="q-my-lg">

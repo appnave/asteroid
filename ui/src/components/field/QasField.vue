@@ -22,7 +22,6 @@ const props = defineProps({
 
   field: {
     type: Object,
-    required: true,
     default: () => ({})
   },
 
@@ -165,7 +164,7 @@ const qasRadio = computed(() => {
 
   return {
     is: QasRadio,
-    props: { label, options }
+    props: { label, options, ...errorPayload.value }
   }
 })
 

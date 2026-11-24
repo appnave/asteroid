@@ -11,7 +11,7 @@ Model do componente, controla quando o menu lateral é aberto e fechado.
 
 Use a propriedade `useChat` para controlar se o componente vai ter ou não o chat, se tiver, precisa seguir:
 
-- Adicione a env `GLEAP` no `quasar.config.js`;
+- Adicione a env `GLEAP` no `quasar.config.js` (consumida no código via `import.meta.env.GLEAP`);
 - É necessário ter as informações de usuário no local storage na chave `user`, e os dados de usuário sendo atualizado pelo postMessage `type === 'updateUser'`, as informações que devem contem em user:
   - uuid
   - name
