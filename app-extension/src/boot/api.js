@@ -3,30 +3,14 @@ import { handleProcess } from 'asteroid'
 
 import asteroidConfig from 'asteroid-config'
 
-function getBaseURL (isProduction) {
-  // Permite sobrescrever a URL base da API via query string, útil para ambiente de preview.
-  const previewURL = new URLSearchParams(window.location.search).get('$base')
-
-  // TODO: Validar variavel de ambiente se é produção.
-  if (previewURL && !isProduction) {
-    try {
-      const { hostname, protocol } = new URL(previewURL)
-
-      // Somente permite URLs seguras (https) e do domínio nave.dev.br para evitar possíveis ataques de SSRF.
-      if (protocol === 'https:' && hostname.endsWith('.nave.dev.br')) return previewURL
-    } catch {}
-  }
-
-  // Caso não haja uma URL de preview válida, utiliza a URL base definida nas variáveis de ambiente ou locahost.
-  return handleProcess(() => import.meta.env.SERVER_BASE_URL, '/')
-}
+import { getBaseURL } from '../helpers/get-base-url.js'
 
 export default async ({ app, router }) => {
   const api = app.config.globalProperties.$axios
   const isProduction = handleProcess(() => import.meta.env.ENVIRONMENT === 'production', false)
 
   // Defaults
-  api.defaults.baseURL = getBaseURL(isProduction)
+  api.defaults.baseURL = getBaseURL()
 
   if (!isProduction) {
     /**

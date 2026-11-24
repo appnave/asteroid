@@ -18,9 +18,32 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### BREAKING CHANGES
 - `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next`. Agora a rota de redirecionamento é retornada, então quem chama a função dentro de outro guard deve retornar o resultado.
 
+### Adicionado
+- `QasTransferList`: Adicionado novo componente visual para exibir itens entre duas colunas (origem e destino).
+- `QasActionsMenu`: Adicionado suporte às chaves `tooltip` e `disabledTooltip` nos itens do dropdown da prop `list`, seguindo o mesmo comportamento do `QasBtn` (antes só funcionava quando o item era renderizado como botão).
+
 ### Corrigido
 - Corrigidos avisos de depreciação do `vue-router` no console.
+
+## [4.0.0-beta.2] - 13-11-2026
+### Adicionado
+- `useProcessListener`: adicionado composable para escutar o evento `process.finished` (fim de processos assíncronos) via websocket, filtrando por `identifiers` (ou `match`) e disparando `onSuccess`/`onError`. Quando a conexão é restabelecida ou o usuário volta para a aba, chama o `onSync` caso exista processo em andamento (`isWaiting`).
+- `useNotifications`: adicionado hook `onProcessFinished` (removido automaticamente ao desmontar o componente), estado `realtimeConnectionState` com o estado da conexão websocket repassado pela aba líder e a constante `isProcessEventsEnabled`.
+- `asteroid.config.js`: adicionada feature toggle `framework.featureToggle.useProcessEvents` para habilitar a escuta do evento `process.finished` no mesmo canal das notificações (depende do `useNotifications`).
+- `boot/notifications`: adicionado repasse do evento `process.finished` e do estado da conexão para todas as abas através do BroadcastChannel `notifications--process`.
+
+### Corrigido
+- `boot/notifications`: corrigido registro duplicado dos listeners quando o `updateUser` é disparado mais de uma vez para o mesmo usuário na sessão.
+- `app-extension`: adicionado `pusher-js` e `laravel-echo` no `optimizeDeps` do Vite, evitando o erro "Pusher is not a constructor" em desenvolvimento.
 - `build/release`: Corrigido erro ao ler as variáveis de ambiente após publicar uma versão beta ou stable.
+
+### Modificado
+- `boot/api`: a lógica de URL base foi extraída para o helper `get-base-url.js`, que guarda a URL resolvida na primeira chamada para que axios e Laravel Echo utilizem sempre a mesma URL.
+- `laravel-echo`: o Laravel Echo passa a utilizar a mesma URL base do axios, respeitando o `$base` da query string em ambiente de preview.
+
+### Removido
+- Removido suporte ao Vetur, que já não era utilizado. A extensão recomendada passa a ser a Vue - Official (Volar), oficial para o Vue 3.
+- `docs`: Removida dependência `@bildvitta/vuex-offline`, que não era utilizada.
 
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
@@ -41,3 +64,4 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - Removido suporte ao webpack; a documentação e o fluxo de desenvolvimento passam a considerar apenas Vite.
 [4.0.0-beta.0]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.0-alpha.0...v4.0.0-beta.0?expand=1
 [4.0.0-beta.1]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.1-alpha.5...v4.0.0-beta.1?expand=1
+[4.0.0-beta.2]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.2-alpha.3...v4.0.0-beta.2?expand=1

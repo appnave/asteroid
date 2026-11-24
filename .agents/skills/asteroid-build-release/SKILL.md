@@ -8,7 +8,6 @@ Scripts para build, publicação NPM e criação de releases do Asteroid.
 build/
 ├── build.js                         # CLI interativa de release (principal)
 ├── api.js                           # Gera JSONs de API a partir dos YMLs
-├── vetur.js                         # Gera arquivos de autocomplete Vetur
 └── release/
     ├── changelog-handler.js         # Parse e update do CHANGELOG.md
     ├── create-github-release.js     # Cria release no GitHub via API
@@ -96,15 +95,6 @@ ui/src/components/btn/QasBtn.yml → ui/dist/api/QasBtn.json
 ```
 
 Usado pela documentação e pelo ESLint plugin para validação de props.
-
-## Build Vetur (`vetur.js`)
-
-Gera arquivos de autocomplete para o Vetur (extensão VS Code):
-
-1. Escaneia todos `.yml` em `ui/src/components/`
-2. Gera `ui/dist/vetur/asteroid-tags.json` — mapa componente → atributos + descrição
-3. Gera `ui/dist/vetur/asteroid-attributes.json` — mapa `componente/prop` → tipo + descrição
-4. Nomes convertidos para kebab-case
 
 ## CHANGELOG.md
 

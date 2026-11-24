@@ -73,10 +73,6 @@
   "browserslist": [
     "defaults"
   ],
-  "vetur": {
-    "tags": "dist/vetur/asteroid-tags.json",
-    "attributes": "dist/vetur/asteroid-attributes.json"
-  },
   "findUnusedExports": {
     "include": [
       "./src/**/*.vue",
