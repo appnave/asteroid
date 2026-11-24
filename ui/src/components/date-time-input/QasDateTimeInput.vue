@@ -165,6 +165,12 @@ const hasDatePicker = computed(() => !props.useTimeOnly && !props.readonly)
 const hasTimePicker = computed(() => !props.useDateOnly && !props.readonly)
 
 watch(() => props.modelValue, (current, original) => {
+  /**
+   * No caso de ser adicionado uma data incompleta ou inválida, vamos limpar o model,
+   * mas não vamos limpar o "currentValue", para não limpar o campo, somente o model.
+   */
+  if (!current && original && error.value) return
+
   if (!current || props.useTimeOnly) {
     currentValue.value = current
     return
@@ -217,6 +223,9 @@ function updateModelValue (value) {
   if (error.value) {
     hasInvalidDate.value = true
     errorMessage.value = 'Data inválida.'
+
+    emit('update:modelValue', '')
+
     return
   }
 
@@ -262,18 +271,33 @@ function validateDateAndTime (value) {
 function validateDateTimeOnBlur () {
   const valueLength = currentValue.value?.replace?.(/_/g, '')?.length
 
+  // Caso for datetime
+  if (!props.useDateOnly && !props.useTimeOnly) {
+    const [date, time] = (currentValue.value || '').split(' ') || []
+    const isValidDate = date?.replace?.(/_/g, '')?.length === props.dateMask.length
+
+    /**
+     * Caso tenha preenchido a data, a data seja válida e não tenha preenchido o horário,
+     * preenche o horário com 00:00, ou de acordo com a mask.
+     */
+    if (isValidDate && !validateDateOnly(date) && !time?.length) {
+      // Horario setado deve seguir a mascara.
+      const defaultTimeByMask = props.timeMask.replace(/[HhMmSs]/g, '0')
+      const newValue = `${date} ${defaultTimeByMask}`
+
+      currentValue.value = newValue
+      updateModelValue(newValue)
+
+      return
+    }
+  }
+
   // valida se o tamanho digitado é o tamanho que a mascara espera receber
   error.value = !!((valueLength < mask.value.length || error.value) && valueLength)
 
   if (error.value && !hasInvalidDate.value) {
     errorMessage.value = 'Data incompleta.'
-  }
 
-  if (hasInvalidDate.value) {
-    currentValue.value = ''
-  }
-
-  if (error.value || hasInvalidDate.value) {
     emit('update:modelValue', '')
   }
 }

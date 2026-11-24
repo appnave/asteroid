@@ -1,19 +1,30 @@
-import { format, parseISO, isMatch } from 'date-fns'
+import { format, parseISO, isMatch, isValid } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 
 // Private
 function __format (value, token, options = {}) {
-  if (!value) {
+  if (!value) return ''
+
+  value = value instanceof Date ? value : parseISO(value)
+
+  if (!isValid(value)) return ''
+
+  return format(value, token, { locale: ptBR, ...options })
+}
+
+function _formatNumericValues (value, options = {}) {
+  const numericValue = Number(value)
+
+  if (value === null || value === undefined || isNaN(numericValue)) {
     return ''
   }
 
-  value = value instanceof Date ? value : parseISO(value)
-  return format(value, token, { locale: ptBR, ...options })
+  return numericValue.toLocaleString('pt-BR', options)
 }
 
 // Asset
 function asset (value) {
-  const bucketURL = process.env.BUCKET_URL || location.origin
+  const bucketURL = import.meta.env.BUCKET_URL || location.origin
 
   return value ? `${bucketURL}/${value}` : ''
 }
@@ -42,8 +53,7 @@ function decimal (value = 0) {
 }
 
 function money (value = 0, options = { style: 'currency', currency: 'BRL' }) {
-  value = Number(value)
-  return isNaN(value) ? '' : value.toLocaleString('pt-BR', options)
+  return _formatNumericValues(value, options)
 }
 
 function percent (value = 0, places = 2) {
@@ -57,8 +67,7 @@ function squareArea (value = 0, suffix = 'm²') {
 }
 
 function formatPercent (value = 0, places = 2) {
-  value = Number(value)
-  return value ? value.toLocaleString('pt-BR', { style: 'percent', minimumFractionDigits: places }) : ''
+  return _formatNumericValues(value, { style: 'percent', minimumFractionDigits: places })
 }
 
 /**
@@ -80,6 +89,8 @@ function formatCompanyDocument (value) {
 }
 
 function formatDocument (value) {
+  if (!value) return ''
+
   return value.length < 12
     ? formatPersonalDocument(value)
     : formatCompanyDocument(value)
@@ -150,7 +161,7 @@ function parseValue (value) {
   try { return JSON.parse(value) } catch { return value }
 }
 
-function booleanLabel (value, trueLabel = 'sim', falseLabel = 'não') {
+function booleanLabel (value, trueLabel = 'Sim', falseLabel = 'Não') {
   try { return JSON.parse(value) ? trueLabel : falseLabel } catch { return value }
 }
 

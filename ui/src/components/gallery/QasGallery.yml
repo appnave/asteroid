@@ -1,7 +1,7 @@
 type: component
 
 mixins:
-  - '@bildvitta/quasar-ui-asteroid/dist/api/QasBox.json'
+  - '@appnave/quasar-ui-asteroid/dist/api/QasBox.json'
 
 meta:
   desc: Componente para galeria, mostrando images dentro de um "QasDialog" ao clicar nelas.

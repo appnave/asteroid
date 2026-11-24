@@ -1,9 +1,0 @@
-# Config Files
-**/*rc.js
-**/*.conf.js
-**/*.config.js
-
-# Temporary Dirs
-/docs/dist
-/ui/dev
-/ui/dist

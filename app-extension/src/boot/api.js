@@ -1,12 +1,49 @@
 import { camelizeKeys, decamelizeKeys } from 'humps'
+import { handleProcess } from 'asteroid'
 
 import asteroidConfig from 'asteroid-config'
 
-export default async ({ app }) => {
+import { getBaseURL } from '../helpers/get-base-url.js'
+
+export default async ({ app, router }) => {
   const api = app.config.globalProperties.$axios
+  const isProduction = handleProcess(() => import.meta.env.ENVIRONMENT === 'production', false)
 
   // Defaults
-  api.defaults.baseURL = process.env.SERVER_BASE_URL || '/'
+  api.defaults.baseURL = getBaseURL()
+
+  if (!isProduction) {
+    /**
+     * Permite que parâmetros de query string iniciados com $ sejam propagados para todas as rotas,
+     * útil para ambiente de preview.
+     */
+    router.beforeEach((to, from) => {
+      // Extrai os parâmetros de query string iniciados com $ da rota de origem (from).
+      const dollarParams = Object.fromEntries(Object.entries(from.query).filter(([key]) => key.startsWith('$')))
+
+      /**
+       * Valida se há algum parâmetro de query string iniciado com $ que esteja presente
+       * na rota de origem (from) mas ausente na rota de destino (to).
+       */
+      const hasMissingDollarParams = Object.keys(dollarParams).some(key => !(key in to.query))
+
+      if (hasMissingDollarParams) {
+        return { ...to, query: { ...dollarParams, ...to.query } }
+      }
+    })
+
+    api.interceptors.request.use(config => {
+      if (!config.params) return config
+
+      /**
+        * Remove os parâmetros de query string iniciados com $ antes de enviar a requisição para a API, pois eles
+        * são utilizados apenas para controlar a chave do back end por exemplo.
+        */
+      config.params = Object.fromEntries(Object.entries(config.params).filter(([key]) => !key.startsWith('$')))
+
+      return config
+    })
+  }
 
   api.defaults.timeout = asteroidConfig.api.serverTimeout
 

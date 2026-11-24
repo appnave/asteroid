@@ -47,6 +47,9 @@
 </template>
 
 <script>
+const componentYmls = import.meta.glob('../../../ui/src/components/**/*.yml')
+const pluginYmls = import.meta.glob('../../../ui/src/plugins/**/*.yml')
+
 export default {
   props: {
     file: {
@@ -112,12 +115,22 @@ export default {
     loadFile () {
       this.isLoading = true
 
-      const modules = {
-        components: () => import(`asteroid-components/${this.file}.yml`),
-        plugins: () => import(`asteroid-plugins/${this.file}.yml`)
+      const globs = {
+        components: componentYmls,
+        plugins: pluginYmls
       }
 
-      modules[this.type]().then(api => {
+      const glob = globs[this.type]
+      const suffix = `/${this.file}.yml`
+      const matchKey = Object.keys(glob).find(key => key.endsWith(suffix))
+
+      if (!matchKey) {
+        this.isLoading = false
+        console.warn(`[DocApi] File not found: ${this.file}.yml`)
+        return
+      }
+
+      glob[matchKey]().then(api => {
         this.isLoading = false
         this.parseApiFile(api.default)
       })

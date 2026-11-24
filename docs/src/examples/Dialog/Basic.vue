@@ -1,34 +1,21 @@
 <template>
   <div class="column container spaced text-center">
-    <qas-btn @click="$qas.dialog(dialogConfig)">Usando plugin com injeção</qas-btn>
-    <qas-btn @click="Dialog(dialogConfig)">Usando plugin com import</qas-btn>
+    <qas-btn label="Usando plugin com injeção" @click="$qas.dialog(dialogConfig)" />
+
+    <qas-btn label="Usando plugin com import" @click="Dialog(dialogConfig)" />
   </div>
 </template>
 
-<script>
+<script setup>
 import { Dialog } from 'asteroid'
 
-export default {
-  data () {
-    return {
-      card: {
-        title: 'Título do dialog',
-        description: 'Descrição do dialog.'
-      }
-    }
-  },
+defineOptions({ name: 'PageBasic' })
 
-  computed: {
-    dialogConfig () {
-      return {
-        card: this.card,
-        cancel: this.cancel
-      }
-    }
-  },
-
-  methods: {
-    Dialog
+const dialogConfig = {
+  title: 'Título do dialog',
+  description: 'Descrição do dialog.',
+  cancel: {
+    label: 'Fechar'
   }
 }
 </script>

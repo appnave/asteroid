@@ -24,7 +24,10 @@ export default {
   },
 
   methods: {
-    rowRouteFn (/* row */) {
+    rowRouteFn (row) {
+      // tratamento feito pra deixar somente as linhas que são ativas clicaveis.
+      if (!row.default.isActive) return
+
       /*
         Poderá ter acesso ao row, caso precise passar uma rota com id da linha por exemplo:
         { path: 'table-generator', params: { id: row.uuid } }

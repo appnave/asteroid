@@ -1,7 +1,9 @@
 <template>
   <div :class="fieldsetClasses">
     <div v-for="(fieldsetItem, fieldsetItemKey) in normalizedFields" :key="fieldsetItemKey" :class="getFieldSetColumnClass(fieldsetItem.column)">
-      <component :is="containerComponent.is" v-bind="containerComponent.props">
+      <qas-skeleton v-if="props.skeleton" height="200px" />
+
+      <component :is="containerComponent.is" v-else v-bind="containerComponent.props">
         <slot v-if="fieldsetItem.__hasFieldset" :name="`legend-${fieldsetItemKey}`">
           <qas-header v-if="fieldsetItem.__hasHeader" v-bind="getHeaderProps({ values: fieldsetItem })" />
         </slot>
@@ -63,6 +65,7 @@ import QasBox from '../box/QasBox.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasField from '../field/QasField.vue'
 import QasHeader from '../header/QasHeader.vue'
+import QasSkeleton from '../skeleton/QasSkeleton.vue'
 
 import { gutterValidator } from '../../helpers/private/gutter-validator'
 import useGenerator, { baseProps } from '../../composables/private/use-generator'
@@ -106,14 +109,17 @@ const props = defineProps({
   },
 
   modelValue: {
-    default: () => ({}),
-    required: true,
-    type: Object
+    type: Object,
+    default: () => ({})
   },
 
   order: {
     default: () => [],
     type: Array
+  },
+
+  skeleton: {
+    type: Boolean
   },
 
   useBox: {

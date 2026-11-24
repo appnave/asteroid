@@ -1,8 +1,14 @@
-module.exports = [
+export default [
   {
     icon: 'sym_r_room',
     name: 'Por que o Asteroid existe?',
     path: '/why-asteroid'
+  },
+
+  {
+    icon: 'sym_r_arrow_menu_open',
+    name: 'Navegação em overlay (drawer)',
+    path: '/overlay-navigation'
   },
 
   {
@@ -116,6 +122,10 @@ module.exports = [
         path: '/components/checkbox'
       },
       {
+        name: 'Container',
+        path: '/components/container'
+      },
+      {
         name: 'Date',
         path: '/components/date'
       },
@@ -134,6 +144,10 @@ module.exports = [
       {
         name: 'Dialog',
         path: '/components/dialog'
+      },
+      {
+        name: 'DialogFilePreview',
+        path: '/components/dialog-file-preview'
       },
       {
         name: 'DialogRouter',
@@ -212,6 +226,10 @@ module.exports = [
         path: '/components/layout'
       },
       {
+        name: 'LazyLoadingComponents',
+        path: '/components/lazy-loading-components'
+      },
+      {
         name: 'ListItems',
         path: '/components/list-items'
       },
@@ -222,6 +240,10 @@ module.exports = [
       {
         name: 'Map',
         path: '/components/map'
+      },
+      {
+        name: 'MapDraw',
+        path: '/components/map-draw'
       },
       {
         name: 'NestedFields',
@@ -270,6 +292,10 @@ module.exports = [
       {
         name: 'Resizer',
         path: '/components/resizer'
+      },
+      {
+        name: 'RouterLink',
+        path: '/components/router-link'
       },
       {
         name: 'SearchBox',
@@ -324,6 +350,10 @@ module.exports = [
         path: '/components/stepper-form-view'
       },
       {
+        name: 'Skeleton ',
+        path: '/components/skeleton'
+      },
+      {
         name: 'TableGenerator',
         path: '/components/table-generator'
       },
@@ -358,6 +388,10 @@ module.exports = [
       {
         name: 'Transfer',
         path: '/components/transfer'
+      },
+      {
+        name: 'TransferList',
+        path: '/components/transfer-list'
       },
       {
         name: 'TreeGenerator',
@@ -594,6 +628,10 @@ module.exports = [
       {
         name: 'useNotifications',
         path: '/composables/use-notifications'
+      },
+      {
+        name: 'useOverlayNavigation',
+        path: '/composables/use-overlay-navigation'
       },
       {
         name: 'useQueryCache',

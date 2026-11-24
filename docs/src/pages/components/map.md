@@ -32,6 +32,8 @@ npm i @fawmi/vue-google-maps@0.9.79
   }
 }
 ```
+
+No componente, a chave é lida via `import.meta.env.MAPS_API_KEY`.
 :::
 
 <doc-api file="map/QasMap" name="QasMap" />

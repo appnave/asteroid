@@ -5,6 +5,8 @@
 </template>
 
 <script setup>
+import QasTooltip from '../tooltip/QasTooltip.vue'
+
 import { computed } from 'vue'
 
 defineOptions({ name: 'QasTip' })

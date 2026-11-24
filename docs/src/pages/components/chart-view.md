@@ -127,6 +127,7 @@ Quando utilizar o componente e precisar utilizar a query da URL para enviar no f
 <doc-example file="QasChartView/BarWithSelectFilter" title="Gráfico de barra com QasSelectFilter" />
 
 <doc-example file="QasChartView/Bar" title="Gráfico de barra" />
+<doc-example file="QasChartView/Skeleton" title="Skeleton" />
 <doc-example file="QasChartView/Doughnut" title="Gráfico de rosquinha" />
 <doc-example file="QasChartView/Line" title="Gráfico de linha" />
 

@@ -63,7 +63,6 @@ import QasActionsMenu from '../actions-menu/QasActionsMenu.vue'
 import QasBtn from '../btn/QasBtn.vue'
 import QasBox from '../box/QasBox.vue'
 import QasFormGenerator from '../form-generator/QasFormGenerator.vue'
-import QasInput from '../input/QasInput.vue'
 import QasLabel from '../label/QasLabel.vue'
 import QasHeader from '../header/QasHeader.vue'
 
@@ -84,7 +83,6 @@ export default {
     QasBtn,
     QasBox,
     QasFormGenerator,
-    QasInput,
     QasLabel,
     QasHeader,
 

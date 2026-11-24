@@ -1,11 +1,12 @@
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import useOverlayNavigation from './use-overlay-navigation'
 
 export default function () {
-  const route = useRoute()
+  const { route } = useOverlayNavigation()
 
   const context = computed(() => {
-    const { limit, ordering, page, search, ...filters } = route.query
+    const { limit, ordering, page, search, ...filters } = route.value.query
+
     return { filters, limit, ordering, page: page ? parseInt(page) : 1, search }
   })
 

@@ -1,19 +1,19 @@
-function getLatestVersions ({ execaSync, ora }) {
-  const getNormalizedVersions = require('./get-normalized-versions')
-  const getNearestVersion = require('./get-nearest-version')
+import getNormalizedVersions from './get-normalized-versions.js'
+import getNearestVersion from './get-nearest-version.js'
 
+function getLatestVersions ({ execaSync, ora }) {
   const latestVersionsSpinner = ora('Obtendo versões atualizadas no npm...').start()
 
   const appExtensionVersions = JSON.parse(execaSync('npm', [
     'show',
-    '@bildvitta/quasar-app-extension-asteroid',
+    '@appnave/quasar-app-extension-asteroid',
     'time',
     '--json'
   ]).stdout)
 
   const uiVersions = JSON.parse(execaSync('npm', [
     'show',
-    '@bildvitta/quasar-ui-asteroid',
+    '@appnave/quasar-ui-asteroid',
     'time',
     '--json'
   ]).stdout)
@@ -42,4 +42,4 @@ function getLatestVersions ({ execaSync, ora }) {
   return versions
 }
 
-module.exports = getLatestVersions
+export default getLatestVersions

@@ -30,24 +30,34 @@ props:
     type: Object
 
   list:
-    desc: Lista de items que vão ser criados dentro do menu de ações.
+    desc: Lista de items que vão ser criados dentro do menu de ações. Cada item aceita as chaves "tooltip" e "disabledTooltip" (exibido somente quando o item estiver desabilitado), assim como no QasBtn.
     default: '{}'
     type: Object
-    examples: [
-      "{
-        visibility: {
-          icon: 'sym_r_visibility',
-          label: 'Visualizar',
-          handler: () => alert('handler ativado')
-        }
-      }"
-    ]
+    examples:
+      - "{
+          visibility: {
+            icon: 'sym_r_visibility',
+            label: 'Visualizar',
+            handler: () => alert('handler ativado')
+          },
+          edit: {
+            icon: 'sym_r_create',
+            label: 'Editar',
+            disable: true,
+            disabledTooltip: 'Você não tem permissão para editar.'
+          }
+        }"
 
   split-name:
     desc: propriedade para definir o useSplit, habilita 2 ações diferentes no mesmo componente, separando o mesmo por uma barra, o valor deve ser alguma chave (key) existente na propriedade "list".
     default: ''
     type: String
     examples: [visibility]
+
+  use-dropdown-always:
+    desc: Força o uso do dropdown mesmo caso tenha apenas 1 item na lista de ações.
+    default: false
+    type: Boolean
 
   use-tooltip:
     desc: Controla se vai ter o tooltip caso passe nas regras de exibição de tooltip
@@ -66,14 +76,13 @@ slots:
         desc: Escopo que retorna o item atual, valor depende do que foi passado na prop list.
         default: '{}'
         type: Object
-        examples: [
-          "
-          {
-            icon: 'sym_r_delete',
-            label: 'Delete',
-            }
-          "
-        ]
+        examples:
+          - "
+            {
+              icon: 'sym_r_delete',
+              label: 'Delete',
+              }
+            "
 
 selectors:
   'actions-menu':

@@ -10,6 +10,8 @@ Componente para informações.
 - Quando a propriedade "useRegex" for "true", todo texto da propriedade "text" que estiver dentro de `[]` será substituído pelos componentes:
   - RouterLink (se existir a propriedade `routerLinkProps`).
   - QasBtn (se existir a propriedade `buttonProps`).
+- Quando a propriedade "useRegex" for "true", todo texto da propriedade "text" que estiver dentro de `** **` será adicionado dentro de uma tag strong.
+  - Exemplo: `Exemplo de texto destacando **essa parte**`.
 - slot "default" só existe se "useRegex" for "false".
 :::
 
@@ -25,4 +27,5 @@ Componente para informações.
 <doc-example file="QasAlert/InsideDialog" title="Dentro de dialog" />
 <doc-example file="QasAlert/Button" title="Com botão" />
 <doc-example file="QasAlert/MultipleButtons" title="Com múltiplos botões / links" />
+<doc-example file="QasAlert/WithBoldText" title="Com destaque nos textos" />
 <doc-example file="QasAlert/ExternalLink" title="Link externo" />

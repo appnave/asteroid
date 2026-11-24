@@ -70,4 +70,24 @@ O formato padrão do model de objeto é:
 :::
 
 <doc-print :src="require('assets/prints/uploader-editable.png')" />
+
+:::info
+##### Como funcionam prop `errors` no QasUploader
+
+Quando você passa erros para o componente através da propriedade `errors`, eles são tratados de forma inteligente:
+
+- **Erros de campos** (como `format`, `name`, etc.) → Aparecem nos inputs dentro de cada card
+- **Erros de `url`** → Aparecem como mensagem de erro no próprio card (não no input)
+
+**Exemplo prático:**
+```js
+{
+  'documents.0.format': ['Formato inválido'], // Aparece no campo "format" do 1º card
+  'documents.0.url': ['Arquivo corrompido'], // Aparece como erro do 1º card
+  'documents.1.format': ['Extensão não permitida'] // Aparece no campo "format" do 2º card
+}
+```
+
+Isso permite mostrar tanto erros específicos de campos quanto erros gerais do arquivo de forma organizada.
+:::
 <doc-example file="QasUploader/ExUploaderMultipleEditable" title="Múltiplo e editável" />

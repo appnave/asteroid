@@ -25,14 +25,13 @@ props:
     desc: Tipos de arquivos aceitos para fazer o redimensionamento antes de upar.
     type: Array
     debugger: true
-    default: [
-      'image/jpeg',
-      'image/png',
-      'image/gif',
-      'image/bmp',
-      'image/webp',
-      'image/jpg'
-    ]
+    default:
+      - 'image/jpeg'
+      - 'image/png'
+      - 'image/gif'
+      - 'image/bmp'
+      - 'image/webp'
+      - 'image/jpg'
 
   columns:
     desc: Seta as colunas (grid cols), valor default depende se o componente é múltiplo ou não.
@@ -54,10 +53,21 @@ props:
     required: true
     type: String
 
+  field-name:
+    desc: Nome do campo para normalizar `errors` dentro da propriedade `form-generator-props`.
+    default: ''
+    type: String
+
   error:
     desc: Habilita modo erro.
     default: false
     type: Boolean
+
+  errors:
+    desc: Erros por arquivo, repassados para o QasFormGenerator e usado no QasGalleryCard quando existe erro na URL.
+    default: {}
+    model: true
+    type: [Object, Array]
 
   error-message:
     desc: Mensagem de erro.
@@ -172,6 +182,11 @@ props:
   use-url-path:
     desc: Controla se o componente vai salvar o path url no model ou por exemplo um base64.
     default: true
+    type: Boolean
+
+  use-validate-encrypted-pdf:
+    desc: Controla se o componente vai validar se o PDF está encriptado antes de fazer o upload.
+    default: false
     type: Boolean
 
 slots:

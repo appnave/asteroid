@@ -26,7 +26,7 @@ Este passo **não** é um `npm link` e funciona apenas para alterações feitas 
 
 Primeiro, você precisa pegar o caminho relativo que se encontra o `asteroid` localmente na sua maquina, vamos supor que o nosso seja: `~/Documents/bild/asteroid`.
 
-Dentro do seu projeto que está usando asteroid, no terminal, vá até `node_modules/@bildvitta/quasar-app-extension-asteroid`, e digite este comando:
+Dentro do seu projeto que está usando asteroid, no terminal, vá até `node_modules/@appnave/quasar-app-extension-asteroid`, e digite este comando:
 
 ```js
 npm add file:~/Documents/bild/asteroid/ui
@@ -36,10 +36,14 @@ Agora o `quasar-app-extension-asteroid` dentro do `node_modules` do seu projeto 
 
 :::warning
 
-Caso esteja utilizando a versão do Asteroid superior à **3.11.0-beta.0**, deverá ser incluído este alias dentro do `chainWebpack` em seu `quasar.conf.js`.
+Caso esteja utilizando a versão do Asteroid superior à **3.11.0-beta.0**, deverá ser incluído este alias no `build.alias` do seu `quasar.config.js`.
 
 ```js
-chain.resolve.alias.set('vue', path.resolve('./node_modules/vue'))
+build: {
+  alias: {
+    vue: path.resolve('./node_modules/vue')
+  }
+}
 ```
 :::
 

@@ -34,6 +34,11 @@ props:
     default: []
     type: Array
 
+  order-by-options:
+    desc: Opções de ordenação que serão exibidas no botão de ordenar.
+    default: []
+    type: Array
+
   search-placeholder:
     desc: Placeholder do campo de busca.
     default: Pesquisar...

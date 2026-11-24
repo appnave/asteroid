@@ -44,8 +44,12 @@ props:
 slots:
   default:
     desc: Slot para passar o conteúdo do dropdown (menu).
+
   bottom-[buttons-props-list-key]:
     desc: Slot unitário para acessar abaixo de cada botão (normalmente utilizado para tooltip).
+
+  btn-content-[buttons-props-list-key]:
+    desc: Slot para acessar o conteúdo dentro do botão, exemplo de uso QMenu.
 
 events:
   '@click -> function (event)':
