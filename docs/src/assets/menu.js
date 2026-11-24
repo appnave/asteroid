@@ -390,6 +390,10 @@ export default [
         path: '/components/transfer'
       },
       {
+        name: 'TransferList',
+        path: '/components/transfer-list'
+      },
+      {
         name: 'TreeGenerator',
         path: '/components/tree-generator'
       },

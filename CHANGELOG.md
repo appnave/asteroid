@@ -14,6 +14,10 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
+## Não publicado
+### Adicionado
+- `QasTransferList`: Adicionado novo componente visual para exibir itens entre duas colunas (origem e destino).
+
 ## [4.0.0-beta.2] - 13-11-2026
 ### Adicionado
 - `useProcessListener`: adicionado composable para escutar o evento `process.finished` (fim de processos assíncronos) via websocket, filtrando por `identifiers` (ou `match`) e disparando `onSuccess`/`onError`. Quando a conexão é restabelecida ou o usuário volta para a aba, chama o `onSync` caso exista processo em andamento (`isWaiting`).

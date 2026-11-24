@@ -92,6 +92,7 @@ export const QasToggle = defineAsyncComponent(() => import('./components/toggle/
 export const QasToggleVisibility = defineAsyncComponent(() => import('./components/toggle-visibility/QasToggleVisibility.vue'))
 export const QasTooltip = defineAsyncComponent(() => import('./components/tooltip/QasTooltip.vue'))
 export const QasTransfer = defineAsyncComponent(() => import('./components/transfer/QasTransfer.vue'))
+export const QasTransferList = defineAsyncComponent(() => import('./components/transfer-list/QasTransferList.vue'))
 export const QasTreeGenerator = defineAsyncComponent(() => import('./components/tree-generator/QasTreeGenerator.vue'))
 export const QasUploader = defineAsyncComponent(() => import('./components/uploader/QasUploader.vue'))
 export const QasWelcome = defineAsyncComponent(() => import('./components/welcome/QasWelcome.vue'))
