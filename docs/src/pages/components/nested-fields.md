@@ -92,3 +92,4 @@ Lembre-se, para utilizar a prop `actionsMenuProps`, é necessário utilizar a pr
 <doc-example file="QasNestedFields/SlotFields" title="Slot fields" />
 <doc-example file="QasNestedFields/SlotAddInput" title="Slot add-input" />
 <doc-example file="QasNestedFields/ExWithIndexLabel" title="Com index no label" />
+<doc-example file="QasNestedFields/Disable" title="Nested desabilitado" />
