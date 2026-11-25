@@ -94,12 +94,14 @@
         <slot :context="context" name="bottom-row">
           <q-tr class="qas-table-generator__sticky-total">
             <td
-              v-for="(col, index) in context.cols"
-              :key="index"
+              v-for="col in context.cols"
+              :key="col.name"
             >
-              <span>
-                {{ getTotalInfo(col) }}
-              </span>
+              <slot :column="col" :name="`sticky-last-row-${col.name}`" :row="stickyLastRow" :value="getTotalInfo(col)">
+                <span>
+                  {{ getTotalInfo(col) }}
+                </span>
+              </slot>
             </td>
           </q-tr>
         </slot>
@@ -339,7 +341,8 @@ export default {
       const slots = {}
 
       for (const slotKey in this.$slots) {
-        if (slotKey.includes('body-cell-')) continue
+        // slots tratados internamente, não devem ser repassados para o QTable.
+        if (slotKey.includes('body-cell-') || slotKey.includes('sticky-last-row-')) continue
 
         slots[slotKey] = this.$slots[slotKey]
       }
@@ -552,6 +555,13 @@ export default {
 
     hasGroups () {
       return !!Object.keys(this.groups).length
+    },
+
+    /**
+     * Último item da lista de resultados, exibido na linha fixa quando a prop "useStickyLastRow" é utilizada.
+     */
+    stickyLastRow () {
+      return this.results.at(-1)
     }
   },
 
@@ -771,10 +781,7 @@ export default {
     },
 
     getTotalInfo ({ name }) {
-      // O último resultado é sempre o total geral.
-      const lastResult = this.results.at(-1)
-
-      return humanize(this.fields[name], lastResult[name])
+      return humanize(this.fields[name], this.stickyLastRow?.[name])
     }
   }
 }
