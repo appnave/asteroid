@@ -18,6 +18,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Adicionado
 - `QasTransferList`: Adicionado novo componente visual para exibir itens entre duas colunas (origem e destino).
 - `QasActionsMenu`: Adicionado suporte às chaves `tooltip` e `disabledTooltip` nos itens do dropdown da prop `list`, seguindo o mesmo comportamento do `QasBtn` (antes só funcionava quando o item era renderizado como botão).
+- `QasCopy`: adicionado estrutura de classes pra respeitar o ellipsis.
 
 ## [4.0.0-beta.2] - 13-11-2026
 ### Adicionado
