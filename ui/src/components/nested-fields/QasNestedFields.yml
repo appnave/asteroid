@@ -50,6 +50,10 @@ props:
     default: destroyed
     type: String
 
+  disable:
+    desc: Desabilita os campos, o botão de adicionar novas linhas e as ações laterais.
+    type: Boolean
+
   disabled-rows:
     desc: Com esta propriedade é possível desabilitar rows (linhas) especificas passando um array com chaves identificadoras, caso queira desativar todas passe um valor boolean "true", ou também é possível utilizar uma função de callback, que receberá a "row" como parâmetro. (Isto vai remover todos os botões da linha, como por exemplo, o duplicar e excluir).
     default: "false"
@@ -154,7 +158,12 @@ props:
     type: Boolean
 
   use-destroy-always:
-    desc: Controla o botão de remover em todas linhas, incluindo a primeira.
+    desc: Controla se terá o botão de remover em todas linhas, incluindo a primeira.
+    type: Boolean
+
+  use-destroy-button:
+    desc: Controla se terá o botão de remover linha.
+    default: true
     type: Boolean
 
   use-duplicate:

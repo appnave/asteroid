@@ -28,9 +28,24 @@ props:
 slots:
   default:
     desc: slot para substituir o conteúdo todo da timeline.
+    scope:
+      item:
+        desc: item atual da lista.
+        default: {}
+        type: Object
 
   hour:
     desc: slot para substituir o conteúdo acima da descrição.
+    scope:
+      item:
+        desc: item atual da lista.
+        default: {}
+        type: Object
 
   description:
     desc: slot para substituir o conteúdo da descrição.
+    scope:
+      item:
+        desc: item atual da lista.
+        default: {}
+        type: Object

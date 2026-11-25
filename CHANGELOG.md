@@ -15,6 +15,9 @@ Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não p
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
 ## Não publicado
+### BREAKING CHANGES
+- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next` (depreciado no `vue-router` 5), agora a rota de redirecionamento é retornada. Guards que repassam o `next` para essas funções devem removê-lo e retornar o resultado.
+
 ### Adicionado
 - `QasTransferList`: Adicionado novo componente visual para exibir itens entre duas colunas (origem e destino).
 - `QasActionsMenu`: Adicionado suporte às chaves `tooltip` e `disabledTooltip` nos itens do dropdown da prop `list`, seguindo o mesmo comportamento do `QasBtn` (antes só funcionava quando o item era renderizado como botão).
@@ -22,6 +25,13 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
   - Adicionado prop `groups`, onde é podemos exibir as informações na tabela de forma agrupada.
   - Adicionado prop `highlights`, onde é uma função de callback das linhas da tabela, podendo tratar quais linhas terão destaques.
   - Adicionado prop `useStickyLastRow` para manter a última linha da tabela fixa.
+- `QasNestedFields`:
+ - Adicionado prop `use-destroy-button` pra controlar se terá o botão de remoção das linhas.
+ - Adicionado prop `disable` pra desabilitar os campos, botão de adicionar novas linhas e as ações laterais.
+- `QasCopy`: adicionado estrutura de classes pra respeitar o ellipsis.
+
+### Corrigido
+- Corrigidos avisos de depreciação do `vue-router` no console.
 
 ## [4.0.0-beta.2] - 13-11-2026
 ### Adicionado
