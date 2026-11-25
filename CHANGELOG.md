@@ -16,7 +16,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 
 ## Não publicado
 ### BREAKING CHANGES
-- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next`. Agora a rota de redirecionamento é retornada, então quem chama a função dentro de outro guard deve retornar o resultado.
+- `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next` (depreciado no `vue-router` 5), agora a rota de redirecionamento é retornada. Guards que repassam o `next` para essas funções devem removê-lo e retornar o resultado.
 
 ### Adicionado
 - `QasTransferList`: Adicionado novo componente visual para exibir itens entre duas colunas (origem e destino).
