@@ -21,6 +21,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasNestedFields`:
  - Adicionado prop `use-destroy-button` pra controlar se terá o botão de remoção das linhas.
  - Adicionado prop `disable` pra desabilitar os campos, botão de adicionar novas linhas e as ações laterais.
+- `QasCopy`: adicionado estrutura de classes pra respeitar o ellipsis.
 
 ## [4.0.0-beta.2] - 13-11-2026
 ### Adicionado
