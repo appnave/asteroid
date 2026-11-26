@@ -14,7 +14,7 @@ Podemos ter pequenas breaking changes sem alterar o `major` version, apesar de s
 Devemos adicionar o comentário `<!-- N/A -->` (Não adicionar), para que não precise adicionar um item do changelog ao lançar uma nova versão stable.
 Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicionados. Caso adicionado na linha, será considerado apenas ela.
 
-## Não publicado
+## [4.0.0-beta.3] - 26-11-2026
 ### BREAKING CHANGES
 - `setDefaultFiltersBeforeEnter` e `setDefaultFiltersBeforeEach`: Removido o parâmetro `next` (depreciado no `vue-router` 5), agora a rota de redirecionamento é retornada. Guards que repassam o `next` para essas funções devem removê-lo e retornar o resultado.
 
@@ -73,3 +73,4 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 [4.0.0-beta.0]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.0-alpha.0...v4.0.0-beta.0?expand=1
 [4.0.0-beta.1]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.1-alpha.5...v4.0.0-beta.1?expand=1
 [4.0.0-beta.2]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.2-alpha.3...v4.0.0-beta.2?expand=1
+[4.0.0-beta.3]: https://github.com/bildvitta/asteroid/compare/v4.0.0-beta.2...v4.0.0-beta.3?expand=1
