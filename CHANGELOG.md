@@ -21,6 +21,10 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 ### Adicionado
 - `QasTransferList`: Adicionado novo componente visual para exibir itens entre duas colunas (origem e destino).
 - `QasActionsMenu`: Adicionado suporte às chaves `tooltip` e `disabledTooltip` nos itens do dropdown da prop `list`, seguindo o mesmo comportamento do `QasBtn` (antes só funcionava quando o item era renderizado como botão).
+- `QasTableGenerator`:
+  - Adicionado prop `groups`, onde é podemos exibir as informações na tabela de forma agrupada.
+  - Adicionado prop `highlights`, onde é uma função de callback das linhas da tabela, podendo tratar quais linhas terão destaques.
+  - Adicionado prop `useStickyLastRow` para manter a última linha da tabela fixa.
 - `QasNestedFields`:
  - Adicionado prop `use-destroy-button` pra controlar se terá o botão de remoção das linhas.
  - Adicionado prop `disable` pra desabilitar os campos, botão de adicionar novas linhas e as ações laterais.

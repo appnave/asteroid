@@ -45,11 +45,29 @@ props:
         desc: Índice da linha da tabela.
         type: Number
 
+    groups:
+      desc: Usado para criar um destaque no header, com intenção de agrupar as informações das colunas.
+      default: {}
+      type: Object
+      examples: ["{ first: { label: 'Primeiro grupo', fields: ['email', 'phone'] } }"]
+
   header-props:
     desc: Propriedades repassadas para o componente `QasHeader`.
     default: {}
     type: Object
     examples: ["{ description: 'Descrição', labelProps: { label: 'Titulo do header'} }"]
+
+  highlights:
+    desc: Função para destacar células da tabela com base em uma condição.
+    default: undefined
+    type: Function
+    params:
+      row:
+        desc: Payload da linha da tabela.
+        type: Object
+      index:
+        desc: Índice da linha da tabela.
+        type: Number
 
   max-height:
     desc: Usado para definir a altura máxima da tabela e exibir o scroll vertical. Somente funciona quando a propriedade "use-sticky-header" ou "use-virtual-scroll" é utilizada.
@@ -124,6 +142,11 @@ props:
     default: false
     type: Boolean
 
+  use-sticky-last-row:
+    desc: Usado para manter a última linha da tabela fixa.
+    default: false
+    type: Boolean
+
 slots:
   body:
     desc: Acesso direto dentro do `tbody`.
@@ -135,6 +158,19 @@ slots:
 
   parent-header:
     desc: 'Acesso ao slot do header dentro container'
+
+  'sticky-last-row-[nome-da-coluna]':
+    desc: Acesso ao conteúdo de cada célula da linha fixa (último item da lista de resultados). Somente funciona quando a prop "use-sticky-last-row" é utilizada.
+    scope:
+      column:
+        desc: Coluna da tabela.
+        type: Object
+      row:
+        desc: Payload do último item da lista de resultados, sem formatação.
+        type: Object
+      value:
+        desc: Valor da coluna na última linha, já formatado.
+        type: String
 
 events:
   '@row-click -> function(event, row, index)':
