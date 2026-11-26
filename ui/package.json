@@ -47,7 +47,7 @@
     "@bildvitta/store-adapter": "1.0.0",
     "@panzoom/panzoom": "^4.6.2",
     "autonumeric": "4.10.10",
-    "axios": "1.18.1",
+    "axios": "1.21.1",
     "date-fns": "4.4.0",
     "debug": "4.4.3",
     "fuse.js": "7.5.0",
