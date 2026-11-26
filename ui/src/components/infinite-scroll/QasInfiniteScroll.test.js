@@ -105,11 +105,8 @@ describe('QasInfiniteScroll', () => {
 
       expect(axios.get).toHaveBeenLastCalledWith('users', { params: { offset: 4, limit: 5 } })
     })
-  })
 
-  describe('problemas', () => {
-    // Problema listado no documento: o "refresh" não limpa o erro anterior, então a lista nunca volta a carregar.
-    it.fails('"refresh" depois de um erro busca a lista de novo', async () => {
+    it('"refresh" depois de um erro busca a lista de novo', async () => {
       let shouldFail = true
 
       const axios = createAxiosMock(async () => {

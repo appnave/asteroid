@@ -176,6 +176,7 @@ function refresh () {
   modelList.value = []
 
   hasMadeFirstFetch.value = false
+  hasFetchingError.value = false
 
   nextTick(() => {
     infiniteScroll.value.reset()

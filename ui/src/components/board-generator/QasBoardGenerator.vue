@@ -550,7 +550,6 @@ async function fetchColumns () {
   if (currentFetchColumnsSession !== mySession) return
 
   const allPromises = [...visibleColumns, ...hiddenColumns]
-  console.log('🚀 ~ fetchColumns ~ allPromises:', allPromises)
 
   const hasAllPromisesSucceeded = allPromises.every(promise => promise.status === 'fulfilled')
   const hasAllPromisesFailed = allPromises.length > 0 && allPromises.every(promise => promise.status === 'rejected')
@@ -578,7 +577,7 @@ async function fetchColumns () {
 * event handler" do Vue.
 */
 function handleFetchColumnClick (header) {
-  fetchColumn(header, true)
+  fetchColumn(header, true).catch(() => {})
 }
 
 /**
@@ -1124,9 +1123,7 @@ function onDropCard (event) {
     return
   }
 
-  props.useConfirmDialog
-    ? openConfirmDialog()
-    : confirmDrop(event)
+  confirmDrop(event)
 }
 
 function openConfirmDialog () {
@@ -1143,7 +1140,7 @@ function closeConfirmDialog () {
 function cancelDrop (event) {
   revertDomDrag(event)
 
-  if (props.useConfirmDialog) closeConfirmDialog()
+  closeConfirmDialog()
 
   stopDragging()
 }

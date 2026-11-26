@@ -56,7 +56,7 @@
     <qas-dialog v-model="showFormDialog" v-bind="formDialogConfig" use-form @hide="resetModels" @validate="onValidate">
       <template #description>
         <div>
-          <qas-field v-if="hasAddField" v-model="editModel" :disable="isAdd" :field="addField" :label="nodeTitle" :rules="[required]" />
+          <qas-field v-if="hasAddField" v-model="editModel" :disable="isAdd" :field="addField" :label="nodeTitle" :rules="[value => required(value)]" />
 
           <qas-nested-fields v-if="hasNestedAdd" v-model="nestedModel" class="q-mt-md" :field="nestedFieldProp" :fields-props="fieldsProps" :form-columns="nestedColumns" :row-object="rowObject" :use-duplicate="false" use-inline-actions />
 
@@ -247,7 +247,7 @@ export default {
     fieldsProps () {
       return {
         label: {
-          rules: [required]
+          rules: [value => required(value)]
         }
       }
     },

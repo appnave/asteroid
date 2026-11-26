@@ -168,8 +168,7 @@ describe('QasTreeGenerator', () => {
       expect(wrapper.vm.parsedNodes[0].children.map(node => node.label)).toEqual(['Vendas', 'Financeiro', 'Jurídico', 'RH'])
     })
 
-    // Problema listado no documento: a regra "required" passada direto (:rules="[required]") recebe o segundo argumento do Quasar como mensagem e não bloqueia o campo vazio.
-    it.fails('não salva a edição com o nome vazio', async () => {
+    it('não salva a edição com o nome vazio', async () => {
       axios.put.mockResolvedValue({})
 
       const wrapper = await mountTreeGenerator()

@@ -7,7 +7,6 @@
       :confirm-dialog-props
       :headers
       height="400px"
-      use-confirm-dialog
     >
       <template #header-column="{ header }">
         <div class="flex justify-between text-subtitle1">

@@ -93,7 +93,6 @@ describe('QasBoardGenerator', () => {
   beforeEach(() => {
     NotifyError.mockClear()
 
-    // o componente tem um console.log de depuração (listado no documento), silenciado para não poluir a saída
     consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {})
 
     // o QasLazyLoadingComponents chama o slot fora do render (listado no documento), o resto dos avisos continua aparecendo
@@ -177,6 +176,30 @@ describe('QasBoardGenerator', () => {
       expect(wrapper.emitted('fetch-columns-error')).toHaveLength(1)
       expect(NotifyError).toHaveBeenCalledWith('Ocorreu um erro ao carregar as colunas. Tente novamente mais tarde.')
     })
+
+    it('"Tentar novamente" com a coluna falhando de novo não deixa erro sem tratamento', async () => {
+      const { wrapper, axios } = await mountBoard({ axios: createApi({ failing: ['doing'] }) })
+
+      const unhandledRejection = vi.fn()
+      process.on('unhandledRejection', unhandledRejection)
+
+      const retryButton = wrapper.findAllComponents({ name: 'QasBtn' }).find(button => button.props('label') === 'Tentar novamente')
+
+      await retryButton.find('button').trigger('click')
+      await waitForRender()
+
+      process.off('unhandledRejection', unhandledRejection)
+
+      expect(axios.get).toHaveBeenLastCalledWith('tasks/columns/doing', expect.anything())
+      expect(unhandledRejection).not.toHaveBeenCalled()
+      expect(wrapper.text()).toContain('Não foi possível carregar os itens desta coluna.')
+    })
+
+    it('não escreve no console ao buscar as colunas', async () => {
+      await mountBoard()
+
+      expect(consoleLog).not.toHaveBeenCalled()
+    })
   })
 
   describe('métodos', () => {
@@ -246,18 +269,6 @@ describe('QasBoardGenerator', () => {
       await waitForRender()
 
       expect(getColumnsCards(wrapper)[1]).toContain('todo 1')
-    })
-
-    // Problema listado no documento: ficou um console.log de depuração no fetchColumns.
-    it.fails('não escreve no console ao buscar as colunas', async () => {
-      await mountBoard()
-
-      expect(consoleLog).not.toHaveBeenCalled()
-    })
-
-    // Problema listado no documento: "use-confirm-dialog" está na documentação e no código, mas não é mais uma prop.
-    it.fails('declara a prop "use-confirm-dialog"', () => {
-      expect(QasBoardGenerator.props).toHaveProperty('useConfirmDialog')
     })
   })
 })

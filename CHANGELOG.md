@@ -19,6 +19,10 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasGridGenerator`: `use-empty-result` agora funciona. Campos com lista ou objeto vazio passam a exibir "-" e, com `false`, campos vazios são escondidos.
 
 ### Corrigido
+- `QasBoardGenerator`: 
+ - Corrigido o erro sem tratamento no console ao clicar em "Tentar novamente" ou "Ver mais" quando a coluna falha de novo.
+ - Removido `console.log` de depuração ao buscar as colunas.
+ - Removida da documentação a prop `use-confirm-dialog`, que não existe mais. Para confirmar o drop, use o `openConfirmDialog` do `before-update-position`.
 - `QasDateTimeInput`: Corrigida a validação de datas que não existem (ex: `31/04` ou `29/02` em ano não bissexto), que eram salvas como a data seguinte sem aviso. Agora exibe "Data inválida.".
 - `QasDialog`: Corrigido o evento `validate` com `use-form`, que emitia uma Promise no lugar do boolean.
 - `QasDialogFilePreview`: Corrigido o aviso "Erro ao carregar imagem.", que continuava aparecendo ao abrir outra imagem depois de uma falha.
@@ -27,6 +31,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasFormView`: Corrigido o evento `delete-success`, que continuava sendo ouvido após o componente ser desmontado.
 - `QasGridGenerator`: Corrigida a prop `use-empty-result`, que não tinha efeito. Com `false`, os campos vazios são escondidos. No padrão (`true`), campos com lista ou objeto vazio, que antes eram escondidos, agora aparecem com "-".
 - `QasHeader`: Corrigido o slot `actions`, que não era exibido quando o header não tinha label nem descrição.
+- `QasInfiniteScroll`: Corrigido o `refresh`, que não buscava a lista de novo depois de um erro (ex: ao trocar de aba no histórico da venda).
 - `QasPasswordStrengthChecker`: Corrigido erro que quebrava o componente quando a senha não atendia nenhum critério (ex: só "ç" ou espaço). Agora exibe "Muito fraco".
 - `QasReportsFilters`: Corrigido o botão "Filtrar", que ficava habilitado quando um filtro obrigatório era limpo.
 - `QasSelect`, `QasSearchBox`, `QasSelectList` e `QasSelectListDialog`: Corrigido o aviso de prop obrigatória (`entity` e `name`) no lazy loading, que nunca era exibido. Agora a mensagem aparece no console e a requisição não é feita.
@@ -34,6 +39,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.
 - `QasTableGenerator` e `QasGridGenerator`: Corrigido erro que quebrava o componente quando um campo `select` com `multiple` vinha sem valor.
 - `QasTransfer`: Corrigida a quantidade de itens, que não aparecia nos títulos das colunas, e a sincronização com `options` e `v-model`: os selecionados não duplicam mais quando as `options` mudam, e limpar o model por fora limpa as selecionadas.
+- `QasTreeGenerator`: Corrigida a validação de campo obrigatório no nome do ramo, que permitia salvar com o campo vazio.
 
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
