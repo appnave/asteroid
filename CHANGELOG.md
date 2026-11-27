@@ -37,6 +37,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasSearchBox` e `QasSelect`: Corrigida a prop `options-to-exclude`, que removia as opções direto do array recebido em `list`/`options`, alterando a lista do componente pai.
 - `QasSelect`, `QasSearchBox`, `QasSelectList` e `QasSelectListDialog`: Corrigido o aviso de prop obrigatória (`entity` e `name`) no lazy loading, que nunca era exibido. Agora a mensagem aparece no console e a requisição não é feita.
 - `QasSelectListDialog`: Corrigido o item que, removido e adicionado de novo sem lazy loading, aparecia com o `value` no lugar do `label`.
+- `QasStepperFormView`: Corrigidos os passos com `name`, que nunca eram marcados como concluídos.
 - `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.
 - `QasTableGenerator` e `QasGridGenerator`: Corrigido erro que quebrava o componente quando um campo `select` com `multiple` vinha sem valor.
 - `QasTransfer`: Corrigida a quantidade de itens, que não aparecia nos títulos das colunas, e a sincronização com `options` e `v-model`: os selecionados não duplicam mais quando as `options` mudam, e limpar o model por fora limpa as selecionadas.

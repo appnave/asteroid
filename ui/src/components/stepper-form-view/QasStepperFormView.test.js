@@ -113,11 +113,18 @@ describe('QasStepperFormView', () => {
       expect(wrapper.find('.passo').text()).toBe('Endereco')
     })
 
-    // Problema listado no documento: com "name" nos passos, nenhum passo é marcado como concluído.
-    it.fails('marca como concluídos os passos anteriores', async () => {
+    it('marca como concluídos os passos anteriores', async () => {
       const wrapper = await mountStepperFormView({ props: { steps: namedSteps, modelValue: 'review' } })
 
       expect(getDoneTabs(wrapper)).toEqual([true, true, false])
+    })
+
+    it('"done" em "step-props" continua tendo prioridade', async () => {
+      const stepsWithDone = namedSteps.map(step => ({ ...step, stepProps: { ...step.stepProps, done: true } }))
+
+      const wrapper = await mountStepperFormView({ props: { steps: stepsWithDone, modelValue: 'personal' } })
+
+      expect(getDoneTabs(wrapper)).toEqual([true, true, true])
     })
   })
 })

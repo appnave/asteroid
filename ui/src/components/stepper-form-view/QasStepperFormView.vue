@@ -50,6 +50,10 @@ const defaultFormViewProps = computed(() => {
   }
 })
 
+const currentStepIndex = computed(() => {
+  return props.steps.findIndex((step, stepIndex) => getStepName({ step, stepIndex }) === model.value)
+})
+
 function setStepProps ({ step, payload }) {
   if (step) {
     stepPropsList.value[step - 1] = payload
@@ -69,7 +73,7 @@ function nextStep ({ payload = {} }) {
 }
 
 function isDone (stepIndex) {
-  return model.value > stepIndex + 1
+  return currentStepIndex.value > stepIndex
 }
 
 function getStepName ({ step, stepIndex }) {
