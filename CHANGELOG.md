@@ -40,6 +40,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasStepperFormView`: Corrigidos os passos com `name`, que nunca eram marcados como concluídos.
 - `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.
 - `QasTableGenerator` e `QasGridGenerator`: Corrigido erro que quebrava o componente quando um campo `select` com `multiple` vinha sem valor.
+- `QasTextTruncate`: Corrigido o dialog, que exibia o HTML do conteúdo como texto (ex: `<b>`, `&amp;`) quando o texto vinha pelo slot.
 - `QasTransfer`: Corrigida a quantidade de itens, que não aparecia nos títulos das colunas, e a sincronização com `options` e `v-model`: os selecionados não duplicam mais quando as `options` mudam, e limpar o model por fora limpa as selecionadas.
 - `QasTreeGenerator`: Corrigida a validação de campo obrigatório no nome do ramo, que permitia salvar com o campo vazio.
 

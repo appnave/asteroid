@@ -316,7 +316,7 @@ function useTruncate ({ parent, props, hasBadges }) {
 
     parent.value.style.maxWidth = '100%'
     textWidth.value = truncate.value.clientWidth
-    textContent.value = truncate.value?.innerHTML
+    textContent.value = truncate.value?.textContent.trim()
 
     maxPossibleWidth.value = props.maxWidth || truncate.value.parentElement.clientWidth * 0.90
 

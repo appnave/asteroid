@@ -75,8 +75,7 @@ describe('QasTextTruncate', () => {
       expect(getDialog(wrapper).props('description')).toBe('Texto detalhado')
     })
 
-    // Problema listado no documento: com slot, o dialog exibe o HTML do conteúdo como texto.
-    it.fails('com slot, o dialog exibe o texto do conteúdo, sem HTML', async () => {
+    it('com slot, o dialog exibe o texto do conteúdo, sem HTML', async () => {
       const wrapper = await mountTextTruncate({ props: { useAlwaysSeeMore: true }, slots: { default: '<span>Texto <b>longo</b></span>' } })
 
       expect(getDialog(wrapper).props('description')).toBe('Texto longo')
