@@ -335,15 +335,9 @@ export default {
     },
 
     mx_getOptions (options = []) {
-      if (this.mx_hasOptionsToExclude) {
-        this.optionsToExclude.forEach(option => {
-          const index = options.findIndex(({ value }) => value === option)
+      if (!this.mx_hasOptionsToExclude) return options
 
-          if (~index) options.splice(index, 1)
-        })
-      }
-
-      return options
+      return options.filter(({ value }) => !this.optionsToExclude.includes(value))
     },
 
     mx_registerSelectedOptionsEvent () {

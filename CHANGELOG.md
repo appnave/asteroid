@@ -34,6 +34,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasInfiniteScroll`: Corrigido o `refresh`, que não buscava a lista de novo depois de um erro (ex: ao trocar de aba no histórico da venda).
 - `QasPasswordStrengthChecker`: Corrigido erro que quebrava o componente quando a senha não atendia nenhum critério (ex: só "ç" ou espaço). Agora exibe "Muito fraco".
 - `QasReportsFilters`: Corrigido o botão "Filtrar", que ficava habilitado quando um filtro obrigatório era limpo.
+- `QasSearchBox` e `QasSelect`: Corrigida a prop `options-to-exclude`, que removia as opções direto do array recebido em `list`/`options`, alterando a lista do componente pai.
 - `QasSelect`, `QasSearchBox`, `QasSelectList` e `QasSelectListDialog`: Corrigido o aviso de prop obrigatória (`entity` e `name`) no lazy loading, que nunca era exibido. Agora a mensagem aparece no console e a requisição não é feita.
 - `QasSelectListDialog`: Corrigido o item que, removido e adicionado de novo sem lazy loading, aparecia com o `value` no lugar do `label`.
 - `QasTableGenerator`: Corrigida a limpeza do scroll (observer, gradiente e eventos), que não era executada ao desmontar o componente, inclusive o listener de `resize` quando a tabela não ultrapassava a largura da tela.

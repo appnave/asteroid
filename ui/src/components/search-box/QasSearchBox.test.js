@@ -88,8 +88,7 @@ describe('QasSearchBox', () => {
       expect(getResults(wrapper)).toEqual(['ana', 'carla'])
     })
 
-    // Problema listado no documento: as opções são removidas direto do array da prop "list".
-    it.fails('"options-to-exclude" não altera a lista recebida', async () => {
+    it('"options-to-exclude" não altera a lista recebida', async () => {
       const list = makeList()
 
       await mountSearchBox({ props: { list, optionsToExclude: ['bruno'] } })
