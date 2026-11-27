@@ -1,5 +1,5 @@
 <template>
   <div class="container spaced">
-    <qas-whatsapp-link phone="(16) 99999-9999" text="Olá, tudo bem?" />
+    <qas-whatsapp-link phone="(16) 98160-1693" text="Pedido #123 - Preço & condições" />
   </div>
 </template>

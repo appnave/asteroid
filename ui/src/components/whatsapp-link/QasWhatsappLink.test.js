@@ -25,11 +25,10 @@ describe('QasWhatsappLink', () => {
   it('envia o texto com as quebras de linha', async () => {
     const wrapper = await mountWhatsappLink({ text: 'Olá\nTudo bem?' })
 
-    expect(getLink(wrapper)).toContain('?text=Olá%0aTudo bem?')
+    expect(new URL(getLink(wrapper)).searchParams.get('text')).toBe('Olá\nTudo bem?')
   })
 
-  // Problema listado no documento: o texto não é codificado, então "#" e "&" cortam a mensagem.
-  it.fails.each([
+  it.each([
     ['Pedido #123', 'Pedido #123'],
     ['Preço & condições', 'Preço & condições']
   ])('"%s" chega inteiro no WhatsApp', async (text, expected) => {

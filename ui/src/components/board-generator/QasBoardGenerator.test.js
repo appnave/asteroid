@@ -95,7 +95,8 @@ describe('QasBoardGenerator', () => {
 
     consoleLog = vi.spyOn(console, 'log').mockImplementation(() => {})
 
-    // o QasLazyLoadingComponents chama o slot fora do render (listado no documento), o resto dos avisos continua aparecendo
+    // o QasLazyLoadingComponents chama o slot fora do render e, como o teste passa slots não compilados, o Vue avisa no
+    // console. Com slots vindos de template (uso real), o aviso não acontece. O resto dos avisos continua aparecendo
     const originalWarn = console.warn
 
     consoleWarn = vi.spyOn(console, 'warn').mockImplementation((message, ...args) => {

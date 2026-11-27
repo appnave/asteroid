@@ -1,7 +1,7 @@
 <template>
   <div class="container q-py-lg">
     <qas-text-truncate dialog-title="Aqui está meu título!">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis voluptatem dolorem animi molestias quasi sit, ipsa suscipit quaerat.
+      Lorem ipsum <b>dolor</b> sit amet & consectetur adipisicing elit. Veritatis voluptatem dolorem animi molestias quasi sit, ipsa suscipit quaerat.
     </qas-text-truncate>
   </div>
 </template>

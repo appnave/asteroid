@@ -65,7 +65,8 @@ describe('QasLazyLoadingComponents', () => {
   beforeEach(() => {
     vi.stubGlobal('IntersectionObserver', ControlledIntersectionObserver)
 
-    // o componente chama o slot fora do render (listado no documento), o resto dos avisos continua aparecendo
+    // o componente chama o slot fora do render e, como o teste passa slots não compilados, o Vue avisa no console.
+    // Com slots vindos de template (uso real), o aviso não acontece. O resto dos avisos continua aparecendo
     const originalWarn = console.warn
 
     consoleWarn = vi.spyOn(console, 'warn').mockImplementation((message, ...args) => {
@@ -97,14 +98,5 @@ describe('QasLazyLoadingComponents', () => {
     const wrapper = await mountLazyLoading({ visible: [0, 2] })
 
     expect(wrapper.findComponent(QasLazyLoadingComponents).emitted('update:visibleItems').at(-1)[0]).toEqual([0, 2])
-  })
-
-  // Problema listado no documento: o slot é chamado fora do render, o que gera avisos no console em desenvolvimento.
-  it.fails('não gera avisos do Vue no console', async () => {
-    await mountLazyLoading()
-
-    const slotWarnings = consoleWarn.mock.calls.filter(([message]) => String(message).includes('invoked outside of the render function'))
-
-    expect(slotWarnings).toHaveLength(0)
   })
 })

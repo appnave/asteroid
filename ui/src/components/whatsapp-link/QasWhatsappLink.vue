@@ -29,7 +29,7 @@ const props = defineProps({
 
 const whatsappLink = computed(() => {
   const formattedPhone = props.phone.replace(/[^a-zA-Z0-9]/g, '')
-  const formattedText = props.text ? props.text.replace(/\n/g, '%0a') : ''
+  const formattedText = encodeURIComponent(props.text)
 
   return `https://wa.me/${props.callingCode}${formattedPhone}?text=${formattedText}`
 })

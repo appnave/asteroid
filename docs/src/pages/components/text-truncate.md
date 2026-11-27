@@ -50,7 +50,8 @@ Boas práticas:
 <doc-example file="QasTextTruncate/WithManyItems" title="Com mais de 12 itens" />
 
 :::warning
-Quando for utilizar por slot, não pode haver nenhum elemento englobando o texto.
+- Quando for utilizar por slot, não pode haver nenhum elemento englobando o texto.
+- O dialog de "Ver mais" exibe somente o texto do slot, sem formatação (ex: negrito, links e quebras de linha). Caso precise de uma descrição personalizada, utilize a prop `text` ou o `dialogProps.description`.
 :::
 
 <doc-example file="QasTextTruncate/DefaultSlot" title="Slot default" />

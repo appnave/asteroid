@@ -43,6 +43,7 @@ Caso adicionado no escopo inicial, todos os conteúdos abaixo não serão adicio
 - `QasTextTruncate`: Corrigido o dialog, que exibia o HTML do conteúdo como texto (ex: `<b>`, `&amp;`) quando o texto vinha pelo slot.
 - `QasTransfer`: Corrigida a quantidade de itens, que não aparecia nos títulos das colunas, e a sincronização com `options` e `v-model`: os selecionados não duplicam mais quando as `options` mudam, e limpar o model por fora limpa as selecionadas.
 - `QasTreeGenerator`: Corrigida a validação de campo obrigatório no nome do ramo, que permitia salvar com o campo vazio.
+- `QasWhatsappLink`: Corrigido o texto da mensagem, que era cortado ao conter caracteres como `#` e `&`.
 
 ## [4.0.0-beta.1] - 16-10-2026
 ### Modificado
